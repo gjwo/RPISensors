@@ -732,4 +732,22 @@ public class MPU9250 extends NineDOF
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public TimestampedData3D getAvgRotationalAcceleration() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TimestampedData3D getAvgGauss() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public float getAvgTemperature() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
