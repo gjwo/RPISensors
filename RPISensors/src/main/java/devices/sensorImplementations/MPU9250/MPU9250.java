@@ -1,8 +1,6 @@
 package devices.sensorImplementations.MPU9250;
 
 import devices.I2C.I2CImplementation;
-import devices.dataTypes.Data3D;
-import devices.dataTypes.TimestampedData1D;
 import devices.dataTypes.TimestampedData3D;
 import devices.sensors.NineDOF;
 
@@ -42,7 +40,7 @@ public class MPU9250 extends NineDOF
         selfTest();
         calibrateGyroAcc();
         initMPU9250();
-        initAK8963();
+        mag.init();
         calibrateMagnetometer();
     }
 
@@ -331,10 +329,7 @@ public class MPU9250 extends NineDOF
     	System.out.println("End initMPU9250");
     }
 
-    private void initAK8963() throws InterruptedException, IOException
-    {
-    }
-	@Override
+ 	@Override
     public void calibrateMagnetometer() throws InterruptedException, IOException
     {
     	mag.calibrate();
