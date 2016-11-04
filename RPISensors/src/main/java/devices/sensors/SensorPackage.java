@@ -58,7 +58,7 @@ public abstract class SensorPackage implements Runnable
         }
     }
 
-    abstract void updateData();
+    public abstract void updateData();
 
     public void registerInterest(SensorUpdateListener listener)
     {

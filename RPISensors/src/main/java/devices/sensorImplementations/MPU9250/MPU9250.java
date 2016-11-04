@@ -38,7 +38,10 @@ public class MPU9250 extends NineDOF
         // get device
         this.roMPU = new MPU9250RegisterOperations(mpu9250);
         this.roAK = new MPU9250RegisterOperations(ak8963);
-
+        gyro = new MPU9250Gyroscope(sampleSize, sampleSize, roMPU);
+        mag = new MPU9250Magnetometer(sampleSize, sampleSize, roAK);
+        accel = new MPU9250Accelerometer(sampleSize, sampleSize, roMPU);
+        therm = new MPU9250Thermometer(sampleSize, sampleSize, roMPU);
         selfTest();
         calibrateGyroAcc();
         initMPU9250();
@@ -668,12 +671,6 @@ public class MPU9250 extends NineDOF
 	}
 
 	@Override
-	public TimestampedData3D getAvgGaussianData() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public TimestampedData3D getGaussianData(int i) {
 		// TODO Auto-generated method stub
 		return null;
@@ -728,7 +725,7 @@ public class MPU9250 extends NineDOF
 	}
 
 	@Override
-	void updateData() {
+	public void updateData() {
 		// TODO Auto-generated method stub
 		
 	}

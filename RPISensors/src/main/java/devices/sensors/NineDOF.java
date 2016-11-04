@@ -9,12 +9,12 @@ import devices.sensors.interfaces.Thermometer;
 
 public abstract class NineDOF extends SensorPackage implements Accelerometer, Gyroscope, Magnetometer, Thermometer
 {
-	Sensor<TimestampedData3D> mag;
-	Sensor<TimestampedData3D> accel;
-	Sensor<TimestampedData3D> gyro;
-	Sensor<TimestampedData1D> therm;
+	protected Sensor<TimestampedData3D> mag;
+	protected Sensor<TimestampedData3D> accel;
+	protected Sensor<TimestampedData3D> gyro;
+	protected Sensor<TimestampedData1D> therm;
 
-	NineDOF(int sampleRate, int sampleSize) {
+	protected NineDOF(int sampleRate, int sampleSize) {
 		super(sampleRate);
 		// TODO Auto-generated constructor stub
 	}

@@ -4,7 +4,7 @@ import devices.sensors.Sensor;
 import devices.dataTypes.TimestampedData3D;
 import devices.sensors.interfaces.Accelerometer;
 
-public class MPU9250Accelerometer extends Sensor implements Accelerometer {
+public class MPU9250Accelerometer extends Sensor<TimestampedData3D> implements Accelerometer {
 	
 	MPU9250Accelerometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro)
 	{
