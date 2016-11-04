@@ -10,7 +10,9 @@ public interface Gyroscope
 {
     TimestampedData3D getLatestRotationalAcceleration();
     TimestampedData3D getRotationalAcceleration(int i);
+    TimestampedData3D getAvgRotationalAcceleration();
     int getGyroscopeReadingCount();
-
     void updateGyroscopeData() throws Exception;
+    void calibrateGyroscope();
+    void selfTestGyroscope();
 }

@@ -594,4 +594,142 @@ public class MPU9250 extends NineDOF
     	temperature = roMPU.read16BitRegisters(Registers.TEMP_OUT_H,1);
     	therm.add((float)temperature[0]);
     }
+
+	@Override
+	public TimestampedData3D getLatestAcceleration() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TimestampedData3D getAvgAcceleration() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TimestampedData3D getAcceleration(int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getAccelerometerReadingCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void calibrateAccelerometer() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void selfTestAccelerometer() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public TimestampedData3D getLatestRotationalAcceleration() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TimestampedData3D getRotationalAcceleration(int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getGyroscopeReadingCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void calibrateGyroscope() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void selfTestGyroscope() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public TimestampedData3D getLatestGaussianData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TimestampedData3D getAvgGaussianData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TimestampedData3D getGaussianData(int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getMagnetometerReadingCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void calibrateMagnetometer() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void selfTestMagnetometer() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public float getLatestTemperature() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getTemperature(int i) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getThermometerReadingCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void calibrateThermometer() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void selfTestThermometer() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	void updateData() {
+		// TODO Auto-generated method stub
+		
+	}
 }

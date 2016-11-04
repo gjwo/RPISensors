@@ -53,7 +53,7 @@ public class MPU9250Magnetometer extends Sensor<TimestampedData3D> implements de
 	/* (non-Javadoc)
 	 * @see devices.sensors.interfaces.Magnetometer#updateMagnetometerData()
 	 */
-	@Override
+    @Override
 	public void updateMagnetometerData() throws Exception {
 		// TODO Auto-generated method stub
 
@@ -66,6 +66,24 @@ public class MPU9250Magnetometer extends Sensor<TimestampedData3D> implements de
 	protected void updateData() throws IOException {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public TimestampedData3D getAvgGauss() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void calibrateMagnetometer() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void selfTestMagnetometer() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

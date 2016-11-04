@@ -9,8 +9,10 @@ import devices.dataTypes.TimestampedData3D;
 public interface Magnetometer
 {
     TimestampedData3D getLatestGaussianData();
+    TimestampedData3D getAvgGauss();
     TimestampedData3D getGaussianData(int i);
     int getMagnetometerReadingCount();
-
     void updateMagnetometerData() throws Exception;
+    void calibrateMagnetometer();
+    void selfTestMagnetometer();
 }

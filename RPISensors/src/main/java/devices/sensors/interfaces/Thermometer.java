@@ -7,7 +7,10 @@ package devices.sensors.interfaces;
 public interface Thermometer
 {
     float getLatestTemperature();
+    float getAvgTemperature();
     float getTemperature(int i);
     int getThermometerReadingCount();
     void updateThermometerData() throws Exception;
+    void calibrateThermometer();
+    void selfTestThermometer();
 }
