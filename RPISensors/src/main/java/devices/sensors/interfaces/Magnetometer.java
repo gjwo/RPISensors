@@ -1,5 +1,7 @@
 package devices.sensors.interfaces;
 
+import java.io.IOException;
+
 import devices.dataTypes.TimestampedData3D;
 
 /**
@@ -13,6 +15,7 @@ public interface Magnetometer
     TimestampedData3D getGaussianData(int i);
     int getMagnetometerReadingCount();
     void updateMagnetometerData() throws Exception;
-    void calibrateMagnetometer();
+    void calibrateMagnetometer() throws InterruptedException, IOException;
     void selfTestMagnetometer();
+    void initMagnetometer() throws InterruptedException, IOException;
 }

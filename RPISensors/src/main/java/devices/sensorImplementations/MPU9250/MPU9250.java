@@ -1,6 +1,8 @@
 package devices.sensorImplementations.MPU9250;
 
 import devices.I2C.I2CImplementation;
+import devices.dataTypes.Data3D;
+import devices.dataTypes.TimestampedData1D;
 import devices.dataTypes.TimestampedData3D;
 import devices.sensors.NineDOF;
 
@@ -21,12 +23,7 @@ public class MPU9250 extends NineDOF
 {
     private static final AccScale accScale = AccScale.AFS_4G;
     private static final GyrScale gyrScale = GyrScale.GFS_2000DPS;
-    private static final MagScale magScale = MagScale.MFS_16BIT;
-    private static final MagMode magMode = MagMode.MAG_MODE_100HZ;
 
-    private short lastRawMagX;
-    private short lastRawMagY;
-    private short lastRawMagZ;
 
     private final MPU9250RegisterOperations roMPU;
     private final MPU9250RegisterOperations roAK;
@@ -46,7 +43,7 @@ public class MPU9250 extends NineDOF
         calibrateGyroAcc();
         initMPU9250();
         initAK8963();
-        calibrateMag();
+        calibrateMagnetometer();
     }
 
     private void selfTest() throws IOException, InterruptedException
@@ -268,123 +265,7 @@ public class MPU9250 extends NineDOF
         
     	System.out.println("End calibrateGyroAcc");
     }
-    private void setGyroBiases(short[] gyroBiasAvg)
-    {
-    	System.out.println("setGyroBiases");
-        short gyrosensitivity = 131;     // = 131 LSB/degrees/sec
-        byte[] buffer = new byte[6];
-        short[] gyroBiasAvgLSB = new short[] {0,0,0};
-        
-        // Construct the gyro biases for push to the hardware gyro bias registers, which are reset to zero upon device startup
-        // Divide by 4 to get 32.9 LSB per deg/s to conform to expected bias input format
-        // Biases are additive, so change sign on calculated average gyro biases
-        gyroBiasAvgLSB[0] = (short)(-gyroBiasAvg[0]/4);
-        gyroBiasAvgLSB[1] = (short)(-gyroBiasAvg[1]/4);
-        gyroBiasAvgLSB[2] = (short)(-gyroBiasAvg[2]/4);
-        System.out.print("gyroBiasAvgLSB: "+Arrays.toString(gyroBiasAvgLSB));
-    	System.out.format(" [0x%X, 0x%X, 0x%X]%n",gyroBiasAvgLSB[0],gyroBiasAvgLSB[1],gyroBiasAvgLSB[2]);
-        
-        buffer[0] = (byte)(((gyroBiasAvg[0])  >> 8) & 0xFF); //convert to Bytes
-        buffer[1] = (byte)((gyroBiasAvg[0])       & 0xFF); 
-        buffer[2] = (byte)(((gyroBiasAvg[1])  >> 8) & 0xFF);
-        buffer[3] = (byte)(gyroBiasAvg[1]       & 0xFF);
-        buffer[4] = (byte)((gyroBiasAvg[2]  >> 8) & 0xFF);
-        buffer[5] = (byte)(gyroBiasAvg[2]       & 0xFF);
-        System.out.print("Bias bytes: "+Arrays.toString(buffer));
-    	System.out.format(" [0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X]%n",buffer[0],buffer[1],buffer[2],buffer[3],buffer[4],buffer[5]);
-        
-        // Push gyro biases to hardware registers
-        roMPU.writeByteRegister(Registers.XG_OFFSET_H, buffer[0]);
-        roMPU.writeByteRegister(Registers.XG_OFFSET_L, buffer[1]);
-        roMPU.writeByteRegister(Registers.YG_OFFSET_H, buffer[2]);
-        roMPU.writeByteRegister(Registers.YG_OFFSET_L, buffer[3]);
-        roMPU.writeByteRegister(Registers.ZG_OFFSET_H, buffer[4]);
-        roMPU.writeByteRegister(Registers.ZG_OFFSET_L, buffer[5]);
-        
-        // set super class NineDOF variables
-  		gyrBias[0] = (float) gyroBiasAvg[0]/(float) gyrosensitivity;  
-  		gyrBias[1] = (float) gyroBiasAvg[1]/(float) gyrosensitivity;
-  		gyrBias[2] = (float) gyroBiasAvg[2]/(float) gyrosensitivity;
-        System.out.println("gyrBias (float): "+Arrays.toString(gyrBias));
-    	System.out.println("End setGyroBiases");
-    }
 
-    private void setAccelerometerBiases(short[] accelBiasAvg)
-    {
-        // Construct the accelerometer biases for push to the hardware accelerometer bias registers. These registers contain
-        // factory trim values which must be added to the calculated accelerometer biases; on boot up these registers will hold
-        // non-zero values. In addition, bit 0 of the lower byte must be preserved since it is used for temperature
-        // compensation calculations. Accelerometer bias registers expect bias input as 2048 LSB per g, so that
-        // the accelerometer biases calculated above must be divided by 8.
-        // XA_OFFSET is a 15 bit quantity with bits 14:7 in the high byte and 6:0 in the low byte with temperature compensation in bit0
-        // so having got it in a 16 bit short, and having preserved the bottom bit, the number must be shifted right by 1 or divide by 2
-        // to give the correct value for calculations. After calculations it must be shifted left by 1 or multiplied by 2 to get
-        // the bytes correct, then the preserved bit0 can be put back before the bytes are written to registers
-    	System.out.println("setAccelerometerBiases");
-
-        short accelSensitivity = 16384;  // = 16384 LSB/g - OK in short max 32,767
-        if(accelBiasAvg[2] > 0) {accelBiasAvg[2] -= accelSensitivity;}  // Remove gravity from the z-axis accelerometer bias calculation
-        else {accelBiasAvg[2] += accelSensitivity;}
-    	System.out.format("z adjusted for gravity %d 0x%X%n",accelBiasAvg[2],accelBiasAvg[2]);
-       
-        short[] accelBiasReg = roMPU.read16BitRegisters( Registers.XA_OFFSET_H, 3);
-        System.out.print("accelBiasReg with temp compensation bit: "+Arrays.toString(accelBiasReg));
-    	System.out.format(" [0x%X, 0x%X, 0x%X] %n",accelBiasReg[0],accelBiasReg[1],accelBiasReg[2]);
-
-        int mask = 0x01; // Define mask for temperature compensation bit 0 of lower byte of accelerometer bias registers
-        byte[] mask_bit = new byte[]{0, 0, 0}; // Define array to hold mask bit for each accelerometer bias axis
-
-        for(int s = 0; s < 3; s++) {
-            if((accelBiasReg[s] & mask)==1) mask_bit[s] = 0x01; // If temperature compensation bit is set, record that fact in mask_bit
-            //divide accelBiasReg by 2 to remove the bottom bit and preserve any sign (java has no unsigned 16 bit numbers)
-            accelBiasReg[s] /=2;
-        }
-        System.out.print("accelBiasReg without temp compensation bit: "+Arrays.toString(accelBiasReg));
-    	System.out.format(" [0x%X, 0x%X, 0x%X] %n",accelBiasReg[0],accelBiasReg[1],accelBiasReg[2]);
-        
-        // Construct total accelerometer bias, including calculated average accelerometer bias from above
-        for (int i = 0; i<3; i++)
-        {
-        	accelBiasReg[i] -= (accelBiasAvg[i]/8); // Subtract calculated averaged accelerometer bias scaled to 2048 LSB/g (16 g full scale)
-        	accelBiasReg[i] *=2; //multiply by two to leave the bottom bit clear and but all the bits in the correct bytes
-        }
-        System.out.print("(accelBiasReg - biasAvg/8)*2 (16bit): "+Arrays.toString(accelBiasReg));
-    	System.out.format(" [0x%X, 0x%X, 0x%X] %n",accelBiasReg[0],accelBiasReg[1],accelBiasReg[2]);
-
-        byte[] buffer = new byte[6];
-        
-        // XA_OFFSET is a 15 bit quantity with bits 14:7 in the high byte and 6:0 in the low byte with temperature compensation in bit0
-
-        buffer[0] = (byte)((accelBiasReg[0] >> 8) & 0xFF); //Shift down and mask top 8 bits
-        buffer[1] = (byte)((accelBiasReg[0])      & 0xFE); //copy bits 7-1 clear bit 0
-        buffer[1] = (byte)(buffer[1] | mask_bit[0]); // preserve temperature compensation bit when writing back to accelerometer bias registers
-        buffer[2] = (byte)((accelBiasReg[1] >> 8) & 0xFF); //Shift down and mask top 8 bits
-        buffer[3] = (byte)((accelBiasReg[1])      & 0xFE); //copy bits 7-1 clear bit 0
-        buffer[3] = (byte)(buffer[3] | mask_bit[1]); // preserve temperature compensation bit when writing back to accelerometer bias registers
-        buffer[4] = (byte)((accelBiasReg[2] >> 8) & 0xFF); //Shift down and mask top 8 bits
-        buffer[5] = (byte)((accelBiasReg[2])      & 0xFE); //copy bits 7-1 clear bit 0
-        buffer[5] = (byte)(buffer[5] | mask_bit[2]); // preserve temperature compensation bit when writing back to accelerometer bias registers
-        System.out.print("accelBiasReg bytes: "+Arrays.toString(buffer));
-    	System.out.format(" [0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X]%n",buffer[0],buffer[1],buffer[2],buffer[3],buffer[4],buffer[5]);
-
-        // Apparently this is not working for the acceleration biases in the MPU-9250
-        // Are we handling the temperature correction bit properly? - see comments above
-    	
-        // Push accelerometer biases to hardware registers  	
-        roMPU.writeByteRegister(Registers.XA_OFFSET_H, buffer[0]);
-        roMPU.writeByteRegister(Registers.XA_OFFSET_L, buffer[1]);
-        roMPU.writeByteRegister(Registers.YA_OFFSET_H, buffer[2]);
-        roMPU.writeByteRegister(Registers.YA_OFFSET_L, buffer[3]);
-        roMPU.writeByteRegister(Registers.ZA_OFFSET_H, buffer[4]);
-        roMPU.writeByteRegister(Registers.ZA_OFFSET_L, buffer[5]);
-        
-        // set super class NineDOF variables
-        accBias[0] = (float)accelBiasAvg[0]/(float)accelSensitivity;
-        accBias[1] = (float)accelBiasAvg[1]/(float)accelSensitivity;
-        accBias[2] = (float)accelBiasAvg[2]/(float)accelSensitivity;
-        System.out.println("accelBias (float): "+Arrays.toString(buffer));
-    	System.out.println("End setAccelerometerBiases");
-    }
     
     private void initMPU9250() throws IOException, InterruptedException
     {
@@ -452,299 +333,168 @@ public class MPU9250 extends NineDOF
 
     private void initAK8963() throws InterruptedException, IOException
     {
-    	System.out.println("initAK8963");
-        // First extract the factory calibration for each magnetometer axis
-
-        roAK.writeByteRegister(Registers.AK8963_CNTL,(byte) 0x00); // Power down magnetometer
-        Thread.sleep(10);
-        roAK.writeByteRegister(Registers.AK8963_CNTL, (byte)0x0F); // Enter Fuse ROM access mode
-        Thread.sleep(10);
-        byte rawData[] = roAK.readByteRegisters(Registers.AK8963_ASAX, 3);  // Read the x-, y-, and z-axis calibration values
-        magScaling[0] =  (float)(rawData[0] - 128)/256f + 1f;   // Return x-axis sensitivity adjustment values, etc.
-        magScaling[1] =  (float)(rawData[1] - 128)/256f + 1f;
-        magScaling[2] =  (float)(rawData[2] - 128)/256f + 1f;
-        roAK.writeByteRegister(Registers.AK8963_CNTL, (byte)0x00); // Power down magnetometer
-        Thread.sleep(10);
-        // Configure the magnetometer for continuous read and highest resolution
-        // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL register,
-        // and enable continuous mode data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
-        roAK.writeByteRegister(Registers.AK8963_CNTL, (byte)(MagScale.MFS_16BIT.getValue() << 4 | magMode.getMode())); // Set magnetometer data resolution and sample ODR
-        Thread.sleep(10);
-    	System.out.println("End initAK8963");
     }
-
-    private void calibrateMag() throws InterruptedException, IOException
+	@Override
+    public void calibrateMagnetometer() throws InterruptedException, IOException
     {
-    	System.out.println("calibrateMag");
-
-        int  mag_bias[] = {0, 0, 0}, mag_scale[] = {0, 0, 0};
-        short mag_max[] = {(short)0x8000, (short)0x8000, (short)0x8000},
-        		mag_min[] = {(short)0x7FFF, (short)0x7FFF, (short)0x7FFF},
-        		mag_temp[] = {0, 0, 0};
-
-        System.out.println("Mag Calibration: Wave device in a figure eight until done!");
-        Thread.sleep(4000);
-
-        // shoot for ~fifteen seconds of mag data
-        for(int ii = 0; ii < magMode.getSampleCount(); ii++) {
-            updateMagnetometerData();  // Read the mag data
-            mag_temp[0] = (short) lastRawMagX;
-            mag_temp[1] = (short) lastRawMagY;
-            mag_temp[2] = (short) lastRawMagZ;
-            for (int jj = 0; jj < 3; jj++) {
-                if(mag_temp[jj] > mag_max[jj]) mag_max[jj] = mag_temp[jj];
-                if(mag_temp[jj] < mag_min[jj]) mag_min[jj] = mag_temp[jj];
-            }
-            if(magMode == MagMode.MAG_MODE_8HZ) Thread.sleep(135);  // at 8 Hz ODR, new mag data is available every 125 ms
-            if(magMode == MagMode.MAG_MODE_100HZ) Thread.sleep(12);  // at 100 Hz ODR, new mag data is available every 10 ms
-        }
-        // Get hard iron correction
-        mag_bias[0]  = (mag_max[0] + mag_min[0])/2;  // get average x mag bias in counts
-        mag_bias[1]  = (mag_max[1] + mag_min[1])/2;  // get average y mag bias in counts
-        mag_bias[2]  = (mag_max[2] + mag_min[2])/2;  // get average z mag bias in counts
-
-        magBias[0] = (float) mag_bias[0]*magScale.getRes()* magScaling[0];  // save mag biases in G for main program
-        magBias[1] = (float) mag_bias[1]*magScale.getRes()* magScaling[1];
-        magBias[2] = (float) mag_bias[2]*magScale.getRes()* magScaling[2];
-
-        // Get soft iron correction estimate
-        mag_scale[0]  = (mag_max[0] - mag_min[0])/2;  // get average x axis max chord length in counts
-        mag_scale[1]  = (mag_max[1] - mag_min[1])/2;  // get average y axis max chord length in counts
-        mag_scale[2]  = (mag_max[2] - mag_min[2])/2;  // get average z axis max chord length in counts
-
-        float avg_rad = mag_scale[0] + mag_scale[1] + mag_scale[2];
-        avg_rad /= 3.0;
-
-        magScaling[0] = avg_rad/((float)mag_scale[0]);
-        magScaling[1] = avg_rad/((float)mag_scale[1]);
-        magScaling[2] = avg_rad/((float)mag_scale[2]);
-
-        System.out.println("End calibrateMag");
+    	mag.calibrate();
     }
 
     @Override
     public void updateAccelerometerData() throws IOException
     {
-        float x,y,z;
-        short registers[];
-        //roMPU.readByteRegister(Registers.ACCEL_XOUT_H, 6);  // Read again to trigger
- 
-        registers = roMPU.read16BitRegisters(Registers.ACCEL_XOUT_H,3);
-        //System.out.println("Accelerometer " + xs + ", " + ys + ", " + zs);
-
-        x = (float) ((float)registers[0]*accScale.getRes()); // transform from raw data to g
-        y = (float) ((float)registers[1]*accScale.getRes()); // transform from raw data to g
-        z = (float) ((float)registers[2]*accScale.getRes()); // transform from raw data to g
-
-        x -= accBias[0];
-        y -= accBias[1];
-        z -= accBias[2];
-
-        acc.add(new TimestampedData3D(x,y,z));
+    	accel.updateData();
     }
 
     @Override
     public void updateGyroscopeData() throws IOException
     {
-        float x,y,z;
-        short registers[];
-        //roMPU.readByteRegister(Registers.GYRO_XOUT_H, 6);  // Read again to trigger
-        registers = roMPU.read16BitRegisters(Registers.GYRO_XOUT_H,3);
-        //System.out.println("Gyroscope " + x + ", " + y + ", " + z);
-
-        x = (float) ((float)registers[0]*gyrScale.getRes()); // transform from raw data to degrees/s
-        y = (float) ((float)registers[1]*gyrScale.getRes()); // transform from raw data to degrees/s
-        z = (float) ((float)registers[2]*gyrScale.getRes()); // transform from raw data to degrees/s
-
-        gyr.add(new TimestampedData3D(x,y,z));
+    	gyro.updateData();
     }
 
     @Override
     public void updateMagnetometerData() throws IOException
     {
-        byte dataReady = (byte)(roAK.readByteRegister(Registers.AK8963_ST1) & 0x01); //DRDY - Data ready bit0 1 = data is ready
-        if (dataReady == 0) return; //no data ready
-        
-        // data is ready, read it NB bug fix here read was starting from ST1 not XOUT_L
-        byte[] buffer = roAK.readByteRegisters(Registers.AK8963_XOUT_L, 7); //6 data bytes x,y,z 16 bits stored as little Endian (L/H)
-
-        byte status2 = buffer[6]; // Status2 register must be read as part of data read to show device data has been read
-        if((status2 & 0x08) == 0) //bit3 HOFL: Magnetic sensor overflow is normal (no Overflow), data is valid
-        { // Check if magnetic sensor overflow set, if not then report data
-            lastRawMagX = (short) ((buffer[1] << 8) | buffer[0]); // Turn the MSB and LSB into a signed 16-bit value
-            lastRawMagY = (short) ((buffer[3] << 8) | buffer[2]); // Data stored as little Endian
-            lastRawMagZ = (short) ((buffer[5] << 8) | buffer[4]);
-            
-            float x=lastRawMagX,y=lastRawMagY,z=lastRawMagZ;
-
-            x *= magScale.getRes()* magScaling[0];
-            y *= magScale.getRes()* magScaling[1];
-            z *= magScale.getRes()* magScaling[2];
-
-            x -= magBias[0];
-            y -= magBias[1];
-            z -= magBias[2];
-
-            mag.add(new TimestampedData3D(x,y,z));
-        }
-        //roAK.readByteRegister(Registers.AK8963_ST2);// Data overflow bit 3 and data read error status bit 2
+    	mag.updateData();
     }
 
     @Override
     public void updateThermometerData() throws Exception
     {
-    	short[] temperature = roMPU.read16BitRegisters(Registers.TEMP_OUT_H,1);
-    	temperature = roMPU.read16BitRegisters(Registers.TEMP_OUT_H,1);
-    	therm.add((float)temperature[0]);
+    	therm.updateData();
     }
 
 	@Override
 	public TimestampedData3D getLatestAcceleration() {
-		// TODO Auto-generated method stub
-		return null;
+		return accel.getLatestValue();
 	}
 
 	@Override
 	public TimestampedData3D getAvgAcceleration() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return accel.getAvgValue();
 	}
 
 	@Override
 	public TimestampedData3D getAcceleration(int i) {
-		// TODO Auto-generated method stub
-		return null;
+		return accel.getValue(i);
 	}
 
 	@Override
 	public int getAccelerometerReadingCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return accel.getReadingCount();
 	}
 
 	@Override
 	public void calibrateAccelerometer() {
-		// TODO Auto-generated method stub
-		
+		accel.calibrate();
 	}
 
 	@Override
 	public void selfTestAccelerometer() {
-		// TODO Auto-generated method stub
+		accel.selfTest();
 		
 	}
 
 	@Override
 	public TimestampedData3D getLatestRotationalAcceleration() {
-		// TODO Auto-generated method stub
-		return null;
+		return gyro.getLatestValue();
 	}
 
 	@Override
 	public TimestampedData3D getRotationalAcceleration(int i) {
-		// TODO Auto-generated method stub
-		return null;
+		return gyro.getValue(i);
 	}
 
 	@Override
 	public int getGyroscopeReadingCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return gyro.getReadingCount();
 	}
 
 	@Override
 	public void calibrateGyroscope() {
-		// TODO Auto-generated method stub
-		
+		gyro.calibrate();
 	}
 
 	@Override
 	public void selfTestGyroscope() {
-		// TODO Auto-generated method stub
-		
+		gyro.selfTest();
 	}
 
 	@Override
 	public TimestampedData3D getLatestGaussianData() {
-		// TODO Auto-generated method stub
-		return null;
+		return mag.getLatestValue();
 	}
 
 	@Override
 	public TimestampedData3D getGaussianData(int i) {
-		// TODO Auto-generated method stub
-		return null;
+		return mag.getValue(i);
 	}
 
 	@Override
 	public int getMagnetometerReadingCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void calibrateMagnetometer() {
-		// TODO Auto-generated method stub
-		
+		return mag.getReadingCount();
 	}
 
 	@Override
 	public void selfTestMagnetometer() {
-		// TODO Auto-generated method stub
-		
+		mag.selfTest();
 	}
 
 	@Override
 	public float getLatestTemperature() {
-		// TODO Auto-generated method stub
-		return 0;
+		return therm.getLatestValue().getX();
 	}
 
 	@Override
 	public float getTemperature(int i) {
-		// TODO Auto-generated method stub
-		return 0;
+		return therm.getValue(i).getX();
 	}
 
 	@Override
 	public int getThermometerReadingCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return therm.getReadingCount();
 	}
 
 	@Override
 	public void calibrateThermometer() {
-		// TODO Auto-generated method stub
-		
+		therm.calibrate();
 	}
 
 	@Override
 	public void selfTestThermometer() {
-		// TODO Auto-generated method stub
-		
+		therm.selfTest();
 	}
 
 	@Override
 	public void updateData() {
-		// TODO Auto-generated method stub
-		
+		try {
+			gyro.updateData();
+			mag.updateData();
+			accel.updateData();
+			therm.updateData();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public TimestampedData3D getAvgRotationalAcceleration() {
-		// TODO Auto-generated method stub
-		return null;
+		return gyro.getAvgValue();
 	}
 
 	@Override
 	public TimestampedData3D getAvgGauss() {
-		// TODO Auto-generated method stub
-		return null;
+		return mag.getAvgValue();
 	}
 
 	@Override
 	public float getAvgTemperature() {
-		// TODO Auto-generated method stub
-		return 0;
+		return therm.getAvgValue().getX();
+	}
+
+	@Override
+	public void initMagnetometer() throws InterruptedException, IOException {
+		mag.init();
 	}
 }

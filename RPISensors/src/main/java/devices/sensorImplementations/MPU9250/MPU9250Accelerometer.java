@@ -1,10 +1,11 @@
 package devices.sensorImplementations.MPU9250;
 
 import devices.sensors.Sensor;
+import devices.dataTypes.Data3D;
 import devices.dataTypes.TimestampedData3D;
 import devices.sensors.interfaces.Accelerometer;
 
-public class MPU9250Accelerometer extends Sensor<TimestampedData3D> implements Accelerometer {
+public class MPU9250Accelerometer extends Sensor<TimestampedData3D,Data3D> implements Accelerometer {
 	
 	MPU9250Accelerometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro)
 	{
@@ -37,8 +38,22 @@ public class MPU9250Accelerometer extends Sensor<TimestampedData3D> implements A
 
 	@Override
 	public void updateAccelerometerData() throws Exception {
-		// TODO Auto-generated method stub
+        float x,y,z;
+        short registers[];
+        //roMPU.readByteRegister(Registers.ACCEL_XOUT_H, 6);  // Read again to trigger
+ 
+        registers = ro.read16BitRegisters(Registers.ACCEL_XOUT_H,3);
+        //System.out.println("Accelerometer " + xs + ", " + ys + ", " + zs);
 
+        x = (float) ((float)registers[0]*accScale.getRes()); // transform from raw data to g
+        y = (float) ((float)registers[1]*accScale.getRes()); // transform from raw data to g
+        z = (float) ((float)registers[2]*accScale.getRes()); // transform from raw data to g
+
+        x -= accBias[0];
+        y -= accBias[1];
+        z -= accBias[2];
+
+        this.addValue(new TimestampedData3D(x,y,z));
 	}
 
 	@Override

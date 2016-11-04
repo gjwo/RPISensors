@@ -1,6 +1,7 @@
 package devices.sensors;
 
 import java.io.IOException;
+import java.util.Set;
 
 import devices.dataTypes.CircularArrayRing;
 import devices.sensorImplementations.MPU9250.MPU9250RegisterOperations;
@@ -9,21 +10,31 @@ import devices.sensorImplementations.MPU9250.MPU9250RegisterOperations;
  * RPITank - devices.sensors
  * Created by GJWood on 18/07/2016.
  */
-public abstract class Sensor <T>
+public abstract class Sensor <T,S>
 {
     protected final CircularArrayRing<T> vals;
-    protected float valBias;
-    protected float valScaling;
+    protected S valBias;
+    protected S valScaling;
+    protected int sampleRate;
+    protected int sampleSize;
+    protected MPU9250RegisterOperations ro;
 
     public Sensor(int sampleRate, int sampleSize, MPU9250RegisterOperations ro)
     {
         vals = new CircularArrayRing<T>();
-        valBias = 0;
-        valScaling = 1;
+        valBias = null;
+        valScaling = null;
+        this.sampleRate = sampleRate;
+        this.sampleSize = sampleSize;
+        this.ro = ro;
     }
 
     public T getLatestValue()
     {
+        return vals.get(0);
+    }
+    public T getAvgValue()
+    {	//TODO
         return vals.get(0);
     }
 
@@ -37,32 +48,36 @@ public abstract class Sensor <T>
         return vals.size();
     }
 
-    public void setValBias(float valBias)
+    public void setValBias(S valBias)
     {
         this.valBias = valBias;
     }
 
-    public void setValScaling(float valScaling)
+    public void setValScaling(S valScaling)
     {
         this.valScaling = valScaling;
     }
 
-    protected void addValue(T value)
+    public void addValue(T value)
     {
     	//TODO fix scaling etc
         //value.scale(valScaling);
         //value.offset(valBias);
         vals.add(value);
     }
-    protected void updateData() throws IOException
+    public void updateData() throws IOException
     {
     	
     }
-    protected void calibrate()
+    public void calibrate()
     {
     	
     }
-    protected void selfTest()
+    public void selfTest()
+    {
+    	
+    }
+    public void init()
     {
     	
     }

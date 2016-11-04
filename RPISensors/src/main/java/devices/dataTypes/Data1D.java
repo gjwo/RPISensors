@@ -39,4 +39,9 @@ public class Data1D
     {
         return new Data1D(x);
     }
+    public Data1D multiply(Data1D a, Data1D b){
+    	
+		return new Data1D(a.getX()*b.getX());
+    	
+    }
 }
