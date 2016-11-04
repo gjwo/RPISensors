@@ -1,7 +1,9 @@
 package devices.sensors;
 
+import java.io.IOException;
+
 import devices.dataTypes.CircularArrayRing;
-import devices.sensorImplementations.MPU9250.RegisterOperations;
+import devices.sensorImplementations.MPU9250.MPU9250RegisterOperations;
 
 /**
  * RPITank - devices.sensors
@@ -13,7 +15,7 @@ public abstract class Sensor <T>
     protected float valBias;
     protected float valScaling;
 
-    public Sensor(int sampleRate, int sampleSize, RegisterOperations ro)
+    public Sensor(int sampleRate, int sampleSize, MPU9250RegisterOperations ro)
     {
         vals = new CircularArrayRing<T>();
         valBias = 0;
@@ -52,7 +54,7 @@ public abstract class Sensor <T>
         //value.offset(valBias);
         vals.add(value);
     }
-    protected void updateData()
+    protected void updateData() throws IOException
     {
     	
     }

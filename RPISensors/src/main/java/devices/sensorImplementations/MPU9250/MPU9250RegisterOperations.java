@@ -16,10 +16,10 @@ import devices.I2C.I2CImplementation;
  * The module hides all details about manipulating the registers of a device and
  * provides a simple interface to access them, and display them for debugging.
  */
-public class RegisterOperations {
+public class MPU9250RegisterOperations {
 	private I2CImplementation busDevice;
 	
-	public RegisterOperations(I2CImplementation device)
+	public MPU9250RegisterOperations(I2CImplementation device)
 	{
 		this.busDevice = device; // the device on the IC2 bus that the registers belong to
 	}

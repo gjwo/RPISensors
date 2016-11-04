@@ -1,6 +1,6 @@
 package devices.sensors.interfaces;
 
-import devices.sensors.dataTypes.TimestampedData3D;
+import devices.dataTypes.TimestampedData3D;
 
 /**
  * RPITank

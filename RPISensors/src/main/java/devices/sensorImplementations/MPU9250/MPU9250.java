@@ -28,16 +28,16 @@ public class MPU9250 extends NineDOF
     private short lastRawMagY;
     private short lastRawMagZ;
 
-    private final RegisterOperations roMPU;
-    private final RegisterOperations roAK;
+    private final MPU9250RegisterOperations roMPU;
+    private final MPU9250RegisterOperations roAK;
 
 
 	public MPU9250(I2CImplementation mpu9250,I2CImplementation ak8963,int sampleRate, int sampleSize) throws IOException, InterruptedException
     {
         super(sampleRate,sampleSize);
         // get device
-        this.roMPU = new RegisterOperations(mpu9250);
-        this.roAK = new RegisterOperations(ak8963);
+        this.roMPU = new MPU9250RegisterOperations(mpu9250);
+        this.roAK = new MPU9250RegisterOperations(ak8963);
 
         selfTest();
         calibrateGyroAcc();

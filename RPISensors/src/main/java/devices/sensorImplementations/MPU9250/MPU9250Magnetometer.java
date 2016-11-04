@@ -6,20 +6,20 @@ package devices.sensorImplementations.MPU9250;
 import java.io.IOException;
 
 import devices.dataTypes.TimestampedData3D;
-import devices.sensors.Magnetometer;
+import devices.sensors.Sensor;
 
 /**
  * @author GJWood
  *
  */
-public class MPU9250Magnetometer extends Magnetometer implements devices.sensors.interfaces.Magnetometer {
+public class MPU9250Magnetometer extends Sensor<TimestampedData3D> implements devices.sensors.interfaces.Magnetometer {
 
 	/**
 	 * @param sampleRate
 	 * @param sampleSize
 	 */
-	public MPU9250Magnetometer(int sampleRate, int sampleSize) {
-		super(sampleRate, sampleSize);
+	public MPU9250Magnetometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro) {
+		super(sampleRate, sampleSize, ro);
 		// TODO Auto-generated constructor stub
 	}
 
