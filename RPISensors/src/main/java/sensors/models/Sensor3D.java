@@ -28,17 +28,16 @@ public abstract class Sensor3D extends Sensor<TimestampedData3D,Data3D>
     }
 
 	@Override
-	public  TimestampedData3D getAvgValue()
+	public TimestampedData3D getAvgValue()
     {	
 		TimestampedData3D sum = new TimestampedData3D(0,0,0);
-		int count = getReadingCount();
-    	for(int i = 0; i>count; i++)
+		float count = getReadingCount(); // float for division later
+    	for(int i = 0; i<count; i++)
     	{
     		sum.setX(getValue(i).getX() + sum.getX());
     		sum.setY(getValue(i).getY() + sum.getY());
     		sum.setZ(getValue(i).getZ() + sum.getZ());
     	}
-		TimestampedData3D avg = new TimestampedData3D(sum.getX()/count,sum.getY()/count,sum.getZ()/count);
-        return avg;
+		return new TimestampedData3D(sum.getX()/count,sum.getY()/count,sum.getZ()/count);
     }
 }

@@ -19,12 +19,6 @@ public class MPU9250Gyroscope extends Sensor3D {
 	}
 
 	@Override
-	public TimestampedData3D getAvgValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void updateData() throws IOException {
         short registers[];
         //roMPU.readByteRegister(Registers.GYRO_XOUT_H, 6);  // Read again to trigger
