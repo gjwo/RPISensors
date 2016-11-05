@@ -41,11 +41,12 @@ public class MPU9250Magnetometer extends Sensor<TimestampedData3D,Data3D>  {
         
         // data is ready, read it NB bug fix here read was starting from ST1 not XOUT_L
         byte[] buffer = ro.readByteRegisters(Registers.AK8963_XOUT_L, 7); //6 data bytes x,y,z 16 bits stored as little Endian (L/H)
-
+        
+        // Check if magnetic sensor overflow set, if not then report data	
         //roAK.readByteRegister(Registers.AK8963_ST2);// Data overflow bit 3 and data read error status bit 2
         byte status2 = buffer[6]; // Status2 register must be read as part of data read to show device data has been read
         if((status2 & 0x08) == 0) //bit3 HOFL: Magnetic sensor overflow is normal (no Overflow), data is valid
-        { // Check if magnetic sensor overflow set, if not then report data
+        { 
 
         		lastRawMagX = (short) ((buffer[1] << 8) | buffer[0]); // Turn the MSB and LSB into a signed 16-bit value
         		lastRawMagY = (short) ((buffer[3] << 8) | buffer[2]); // Data stored as little Endian

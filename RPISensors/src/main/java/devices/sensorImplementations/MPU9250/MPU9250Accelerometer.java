@@ -23,7 +23,6 @@ public class MPU9250Accelerometer extends Sensor<TimestampedData3D,Data3D>  {
          short registers[];
         //roMPU.readByteRegister(Registers.ACCEL_XOUT_H, 6);  // Read again to trigger
         registers = ro.read16BitRegisters(Registers.ACCEL_XOUT_H,3);
-        //System.out.println("Accelerometer " + xs + ", " + ys + ", " + zs);
         this.addValue(OffsetAndScale(new TimestampedData3D(registers[0],registers[1],registers[2])));
 	}
 	
@@ -72,7 +71,7 @@ public class MPU9250Accelerometer extends Sensor<TimestampedData3D,Data3D>  {
         System.out.print("accelBiasReg with temp compensation bit: "+Arrays.toString(accelBiasReg));
     	System.out.format(" [0x%X, 0x%X, 0x%X] %n",accelBiasReg[0],accelBiasReg[1],accelBiasReg[2]);
 
-        int mask = 0x01; // Define mask for temperature compensation bit 0 of lower byte of accelerometer bias registers
+        short mask = 0x0001; // Define mask for temperature compensation bit 0 of lower byte of accelerometer bias registers
         byte[] mask_bit = new byte[]{0, 0, 0}; // Define array to hold mask bit for each accelerometer bias axis
 
         for(int s = 0; s < 3; s++) {
@@ -86,45 +85,23 @@ public class MPU9250Accelerometer extends Sensor<TimestampedData3D,Data3D>  {
         // Construct total accelerometer bias, including calculated average accelerometer bias from above
         for (int i = 0; i<3; i++)
         {
-        	accelBiasReg[i] -= (accelBiasAvg[i]/8); // Subtract calculated averaged accelerometer bias scaled to 2048 LSB/g (16 g full scale)
-        	accelBiasReg[i] *=2; //multiply by two to leave the bottom bit clear and but all the bits in the correct bytes
+        	//Subtract calculated averaged accelerometer bias scaled to 2048 LSB/g (16 g full scale)
+        	//multiply by two to leave the bottom bit clear and but all the bits in the correct bytes
+        	//Add back the temperature compensation bit
+        	accelBiasReg[i] = (short)((accelBiasReg[i] - accelBiasAvg[i]/8)*2+mask_bit[0]);
         }
-        System.out.print("(accelBiasReg - biasAvg/8)*2 (16bit): "+Arrays.toString(accelBiasReg));
+        System.out.print("(accelBiasReg - biasAvg/8)*2 + TCbit (16bit): "+Arrays.toString(accelBiasReg));
     	System.out.format(" [0x%X, 0x%X, 0x%X] %n",accelBiasReg[0],accelBiasReg[1],accelBiasReg[2]);
-
-        byte[] buffer = new byte[6];
-        
-        // XA_OFFSET is a 15 bit quantity with bits 14:7 in the high byte and 6:0 in the low byte with temperature compensation in bit0
-
-        buffer[0] = (byte)((accelBiasReg[0] >> 8) & 0xFF); //Shift down and mask top 8 bits
-        buffer[1] = (byte)((accelBiasReg[0])      & 0xFE); //copy bits 7-1 clear bit 0
-        buffer[1] = (byte)(buffer[1] | mask_bit[0]); // preserve temperature compensation bit when writing back to accelerometer bias registers
-        buffer[2] = (byte)((accelBiasReg[1] >> 8) & 0xFF); //Shift down and mask top 8 bits
-        buffer[3] = (byte)((accelBiasReg[1])      & 0xFE); //copy bits 7-1 clear bit 0
-        buffer[3] = (byte)(buffer[3] | mask_bit[1]); // preserve temperature compensation bit when writing back to accelerometer bias registers
-        buffer[4] = (byte)((accelBiasReg[2] >> 8) & 0xFF); //Shift down and mask top 8 bits
-        buffer[5] = (byte)((accelBiasReg[2])      & 0xFE); //copy bits 7-1 clear bit 0
-        buffer[5] = (byte)(buffer[5] | mask_bit[2]); // preserve temperature compensation bit when writing back to accelerometer bias registers
-        System.out.print("accelBiasReg bytes: "+Arrays.toString(buffer));
-    	System.out.format(" [0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X]%n",buffer[0],buffer[1],buffer[2],buffer[3],buffer[4],buffer[5]);
-
-        // Apparently this is not working for the acceleration biases in the MPU-9250
-        // Are we handling the temperature correction bit properly? - see comments above
     	
         // Push accelerometer biases to hardware registers  	
-        ro.writeByteRegister(Registers.XA_OFFSET_H, buffer[0]);
-        ro.writeByteRegister(Registers.XA_OFFSET_L, buffer[1]);
-        ro.writeByteRegister(Registers.YA_OFFSET_H, buffer[2]);
-        ro.writeByteRegister(Registers.YA_OFFSET_L, buffer[3]);
-        ro.writeByteRegister(Registers.ZA_OFFSET_H, buffer[4]);
-        ro.writeByteRegister(Registers.ZA_OFFSET_L, buffer[5]);
+        ro.write16bitRegister(Registers.XA_OFFSET_H, accelBiasReg[0]);
+        ro.write16bitRegister(Registers.YA_OFFSET_H, accelBiasReg[1]);
+        ro.write16bitRegister(Registers.ZA_OFFSET_H, accelBiasReg[2]);
         
         // set super class NineDOF variables
         this.setValBias(new Data3D( 	(float)accelBiasAvg[0]/(float)accelSensitivity,
         								(float)accelBiasAvg[1]/(float)accelSensitivity,
         								(float)accelBiasAvg[2]/(float)accelSensitivity));
-        System.out.println("accelBias (float): "+Arrays.toString(buffer));
-    	System.out.println("End setAccelerometerBiases");
     }
 
 }
