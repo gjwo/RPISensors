@@ -99,9 +99,9 @@ public class MPU9250Accelerometer extends Sensor<TimestampedData3D,Data3D>  {
         ro.write16bitRegister(Registers.ZA_OFFSET_H, accelBiasReg[2]);
         
         // set super class NineDOF variables
-        this.setValBias(new Data3D( 	(float)accelBiasAvg[0]/(float)accelSensitivity,
-        								(float)accelBiasAvg[1]/(float)accelSensitivity,
-        								(float)accelBiasAvg[2]/(float)accelSensitivity));
+        this.setValBias(new Data3D( 	(float)accelBiasAvg[0]/2/(float)accelSensitivity,
+        								(float)accelBiasAvg[1]/2/(float)accelSensitivity,
+        								(float)accelBiasAvg[2]/2/(float)accelSensitivity));
     }
 
 }
