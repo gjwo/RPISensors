@@ -23,6 +23,9 @@ public class MPU9250Magnetometer extends Sensor<TimestampedData3D,Data3D>  {
 	 */
     private static final MagScale magScale = MagScale.MFS_16BIT;
     private static final MagMode magMode = MagMode.MAG_MODE_100HZ;
+    private short lastRawMagX;  //needed during calibration
+    private short lastRawMagY;
+    private short lastRawMagZ;
 
 	public MPU9250Magnetometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro) {
 		super(sampleRate, sampleSize, ro);
@@ -34,7 +37,7 @@ public class MPU9250Magnetometer extends Sensor<TimestampedData3D,Data3D>  {
 	 */
     @Override
 	public void updateData() {
-    	TimestampedData3D raw, adjusted;
+    	TimestampedData3D raw;
         byte dataReady = (byte)(ro.readByteRegister(Registers.AK8963_ST1) & 0x01); //DRDY - Data ready bit0 1 = data is ready
         if (dataReady == 0) return; //no data ready
         
@@ -45,22 +48,23 @@ public class MPU9250Magnetometer extends Sensor<TimestampedData3D,Data3D>  {
         byte status2 = buffer[6]; // Status2 register must be read as part of data read to show device data has been read
         if((status2 & 0x08) == 0) //bit3 HOFL: Magnetic sensor overflow is normal (no Overflow), data is valid
         { // Check if magnetic sensor overflow set, if not then report data
-        	raw = new TimestampedData3D(	(short) ((buffer[1] << 8) | buffer[0]), // Turn the MSB and LSB into a signed 16-bit value
-        									(short) ((buffer[3] << 8) | buffer[2]), // Data stored as little Endian
-        									(short) ((buffer[5] << 8) | buffer[4]));
-            
-            adjusted = raw.clone();
-            
-            x *= magScale.getRes()* magScaling[0];
-            y *= magScale.getRes()* magScaling[1];
-            z *= magScale.getRes()* magScaling[2];
 
-            x -= magBias[0];
-            y -= magBias[1];
-            z -= magBias[2];
-
-            this.addValue(new TimestampedData3D(x,y,z));
+        		lastRawMagX = (short) ((buffer[1] << 8) | buffer[0]); // Turn the MSB and LSB into a signed 16-bit value
+        		lastRawMagY = (short) ((buffer[3] << 8) | buffer[2]); // Data stored as little Endian
+        		lastRawMagZ = (short) ((buffer[5] << 8) | buffer[4]);
+        	raw = new TimestampedData3D(lastRawMagX,lastRawMagY,lastRawMagZ);
+            this.addValue(OffsetAndScale(raw));
+        }
 	}
+    	@Override
+        public TimestampedData3D OffsetAndScale(TimestampedData3D value)
+        {
+    		TimestampedData3D oSVal = value.clone();
+            oSVal.setX(value.getX()*valScaling.getX() -valBias.getX()); // transform from raw data to g
+            oSVal.setY(value.getY()*valScaling.getY() -valBias.getY()); // transform from raw data to g
+            oSVal.setZ(value.getZ()*valScaling.getZ() -valBias.getZ()); // transform from raw data to g
+            return oSVal;
+        }
 
 	/* (non-Javadoc)
 	 * @see devices.sensors.dataTypes.Sensor1D#updateData()
@@ -73,7 +77,7 @@ public class MPU9250Magnetometer extends Sensor<TimestampedData3D,Data3D>  {
 	}
 
 	@Override
-	public void calibrate() {
+	public void calibrate() throws  InterruptedException{
     	System.out.println("calibrateMag");
 
         int  mag_bias[] = {0, 0, 0}, mag_scale[] = {0, 0, 0};
@@ -104,9 +108,9 @@ public class MPU9250Magnetometer extends Sensor<TimestampedData3D,Data3D>  {
 
         //!!!!!!!!!!!!!!!  may need another look   as 2 different values of magScaling
         
-        this.setValBias(new Data3D(	(float) mag_bias[0]*magScale.getRes()* magScaling[0],  // save mag biases in G for main program
-        							(float) mag_bias[1]*magScale.getRes()* magScaling[1],
-        							(float) mag_bias[2]*magScale.getRes()* magScaling[2]));
+        this.setValBias(new Data3D(	(float) mag_bias[0]*magScale.getRes()* valScaling.getX(),  // save mag biases in G for main program
+        							(float) mag_bias[1]*magScale.getRes()* valScaling.getY(),
+        							(float) mag_bias[2]*magScale.getRes()* valScaling.getZ()));
 
         // Get soft iron correction estimate
         mag_scale[0]  = (mag_max[0] - mag_min[0])/2;  // get average x axis max chord length in counts

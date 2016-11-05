@@ -65,7 +65,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		return accel.getReadingCount();
 	}
 
-	public void calibrateAccelerometer() {
+	public void calibrateAccelerometer() throws InterruptedException{
 		try {
 			accel.calibrate();
 		} catch (IOException e) {
@@ -95,7 +95,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		return gyro.getReadingCount();
 	}
 
-	public void calibrateGyroscope() {
+	public void calibrateGyroscope() throws InterruptedException{
 		try {
 			gyro.calibrate();
 		} catch (IOException e) {
@@ -149,7 +149,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	public void calibrateThermometer() {
 		try {
 			therm.calibrate();
-		} catch (IOException e) {
+		} catch( InterruptedException|IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

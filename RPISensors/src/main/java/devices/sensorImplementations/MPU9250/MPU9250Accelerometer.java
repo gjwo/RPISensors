@@ -6,42 +6,36 @@ import java.util.Arrays;
 
 import devices.dataTypes.Data3D;
 import devices.dataTypes.TimestampedData3D;
-import devices.sensors.interfaces.Accelerometer;
 
 public class MPU9250Accelerometer extends Sensor<TimestampedData3D,Data3D>  {
-    private static final AccScale accScale = AccScale.AFS_4G;
-
 
 	MPU9250Accelerometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro)
 	{
 		super(sampleSize, sampleSize, ro);
+		this.setValScaling(new Data3D(	(float)AccScale.AFS_4G.getRes(),
+										(float)AccScale.AFS_4G.getRes(),
+										(float)AccScale.AFS_4G.getRes()));
 	}
-	
-	AccScale getAccscale() {
-		return accScale;
-	}
-
 
 	@Override
 	public void updateData()
 	{
-        float x,y,z;
-        short registers[];
+         short registers[];
         //roMPU.readByteRegister(Registers.ACCEL_XOUT_H, 6);  // Read again to trigger
- 
         registers = ro.read16BitRegisters(Registers.ACCEL_XOUT_H,3);
         //System.out.println("Accelerometer " + xs + ", " + ys + ", " + zs);
-
-        x = (float) ((float)registers[0]*accScale.getRes()); // transform from raw data to g
-        y = (float) ((float)registers[1]*accScale.getRes()); // transform from raw data to g
-        z = (float) ((float)registers[2]*accScale.getRes()); // transform from raw data to g
-
-        x -= accBias[0];
-        y -= accBias[1];
-        z -= accBias[2];
-
-        this.addValue(new TimestampedData3D(x,y,z));
+        this.addValue(OffsetAndScale(new TimestampedData3D(registers[0],registers[1],registers[2])));
 	}
+	
+	@Override
+    public TimestampedData3D OffsetAndScale(TimestampedData3D value)
+    {
+		TimestampedData3D oSVal = value.clone();
+        oSVal.setX(value.getX()*valScaling.getX() -valBias.getX()); // transform from raw data to g
+        oSVal.setY(value.getY()*valScaling.getY()-valBias.getY()); // transform from raw data to g
+        oSVal.setZ(value.getZ()*valScaling.getZ()-valBias.getZ()); // transform from raw data to g
+        return oSVal;
+    }
 
 	@Override
 	public void calibrate()

@@ -13,6 +13,6 @@ public interface Accelerometer
     TimestampedData3D getAcceleration(int i);
     int getAccelerometerReadingCount();
     void updateAccelerometerData() throws Exception;
-    void calibrateAccelerometer();
+    void calibrateAccelerometer() throws InterruptedException;
     void selfTestAccelerometer();
 }

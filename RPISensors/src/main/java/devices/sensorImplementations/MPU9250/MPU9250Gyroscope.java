@@ -13,6 +13,10 @@ public class MPU9250Gyroscope extends Sensor<TimestampedData3D,Data3D> {
 	public MPU9250Gyroscope(int sampleRate, int sampleSize, MPU9250RegisterOperations ro) {
 		super(sampleRate, sampleSize, ro);
 		// TODO Auto-generated constructor stub
+		this.setValScaling( new Data3D(	(float)GyrScale.GFS_2000DPS.getRes(),
+										(float)GyrScale.GFS_2000DPS.getRes(),
+										(float)GyrScale.GFS_2000DPS.getRes())
+				);
 	}
 
 
@@ -30,9 +34,9 @@ public class MPU9250Gyroscope extends Sensor<TimestampedData3D,Data3D> {
         registers = ro.read16BitRegisters(Registers.GYRO_XOUT_H,3);
         //System.out.println("Gyroscope " + x + ", " + y + ", " + z);
 
-        x = (float) ((float)registers[0]*gyrScale.getRes()); // transform from raw data to degrees/s
-        y = (float) ((float)registers[1]*gyrScale.getRes()); // transform from raw data to degrees/s
-        z = (float) ((float)registers[2]*gyrScale.getRes()); // transform from raw data to degrees/s
+        x = (float) ((float)registers[0]*valScaling.getX()); // transform from raw data to degrees/s
+        y = (float) ((float)registers[1]*valScaling.getY()); // transform from raw data to degrees/s
+        z = (float) ((float)registers[2]*valScaling.getY()); // transform from raw data to degrees/s
 
         this.addValue(new TimestampedData3D(x,y,z));
 	}
