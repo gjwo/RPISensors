@@ -61,12 +61,6 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	 */
 
 	@Override
-	public TimestampedData3D getAvgValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void calibrate() throws  InterruptedException{
     	System.out.println("calibrateMag");
 
