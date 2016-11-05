@@ -4,12 +4,10 @@
 package devices.sensorImplementations.MPU9250;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import devices.dataTypes.Data3D;
 import devices.dataTypes.TimestampedData3D;
 import devices.sensors.Sensor;
-import devices.sensors.interfaces.Magnetometer;
 
 /**
  * @author GJWood

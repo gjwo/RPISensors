@@ -6,7 +6,6 @@ import java.util.Arrays;
 import devices.dataTypes.Data3D;
 import devices.dataTypes.TimestampedData3D;
 import devices.sensors.Sensor;
-import devices.sensors.interfaces.Gyroscope;
 
 public class MPU9250Gyroscope extends Sensor<TimestampedData3D,Data3D> {
 
@@ -52,7 +51,7 @@ public class MPU9250Gyroscope extends Sensor<TimestampedData3D,Data3D> {
 		// TODO Auto-generated method stub
 
 	}
-    private void setGyroBiases(short[] gyroBiasAvg)
+    public void setGyroBiases(short[] gyroBiasAvg)
     {
     	System.out.println("setGyroBiases");
         short gyrosensitivity = 131;     // = 131 LSB/degrees/sec

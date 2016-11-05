@@ -1,7 +1,6 @@
 package devices.sensorImplementations.MPU9250;
 
 import devices.I2C.I2CImplementation;
-import devices.dataTypes.TimestampedData3D;
 import devices.sensors.NineDOF;
 
 import java.io.IOException;

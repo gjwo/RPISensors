@@ -93,6 +93,23 @@ public class MPU9250RegisterOperations {
        }
        return registers;
    }
+   /**
+    * Reads the specified number of 16 bit Registers from the device this class is associated with
+    * @param register 	- the register to be read (name of first byte)
+    * @param regCount 	- number of 16 bit registers to be read
+    * @return 			- an array of shorts (16 bit signed values) holding the registers
+    * Each registers is constructed from reading and combining 2 bytes, the first byte forms the least significant part of the register 
+    */
+   short[] read16BitRegistersLittleEndian(Registers r, int regCount)
+   {
+       byte[] rawData = readByteRegisters(r, regCount*2);
+       short[] registers = new short[regCount];
+       for (int i=0;i<regCount;i++)		
+       {
+       	registers[i] = (short) (((short)rawData[i*2+1] << 8) | rawData[(i*2)]) ;  // Turn the MSB and LSB into a signed 16-bit value
+       }
+       return registers;
+   }
    
    /**
     * Writes a byte to the specified byte register from the device this class is associated with
