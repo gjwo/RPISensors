@@ -1,7 +1,7 @@
-package devices.sensorImplementations.MPU9250;
+package sensors.Implementations.MPU9250;
 
 import devices.I2C.I2CImplementation;
-import devices.sensors.NineDOF;
+import sensors.models.NineDOF;
 
 import java.io.IOException;
 import java.util.Arrays;

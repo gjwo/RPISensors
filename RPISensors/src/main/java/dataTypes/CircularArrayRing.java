@@ -1,4 +1,4 @@
-package devices.dataTypes;
+package dataTypes;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;

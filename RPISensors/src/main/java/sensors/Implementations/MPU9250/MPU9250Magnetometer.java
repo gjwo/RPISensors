@@ -1,19 +1,19 @@
 /**
  * 
  */
-package devices.sensorImplementations.MPU9250;
+package sensors.Implementations.MPU9250;
 
 import java.io.IOException;
 
-import devices.dataTypes.Data3D;
-import devices.dataTypes.TimestampedData3D;
-import devices.sensors.Sensor;
+import dataTypes.Data3D;
+import dataTypes.TimestampedData3D;
+import sensors.models.Sensor3D;
 
 /**
  * @author GJWood
  *
  */
-public class MPU9250Magnetometer extends Sensor<TimestampedData3D,Data3D>  {
+public class MPU9250Magnetometer extends Sensor3D  {
 
 	/**
 	 * @param sampleRate
@@ -55,15 +55,6 @@ public class MPU9250Magnetometer extends Sensor<TimestampedData3D,Data3D>  {
             this.addValue(OffsetAndScale(raw));
         }
 	}
-    	@Override
-        public TimestampedData3D OffsetAndScale(TimestampedData3D value)
-        {
-    		TimestampedData3D oSVal = value.clone();
-            oSVal.setX(value.getX()*valScaling.getX() -valBias.getX()); // transform from raw data to g
-            oSVal.setY(value.getY()*valScaling.getY() -valBias.getY()); // transform from raw data to g
-            oSVal.setZ(value.getZ()*valScaling.getZ() -valBias.getZ()); // transform from raw data to g
-            return oSVal;
-        }
 
 	/* (non-Javadoc)
 	 * @see devices.sensors.dataTypes.Sensor1D#updateData()

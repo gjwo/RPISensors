@@ -1,10 +1,10 @@
-package devices.sensorImplementations.MPU9250;
+package sensors.Implementations.MPU9250;
 
 import java.io.IOException;
 
-import devices.dataTypes.Data1D;
-import devices.dataTypes.TimestampedData1D;
-import devices.sensors.Sensor;
+import dataTypes.Data1D;
+import dataTypes.TimestampedData1D;
+import sensors.models.Sensor;
 
 public class MPU9250Thermometer extends Sensor<TimestampedData1D,Data1D>  
 {

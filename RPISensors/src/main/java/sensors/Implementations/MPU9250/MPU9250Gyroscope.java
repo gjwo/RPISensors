@@ -1,13 +1,13 @@
-package devices.sensorImplementations.MPU9250;
+package sensors.Implementations.MPU9250;
 
 import java.io.IOException;
 import java.util.Arrays;
 
-import devices.dataTypes.Data3D;
-import devices.dataTypes.TimestampedData3D;
-import devices.sensors.Sensor;
+import dataTypes.Data3D;
+import dataTypes.TimestampedData3D;
+import sensors.models.Sensor3D;
 
-public class MPU9250Gyroscope extends Sensor<TimestampedData3D,Data3D> {
+public class MPU9250Gyroscope extends Sensor3D {
 
 	public MPU9250Gyroscope(int sampleRate, int sampleSize, MPU9250RegisterOperations ro) 
 	{
@@ -31,15 +31,6 @@ public class MPU9250Gyroscope extends Sensor<TimestampedData3D,Data3D> {
         this.addValue(OffsetAndScale(new TimestampedData3D(registers[0],registers[1],registers[2])));
 	}
 	
-	@Override
-    public TimestampedData3D OffsetAndScale(TimestampedData3D value)
-    {
-		TimestampedData3D oSVal = value.clone();
-        oSVal.setX(value.getX()*valScaling.getX() -valBias.getX()); // transform from raw data to g
-        oSVal.setY(value.getY()*valScaling.getY() -valBias.getY()); // transform from raw data to g
-        oSVal.setZ(value.getZ()*valScaling.getZ() -valBias.getZ()); // transform from raw data to g
-        return oSVal;
-    }
 
 	@Override
 	public void calibrate() {

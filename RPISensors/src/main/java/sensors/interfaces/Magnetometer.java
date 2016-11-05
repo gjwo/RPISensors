@@ -1,8 +1,8 @@
-package devices.sensors.interfaces;
+package sensors.interfaces;
 
 import java.io.IOException;
 
-import devices.dataTypes.TimestampedData3D;
+import dataTypes.TimestampedData3D;
 
 /**
  * RPITank

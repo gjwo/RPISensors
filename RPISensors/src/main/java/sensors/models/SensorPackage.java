@@ -1,8 +1,8 @@
-package devices.sensors;
-
-import devices.sensors.interfaces.SensorUpdateListener;
+package sensors.models;
 
 import java.util.ArrayList;
+
+import sensors.interfaces.SensorUpdateListener;
 
 /**
  * Created by MAWood on 17/07/2016.

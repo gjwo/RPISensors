@@ -1,4 +1,4 @@
-package devices.sensors.interfaces;
+package sensors.interfaces;
 
 /**
  * RPITank

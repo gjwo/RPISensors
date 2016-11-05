@@ -8,7 +8,7 @@ import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 
 import devices.I2C.Pi4jI2CDevice;
-import devices.sensorImplementations.MPU9250.MPU9250;
+import sensors.Implementations.MPU9250.MPU9250;
 
 public class MPU9250Test {
 

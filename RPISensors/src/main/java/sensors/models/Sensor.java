@@ -1,8 +1,9 @@
-package devices.sensors;
+package sensors.models;
 
 import java.io.IOException;
-import devices.dataTypes.CircularArrayRing;
-import devices.sensorImplementations.MPU9250.MPU9250RegisterOperations;
+
+import dataTypes.CircularArrayRing;
+import sensors.Implementations.MPU9250.MPU9250RegisterOperations;
 
 /**
  * RPITank - devices.sensors

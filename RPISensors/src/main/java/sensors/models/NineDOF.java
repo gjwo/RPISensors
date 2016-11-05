@@ -1,15 +1,15 @@
-package devices.sensors;
+package sensors.models;
 
 import java.io.IOException;
 
-import devices.dataTypes.Data1D;
-import devices.dataTypes.Data3D;
-import devices.dataTypes.TimestampedData1D;
-import devices.dataTypes.TimestampedData3D;
-import devices.sensors.interfaces.Accelerometer;
-import devices.sensors.interfaces.Gyroscope;
-import devices.sensors.interfaces.Magnetometer;
-import devices.sensors.interfaces.Thermometer;
+import dataTypes.Data1D;
+import dataTypes.Data3D;
+import dataTypes.TimestampedData1D;
+import dataTypes.TimestampedData3D;
+import sensors.interfaces.Accelerometer;
+import sensors.interfaces.Gyroscope;
+import sensors.interfaces.Magnetometer;
+import sensors.interfaces.Thermometer;
 
 public abstract class NineDOF extends SensorPackage implements Accelerometer, Gyroscope, Magnetometer, Thermometer
 {

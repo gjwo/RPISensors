@@ -1,4 +1,4 @@
-package devices.dataTypes;
+package dataTypes;
 
 /**
  * RPITank - devices.sensors.dataTypes

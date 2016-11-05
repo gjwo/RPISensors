@@ -1,4 +1,4 @@
-package devices.sensorImplementations.MPU9250;
+package sensors.Implementations.MPU9250;
 
 /**
  * RPITank
