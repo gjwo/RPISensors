@@ -9,10 +9,16 @@ import devices.dataTypes.TimestampedData3D;
 import devices.sensors.interfaces.Accelerometer;
 
 public class MPU9250Accelerometer extends Sensor<TimestampedData3D,Data3D> implements Accelerometer {
-	
+    private static final AccScale accScale = AccScale.AFS_4G;
+
+
 	MPU9250Accelerometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro)
 	{
 		super(sampleSize, sampleSize, ro);
+	}
+	
+	AccScale getAccscale() {
+		return accScale;
 	}
 
 	@Override

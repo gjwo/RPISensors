@@ -1,8 +1,6 @@
 package devices.sensors;
 
 import java.io.IOException;
-import java.util.Set;
-
 import devices.dataTypes.CircularArrayRing;
 import devices.sensorImplementations.MPU9250.MPU9250RegisterOperations;
 
@@ -34,7 +32,8 @@ public abstract class Sensor <T,S>
         return vals.get(0);
     }
     public T getAvgValue()
-    {	//TODO
+    {	
+    	//implement and override in subclass
         return vals.get(0);
     }
 
@@ -60,25 +59,34 @@ public abstract class Sensor <T,S>
 
     public void addValue(T value)
     {
-    	//TODO fix scaling etc
-        //value.scale(valScaling);
-        //value.offset(valBias);
         vals.add(value);
     }
+ 
+    public T OffsetAndScale(T value)
+    {
+    	T oSVal = null;
+    	//implement and override in subclass
+        //value.offset(valBias);
+        //value.scale(valScaling);
+    	System.out.println("ERROR: OffsetAndScale not overridden");
+        return oSVal;
+    }
+
     public void updateData() throws IOException
     {
-    	
-    }
+    	//implement and override in subclass
+    	System.out.println("ERROR: updateData not overridden");
+   }
     public void calibrate()
     {
-    	
+    	//if required implement and override in subclass
     }
     public void selfTest()
     {
-    	
+    	//if required implement and override in subclass
     }
     public void init()
     {
-    	
+    	//if required implement and override in subclass
     }
 }
