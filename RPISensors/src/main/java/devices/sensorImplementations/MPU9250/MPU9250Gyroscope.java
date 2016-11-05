@@ -1,5 +1,6 @@
 package devices.sensorImplementations.MPU9250;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import devices.dataTypes.Data3D;
@@ -7,39 +8,22 @@ import devices.dataTypes.TimestampedData3D;
 import devices.sensors.Sensor;
 import devices.sensors.interfaces.Gyroscope;
 
-public class MPU9250Gyroscope extends Sensor<TimestampedData3D,Data3D> implements Gyroscope {
+public class MPU9250Gyroscope extends Sensor<TimestampedData3D,Data3D> {
 
 	public MPU9250Gyroscope(int sampleRate, int sampleSize, MPU9250RegisterOperations ro) {
 		super(sampleRate, sampleSize, ro);
 		// TODO Auto-generated constructor stub
 	}
 
+
 	@Override
-	public TimestampedData3D getLatestRotationalAcceleration() {
+	public TimestampedData3D getAvgValue() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public TimestampedData3D getRotationalAcceleration(int i) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public TimestampedData3D getAvgRotationalAcceleration() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getGyroscopeReadingCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void updateGyroscopeData() throws Exception {
+	public void updateData() throws IOException {
         float x,y,z;
         short registers[];
         //roMPU.readByteRegister(Registers.GYRO_XOUT_H, 6);  // Read again to trigger
@@ -54,13 +38,13 @@ public class MPU9250Gyroscope extends Sensor<TimestampedData3D,Data3D> implement
 	}
 
 	@Override
-	public void calibrateGyroscope() {
+	public void calibrate() {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void selfTestGyroscope() {
+	public void selfTest() {
 		// TODO Auto-generated method stub
 
 	}

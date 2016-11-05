@@ -77,15 +77,15 @@ public abstract class Sensor <T,S>
     	//implement and override in subclass
     	System.out.println("ERROR: updateData not overridden");
    }
-    public void calibrate()
+    public void calibrate() throws IOException
     {
     	//if required implement and override in subclass
     }
-    public void selfTest()
+    public void selfTest() throws IOException
     {
     	//if required implement and override in subclass
     }
-    public void init()
+    public void init() throws InterruptedException, IOException
     {
     	//if required implement and override in subclass
     }

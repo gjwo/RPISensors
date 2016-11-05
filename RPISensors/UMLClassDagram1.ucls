@@ -4,7 +4,7 @@
   router="FAN">  
   <class id="1" language="java" name="devices.sensors.NineDOF" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensors/NineDOF.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="664" y="235"/>    
+    <position height="-1" width="-1" x="548" y="-157"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -22,7 +22,7 @@
   </class>  
   <class id="3" language="java" name="devices.sensors.SensorPackage" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensors/SensorPackage.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="666" y="-8"/>    
+    <position height="-1" width="-1" x="1267" y="-6"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -32,7 +32,7 @@
   <class id="4" language="java" name="devices.sensorImplementations.MPU9250.MPU9250" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensorImplementations/MPU9250/MPU9250.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1007" y="-211"/>    
+    <position height="-1" width="-1" x="903" y="-258"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -42,7 +42,7 @@
   <class id="5" language="java" name="devices.sensorImplementations.MPU9250.MPU9250Accelerometer" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensorImplementations/MPU9250/MPU9250Accelerometer.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1058" y="785"/>    
+    <position height="-1" width="-1" x="874" y="668"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -52,7 +52,7 @@
   <class id="6" language="java" name="devices.sensorImplementations.MPU9250.MPU9250Gyroscope" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensorImplementations/MPU9250/MPU9250Gyroscope.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="733" y="790"/>    
+    <position height="-1" width="-1" x="548" y="856"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -62,7 +62,7 @@
   <class id="7" language="java" name="devices.sensorImplementations.MPU9250.MPU9250Magnetometer" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensorImplementations/MPU9250/MPU9250Magnetometer.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="416" y="792"/>    
+    <position height="-1" width="-1" x="277" y="675"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -72,7 +72,7 @@
   <class id="8" language="java" name="devices.sensorImplementations.MPU9250.MPU9250Thermometer" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensorImplementations/MPU9250/MPU9250Thermometer.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="157" y="794"/>    
+    <position height="-1" width="-1" x="159" y="474"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -82,7 +82,7 @@
   <enumeration id="9" language="java" name="devices.sensorImplementations.MPU9250.MagScale" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensorImplementations/MPU9250/MPU9250Constants.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="501" y="1068"/>    
+    <position height="-1" width="-1" x="364" y="1068"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -92,7 +92,7 @@
   <enumeration id="10" language="java" name="devices.sensorImplementations.MPU9250.GyrScale" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensorImplementations/MPU9250/MPU9250Constants.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="895" y="299"/>    
+    <position height="-1" width="-1" x="1249" y="-248"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -102,7 +102,7 @@
   <enumeration id="11" language="java" name="devices.sensorImplementations.MPU9250.AccScale" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensorImplementations/MPU9250/MPU9250Constants.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1147" y="293"/>    
+    <position height="-1" width="-1" x="1303" y="324"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -112,7 +112,7 @@
   <enumeration id="12" language="java" name="devices.sensorImplementations.MPU9250.MagMode" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensorImplementations/MPU9250/MPU9250Constants.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="293" y="1065"/>    
+    <position height="-1" width="-1" x="132" y="1058"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -122,7 +122,7 @@
   <enumeration id="13" language="java" name="devices.sensorImplementations.MPU9250.Registers" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensorImplementations/MPU9250/MPU9250Constants.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="519" y="-299"/>    
+    <position height="-1" width="-1" x="138" y="-482"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="true"/>      
@@ -131,7 +131,7 @@
   </enumeration>  
   <interface id="14" language="java" name="devices.I2C.I2CImplementation" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/I2C/I2CImplementation.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="410" y="-460"/>    
+    <position height="-1" width="-1" x="1164" y="-461"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -140,7 +140,7 @@
   </interface>  
   <class id="15" language="java" name="devices.I2C.Pi4jI2CDevice" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/I2C/Pi4jI2CDevice.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="704" y="-472"/>    
+    <position height="-1" width="-1" x="1332" y="-448"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -149,7 +149,7 @@
   </class>  
   <interface id="16" language="java" name="devices.sensors.interfaces.Accelerometer" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensors/interfaces/Accelerometer.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1067" y="534"/>    
+    <position height="-1" width="-1" x="947" y="-39"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -158,7 +158,7 @@
   </interface>  
   <interface id="17" language="java" name="devices.sensors.interfaces.Gyroscope" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensors/interfaces/Gyroscope.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="730" y="530"/>    
+    <position height="-1" width="-1" x="950" y="165"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -167,7 +167,7 @@
   </interface>  
   <interface id="18" language="java" name="devices.sensors.interfaces.Magnetometer" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensors/interfaces/Magnetometer.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="442" y="530"/>    
+    <position height="-1" width="-1" x="956" y="416"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -176,52 +176,52 @@
   </interface>  
   <interface id="19" language="java" name="devices.sensors.interfaces.Thermometer" project="RPISensors" 
     file="/RPISensors/src/main/java/devices/sensors/interfaces/Thermometer.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="109" y="491"/>    
+    <position height="-1" width="-1" x="659" y="269"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <realization id="20">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="17"/>  
-  </realization>  
-  <generalization id="21">    
-    <end type="SOURCE" refId="8"/>    
-    <end type="TARGET" refId="2"/>  
-  </generalization>  
-  <realization id="22">    
-    <end type="SOURCE" refId="15"/>    
-    <end type="TARGET" refId="14"/>  
-  </realization>  
-  <realization id="23">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="16"/>  
-  </realization>  
-  <association id="24">    
+  <association id="20">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="21" name="magScale">        
+        <position height="0" width="0" x="-137" y="0"/>      
+      </attribute>      
+      <multiplicity id="22" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-137" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="23">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="25" name="therm">        
+      <attribute id="24" name="mag">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="26" minimum="0" maximum="1">        
+      <multiplicity id="25" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <realization id="27">    
+  <realization id="26">    
     <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="18"/>  
+    <end type="TARGET" refId="17"/>  
   </realization>  
+  <generalization id="27">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
   <association id="28">    
     <end type="SOURCE" refId="4" navigable="false">      
       <attribute id="29" name="gyrScale">        
-        <position height="0" width="0" x="0" y="0"/>      
+        <position height="0" width="0" x="354" y="-547"/>      
       </attribute>      
       <multiplicity id="30" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
+        <position height="0" width="0" x="354" y="-547"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="10" navigable="true"/>    
@@ -231,100 +231,84 @@
     <end type="SOURCE" refId="4"/>    
     <end type="TARGET" refId="1"/>  
   </generalization>  
-  <generalization id="32">    
+  <realization id="32">    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="14"/>  
+  </realization>  
+  <realization id="33">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="19"/>  
+  </realization>  
+  <generalization id="34">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <generalization id="35">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <association id="36">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="37" name="therm">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="38" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="39">    
     <end type="SOURCE" refId="1"/>    
     <end type="TARGET" refId="3"/>  
   </generalization>  
-  <association id="33">    
+  <realization id="40">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="18"/>  
+  </realization>  
+  <association id="41">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="34" name="gyro">        
+      <attribute id="42" name="gyro">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="35" minimum="0" maximum="1">        
+      <multiplicity id="43" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <realization id="36">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="19"/>  
-  </realization>  
-  <generalization id="37">    
-    <end type="SOURCE" refId="5"/>    
+  <association id="44">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="45" name="accel">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="46" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="47">    
+    <end type="SOURCE" refId="8"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
-  <realization id="38">    
-    <end type="SOURCE" refId="8"/>    
-    <end type="TARGET" refId="19"/>  
+  <realization id="48">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="16"/>  
   </realization>  
-  <association id="39">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="40" name="accel">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="41" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="42">    
+  <association id="49">    
     <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="43" name="magMode">        
-        <position height="0" width="0" x="0" y="0"/>      
+      <attribute id="50" name="magMode">        
+        <position height="0" width="0" x="-161" y="-7"/>      
       </attribute>      
-      <multiplicity id="44" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
+      <multiplicity id="51" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-161" y="-7"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="12" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <realization id="45">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="18"/>  
-  </realization>  
-  <realization id="46">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="16"/>  
-  </realization>  
-  <generalization id="47">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="2"/>  
-  </generalization>  
-  <association id="48">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="49" name="mag">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="50" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="51">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="2"/>  
-  </generalization>  
-  <realization id="52">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="17"/>  
-  </realization>  
-  <association id="53">    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="54" name="magScale">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="55" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 

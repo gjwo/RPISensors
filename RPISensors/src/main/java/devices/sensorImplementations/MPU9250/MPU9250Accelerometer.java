@@ -8,7 +8,7 @@ import devices.dataTypes.Data3D;
 import devices.dataTypes.TimestampedData3D;
 import devices.sensors.interfaces.Accelerometer;
 
-public class MPU9250Accelerometer extends Sensor<TimestampedData3D,Data3D> implements Accelerometer {
+public class MPU9250Accelerometer extends Sensor<TimestampedData3D,Data3D>  {
     private static final AccScale accScale = AccScale.AFS_4G;
 
 
@@ -21,32 +21,10 @@ public class MPU9250Accelerometer extends Sensor<TimestampedData3D,Data3D> imple
 		return accScale;
 	}
 
-	@Override
-	public TimestampedData3D getLatestAcceleration() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
-	public TimestampedData3D getAvgAcceleration() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public TimestampedData3D getAcceleration(int i) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getAccelerometerReadingCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void updateAccelerometerData() throws Exception {
+	public void updateData()
+	{
         float x,y,z;
         short registers[];
         //roMPU.readByteRegister(Registers.ACCEL_XOUT_H, 6);  // Read again to trigger
@@ -66,13 +44,15 @@ public class MPU9250Accelerometer extends Sensor<TimestampedData3D,Data3D> imple
 	}
 
 	@Override
-	public void calibrateAccelerometer() {
+	public void calibrate()
+	{
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void selfTestAccelerometer() {
+	public void selfTest() 
+	{
 		// TODO Auto-generated method stub
 		
 	}

@@ -15,7 +15,7 @@ import devices.sensors.interfaces.Magnetometer;
  * @author GJWood
  *
  */
-public class MPU9250Magnetometer extends Sensor<TimestampedData3D,Data3D> implements Magnetometer {
+public class MPU9250Magnetometer extends Sensor<TimestampedData3D,Data3D>  {
 
 	/**
 	 * @param sampleRate
@@ -32,35 +32,8 @@ public class MPU9250Magnetometer extends Sensor<TimestampedData3D,Data3D> implem
 	/* (non-Javadoc)
 	 * @see devices.sensors.interfaces.Magnetometer#getLatestGaussianData()
 	 */
-	@Override
-	public TimestampedData3D getLatestGaussianData() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see devices.sensors.interfaces.Magnetometer#getGaussianData(int)
-	 */
-	@Override
-	public TimestampedData3D getGaussianData(int i) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see devices.sensors.interfaces.Magnetometer#getMagnetometerReadingCount()
-	 */
-	@Override
-	public int getMagnetometerReadingCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/* (non-Javadoc)
-	 * @see devices.sensors.interfaces.Magnetometer#updateMagnetometerData()
-	 */
     @Override
-	public void updateMagnetometerData() throws Exception {
+	public void updateData() {
     	TimestampedData3D raw, adjusted;
         byte dataReady = (byte)(ro.readByteRegister(Registers.AK8963_ST1) & 0x01); //DRDY - Data ready bit0 1 = data is ready
         if (dataReady == 0) return; //no data ready
@@ -94,13 +67,13 @@ public class MPU9250Magnetometer extends Sensor<TimestampedData3D,Data3D> implem
 	 */
 
 	@Override
-	public TimestampedData3D getAvgGauss() {
+	public TimestampedData3D getAvgValue() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void calibrateMagnetometer() {
+	public void calibrate() {
     	System.out.println("calibrateMag");
 
         int  mag_bias[] = {0, 0, 0}, mag_scale[] = {0, 0, 0};
@@ -113,7 +86,7 @@ public class MPU9250Magnetometer extends Sensor<TimestampedData3D,Data3D> implem
 
         // shoot for ~fifteen seconds of mag data
         for(int ii = 0; ii < magMode.getSampleCount(); ii++) {
-            updateMagnetometerData();  // Read the mag data
+            updateData();  // Read the mag data
             mag_temp[0] = (short) lastRawMagX;
             mag_temp[1] = (short) lastRawMagY;
             mag_temp[2] = (short) lastRawMagZ;
@@ -152,13 +125,13 @@ public class MPU9250Magnetometer extends Sensor<TimestampedData3D,Data3D> implem
 	}
 
 	@Override
-	public void selfTestMagnetometer() {
+	public void selfTest() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void initMagnetometer() throws InterruptedException, IOException {
+	public void init() throws InterruptedException, IOException {
     	System.out.println("initAK8963");
         // First extract the factory calibration for each magnetometer axis
 
