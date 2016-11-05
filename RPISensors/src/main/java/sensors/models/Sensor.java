@@ -21,8 +21,6 @@ public abstract class Sensor <T,S>
     public Sensor(int sampleRate, int sampleSize, MPU9250RegisterOperations ro)
     {
         vals = new CircularArrayRing<T>();
-        valBias = null;
-        valScaling = null;
         this.sampleRate = sampleRate;
         this.sampleSize = sampleSize;
         this.ro = ro;
@@ -35,6 +33,7 @@ public abstract class Sensor <T,S>
     public T getAvgValue()
     {	
     	//implement and override in subclass
+    	System.out.println("ERROR: OffsetAndScale not overridden");
         return vals.get(0);
     }
 
@@ -67,8 +66,6 @@ public abstract class Sensor <T,S>
     {
     	T oSVal = null;
     	//implement and override in subclass
-        //value.offset(valBias);
-        //value.scale(valScaling);
     	System.out.println("ERROR: OffsetAndScale not overridden");
         return oSVal;
     }

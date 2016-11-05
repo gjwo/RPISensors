@@ -4,15 +4,17 @@ import java.io.IOException;
 
 import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
+
+import dataTypes.TimestampedData3D;
+
 import com.pi4j.io.i2c.I2CBus;
 
-import devices.sensorImplementations.MPU9250.MPU9250;
 import devices.I2C.Pi4jI2CDevice;
-import devices.sensors.interfaces.Accelerometer;
-import devices.sensors.interfaces.Gyroscope;
-import devices.sensors.interfaces.Magnetometer;
-import devices.sensors.interfaces.SensorUpdateListener;
-import devices.sensors.dataTypes.*;
+import sensors.Implementations.MPU9250.MPU9250;
+import sensors.interfaces.Accelerometer;
+import sensors.interfaces.Gyroscope;
+import sensors.interfaces.Magnetometer;
+import sensors.interfaces.SensorUpdateListener;
 
 
 public class Navigate implements Runnable, SensorUpdateListener{

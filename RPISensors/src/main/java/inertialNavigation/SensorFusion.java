@@ -1,7 +1,7 @@
 package inertialNavigation;
 
-import devices.sensors.dataTypes.Data3D;
-import devices.sensors.dataTypes.TimestampedData3D;
+import dataTypes.Data3D;
+import dataTypes.TimestampedData3D;
 
 /**
  * SensorFusion

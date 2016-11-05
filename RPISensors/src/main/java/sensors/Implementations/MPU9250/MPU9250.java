@@ -18,9 +18,6 @@ import java.util.Arrays;
  */
 public class MPU9250 extends NineDOF
 {
-    private static final GyrScale gyrScale = GyrScale.GFS_2000DPS;
-
-
     private final MPU9250RegisterOperations roMPU;
     private final MPU9250RegisterOperations roAK;
 
@@ -205,8 +202,8 @@ public class MPU9250 extends NineDOF
         // Configure MPU6050 gyro and accelerometer for bias calculation
         roMPU.writeByteRegister(Registers.CONFIG,(byte) 0x01);       // Set low-pass filter to 188 Hz
         roMPU.writeByteRegister(Registers.SMPLRT_DIV,(byte) 0x00);   // Set sample rate to 1 kHz
-        roMPU.writeByteRegister(Registers.GYRO_CONFIG,(byte) 0x00);  // Set gyro full-scale to 250 degrees per second, maximum sensitivity
-        roMPU.writeByteRegister(Registers.ACCEL_CONFIG,(byte) 0x00); // Set accelerometer full-scale to 2 g, maximum sensitivity
+        roMPU.writeByteRegister(Registers.GYRO_CONFIG,(byte) GyrScale.GFS_250DPS.getValue());  	// Set gyro full-scale to 250 degrees per second, maximum sensitivity
+        roMPU.writeByteRegister(Registers.ACCEL_CONFIG,(byte) AccScale.AFS_2G.getValue()); 		// Set accelerometer full-scale to 2 g, maximum sensitivity
 
 
         // Configure FIFO to capture accelerometer and gyro data for bias calculation
@@ -293,7 +290,7 @@ public class MPU9250 extends NineDOF
         c = (byte)(c & ~0xE0); // Clear self-test bits [7:5]  ####
         c = (byte)(c & ~0x02); // Clear Fchoice bits [1:0]
         c = (byte)(c & ~0x18); // Clear AFS bits [4:3]
-        c = (byte)(c | gyrScale.getValue() ); // Set full scale range for the gyro GFS_2000DP = 0x18 = 24 #### does not require shifting!!!!
+        c = (byte)(c | GyrScale.GFS_2000DPS.getValue() ); // Set full scale range for the gyro GFS_2000DP = 0x18 = 24 #### does not require shifting!!!!
         c = (byte)(c | 0x00); // Set Fchoice for the gyro to 11 by writing its inverse to bits 1:0 of GYRO_CONFIG
         roMPU.writeByteRegister(Registers.GYRO_CONFIG, c ); // Write new GYRO_CONFIG value to register
 
@@ -301,7 +298,7 @@ public class MPU9250 extends NineDOF
         c = roMPU.readByteRegister(Registers.ACCEL_CONFIG); // get current ACCEL_CONFIG register value
         c = (byte)(c & ~0xE0); // Clear self-test bits [7:5] ####
         c = (byte)(c & ~0x18);  // Clear AFS bits [4:3]
-        c = (byte)(c | AccScale.AFS_4G.getValue() ); // Set full scale range for the accelerometer #### does not require shifting!!!!
+        c = (byte)(c | AccScale.AFS_2G.getValue() ); // Set full scale range for the accelerometer #### does not require shifting!!!!
         roMPU.writeByteRegister(Registers.ACCEL_CONFIG, c); // Write new ACCEL_CONFIG register value
 
         // Set accelerometer sample rate configuration

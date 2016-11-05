@@ -16,11 +16,17 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1D,Data1D>
 	}
 	
 	@Override
-	public TimestampedData1D getAvgValue()
-	{
-		//TODO
-		return null;
-	}
+	public  TimestampedData1D getAvgValue()
+    {	
+		TimestampedData1D sum = new TimestampedData1D(0);
+		int count = getReadingCount();
+    	for(int i = 0; i>count; i++)
+    	{
+    		sum.setX(getValue(i).getX() + sum.getX());
+    	}
+		TimestampedData1D avg = new TimestampedData1D(sum.getX()/count);
+        return avg;
+    }
 
 	@Override
 	public void updateData() throws IOException 

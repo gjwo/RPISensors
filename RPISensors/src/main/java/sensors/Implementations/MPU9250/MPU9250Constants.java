@@ -221,9 +221,9 @@ enum AccScale
     {
         return (byte)value;
     }
-    public double getRes()
+    public float getRes()
     {
-        return (double)minMax/32768.0;
+        return minMax/32768.0f;
     }
     public int getMinMax()
     {
@@ -250,9 +250,9 @@ enum GyrScale
     {
         return (byte)value;
     }
-    public double getRes()
+    public float getRes()
     {
-        return (double)minMax/32768.0;
+        return minMax/32768.0f;
     }
     public int getMinMax()
     {

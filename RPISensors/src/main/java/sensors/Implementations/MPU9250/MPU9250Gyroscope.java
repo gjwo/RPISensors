@@ -8,13 +8,14 @@ import dataTypes.TimestampedData3D;
 import sensors.models.Sensor3D;
 
 public class MPU9250Gyroscope extends Sensor3D {
-
+	private GyrScale gyroScale; 
 	public MPU9250Gyroscope(int sampleRate, int sampleSize, MPU9250RegisterOperations ro) 
 	{
 		super(sampleRate, sampleSize, ro);
-		this.setValScaling( new Data3D(	(float)GyrScale.GFS_2000DPS.getRes(),
-										(float)GyrScale.GFS_2000DPS.getRes(),
-										(float)GyrScale.GFS_2000DPS.getRes()));
+		gyroScale = GyrScale.GFS_2000DPS;
+		this.setValScaling( new Data3D(	(float)gyroScale.getRes(),
+										(float)gyroScale.getRes(),
+										(float)gyroScale.getRes()));
 	}
 
 	@Override
