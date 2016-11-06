@@ -126,7 +126,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	public void selfTestAccelerometer() {
 		try {
 			accel.selfTest();
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -135,7 +135,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	public void selfTestGyroscope() {
 		try {
 			gyro.selfTest();
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -144,7 +144,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	public void selfTestMagnetometer() {
 		try {
 			mag.selfTest();
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -153,7 +153,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	public void selfTestThermometer() {
 		try {
 			therm.selfTest();
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
