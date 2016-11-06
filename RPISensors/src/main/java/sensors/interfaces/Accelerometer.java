@@ -1,6 +1,6 @@
 package sensors.interfaces;
 
-import dataTypes.TimestampedData3D;
+import dataTypes.TimestampedDataFloat3D;
 
 /**
  * RPITank
@@ -8,9 +8,9 @@ import dataTypes.TimestampedData3D;
  */
 public interface Accelerometer
 {
-    TimestampedData3D getLatestAcceleration();
-    TimestampedData3D getAvgAcceleration();
-    TimestampedData3D getAcceleration(int i);
+    TimestampedDataFloat3D getLatestAcceleration();
+    TimestampedDataFloat3D getAvgAcceleration();
+    TimestampedDataFloat3D getAcceleration(int i);
     int getAccelerometerReadingCount();
     void updateAccelerometerData() throws Exception;
     void calibrateAccelerometer() throws InterruptedException;

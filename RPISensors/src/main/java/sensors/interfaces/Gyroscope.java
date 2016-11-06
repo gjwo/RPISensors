@@ -1,6 +1,6 @@
 package sensors.interfaces;
 
-import dataTypes.TimestampedData3D;
+import dataTypes.TimestampedDataFloat3D;
 
 /**
  * RPITank
@@ -8,9 +8,9 @@ import dataTypes.TimestampedData3D;
  */
 public interface Gyroscope
 {
-    TimestampedData3D getLatestRotationalAcceleration();
-    TimestampedData3D getRotationalAcceleration(int i);
-    TimestampedData3D getAvgRotationalAcceleration();
+    TimestampedDataFloat3D getLatestRotationalAcceleration();
+    TimestampedDataFloat3D getRotationalAcceleration(int i);
+    TimestampedDataFloat3D getAvgRotationalAcceleration();
     int getGyroscopeReadingCount();
     void updateGyroscopeData() throws Exception;
     void calibrateGyroscope() throws InterruptedException;

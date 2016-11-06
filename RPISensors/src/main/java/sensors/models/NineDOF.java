@@ -2,10 +2,9 @@ package sensors.models;
 
 import java.io.IOException;
 
-import dataTypes.Data1D;
-import dataTypes.Data3D;
-import dataTypes.TimestampedData1D;
-import dataTypes.TimestampedData3D;
+import dataTypes.DataFloat1D;
+import dataTypes.TimestampedDataFloat1D;
+import dataTypes.TimestampedDataFloat3D;
 import sensors.interfaces.Accelerometer;
 import sensors.interfaces.Gyroscope;
 import sensors.interfaces.Magnetometer;
@@ -13,10 +12,10 @@ import sensors.interfaces.Thermometer;
 
 public abstract class NineDOF extends SensorPackage implements Accelerometer, Gyroscope, Magnetometer, Thermometer
 {
-	protected Sensor<TimestampedData3D,Data3D> mag;
-	protected Sensor<TimestampedData3D,Data3D> accel;
-	protected Sensor<TimestampedData3D,Data3D> gyro;
-	protected Sensor<TimestampedData1D,Data1D> therm;
+	protected Sensor3D mag;
+	protected Sensor3D accel;
+	protected Sensor3D gyro;
+	protected Sensor<TimestampedDataFloat1D,DataFloat1D> therm;
 
 	protected NineDOF(int sampleRate, int sampleSize) {
 		super(sampleRate);
@@ -55,7 +54,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		}
 	}
 
-    public TimestampedData3D getAcceleration(int i) {
+    public TimestampedDataFloat3D getAcceleration(int i) {
 		return accel.getValue(i);
 	}
 
@@ -63,16 +62,16 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		return accel.getReadingCount();
 	}
 
-	public TimestampedData3D getAvgAcceleration() {
+	public TimestampedDataFloat3D getAvgAcceleration() {
 		
 		return accel.getAvgValue();
 	}
 
-	public TimestampedData3D getAvgGauss() {
+	public TimestampedDataFloat3D getAvgGauss() {
 		return mag.getAvgValue();
 	}
 
-	public TimestampedData3D getAvgRotationalAcceleration() {
+	public TimestampedDataFloat3D getAvgRotationalAcceleration() {
 		return gyro.getAvgValue();
 	}
 
@@ -80,7 +79,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		return therm.getAvgValue().getX();
 	}
 
-	public TimestampedData3D getGaussianData(int i) {
+	public TimestampedDataFloat3D getGaussianData(int i) {
 		return mag.getValue(i);
 	}
 
@@ -88,15 +87,15 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		return gyro.getReadingCount();
 	}
 
-	public TimestampedData3D getLatestAcceleration() {
+	public TimestampedDataFloat3D getLatestAcceleration() {
 		return accel.getLatestValue();
 	}
 
-	public TimestampedData3D getLatestGaussianData() {
+	public TimestampedDataFloat3D getLatestGaussianData() {
 		return mag.getLatestValue();
 	}
 
-	public TimestampedData3D getLatestRotationalAcceleration() {
+	public TimestampedDataFloat3D getLatestRotationalAcceleration() {
 		return gyro.getLatestValue();
 	}
 
@@ -108,7 +107,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		return mag.getReadingCount();
 	}
 
-	public TimestampedData3D getRotationalAcceleration(int i) {
+	public TimestampedDataFloat3D getRotationalAcceleration(int i) {
 		return gyro.getValue(i);
 	}
 

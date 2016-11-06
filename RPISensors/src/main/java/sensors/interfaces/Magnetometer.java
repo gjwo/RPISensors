@@ -2,7 +2,7 @@ package sensors.interfaces;
 
 import java.io.IOException;
 
-import dataTypes.TimestampedData3D;
+import dataTypes.TimestampedDataFloat3D;
 
 /**
  * RPITank
@@ -10,9 +10,9 @@ import dataTypes.TimestampedData3D;
  */
 public interface Magnetometer
 {
-    TimestampedData3D getLatestGaussianData();
-    TimestampedData3D getAvgGauss();
-    TimestampedData3D getGaussianData(int i);
+    TimestampedDataFloat3D getLatestGaussianData();
+    TimestampedDataFloat3D getAvgGauss();
+    TimestampedDataFloat3D getGaussianData(int i);
     int getMagnetometerReadingCount();
     void updateMagnetometerData() throws Exception;
     void calibrateMagnetometer() throws InterruptedException, IOException;

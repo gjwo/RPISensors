@@ -47,6 +47,7 @@ public class MPU9250 extends NineDOF
         roMPU.writeByteRegister(Registers.SMPLRT_DIV,(byte)0x00); // Set gyro sample rate to 1 kHz
         roMPU.writeByteRegister(Registers.CONFIG,(byte)0x02); // Set gyro sample rate to 1 kHz and DLPF to 92 Hz
         roMPU.writeByteRegister(Registers.GYRO_CONFIG,GyrScale.GFS_250DPS.getValue()); // Set full scale range for the gyro to 250 dps (was FS<<3) 
+        
         roMPU.writeByteRegister(Registers.ACCEL_CONFIG,(byte)AccScale.AFS_2G.getValue());// Set full scale range for the accelerometer to 2 g (was FS<<3 )
         roMPU.writeByteRegister(Registers.ACCEL_CONFIG2,(byte)0x02); // Set accelerometer rate to 1 kHz and bandwidth to 92 Hz
         final int TEST_LENGTH = 200;
@@ -175,10 +176,9 @@ public class MPU9250 extends NineDOF
 
         System.out.println("End selfTest");
     }
-
-    private void calibrateGyroAcc() throws IOException, InterruptedException
+    private void setCalibrationMode9250() throws IOException, InterruptedException
     {
-    	System.out.println("calibrateGyroAcc");
+    	System.out.println("setCalibrationMode");
         // Write a one to bit 7 reset bit; toggle reset device
         roMPU.writeByteRegister(Registers.PWR_MGMT_1,(byte)0x80);
         Thread.sleep(100);
@@ -189,26 +189,35 @@ public class MPU9250 extends NineDOF
         roMPU.writeByteRegister(Registers.PWR_MGMT_2,(byte)0x00);
         Thread.sleep(200);
 
-
         // Configure device for bias calculation
         roMPU.writeByteRegister(Registers.INT_ENABLE,(byte) 0x00);   // Disable all interrupts
-        roMPU.writeByteRegister(Registers.FIFO_EN,(byte) 0x00);      // Disable FIFO
+        roMPU.writeByteRegister(Registers.FIFO_EN,FIFO_MODE.FIFO_MODE_NONE.getValue());      // Disable FIFO
         roMPU.writeByteRegister(Registers.PWR_MGMT_1,(byte) 0x00);   // Turn on internal clock source
         roMPU.writeByteRegister(Registers.I2C_MST_CTRL,(byte) 0x00); // Disable I2C master
         roMPU.writeByteRegister(Registers.USER_CTRL,(byte) 0x00);    // Disable FIFO and I2C master modes
         roMPU.writeByteRegister(Registers.USER_CTRL,(byte) 0x0C);    // Reset FIFO and DMP NB the 0x08 bit is the DMP shown as reserved in docs
+        
         Thread.sleep(15);
-
-        // Configure MPU6050 gyro and accelerometer for bias calculation
+        
         roMPU.writeByteRegister(Registers.CONFIG,(byte) 0x01);       // Set low-pass filter to 188 Hz
         roMPU.writeByteRegister(Registers.SMPLRT_DIV,(byte) 0x00);   // Set sample rate to 1 kHz
+    }
+    
+    
+    private void calibrateGyroAcc() throws IOException, InterruptedException
+    {
+    	System.out.println("calibrateGyroAcc");
+    	
+    	setCalibrationMode9250();
+
+        // Configure MPU6050 gyro and accelerometer for bias calculation
         roMPU.writeByteRegister(Registers.GYRO_CONFIG,(byte) GyrScale.GFS_250DPS.getValue());  	// Set gyro full-scale to 250 degrees per second, maximum sensitivity
         roMPU.writeByteRegister(Registers.ACCEL_CONFIG,(byte) AccScale.AFS_2G.getValue()); 		// Set accelerometer full-scale to 2 g, maximum sensitivity
 
 
         // Configure FIFO to capture accelerometer and gyro data for bias calculation
         roMPU.writeByteRegister(Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
-        roMPU.writeByteRegister(Registers.FIFO_EN,(byte) 0x78);     // Enable gyro x,y,z and accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
+        roMPU.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_MODE.FIFO_MODE_GYRO_ACC.getValue());     // Enable gyro x,y,z and accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
         Thread.sleep(40); // accumulate 40 samples in 40 milliseconds = 480 bytes
 
         // At end of sample accumulation, turn off FIFO sensor read

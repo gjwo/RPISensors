@@ -259,4 +259,14 @@ enum GyrScale
         return minMax;
     }
 }
+enum FIFO_MODE
+{
+	FIFO_MODE_NONE((byte)0x00),
+	FIFO_MODE_GYRO((byte)0x70),
+	FIFO_MODE_ACC((byte)0x08),
+	FIFO_MODE_GYRO_ACC((byte)0x78);
+    private final byte value;
+    FIFO_MODE(byte value)  { this.value = value; }
+    public byte getValue() { return value; }
+}
 

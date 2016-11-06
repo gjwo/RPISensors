@@ -1,26 +1,26 @@
 package sensors.models;
 
-import dataTypes.Data3D;
-import dataTypes.TimestampedData3D;
+import dataTypes.DataFloat3D;
+import dataTypes.TimestampedDataFloat3D;
 import sensors.Implementations.MPU9250.MPU9250RegisterOperations;
 
 /**
  * RPITank - devices.sensors
  * Created by GJWood on 18/07/2016.
  */
-public abstract class Sensor3D extends Sensor<TimestampedData3D,Data3D>
+public abstract class Sensor3D extends Sensor<TimestampedDataFloat3D,DataFloat3D>
 {	
 	public Sensor3D(int sampleRate, int sampleSize, MPU9250RegisterOperations ro) {
 		super(sampleRate, sampleSize, ro);
-	    valBias = new Data3D(0,0,0);
-	    valScaling= new Data3D(1,1,1);
+	    valBias = new DataFloat3D(0,0,0);
+	    valScaling= new DataFloat3D(1,1,1);
 
 	}
 
 	@Override
-	public TimestampedData3D OffsetAndScale(TimestampedData3D value)
+	public TimestampedDataFloat3D OffsetAndScale(TimestampedDataFloat3D value)
     {
-    		TimestampedData3D oSVal = value.clone();
+    		TimestampedDataFloat3D oSVal = value.clone();
             oSVal.setX(value.getX()*valScaling.getX() -valBias.getX()); //bias will be at current scale?
             oSVal.setY(value.getY()*valScaling.getY() -valBias.getY()); 
             oSVal.setZ(value.getZ()*valScaling.getZ() -valBias.getZ()); 
@@ -28,9 +28,9 @@ public abstract class Sensor3D extends Sensor<TimestampedData3D,Data3D>
     }
 
 	@Override
-	public TimestampedData3D getAvgValue()
+	public TimestampedDataFloat3D getAvgValue()
     {	
-		TimestampedData3D sum = new TimestampedData3D(0,0,0);
+		TimestampedDataFloat3D sum = new TimestampedDataFloat3D(0,0,0);
 		float count = getReadingCount(); // float for division later
     	for(int i = 0; i<count; i++)
     	{
@@ -38,6 +38,6 @@ public abstract class Sensor3D extends Sensor<TimestampedData3D,Data3D>
     		sum.setY(getValue(i).getY() + sum.getY());
     		sum.setZ(getValue(i).getZ() + sum.getZ());
     	}
-		return new TimestampedData3D(sum.getX()/count,sum.getY()/count,sum.getZ()/count);
+		return new TimestampedDataFloat3D(sum.getX()/count,sum.getY()/count,sum.getZ()/count);
     }
 }

@@ -2,11 +2,11 @@ package sensors.Implementations.MPU9250;
 
 import java.io.IOException;
 
-import dataTypes.Data1D;
-import dataTypes.TimestampedData1D;
+import dataTypes.DataFloat1D;
+import dataTypes.TimestampedDataFloat1D;
 import sensors.models.Sensor;
 
-public class MPU9250Thermometer extends Sensor<TimestampedData1D,Data1D>  
+public class MPU9250Thermometer extends Sensor<TimestampedDataFloat1D,DataFloat1D>  
 {
 	public MPU9250Thermometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro)
 	{
@@ -16,7 +16,7 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1D,Data1D>
 	}
 	
 	@Override
-	public  TimestampedData1D getAvgValue()
+	public  TimestampedDataFloat1D getAvgValue()
     {	
 		double sum = 0;
 		int count = getReadingCount();
@@ -24,7 +24,7 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1D,Data1D>
     	{
     		sum +=getValue(i).getX();
     	}
-		TimestampedData1D avg = getLatestValue().clone();
+		TimestampedDataFloat1D avg = getLatestValue().clone();
 		avg.setX((float)(sum/(float)count));
         return avg;
     }
@@ -32,9 +32,12 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1D,Data1D>
 	@Override
 	public void updateData() throws IOException 
 	{
+		
+		//TEMP_degC = ((TEMP_OUT – RoomTemp_Offset)/Temp_Sensitivity) + 21degC
+		
     	short[] temperature = ro.read16BitRegisters(Registers.TEMP_OUT_H,1);
     	temperature = ro.read16BitRegisters(Registers.TEMP_OUT_H,1);
-    	addValue(new TimestampedData1D((float)temperature[0]));
+    	addValue(new TimestampedDataFloat1D((float)temperature[0]));
 	}
 
 }

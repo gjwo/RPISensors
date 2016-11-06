@@ -3,8 +3,8 @@ package sensors.Implementations.MPU9250;
 import java.io.IOException;
 import java.util.Arrays;
 
-import dataTypes.Data3D;
-import dataTypes.TimestampedData3D;
+import dataTypes.DataFloat3D;
+import dataTypes.TimestampedDataFloat3D;
 import sensors.models.Sensor3D;
 
 public class MPU9250Gyroscope extends Sensor3D {
@@ -13,7 +13,7 @@ public class MPU9250Gyroscope extends Sensor3D {
 	{
 		super(sampleRate, sampleSize, ro);
 		gyroScale = GyrScale.GFS_2000DPS;
-		this.setValScaling( new Data3D(	(float)gyroScale.getRes(),
+		this.setValScaling( new DataFloat3D(	(float)gyroScale.getRes(),
 										(float)gyroScale.getRes(),
 										(float)gyroScale.getRes()));
 	}
@@ -23,7 +23,7 @@ public class MPU9250Gyroscope extends Sensor3D {
         short registers[];
         //roMPU.readByteRegister(Registers.GYRO_XOUT_H, 6);  // Read again to trigger
         registers = ro.read16BitRegisters(Registers.GYRO_XOUT_H,3);
-        this.addValue(OffsetAndScale(new TimestampedData3D(registers[0],registers[1],registers[2])));
+        this.addValue(OffsetAndScale(new TimestampedDataFloat3D(registers[0],registers[1],registers[2])));
 	}
 	
 
@@ -60,7 +60,7 @@ public class MPU9250Gyroscope extends Sensor3D {
     	ro.write16bitRegister(Registers.ZG_OFFSET_H,gyroBiasAvgLSB[2]);
          
         // set super class NineDOF variables
-        this.setValBias(new Data3D(	(float) gyroBiasAvg[0]/(float) gyrosensitivity,
+        this.setValBias(new DataFloat3D(	(float) gyroBiasAvg[0]/(float) gyrosensitivity,
         							(float) gyroBiasAvg[1]/(float) gyrosensitivity,
         							(float) gyroBiasAvg[2]/(float) gyrosensitivity));
         //System.out.println("gyrBias (float): "+Arrays.toString(gyrBias));

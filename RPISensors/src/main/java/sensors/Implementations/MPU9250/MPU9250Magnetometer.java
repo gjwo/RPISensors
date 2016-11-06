@@ -5,8 +5,8 @@ package sensors.Implementations.MPU9250;
 
 import java.io.IOException;
 
-import dataTypes.Data3D;
-import dataTypes.TimestampedData3D;
+import dataTypes.DataFloat3D;
+import dataTypes.TimestampedDataFloat3D;
 import sensors.models.Sensor3D;
 
 /**
@@ -35,7 +35,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	 */
     @Override
 	public void updateData() {
-    	TimestampedData3D raw;
+    	TimestampedDataFloat3D raw;
         byte dataReady = (byte)(ro.readByteRegister(Registers.AK8963_ST1) & 0x01); //DRDY - Data ready bit0 1 = data is ready
         if (dataReady == 0) return; //no data ready
         
@@ -51,7 +51,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
         		lastRawMagX = (short) ((buffer[1] << 8) | buffer[0]); // Turn the MSB and LSB into a signed 16-bit value
         		lastRawMagY = (short) ((buffer[3] << 8) | buffer[2]); // Data stored as little Endian
         		lastRawMagZ = (short) ((buffer[5] << 8) | buffer[4]);
-        	raw = new TimestampedData3D(lastRawMagX,lastRawMagY,lastRawMagZ);
+        	raw = new TimestampedDataFloat3D(lastRawMagX,lastRawMagY,lastRawMagZ);
             this.addValue(OffsetAndScale(raw));
         }
 	}
@@ -92,7 +92,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 
         //!!!!!!!!!!!!!!!  may need another look   as 2 different values of magScaling
         
-        this.setValBias(new Data3D(	(float) mag_bias[0]*magScale.getRes()* valScaling.getX(),  // save mag biases in G for main program
+        this.setValBias(new DataFloat3D(	(float) mag_bias[0]*magScale.getRes()* valScaling.getX(),  // save mag biases in G for main program
         							(float) mag_bias[1]*magScale.getRes()* valScaling.getY(),
         							(float) mag_bias[2]*magScale.getRes()* valScaling.getZ()));
 
@@ -104,7 +104,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
         float avg_rad = mag_scale[0] + mag_scale[1] + mag_scale[2];
         avg_rad /= 3.0;
 
-        this.setValScaling(new Data3D(	avg_rad/((float)mag_scale[0]),
+        this.setValScaling(new DataFloat3D(	avg_rad/((float)mag_scale[0]),
         								avg_rad/((float)mag_scale[1]),
         								avg_rad/((float)mag_scale[2])));
         //!!!!!!!!!!!!!!!  may need another look   as 2 different values of magScaling
@@ -128,7 +128,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
         ro.writeByteRegister(Registers.AK8963_CNTL, (byte)0x0F); // Enter Fuse ROM access mode
         Thread.sleep(10);
         byte rawData[] = ro.readByteRegisters(Registers.AK8963_ASAX, 3);  // Read the x-, y-, and z-axis calibration values
-        this.setValScaling(new Data3D(	(float)(rawData[0] - 128)/256f + 1f,   // Return x-axis sensitivity adjustment values, etc.
+        this.setValScaling(new DataFloat3D(	(float)(rawData[0] - 128)/256f + 1f,   // Return x-axis sensitivity adjustment values, etc.
         								(float)(rawData[1] - 128)/256f + 1f,
         								(float)(rawData[2] - 128)/256f + 1f));
         
