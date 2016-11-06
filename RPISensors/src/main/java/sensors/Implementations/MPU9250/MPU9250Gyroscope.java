@@ -9,7 +9,7 @@ import sensors.models.Sensor3D;
 
 public class MPU9250Gyroscope extends Sensor3D {
 	private GyrScale gyroScale; 
-	private DLFP cfgDLPF;
+	private GT_DLFP cfgDLPF;
 
 	public MPU9250Gyroscope(int sampleRate, int sampleSize, MPU9250RegisterOperations ro) 
 	{
@@ -20,7 +20,7 @@ public class MPU9250Gyroscope extends Sensor3D {
 										(float)gyroScale.getRes()));
 	}
 
-	public DLFP getDFLP(){return cfgDLPF;}
+	public GT_DLFP getDFLP(){return cfgDLPF;}
 
 	@Override
 	public void updateData() throws IOException {

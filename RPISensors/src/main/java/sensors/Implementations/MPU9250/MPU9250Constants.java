@@ -269,12 +269,12 @@ enum FIFO_MODE
     FIFO_MODE(byte value)  { this.value = value; }
     public byte getValue() { return value; }
 }
-enum DLFP
+enum GT_DLFP
 {
 	//The DLPF is configured by DLPF_CFG, when FCHOICE_B [1:0] = 2b’00. The gyroscope and
 	//temperature sensor are filtered according to the value of DLPF_CFG and FCHOICE_B as shown in
 	//the table below. Note that FCHOICE mentioned in the table below is the inverted value of
-	//FCHOICE_B (e.g. FCHOICE=2b’00 is same as FCHOICE_B=2b’11). FCHOICE_B is ACCEL_CONFIG 2 bit 3 & bit2
+	//FCHOICE_B (e.g. FCHOICE=2b’00 is same as FCHOICE_B=2b’11). 
 	
 	DLFPx0_x((byte)0,8800, 0.064f, 32, 4000, 0.04f), //DLPF bits not relevant (value)
 	DLFP01_x((byte)0,3600, 0.11f, 32, 4000, 0.04f),
@@ -295,7 +295,7 @@ enum DLFP
     private final float thermDelay;
     private final byte bitMask = (byte) 0x07;
     
-	DLFP(byte b, int gbw, float gd,int gf, int tbw, float tf)
+	GT_DLFP(byte b, int gbw, float gd,int gf, int tbw, float tf)
 	{
 		bits = b; 
 	    gyroBandWidth = gbw;
@@ -314,29 +314,31 @@ enum DLFP
     public byte getBitMask(){return bitMask;} 
 
 }
-enum A_DLPFCFG
+enum A_DLFP
 {
 	// Accelerometer Configuration 2
 	// The data output rate of the DLPF filter block can be further reduced by a factor of 1/(1+SMPLRT_DIV),
 	// where SMPLRT_DIV is an 8-bit integer. Following is a small subset of ODRs that are configurable for the
 	// accelerometer in the normal mode in this manner (Hz):
 	// 3.91, 7.81, 15.63, 31.25, 62.50, 125, 250, 500, 1K
-	// The literals represent choices of ACCEL_FCHOICE + A_DLPF_CFG
-	ADLFP0_x((byte)0, 1046f,  4,  0.503f, 300), //DLPF bits not relevant (bits)
-	ADLFP1_0((byte)0, 218.1f, 1,  1.88f, 300),  //DLPF bits are relevant (bits)
-	ADLFP1_1((byte)1, 218.1f, 1,  1.88f, 300),
-	ADLFP1_2((byte)2,  99f,   1,  2.88f, 300),
-	ADLFP1_3((byte)3,  44.8f, 1,  4.88f, 300),
-	ADLFP1_4((byte)4,  21.2f, 1,  8.87f, 300),
-	ADLFP1_5((byte)5,  10.2f, 1, 16.83f, 300),
-	ADLFP1_6((byte)6,   5.05f,1, 32.48f, 300),	
-	ADLFP1_7((byte)7, 420f,   1,  1.38f, 300);	byte bits; 
+	// ACCEL_FCHOICE_B is ACCEL_CONFIG_2 bit 3(the inverted version of accel_fchoice as described in the table below).
+	// The literals represent choices of ACCEL_FCHOICE + A_DLPF_CFG. So ADLPF1_2 would be 
+	// the pattern '010' in the lowest 3 bits of ACCEL_CONFIG_2
+	ADLPF0_X((byte)0, 1046f,  4,  0.503f, 300), //DLPF bits not relevant (bits)
+	ADLPF1_0((byte)0, 218.1f, 1,  1.88f, 300),  //DLPF bits are relevant (bits)
+	ADLPF1_1((byte)1, 218.1f, 1,  1.88f, 300),
+	ADLPF1_2((byte)2,  99f,   1,  2.88f, 300),
+	ADLPF1_3((byte)3,  44.8f, 1,  4.88f, 300),
+	ADLPF1_4((byte)4,  21.2f, 1,  8.87f, 300),
+	ADLPF1_5((byte)5,  10.2f, 1, 16.83f, 300),
+	ADLPF1_6((byte)6,   5.05f,1, 32.48f, 300),	
+	ADLPF1_7((byte)7, 420f,   1,  1.38f, 300);	byte bits; 
     float accelBandWidthHz;
     int rateKHz;
     float  delayMs;
     int noiseDensity ;
 
-	A_DLPFCFG(byte b, float abw, int rate, float delay, int noise)
+	A_DLFP(byte b, float abw, int rate, float delay, int noise)
 	{
 		bits = b; 
 	    accelBandWidthHz = abw;

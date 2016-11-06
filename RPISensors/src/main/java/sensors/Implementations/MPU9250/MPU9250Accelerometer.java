@@ -9,6 +9,7 @@ import sensors.models.Sensor3D;
 
 public class MPU9250Accelerometer extends Sensor3D  {
 	private AccScale accelScale ;
+	private A_DLFP aDLFP;
 
 	MPU9250Accelerometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro)
 	{
