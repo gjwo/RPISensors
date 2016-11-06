@@ -79,11 +79,15 @@ public abstract class Sensor <T,S>
     {
     	//if required implement and override in subclass
     }
-    public void selfTest() throws IOException
+    public void configure() throws IOException, InterruptedException
     {
     	//if required implement and override in subclass
     }
-    public void init() throws InterruptedException, IOException
+    public void selfTest() throws IOException, InterruptedException
+    {
+    	//if required implement and override in subclass
+    }
+    public void init() throws IOException, InterruptedException
     {
     	//if required implement and override in subclass
     }
