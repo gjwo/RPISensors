@@ -17,32 +17,77 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	protected Sensor3D gyro;
 	protected Sensor<TimestampedDataFloat1D,DataFloat1D> therm;
 
-	protected NineDOF(int sampleRate, int sampleSize) {
+	protected NineDOF(int sampleRate, int sampleSize) 
+	{
 		super(sampleRate);
-		// TODO Auto-generated constructor stub
 	}
 
-    public void calibrateAccelerometer() throws InterruptedException{
+	// Get average named sensor values
+	public TimestampedDataFloat3D getAvgAcceleration() {return accel.getAvgValue();}
+
+	public TimestampedDataFloat3D getAvgGauss() {return mag.getAvgValue();}
+
+	public TimestampedDataFloat3D getAvgRotationalAcceleration() {return gyro.getAvgValue();}
+
+	public float getAvgTemperature() {return therm.getAvgValue().getX();}
+
+	// Get latest named sensor values
+	public TimestampedDataFloat3D getLatestAcceleration() {return accel.getLatestValue();}
+
+	public TimestampedDataFloat3D getLatestGaussianData() {return mag.getLatestValue();}
+
+	public TimestampedDataFloat3D getLatestRotationalAcceleration() {return gyro.getLatestValue();}
+
+	public float getLatestTemperature() {return therm.getLatestValue().getX();}
+	
+	// Get specific named sensor values
+    public TimestampedDataFloat3D getAcceleration(int i) {return accel.getValue(i);}
+
+	public TimestampedDataFloat3D getGaussianData(int i) {return mag.getValue(i);}
+
+	public TimestampedDataFloat3D getRotationalAcceleration(int i) {return gyro.getValue(i);}
+
+	public float getTemperature(int i) {return therm.getValue(i).getX();}
+	
+	// Get named sensor reading counts
+	public int getAccelerometerReadingCount() {return accel.getReadingCount();}
+
+	public int getGyroscopeReadingCount() {return gyro.getReadingCount();}
+
+	public int getMagnetometerReadingCount() {return mag.getReadingCount();}
+
+	public int getThermometerReadingCount() {return therm.getReadingCount();}
+	
+	
+	//calibrate sensors
+    public void calibrateAccelerometer()
+    {
 		try {
 			accel.calibrate();
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-    public void calibrateGyroscope() throws InterruptedException{
+    public void calibrateGyroscope()
+    {
 		try {
 			gyro.calibrate();
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-    public void calibrateMagnetometer() throws InterruptedException, IOException
+    public void calibrateMagnetometer()
     {
-    	mag.calibrate();
+    	try {
+			mag.calibrate();
+		} catch (IOException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     public void calibrateThermometer() {
@@ -54,73 +99,15 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		}
 	}
 
-    public TimestampedDataFloat3D getAcceleration(int i) {
-		return accel.getValue(i);
-	}
-
-	public int getAccelerometerReadingCount() {
-		return accel.getReadingCount();
-	}
-
-	public TimestampedDataFloat3D getAvgAcceleration() {
-		
-		return accel.getAvgValue();
-	}
-
-	public TimestampedDataFloat3D getAvgGauss() {
-		return mag.getAvgValue();
-	}
-
-	public TimestampedDataFloat3D getAvgRotationalAcceleration() {
-		return gyro.getAvgValue();
-	}
-
-	public float getAvgTemperature() {
-		return therm.getAvgValue().getX();
-	}
-
-	public TimestampedDataFloat3D getGaussianData(int i) {
-		return mag.getValue(i);
-	}
-
-	public int getGyroscopeReadingCount() {
-		return gyro.getReadingCount();
-	}
-
-	public TimestampedDataFloat3D getLatestAcceleration() {
-		return accel.getLatestValue();
-	}
-
-	public TimestampedDataFloat3D getLatestGaussianData() {
-		return mag.getLatestValue();
-	}
-
-	public TimestampedDataFloat3D getLatestRotationalAcceleration() {
-		return gyro.getLatestValue();
-	}
-
-	public float getLatestTemperature() {
-		return therm.getLatestValue().getX();
-	}
-
-	public int getMagnetometerReadingCount() {
-		return mag.getReadingCount();
-	}
-
-	public TimestampedDataFloat3D getRotationalAcceleration(int i) {
-		return gyro.getValue(i);
-	}
-
-	public float getTemperature(int i) {
-		return therm.getValue(i).getX();
-	}
-
-	public int getThermometerReadingCount() {
-		return therm.getReadingCount();
-	}
-
-	public void initMagnetometer() throws InterruptedException, IOException {
-		mag.init();
+	//initialise sensors for normal operation
+	public void initMagnetometer()
+	{
+		try {
+			mag.init();
+		} catch (IOException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void selfTestAccelerometer() {
@@ -132,6 +119,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		}
 	}
 
+	//Self test sensors
 	public void selfTestGyroscope() {
 		try {
 			gyro.selfTest();
@@ -159,11 +147,47 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		}
 	}
 
-	public void updateAccelerometerData() throws IOException
+	//Update data from sensors
+	public void updateAccelerometerData()
     {
-    	accel.updateData();
+    	try {
+			accel.updateData();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
+	public void updateGyroscopeData()
+    {
+    	try {
+			gyro.updateData();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }	
+	public void updateMagnetometerData()
+    {
+    	try {
+			mag.updateData();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+
+	public void updateThermometerData()
+    {
+    	try {
+			therm.updateData();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+	
+	//Update all sensors
 	public void updateData() {
 		try {
 			gyro.updateData();
@@ -174,18 +198,4 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 			e.printStackTrace();
 		}
 	}
-
-	public void updateGyroscopeData() throws IOException
-    {
-    	gyro.updateData();
-    }	
-	public void updateMagnetometerData() throws IOException
-    {
-    	mag.updateData();
-    }
-
-	public void updateThermometerData() throws IOException
-    {
-    	therm.updateData();
-    }
 }
