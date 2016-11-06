@@ -137,7 +137,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
         // Configure the magnetometer for continuous read and highest resolution
         // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL register,
         // and enable continuous mode data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
-        ro.writeByteRegister(Registers.AK8963_CNTL, (byte)(MagScale.MFS_16BIT.getValue() << 4 | magMode.getMode())); // Set magnetometer data resolution and sample ODR
+        ro.writeByteRegister(Registers.AK8963_CNTL, (byte)(MagScale.MFS_16BIT.getBits() << 4 | magMode.getMode())); // Set magnetometer data resolution and sample ODR
         Thread.sleep(10);
     	System.out.println("End initAK8963");
 	}

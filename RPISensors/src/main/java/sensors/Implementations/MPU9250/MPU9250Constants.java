@@ -189,7 +189,7 @@ enum MagScale
         this.value = value;
         this.res = res;
     }
-    public byte getValue()
+    public byte getBits()
     {
         return value;
     }
@@ -205,19 +205,19 @@ enum MagScale
 
 enum AccScale
 {
-    AFS_2G(0x00,2),
-    AFS_4G(0x08,4),
-    AFS_8G(0x10,8),
-    AFS_16G(0x18,16);
+    AFS_2G((byte)0x00,2),
+    AFS_4G((byte)0x08,4),
+    AFS_8G((byte)0x10,8),
+    AFS_16G((byte)0x18,16);
 
-    private final int value;
+    private final byte value;
     private final int minMax;
-    AccScale(int value, int minMax)
+    AccScale(byte value, int minMax)
     {
         this.value = value;
         this.minMax = minMax;
     }
-    public byte getValue()
+    public byte getBits()
     {
         return (byte)value;
     }
@@ -310,7 +310,39 @@ enum DLFP
 	public int getGyroFs() {return gyroFs;}
 	public int getThermBandwidth() {return thermBandwidth;}
 	public float getThermDelay() {return thermDelay;}
-    public byte getbits() { return bits; }
+    public byte getBits() { return bits; }
     public byte getBitMask(){return bitMask;} 
+
+}
+enum A_DLPFCFG
+{
+	// Accelerometer Configuration 2
+	// The data output rate of the DLPF filter block can be further reduced by a factor of 1/(1+SMPLRT_DIV),
+	// where SMPLRT_DIV is an 8-bit integer. Following is a small subset of ODRs that are configurable for the
+	// accelerometer in the normal mode in this manner (Hz):
+	// 3.91, 7.81, 15.63, 31.25, 62.50, 125, 250, 500, 1K
+	// The literals represent choices of ACCEL_FCHOICE + A_DLPF_CFG
+	ADLFP0_x((byte)0, 1046f,  4,  0.503f, 300), //DLPF bits not relevant (bits)
+	ADLFP1_0((byte)0, 218.1f, 1,  1.88f, 300),  //DLPF bits are relevant (bits)
+	ADLFP1_1((byte)1, 218.1f, 1,  1.88f, 300),
+	ADLFP1_2((byte)2,  99f,   1,  2.88f, 300),
+	ADLFP1_3((byte)3,  44.8f, 1,  4.88f, 300),
+	ADLFP1_4((byte)4,  21.2f, 1,  8.87f, 300),
+	ADLFP1_5((byte)5,  10.2f, 1, 16.83f, 300),
+	ADLFP1_6((byte)6,   5.05f,1, 32.48f, 300),	
+	ADLFP1_7((byte)7, 420f,   1,  1.38f, 300);	byte bits; 
+    float accelBandWidthHz;
+    int rateKHz;
+    float  delayMs;
+    int noiseDensity ;
+
+	A_DLPFCFG(byte b, float abw, int rate, float delay, int noise)
+	{
+		bits = b; 
+	    accelBandWidthHz = abw;
+	    rateKHz = rate;
+	    delayMs = delay;
+	    noiseDensity = noise;
+	}
 
 }
