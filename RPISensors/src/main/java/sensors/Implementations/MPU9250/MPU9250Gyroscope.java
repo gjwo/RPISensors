@@ -28,9 +28,54 @@ public class MPU9250Gyroscope extends Sensor3D {
 	
 
 	@Override
-	public void calibrate() {
-		// TODO Auto-generated method stub
+	public void calibrate() throws InterruptedException
+	{
+    	System.out.println("gyro.calibrate");
+    	
+    	// Assumes we are in calibration mode via setCalibrationMode9250();
 
+        // Configure MPU6050 gyro for bias calculation
+        ro.writeByteRegister(Registers.GYRO_CONFIG,(byte) GyrScale.GFS_250DPS.getValue());  	// Set gyro full-scale to 250 degrees per second, maximum sensitivity
+
+        // Configure FIFO to capture gyro data for bias calculation
+        ro.writeByteRegister(Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
+        ro.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_MODE.FIFO_MODE_GYRO.getValue());     // Enable gyro x,y,z sensors for FIFO  (max size 512 bytes in MPU-9150)
+        Thread.sleep(40); // accumulate 40 samples in 40 milliseconds = 480 bytes
+
+        // At end of sample accumulation, turn off FIFO sensor read
+        ro.writeByteRegister(Registers.FIFO_EN,(byte) 0x00);        // Disable gyro and accelerometer sensors for FIFO
+
+        short packetCount = ro.read16BitRegisters( Registers.FIFO_COUNTH, 1)[0];
+        int sampleCount =  packetCount / 12; // 12 bytes per sample 6 x 16 bit values
+
+        int[] gyroBiasSum = new int[]{0,0,0}; //32 bit to allow for accumulation without overflow
+        short[] tempBias;
+        System.out.println("Read Fifo packetCount: "+packetCount);
+        
+        //Read FIFO
+        for(int s = 0; s < sampleCount; s++)
+        {
+            tempBias = ro.read16BitRegisters(Registers.FIFO_R_W,3); //6 bytes
+            //System.out.print("bias sample bytes: "+Arrays.toString(tempBias));
+        	//System.out.format(" [0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X]%n",tempBias[0],tempBias[1],tempBias[2],tempBias[3],tempBias[4],tempBias[5]);
+            
+            gyroBiasSum[0] += tempBias[3]; // Sum individual signed 16-bit biases to get accumulated signed 32-bit biases
+            gyroBiasSum[1] += tempBias[4];
+            gyroBiasSum[2] += tempBias[5];
+        }
+        
+        //calculate averages
+        short[] gyroBiasAvg = new short[]{0,0,0}; //16 bit average
+        gyroBiasAvg[0] = (short)((gyroBiasSum[0] / sampleCount) & 0xffff);
+        gyroBiasAvg[1] = (short)((gyroBiasSum[1] / sampleCount) & 0xffff);
+        gyroBiasAvg[2] = (short)((gyroBiasSum[2] / sampleCount) & 0xffff);
+
+        System.out.print("Gyro Bias average: "+Arrays.toString(gyroBiasAvg));
+    	System.out.format(" [0x%X, 0x%X, 0x%X]%n",gyroBiasAvg[0],gyroBiasAvg[1],gyroBiasAvg[2]);
+    	
+        //setGyroBiases(gyroBiasAvg);
+        
+    	System.out.println("End gyro.calibrate");
 	}
 
 	@Override

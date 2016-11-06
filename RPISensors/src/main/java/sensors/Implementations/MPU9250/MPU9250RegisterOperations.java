@@ -5,6 +5,7 @@ package sensors.Implementations.MPU9250;
 
 import java.io.IOException;
 
+import dataTypes.DataShort3D;
 import devices.I2C.I2CImplementation;
 
 /**
@@ -76,6 +77,26 @@ public class MPU9250RegisterOperations {
 	   }
    }
 
+   /**
+    * Reads the specified number of 16 bit 3 dimensional data points from the device this class is associated with
+    * @param register 		- the register to be read (name of first byte)
+    * @param pointCount 	- number of short3D data points to be read
+    * @return 				- an array of Datashort3D holding the registers
+    * Each registers is constructed from reading and combining 2 bytes, the first byte forms the more significant part of the register
+    * The registers are then assigned to the x, y, z fields of the dataShort3D array element
+    */
+   DataShort3D[] readShort3DsfromRegisters(Registers r, int pointCount)
+   {
+       byte[] rawData = readByteRegisters(r, pointCount*6);
+       DataShort3D[] datapoints = new DataShort3D[pointCount];
+       for (int i=0;i<pointCount;i++)		
+       {
+    	   datapoints[i].setX( (short) (((short)rawData[i*2] << 8) | rawData[(i*2)+1])) ;  // Turn the MSB and LSB into a signed 16-bit value
+    	   datapoints[i].setY( (short) (((short)rawData[(i+1)*2] << 8) | rawData[((i+1)*2)+1])) ;  // Turn the MSB and LSB into a signed 16-bit value
+    	   datapoints[i].setZ( (short) (((short)rawData[(i+2)*2] << 8) | rawData[((i+2)*2)+1])) ;  // Turn the MSB and LSB into a signed 16-bit value
+       }
+       return datapoints;
+   }
    /**
     * Reads the specified number of 16 bit Registers from the device this class is associated with
     * @param register 	- the register to be read (name of first byte)

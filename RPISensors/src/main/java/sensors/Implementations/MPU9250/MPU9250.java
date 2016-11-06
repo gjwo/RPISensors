@@ -209,7 +209,9 @@ public class MPU9250 extends NineDOF
     	System.out.println("calibrateGyroAcc");
     	
     	setCalibrationMode9250();
-
+    	accel.calibrate();
+    	gyro.calibrate();
+    	/*
         // Configure MPU6050 gyro and accelerometer for bias calculation
         roMPU.writeByteRegister(Registers.GYRO_CONFIG,(byte) GyrScale.GFS_250DPS.getValue());  	// Set gyro full-scale to 250 degrees per second, maximum sensitivity
         roMPU.writeByteRegister(Registers.ACCEL_CONFIG,(byte) AccScale.AFS_2G.getValue()); 		// Set accelerometer full-scale to 2 g, maximum sensitivity
@@ -264,6 +266,7 @@ public class MPU9250 extends NineDOF
     	
         //setGyroBiases(gyroBiasAvg);
         //setAccelerometerBiases(accelBiasAvg);
+         */
         
     	System.out.println("End calibrateGyroAcc");
     }
