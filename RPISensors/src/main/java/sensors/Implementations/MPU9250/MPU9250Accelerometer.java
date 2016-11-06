@@ -92,9 +92,10 @@ public class MPU9250Accelerometer extends Sensor3D  {
         // Set accelerometer sample rate configuration
         // It is possible to get a 4 kHz sample rate from the accelerometer by choosing 1 for
         // accel_fchoice_b bit [3]; in this case the bandwidth is 1.13 kHz
+        
         c = ro.readByteRegister(Registers.ACCEL_CONFIG2); // get current ACCEL_CONFIG2 register value
-        c = (byte)(c & ~0x0F); // Clear accel_fchoice_b (bit 3) and A_DLPFG (bits [2:0])
-        c = (byte)(c | 0x03);  // Set accelerometer rate to 1 kHz and bandwidth to 41 Hz 
+        c = (byte)(c & ~0x0F); // Clear accel_fchoice_b (bit 3) and A_DLPFG (bits [2:0]) ### this should be bits 3:2 & 1:0!!!
+        c = (byte)(c | DLFP.DLFP11_3.getbits());  // Set accelerometer rate to 1 kHz and bandwidth to 41 Hz  
         ro.writeByteRegister(Registers.ACCEL_CONFIG2, c); // Write new ACCEL_CONFIG2 register value
 
 	}

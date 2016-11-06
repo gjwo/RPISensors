@@ -22,7 +22,7 @@ public class MPU9250Gyroscope extends Sensor3D {
 	public void updateData() throws IOException {
         short registers[];
         //roMPU.readByteRegister(Registers.GYRO_XOUT_H, 6);  // Read again to trigger
-        registers = ro.read16BitRegisters(Registers.GYRO_XOUT_H,3);
+        registers = ro.read16BitRegisters(Registers.GYRO_XOUT_H,3); //GYRO_XOUT = Gyro_Sensitivity * X_angular_rate
         this.addValue(OffsetAndScale(new TimestampedDataFloat3D(registers[0],registers[1],registers[2])));
 	}
 	
@@ -102,7 +102,10 @@ public class MPU9250Gyroscope extends Sensor3D {
     public void setGyroBiases(short[] gyroBiasAvg)
     {
     	System.out.println("setGyroBiases");
-        short gyrosensitivity = 131;     // = 131 LSB/degrees/sec
+    	//OffsetLSB = X_OFFS_USR * 4 / 2^FS_SEL
+    	//OffsetDPS = X_OFFS_USR * 4 / 2^FS_SEL / Gyro_Sensitivity
+    	
+        short gyrosensitivity = 131;     // 2^16 LSB / 500dps = 131 LSB/degrees/sec
         short[] gyroBiasAvgLSB = new short[] {0,0,0};
         
         // Construct the gyro biases for push to the hardware gyro bias registers, which are reset to zero upon device startup

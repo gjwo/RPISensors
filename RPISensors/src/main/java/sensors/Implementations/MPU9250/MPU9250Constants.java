@@ -269,4 +269,48 @@ enum FIFO_MODE
     FIFO_MODE(byte value)  { this.value = value; }
     public byte getValue() { return value; }
 }
+enum DLFP
+{
+	//The DLPF is configured by DLPF_CFG, when FCHOICE_B [1:0] = 2b’00. The gyroscope and
+	//temperature sensor are filtered according to the value of DLPF_CFG and FCHOICE_B as shown in
+	//the table below. Note that FCHOICE mentioned in the table below is the inverted value of
+	//FCHOICE_B (e.g. FCHOICE=2b’00 is same as FCHOICE_B=2b’11). FCHOICE_B is ACCEL_CONFIG 2 bit 3 & bit2
+	
+	DLFPx0_x((byte)0,8800, 0.064f, 32, 4000, 0.04f), //DLPF bits not relevant (value)
+	DLFP01_x((byte)0,3600, 0.11f, 32, 4000, 0.04f),
+	DLFP11_0((byte)0,250, 0.97f, 8, 4000, 0.04f),
+	DLFP11_1((byte)1,184, 2.9f, 1, 188, 1.9f),
+	DLFP11_2((byte)2,92, 3.9f, 1, 98, 2.8f),
+	DLFP11_3((byte)3,41, 5.9f, 1, 42, 4.8f),
+	DLFP11_4((byte)4,20, 9.9f, 1, 20, 8.3f),
+	DLFP11_5((byte)5,10, 17.85f, 1, 10, 13.4f),
+	DLFP11_6((byte)6,5, 33.48f, 1, 5, 18.6f),
+	DLFP11_7((byte)7,3600, 0.17f, 8, 4000, 0.04f);
+	
+    private final byte bits;
+    private final int gyroBandWidth;
+    private final float gyroDelay;
+    private final int gyroFs;
+    private final int thermBandwidth;
+    private final float thermDelay;
+    private final byte bitMask = (byte) 0x07;
+    
+	DLFP(byte b, int gbw, float gd,int gf, int tbw, float tf)
+	{
+		bits = b; 
+	    gyroBandWidth = gbw;
+	    gyroDelay = gd;
+	    gyroFs = gf;
+	    thermBandwidth =tbw;
+	    thermDelay = tf;
+	}
+	
+	public int getGyroBandWidth() {return gyroBandWidth;}
+	public float getGyroDelay() {return gyroDelay;	}
+	public int getGyroFs() {return gyroFs;}
+	public int getThermBandwidth() {return thermBandwidth;}
+	public float getThermDelay() {return thermDelay;}
+    public byte getbits() { return bits; }
+    public byte getBitMask(){return bitMask;} 
 
+}
