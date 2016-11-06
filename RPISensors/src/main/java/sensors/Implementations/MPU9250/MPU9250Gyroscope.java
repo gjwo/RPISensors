@@ -79,6 +79,22 @@ public class MPU9250Gyroscope extends Sensor3D {
 	}
 
 	@Override
+	public void configure() throws IOException, InterruptedException
+	{
+
+        // Set gyroscope full scale range
+        // Range selects FS_SEL and AFS_SEL are 0 - 3, so 2-bit values are left-shifted into positions 4:3 (not in java!)
+        byte c = ro.readByteRegister(Registers.GYRO_CONFIG); // get current GYRO_CONFIG register value
+        c = (byte)(c & ~0xE0); // Clear self-test bits [7:5]  ####
+        c = (byte)(c & ~0x02); // Clear Fchoice bits [1:0]
+        c = (byte)(c & ~0x18); // Clear AFS bits [4:3]
+        c = (byte)(c | GyrScale.GFS_2000DPS.getValue() ); // Set full scale range for the gyro GFS_2000DP = 0x18 = 24 #### does not require shifting!!!!
+        c = (byte)(c | 0x00); // Set Fchoice for the gyro to 11 by writing its inverse to bits 1:0 of GYRO_CONFIG
+        ro.writeByteRegister(Registers.GYRO_CONFIG, c ); // Write new GYRO_CONFIG value to register
+		
+	}
+	
+	@Override
 	public void selfTest() {
 		// TODO Auto-generated method stub
 

@@ -1,5 +1,6 @@
 package sensors.Implementations.MPU9250;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import dataTypes.DataFloat3D;
@@ -76,6 +77,28 @@ public class MPU9250Accelerometer extends Sensor3D  {
         
     	System.out.println("End accel.calibrate");
 	}
+
+	@Override
+	public void configure() throws IOException, InterruptedException
+	{
+        // Set accelerometer full-scale range configuration
+		byte c;
+        c = ro.readByteRegister(Registers.ACCEL_CONFIG); // get current ACCEL_CONFIG register value
+        c = (byte)(c & ~0xE0); // Clear self-test bits [7:5] ####
+        c = (byte)(c & ~0x18);  // Clear AFS bits [4:3]
+        c = (byte)(c | AccScale.AFS_2G.getValue() ); // Set full scale range for the accelerometer #### does not require shifting!!!!
+        ro.writeByteRegister(Registers.ACCEL_CONFIG, c); // Write new ACCEL_CONFIG register value
+
+        // Set accelerometer sample rate configuration
+        // It is possible to get a 4 kHz sample rate from the accelerometer by choosing 1 for
+        // accel_fchoice_b bit [3]; in this case the bandwidth is 1.13 kHz
+        c = ro.readByteRegister(Registers.ACCEL_CONFIG2); // get current ACCEL_CONFIG2 register value
+        c = (byte)(c & ~0x0F); // Clear accel_fchoice_b (bit 3) and A_DLPFG (bits [2:0])
+        c = (byte)(c | 0x03);  // Set accelerometer rate to 1 kHz and bandwidth to 41 Hz 
+        ro.writeByteRegister(Registers.ACCEL_CONFIG2, c); // Write new ACCEL_CONFIG2 register value
+
+	}
+	
 
 	@Override
 	public void selfTest() 
