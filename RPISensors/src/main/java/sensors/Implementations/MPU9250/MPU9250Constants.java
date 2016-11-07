@@ -159,19 +159,47 @@ enum Registers
 // Convention3 - fields intended for 8 8 bit register are held as an 8 bit byte
 
 //MPU9250 general register setting values
-enum FIFO_MODE
+enum FIFO_Mode
 {
-	FIFO_MODE_NONE((byte)0x00),
-	FIFO_MODE_GYRO((byte)0x70),
-	FIFO_MODE_ACC((byte)0x08),
-	FIFO_MODE_GYRO_ACC((byte)0x78);
+	NONE((byte)0x00),
+	GYRO((byte)0x70),
+	ACC((byte)0x08),
+	GYRO_ACC((byte)0x78);
 	
  final byte bits;
  final byte bitMask = (byte) 0x78;
  
- FIFO_MODE(byte bits)  { this.bits = bits; }
+ FIFO_Mode(byte bits)  { this.bits = bits; }
 }
-
+//PWR_MGMT_1 contains H_Reset and CLKSEL (and some other standby stuff)
+enum H_Reset
+{
+	RESET((byte)0x80); //1 – Reset the internal registers and restores the default settings. Write a 1 to	set the reset, the bit will auto clear.
+	byte bits;
+	byte bitmask = (byte) 0x80;
+	H_Reset(byte hr){bits = hr;}
+}
+enum ClkSel
+{
+	INT20MHZ((byte)0x00), //Internal 20MHz oscillator
+	AUTO((byte)0x01);	  //Auto selects the best available clock source – PLL if ready, else use the Internal oscillator
+	
+ final byte bits;
+ final byte bitMask = (byte) 0x07;
+ 
+ ClkSel(byte bits)  { this.bits = bits; }
+}
+//PWR_MGMT_2 contains disable bits for the Gyroscope and Accelerometer
+enum PwrDisable
+{	//Acc X(bit5), Y(bit4), Z(bit3) and Gyro X(bit2),Y(bit1), Z(bit0). Bit set to 1 = disables element
+	ALL_ENABLED((byte)0x00), //Internal 20MHz oscillator
+	ALL_DISABLED((byte)0x3F);	  //Auto selects the best available clock source – PLL if ready, else use the Internal oscillator
+	
+ final byte bits;
+ final byte bitMask = (byte) 0x3F;
+ 
+ PwrDisable(byte bits)  { this.bits = bits; }
+}
 
 // Accelerometer register setting values
 enum AccSelfTest
@@ -187,6 +215,7 @@ enum AccSelfTest
 	
 	AccSelfTest(byte st){bits=st;};
 }
+
 enum AccScale
 {
     AFS_2G((byte)0x00,2),
@@ -316,8 +345,8 @@ enum GT_DLFP
 //note all magnetometer 16 bit quantities are stored littleEndian
 enum MagMode
 {
- MAG_MODE_100HZ   ((byte)0x06,1500), // 6 for 100 Hz continuous magnetometer data read
- MAG_MODE_8HZ	 ((byte)0x02,128); // 2 for 8 Hz, continuous magnetometer data read
+ MM_100HZ   ((byte)0x06,1500), // 6 for 100 Hz continuous magnetometer data read
+ MM_8HZ	 ((byte)0x02,128); // 2 for 8 Hz, continuous magnetometer data read
 
  final byte mode;
  final int sampleCount;

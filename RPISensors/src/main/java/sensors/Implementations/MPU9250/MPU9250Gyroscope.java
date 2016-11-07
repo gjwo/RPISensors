@@ -25,7 +25,7 @@ public class MPU9250Gyroscope extends Sensor3D {
 	@Override
 	public void updateData() throws IOException {
         short registers[];
-        //roMPU.readByteRegister(Registers.GYRO_XOUT_H, 6);  // Read again to trigger
+        //ro.readByteRegister(Registers.GYRO_XOUT_H, 6);  // Read again to trigger
         registers = ro.read16BitRegisters(Registers.GYRO_XOUT_H,3); //GYRO_XOUT = Gyro_Sensitivity * X_angular_rate
         this.addValue(OffsetAndScale(new TimestampedDataFloat3D(registers[0],registers[1],registers[2])));
 	}
@@ -43,7 +43,7 @@ public class MPU9250Gyroscope extends Sensor3D {
 
         // Configure FIFO to capture gyro data for bias calculation
         ro.writeByteRegister(Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
-        ro.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_MODE.FIFO_MODE_GYRO.bits);     // Enable gyro x,y,z sensors for FIFO  (max size 512 bytes in MPU-9150)
+        ro.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_Mode.GYRO.bits);     // Enable gyro x,y,z sensors for FIFO  (max size 512 bytes in MPU-9150)
         Thread.sleep(40); // accumulate 40 samples in 40 milliseconds = 480 bytes
 
         // At end of sample accumulation, turn off FIFO sensor read
@@ -99,9 +99,87 @@ public class MPU9250Gyroscope extends Sensor3D {
 	}
 	
 	@Override
-	public void selfTest() {
-		// TODO Auto-generated method stub
+	public void selfTest() throws InterruptedException {
+        byte FS = 0; 
 
+        final int TEST_LENGTH = 200;
+
+        int[] aSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
+        int[] gSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
+        short[] registers; 
+        ro.writeByteRegister(Registers.GYRO_CONFIG,GyrScale.GFS_250DPS.bits); // Set full scale range for the gyro to 250 dps (was FS<<3) 
+
+        for(int s=0; s<TEST_LENGTH; s++)
+        {
+            registers = ro.read16BitRegisters(Registers.GYRO_XOUT_H,3);
+            gSum[0] += registers[0];
+            gSum[1] += registers[1];
+            gSum[2] += registers[2];
+        	//System.out.format("reg added [%d, %d, %d] [0x%X, 0x%X, 0x%X]%n",
+        	//		registers[0],registers[1],registers[2],registers[0],registers[1],registers[2]);
+        }
+        short[] aAvg = new short[] {0,0,0};
+        short[] gAvg = new short[] {0,0,0};
+        for(int i = 0; i<3; i++)
+        {
+            aAvg[i] = (short) ((short)(aSum[i]/TEST_LENGTH) & (short)0xFFFF); //average and mask off top bits
+            gAvg[i] = (short) ((short)(gSum[i]/TEST_LENGTH) & (short)0xFFFF); //average and mask off top bits
+        }
+        System.out.print("gAvg average: "+Arrays.toString(gAvg));
+    	System.out.format(" [0x%X, 0x%X, 0x%X]%n", gAvg[0], gAvg[1], gAvg[2]);
+        
+        // Configure the Gyroscope for self-test
+       ro.writeByteRegister(Registers.GYRO_CONFIG, (byte)(GyrSelfTest.XYZ.bits | GyrScale.GFS_250DPS.bits));// Enable self test on all three axes and set gyro range to +/- 250 degrees/s
+        Thread.sleep(25); // Delay a while to let the device stabilise
+        //outputConfigRegisters();
+        int[] gSelfTestSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
+        
+        // get average self-test values of gyro and accelerometer
+        for(int s=0; s<TEST_LENGTH; s++) 
+        {
+            registers = ro.read16BitRegisters(Registers.GYRO_XOUT_H,3);
+            gSelfTestSum[0] += registers[0];
+            gSelfTestSum[1] += registers[1];
+            gSelfTestSum[2] += registers[2];
+        }
+        
+        short[] gSTAvg = new short[] {0,0,0};
+
+        for(int i = 0; i<3; i++)
+        {
+            gSTAvg[i] = (short) ((short)(gSelfTestSum[i]/TEST_LENGTH) & (short)0xFFFF); //average and mask off top bits
+        }
+        System.out.print("gSTAvg average: "+Arrays.toString(gSTAvg));
+    	System.out.format(" [0x%X, 0x%X, 0x%X]%n", gSTAvg[0], gSTAvg[1], gSTAvg[2]);
+    	
+        // Calculate Gyro accuracy       
+        short[] selfTestGyro = new short[3]; //Longer than byte to allow for removal of sign bit as this is unsigned
+        selfTestGyro[0] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_X_GYRO) & 0xFF);
+        selfTestGyro[1] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_Y_GYRO) & 0xFF);
+        selfTestGyro[2] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_Z_GYRO) & 0xFF);
+        System.out.println("Self test Gyro bytes: "+Arrays.toString(selfTestGyro));        
+
+        float[] factoryTrimGyro = new float[3];
+        factoryTrimGyro[0] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestGyro[0] - 1f);
+        factoryTrimGyro[1] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestGyro[1] - 1f);
+        factoryTrimGyro[2] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestGyro[2] - 1f);
+        System.out.println("factoryTrimGyro (float): "+Arrays.toString(factoryTrimGyro)); 
+
+        float[] AccuracyGyro = new float[3];
+        AccuracyGyro[0] = 100f*(((float)(gSTAvg[0] - gAvg[0]))/factoryTrimGyro[0]-1f);
+        AccuracyGyro[1] = 100f*(((float)(gSTAvg[1] - gAvg[1]))/factoryTrimGyro[1]-1f);
+        AccuracyGyro[2] = 100f*(((float)(gSTAvg[2] - gAvg[2]))/factoryTrimGyro[2]-1f);
+        
+        System.out.println("Gyroscope accuracy:(% away from factory values)");
+        System.out.println("x: " + AccuracyGyro[0] + "%");
+        System.out.println("y: " + AccuracyGyro[1] + "%");
+        System.out.println("z: " + AccuracyGyro[2] + "%");
+
+        ro.writeByteRegister(Registers.GYRO_CONFIG,  (byte)(GyrSelfTest.NONE.bits | GyrScale.GFS_250DPS.bits)); //Clear self test mode and set gyro range to +/- 250 degrees/s
+        
+        Thread.sleep(25); // Delay a while to let the device stabilise
+
+        System.out.println("End selfTest");
 	}
     public void setGyroBiases(short[] gyroBiasAvg)
     {

@@ -26,7 +26,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
 	public void updateData()
 	{
          short registers[];
-        //roMPU.readByteRegister(Registers.ACCEL_XOUT_H, 6);  // Read again to trigger
+        //ro.readByteRegister(Registers.ACCEL_XOUT_H, 6);  // Read again to trigger
         registers = ro.read16BitRegisters(Registers.ACCEL_XOUT_H,3);
         this.addValue(OffsetAndScale(new TimestampedDataFloat3D(registers[0],registers[1],registers[2])));
 	}
@@ -44,7 +44,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
 
         // Configure FIFO to capture accelerometer data for bias calculation
         ro.writeByteRegister(Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
-        ro.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_MODE.FIFO_MODE_ACC.bits);     // Enable accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
+        ro.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_Mode.ACC.bits);     // Enable accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
         Thread.sleep(40); // accumulate 40 samples in 40 milliseconds = 480 bytes
 
         // At end of sample accumulation, turn off FIFO sensor read
@@ -107,10 +107,87 @@ public class MPU9250Accelerometer extends Sensor3D  {
 	
 
 	@Override
-	public void selfTest() 
+	public void selfTest() throws InterruptedException 
 	{
-		// TODO Auto-generated method stub
-		
+        byte FS = 0; 
+     
+        ro.writeByteRegister(Registers.ACCEL_CONFIG,AccScale.AFS_2G.bits);// Set full scale range for the accelerometer to 2 g (was FS<<3 )
+        final int TEST_LENGTH = 200;
+
+        int[] aSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
+        int[] gSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
+        short[] registers; 
+        for(int s=0; s<TEST_LENGTH; s++)
+        {
+            //System.out.print("aAvg acc: "+Arrays.toString(aAvg));
+            registers = ro.read16BitRegisters(Registers.ACCEL_XOUT_H,3);
+            aSum[0] += registers[0];
+            aSum[1] += registers[1];
+            aSum[2] += registers[2];
+        	//System.out.format("reg added [%d, %d, %d] [0x%X, 0x%X, 0x%X]%n",
+        	//		registers[0],registers[1],registers[2],registers[0],registers[1],registers[2]);
+        }
+        short[] aAvg = new short[] {0,0,0};
+        for(int i = 0; i<3; i++)
+        {
+            aAvg[i] = (short) ((short)(aSum[i]/TEST_LENGTH) & (short)0xFFFF); //average and mask off top bits
+        }
+
+        System.out.print("aAvg average: "+Arrays.toString(aAvg));
+    	System.out.format(" [0x%X, 0x%X, 0x%X]%n", aAvg[0], aAvg[1], aAvg[2]);
+        
+        // Configure the accelerometer for self-test
+        ro.writeByteRegister(Registers.ACCEL_CONFIG, (byte)(AccSelfTest.XYZ.bits | AccScale.AFS_2G.bits)); // Enable self test on all three axes and set accelerometer range to +/- 2 g
+        Thread.sleep(25); // Delay a while to let the device stabilise
+        //outputConfigRegisters();
+        int[] aSelfTestSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
+        int[] gSelfTestSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
+        
+        // get average self-test values of accelerometer
+        for(int s=0; s<TEST_LENGTH; s++) 
+        {
+            registers = ro.read16BitRegisters(Registers.ACCEL_XOUT_H,3);
+            aSelfTestSum[0] += registers[0];
+            aSelfTestSum[1] += registers[1];
+            aSelfTestSum[2] += registers[2];
+        }
+        
+        short[] aSTAvg = new short[] {0,0,0};
+
+        for(int i = 0; i<3; i++)
+        {
+            aSTAvg[i] = (short) ((short)(aSelfTestSum[i]/TEST_LENGTH) & (short)0xFFFF); //average and mask off top bits
+        }
+        System.out.print("aSTAvg average: "+Arrays.toString(aSTAvg));
+    	System.out.format(" [0x%X, 0x%X, 0x%X]%n", aSTAvg[0], aSTAvg[1], aSTAvg[2]);
+
+
+        // Calculate Accelerometer accuracy
+        short[] selfTestAccel = new short[3]; //Longer than byte to allow for removal of sign bit as this is unsigned
+        selfTestAccel[0] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_X_ACCEL) & 0xFF);
+        selfTestAccel[1] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_Y_ACCEL) & 0xFF);
+        selfTestAccel[2] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_Z_ACCEL) & 0xFF);
+        System.out.print("Self test Accel bytes: "+Arrays.toString(selfTestAccel));
+    	System.out.format(" [0x%X, 0x%X, 0x%X]%n", selfTestAccel[0], selfTestAccel[1], selfTestAccel[2]);
+        
+        float[] factoryTrimAccel = new float[3];
+        factoryTrimAccel[0] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestAccel[0] - 1f);
+        factoryTrimAccel[1] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestAccel[1] - 1f);
+        factoryTrimAccel[2] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestAccel[2] - 1f);
+        System.out.println("factoryTrimAcc (float): "+Arrays.toString(factoryTrimAccel)); 
+
+        float[] AccuracyAccel = new float[3];
+        AccuracyAccel[0] = 100f*(((float)(aSTAvg[0] - aAvg[0]))/factoryTrimAccel[0]-1f);
+        AccuracyAccel[1] = 100f*(((float)(aSTAvg[1] - aAvg[1]))/factoryTrimAccel[1]-1f);
+        AccuracyAccel[2] = 100f*(((float)(aSTAvg[2] - aAvg[2]))/factoryTrimAccel[2]-1f);
+
+        System.out.println("Accelerometer accuracy:(% away from factory values)");
+        System.out.println("x: " + AccuracyAccel[0] + "%");
+        System.out.println("y: " + AccuracyAccel[1] + "%");
+        System.out.println("z: " + AccuracyAccel[2] + "%");
+        Thread.sleep(25); // Delay a while to let the device stabilise
+
+        System.out.println("End selfTest");
 	}
     public void setAccelerometerBiases(short[] accelBiasAvg)
     {

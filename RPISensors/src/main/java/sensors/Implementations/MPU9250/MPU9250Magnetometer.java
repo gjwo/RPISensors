@@ -20,7 +20,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	 * @param sampleSize
 	 */
     private static final MagScale magScale = MagScale.MFS_16BIT;
-    private static final MagMode magMode = MagMode.MAG_MODE_100HZ;
+    private static final MagMode magMode = MagMode.MM_100HZ;
     private short lastRawMagX;  //needed during calibration
     private short lastRawMagY;
     private short lastRawMagZ;
@@ -82,8 +82,8 @@ public class MPU9250Magnetometer extends Sensor3D  {
                 if(mag_temp[jj] > mag_max[jj]) mag_max[jj] = mag_temp[jj];
                 if(mag_temp[jj] < mag_min[jj]) mag_min[jj] = mag_temp[jj];
             }
-            if(magMode == MagMode.MAG_MODE_8HZ) Thread.sleep(135);  // at 8 Hz ODR, new mag data is available every 125 ms
-            if(magMode == MagMode.MAG_MODE_100HZ) Thread.sleep(12);  // at 100 Hz ODR, new mag data is available every 10 ms
+            if(magMode == MagMode.MM_8HZ) Thread.sleep(135);  // at 8 Hz ODR, new mag data is available every 125 ms
+            if(magMode == MagMode.MM_100HZ) Thread.sleep(12);  // at 100 Hz ODR, new mag data is available every 10 ms
         }
         // Get hard iron correction
         mag_bias[0]  = (mag_max[0] + mag_min[0])/2;  // get average x mag bias in counts
