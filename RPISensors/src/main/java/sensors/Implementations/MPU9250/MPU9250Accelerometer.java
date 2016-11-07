@@ -65,8 +65,8 @@ public class MPU9250Accelerometer extends Sensor3D  {
         // Set accelerometer full-scale range configuration
 		byte c;
         c = ro.readByteRegister(Registers.ACCEL_CONFIG); // get current ACCEL_CONFIG register value
-        c = (byte)(c & ~0xE0); // Clear self-test bits [7:5] ####
-        c = (byte)(c & ~0x18);  // Clear AFS bits [4:3]
+        c = (byte)(c & ~AccSelfTest.bitmask); // Clear self-test bits [7:5] ####
+        c = (byte)(c & ~AccScale.bitMask);  // Clear AFS bit 3 and bits 2:0
         c = (byte)(c | AccScale.AFS_2G.bits ); // Set full scale range for the accelerometer #### does not require shifting!!!!
         ro.writeByteRegister(Registers.ACCEL_CONFIG, c); // Write new ACCEL_CONFIG register value
 
@@ -75,8 +75,8 @@ public class MPU9250Accelerometer extends Sensor3D  {
         // accel_fchoice_b bit [3]; in this case the bandwidth is 1.13 kHz
         
         c = ro.readByteRegister(Registers.ACCEL_CONFIG2); // get current ACCEL_CONFIG2 register value
-        c = (byte)(c & ~0x0F); // Clear accel_fchoice_b (bit 3) and A_DLPFG (bits [2:0]) ### this should be bits 3:2 & 1:0 but all bottom 4 bits are cleared!!!
-        c = (byte)(c | 3);  // Set accelerometer rate to 1 kHz and bandwidth to 41 Hz  
+        c = (byte)(c & ~A_DLFP.bitMask); // Clear accel_fchoice_b (bit 3) and A_DLPFG (bits [2:0]) ### this should be bits 3:2 & 1:0 but all bottom 4 bits are cleared!!!
+        c = (byte)(c | A_DLFP.ADLPF1_3.bits);  // Set accelerometer rate to 1 kHz and bandwidth to 44.8 Hz  
         ro.writeByteRegister(Registers.ACCEL_CONFIG2, c); // Write new ACCEL_CONFIG2 register value
 
 	}

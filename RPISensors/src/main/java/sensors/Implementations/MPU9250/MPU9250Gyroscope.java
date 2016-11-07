@@ -63,16 +63,9 @@ public class MPU9250Gyroscope extends Sensor3D
 	public void configure() throws IOException, InterruptedException
 	{
 
-        // Set gyroscope full scale range
-        // Range selects FS_SEL and AFS_SEL are 0 - 3, so 2-bit values are left-shifted into positions 4:3 (not in java!)
-        byte c = ro.readByteRegister(Registers.GYRO_CONFIG); // get current GYRO_CONFIG register value
-        c = (byte)(c & ~0xE0); // Clear self-test bits [7:5]  ####
-        c = (byte)(c & ~0x02); // Clear Fchoice bits [1:0]
-        c = (byte)(c & ~0x18); // Clear AFS bits [4:3]
-        c = (byte)(c | GyrScale.GFS_2000DPS.bits ); // Set full scale range for the gyro GFS_2000DP = 0x18 = 24 #### does not require shifting!!!!
-        c = (byte)(c | 0x00); // Set Fchoice for the gyro to 11 by writing its inverse to bits 1:0 of GYRO_CONFIG
-        ro.writeByteRegister(Registers.GYRO_CONFIG, c ); // Write new GYRO_CONFIG value to register
-		
+        ro.writeByteRegister(Registers.GYRO_CONFIG,(byte)(	GyrSelfTest.NONE.bits |			// no self test
+															GyrScale.GFS_2000DPS.bits |		// Set full scale range for the gyro to 2000 dps
+															GyrFchoiceB.FC_USE_DLPF.bits)); // use DLPF settings 
 	}
 	
 	@Override
@@ -86,7 +79,9 @@ public class MPU9250Gyroscope extends Sensor3D
         int[] gSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
         short[] registers; 
 
-        ro.writeByteRegister(Registers.GYRO_CONFIG,GyrScale.GFS_250DPS.bits); // Set full scale range for the gyro to 250 dps (was FS<<3) 
+        ro.writeByteRegister(Registers.GYRO_CONFIG,(byte)(	GyrSelfTest.NONE.bits |			// no self test
+        													GyrScale.GFS_250DPS.bits |		// Set full scale range for the gyro to 250 dps (was FS<<3)
+        													GyrFchoiceB.FC_USE_DLPF.bits)); // use DLPF settings 
 
         for(int s=0; s<TEST_LENGTH; s++)
         {
@@ -108,7 +103,9 @@ public class MPU9250Gyroscope extends Sensor3D
     	System.out.format(" [0x%X, 0x%X, 0x%X]%n", gAvg[0], gAvg[1], gAvg[2]);
         
         // Configure the Gyroscope for self-test
-       ro.writeByteRegister(Registers.GYRO_CONFIG, (byte)(GyrSelfTest.XYZ.bits | GyrScale.GFS_250DPS.bits));// Enable self test on all three axes and set gyro range to +/- 250 degrees/s
+       ro.writeByteRegister(Registers.GYRO_CONFIG, (byte)(	GyrSelfTest.XYZ.bits |			// Enable self test on all three axes
+    		   												GyrScale.GFS_250DPS.bits |		// set gyro range to +/- 250 degrees/s
+    		   												GyrFchoiceB.FC_USE_DLPF.bits));	// use DLPF settings
         Thread.sleep(25); // Delay a while to let the device stabilise
         //outputConfigRegisters();
         int[] gSelfTestSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
@@ -154,7 +151,9 @@ public class MPU9250Gyroscope extends Sensor3D
         System.out.println("y: " + AccuracyGyro[1] + "%");
         System.out.println("z: " + AccuracyGyro[2] + "%");
 
-        ro.writeByteRegister(Registers.GYRO_CONFIG,  (byte)(GyrSelfTest.NONE.bits | GyrScale.GFS_250DPS.bits)); //Clear self test bits and set gyro range to +/- 250 degrees/s
+        ro.writeByteRegister(Registers.GYRO_CONFIG,(byte)(	GyrSelfTest.NONE.bits |			// no self test
+															GyrScale.GFS_250DPS.bits |		// Set full scale range for the gyro to 250 dps (was FS<<3)
+															GyrFchoiceB.FC_USE_DLPF.bits)); // use DLPF settings 
         
         Thread.sleep(25); // Delay a while to let the device stabilise
 

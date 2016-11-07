@@ -113,7 +113,7 @@ public class MPU9250 extends NineDOF
         Thread.sleep(100); // Wait for all registers to reset
 
         // get stable time source
-        roMPU.writeByteRegister(Registers.PWR_MGMT_1, (byte)0x01);  // Auto select clock source to be PLL gyroscope reference if ready else
+        roMPU.writeByteRegister(Registers.PWR_MGMT_1, ClkSel.AUTO.bits);  // Auto select clock source to be PLL gyroscope reference if ready else
         Thread.sleep(200);
 
         // Configure Gyro and Thermometer
@@ -122,7 +122,7 @@ public class MPU9250 extends NineDOF
         // be higher than 1 / 0.0059 = 170 Hz
         // DLPF_CFG = bits 2:0 = 011; this limits the sample rate to 1000 Hz for both
         // With the MPU9250_Pi4j, it is possible to get gyro sample rates of 32 kHz (!), 8 kHz, or 1 kHz
-        roMPU.writeByteRegister(Registers.CONFIG, (byte)0x03);
+        roMPU.writeByteRegister(Registers.CONFIG, GT_DLFP.DLFP11_3.bits);//set thermometer and gyro bandwidth to 41 and 42 Hz, respectively;
 
         // Set sample rate = gyroscope output rate/(1 + SMPLRT_DIV)
         roMPU.writeByteRegister(Registers.SMPLRT_DIV, (byte)0x04);  // Use a 200 Hz rate; a rate consistent with the filter update rate

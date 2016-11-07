@@ -217,7 +217,7 @@ enum AccSelfTest
 }
 
 enum AccScale
-{
+{ //Register 28 – Accelerometer Configuration bits 4:3
     AFS_2G((byte)0x00,2),
     AFS_4G((byte)0x08,4),
     AFS_8G((byte)0x10,8),
@@ -237,7 +237,7 @@ enum AccScale
 }
 enum A_DLFP
 {
-	// Accelerometer Configuration 2 (MPU-9250 0x1D)
+	// Accelerometer Configuration 2 (MPU-9250 0x1D 29)
 	// The data output rate of the DLPF filter block can be further reduced by a factor of 1/(1+SMPLRT_DIV),
 	// where SMPLRT_DIV is an 8-bit integer. Following is a small subset of ODRs that are configurable for the
 	// accelerometer in the normal bits in this manner (Hz):
@@ -245,21 +245,21 @@ enum A_DLFP
 	// ACCEL_FCHOICE_B is ACCEL_CONFIG_2 bit 3(the inverted version of accel_fchoice as described in the table below).
 	// The literals represent choices of ACCEL_FCHOICE + A_DLPF_CFG. So ADLPF1_2 would be 
 	// the pattern '010' in the lowest 3 bits of ACCEL_CONFIG2
-	ADLPF0_X((byte)0, 1046f,  4,  0.503f, 300), //DLPF bits not relevant (bits)
-	ADLPF1_0((byte)0, 218.1f, 1,  1.88f, 300),  //DLPF bits are relevant (bits)
-	ADLPF1_1((byte)1, 218.1f, 1,  1.88f, 300),
-	ADLPF1_2((byte)2,  99f,   1,  2.88f, 300),
-	ADLPF1_3((byte)3,  44.8f, 1,  4.88f, 300),
-	ADLPF1_4((byte)4,  21.2f, 1,  8.87f, 300),
-	ADLPF1_5((byte)5,  10.2f, 1, 16.83f, 300),
-	ADLPF1_6((byte)6,   5.05f,1, 32.48f, 300),	
-	ADLPF1_7((byte)7, 420f,   1,  1.38f, 300);	byte bits; 
+	ADLPF0_X((byte)0x40, 1046f,  4,  0.503f, 300), 	//DLPF bits not relevant (bits) accel_fchoice_b = 1
+	ADLPF1_0((byte)0x00, 218.1f, 1,  1.88f, 300),  	//DLPF bits are relevant (bits) accel_fchoice_b = 0 A_DLPF_CFG = 0
+	ADLPF1_1((byte)0x01, 218.1f, 1,  1.88f, 300),	//accel_fchoice_b = 1 DFLP_CFG = 1
+	ADLPF1_2((byte)0x02,  99f,   1,  2.88f, 300),	//accel_fchoice_b = 1 DFLP_CFG = 2 etc...
+	ADLPF1_3((byte)0x03,  44.8f, 1,  4.88f, 300),
+	ADLPF1_4((byte)0x04,  21.2f, 1,  8.87f, 300),
+	ADLPF1_5((byte)0x05,  10.2f, 1, 16.83f, 300),
+	ADLPF1_6((byte)0x06,   5.05f,1, 32.48f, 300),	
+	ADLPF1_7((byte)0x07, 420f,   1,  1.38f, 300);	byte bits; 
 	
 	final float accelBandWidthHz;
 	final int rateKHz;
 	final float  delayMs;
 	final int noiseDensity ;
-    final static byte bitMask = (byte) 0x07;
+    final static byte bitMask = (byte) 0x0F; //covers accel_fchoice bit 3 and A_DLPF_CFG bits 2:1
 
 	A_DLFP(byte b, float abw, int rate, float delay, int noise)
 	{
@@ -272,7 +272,7 @@ enum A_DLFP
 }
 // Gyroscope (and Thermometer) register setting values
 enum GyrSelfTest
-{
+{	//Gyroscope Configuration register 1B 27 bits 7:5
 	NONE((byte)0x00),   // normal bits, no self testing 
 	X_ONLY((byte)0x80), // Self test X axis only
 	Y_ONLY((byte)0x40), // Self test Y axis only
@@ -285,7 +285,7 @@ enum GyrSelfTest
 	GyrSelfTest(byte st){bits=st;};
 }
 enum GyrScale
-{
+{	//Gyroscope Configuration register 1B 27 bits 4:3
     GFS_250DPS((byte)0x00,250),  //Gyro Full Scale Select: 250dps
     GFS_500DPS((byte)0x08,500),  //Gyro Full Scale Select: 500dps
     GFS_1000DPS((byte)0x10,1000),//Gyro Full Scale Select: 1000dps
@@ -303,9 +303,21 @@ enum GyrScale
     
     public float getRes() {return minMax/32768.0f;}
 }
+enum GyrFchoiceB
+{
+	// Gyroscope Configuration register 1B 27 bits 1:0
+ 	FC_BYPASSDLPF_HIGH((byte)0x02),
+	FC_BYPASSDLPF_LOW((byte)0x01),
+	FC_USE_DLPF((byte)0x00);
+	final byte bits;
+	final static byte bitMask = (byte) 0x03;
+
+    GyrFchoiceB(byte bits){this.bits = bits;}
+}
 
 enum GT_DLFP
 {
+	//Configuration register 1A 26 bits 2:0
 	//The DLPF is configured by DLPF_CFG, when FCHOICE_B [1:0] = 2b’00. The gyroscope and
 	//temperature sensor are filtered according to the bits of DLPF_CFG and FCHOICE_B as shown in
 	//the table below. Note that FCHOICE mentioned in the table below is the inverted bits of
