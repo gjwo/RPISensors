@@ -36,7 +36,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
 	{
     	System.out.println("accel.calibrate");
     	
-    	// Assumes we are in calibration mode via setCalibrationMode9250();
+    	// Assumes we are in calibration bits via setCalibrationMode9250();
 
         // Configure MPU6050 accelerometer for bias calculation
         ro.writeByteRegister(Registers.ACCEL_CONFIG,(byte) AccScale.AFS_2G.bits); 		// Set accelerometer full-scale to 2 g, maximum sensitivity
@@ -109,13 +109,14 @@ public class MPU9250Accelerometer extends Sensor3D  {
 	@Override
 	public void selfTest() throws InterruptedException 
 	{
-        byte FS = 0; 
+        System.out.println("acc.selfTest");
+
+		byte FS = 0; 
      
         ro.writeByteRegister(Registers.ACCEL_CONFIG,AccScale.AFS_2G.bits);// Set full scale range for the accelerometer to 2 g (was FS<<3 )
         final int TEST_LENGTH = 200;
 
         int[] aSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
-        int[] gSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
         short[] registers; 
         for(int s=0; s<TEST_LENGTH; s++)
         {
@@ -141,7 +142,6 @@ public class MPU9250Accelerometer extends Sensor3D  {
         Thread.sleep(25); // Delay a while to let the device stabilise
         //outputConfigRegisters();
         int[] aSelfTestSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
-        int[] gSelfTestSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
         
         // get average self-test values of accelerometer
         for(int s=0; s<TEST_LENGTH; s++) 
@@ -187,7 +187,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         System.out.println("z: " + AccuracyAccel[2] + "%");
         Thread.sleep(25); // Delay a while to let the device stabilise
 
-        System.out.println("End selfTest");
+        System.out.println("End acc.selfTest");
 	}
     public void setAccelerometerBiases(short[] accelBiasAvg)
     {

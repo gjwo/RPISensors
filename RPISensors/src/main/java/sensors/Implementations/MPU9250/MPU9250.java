@@ -4,7 +4,6 @@ import devices.I2C.I2CImplementation;
 import sensors.models.NineDOF;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * MPU 9250 motion sensor
@@ -42,11 +41,17 @@ public class MPU9250 extends NineDOF
     private void selfTest() throws IOException, InterruptedException
     {
     	System.out.println("selfTest");
-
-        roMPU.writeByteRegister(Registers.SMPLRT_DIV,(byte)0x00); // Set gyro sample rate to 1 kHz
-        roMPU.writeByteRegister(Registers.CONFIG,GT_DLFP.DLFP11_2.bits ); // Set gyro sample rate to 1 kHz and DLPF to 92 Hz
+    	//NB gyro config controlled by general register
+    	byte c;
+        c = roMPU.readByteRegister(Registers.CONFIG); 
+        c = (byte) (c &~GT_DLFP.bitMask|GT_DLFP.DLFP11_2.bits);// Set gyro sample rate to 1 kHz and DLPF to 92 Hz
+        roMPU.writeByteRegister(Registers.CONFIG,c ); 
+        roMPU.writeByteRegister(Registers.SMPLRT_DIV,(byte)0x00); // Internal_Sample_Rate / (1 + SMPLRT_DIV) for all devices
         gyro.selfTest();
         accel.selfTest();
+        
+        System.out.println("End selfTest");
+
     }
     private void setCalibrationMode9250() throws IOException, InterruptedException
     {
@@ -92,7 +97,7 @@ public class MPU9250 extends NineDOF
     {
     	System.out.println("initMPU9250");
         // wake up device
-        // Clear sleep mode bit (6), enable all sensors
+        // Clear sleep bits bit (6), enable all sensors
         roMPU.writeByteRegister(Registers.PWR_MGMT_1, (byte)0x00);
         Thread.sleep(100); // Wait for all registers to reset
 

@@ -121,7 +121,7 @@ enum Registers
     SIGNAL_PATH_RESET  (0x68),
     MOT_DETECT_CTRL  (0x69),
     USER_CTRL        (0x6A),  // Bit 7 enable DMP, bit 3 reset DMP
-    PWR_MGMT_1       (0x6B), // Device defaults to the SLEEP mode
+    PWR_MGMT_1       (0x6B), // Device defaults to the SLEEP bits
     PWR_MGMT_2       (0x6C),
     DMP_BANK         (0x6D),  // Activates a specific bank in the DMP
     DMP_RW_PNT       (0x6E),  // Set read/write pointer to a specific start address in specified DMP bank
@@ -166,17 +166,17 @@ enum FIFO_Mode
 	ACC((byte)0x08),
 	GYRO_ACC((byte)0x78);
 	
- final byte bits;
- final byte bitMask = (byte) 0x78;
+	final byte bits;
+	final static byte bitMask = (byte) 0x78;
  
- FIFO_Mode(byte bits)  { this.bits = bits; }
+	FIFO_Mode(byte bits)  { this.bits = bits; }
 }
 //PWR_MGMT_1 contains H_Reset and CLKSEL (and some other standby stuff)
 enum H_Reset
 {
 	RESET((byte)0x80); //1 – Reset the internal registers and restores the default settings. Write a 1 to	set the reset, the bit will auto clear.
-	byte bits;
-	byte bitmask = (byte) 0x80;
+	final byte bits;
+	final static byte bitmask = (byte) 0x80;
 	H_Reset(byte hr){bits = hr;}
 }
 enum ClkSel
@@ -185,7 +185,7 @@ enum ClkSel
 	AUTO((byte)0x01);	  //Auto selects the best available clock source – PLL if ready, else use the Internal oscillator
 	
  final byte bits;
- final byte bitMask = (byte) 0x07;
+ final static byte bitMask = (byte) 0x07;
  
  ClkSel(byte bits)  { this.bits = bits; }
 }
@@ -196,7 +196,7 @@ enum PwrDisable
 	ALL_DISABLED((byte)0x3F);	  //Auto selects the best available clock source – PLL if ready, else use the Internal oscillator
 	
  final byte bits;
- final byte bitMask = (byte) 0x3F;
+ final static byte bitMask = (byte) 0x3F;
  
  PwrDisable(byte bits)  { this.bits = bits; }
 }
@@ -204,14 +204,14 @@ enum PwrDisable
 // Accelerometer register setting values
 enum AccSelfTest
 {
-	NONE((byte)0x00),   // normal mode, no self testing 
+	NONE((byte)0x00),   // normal bits, no self testing 
 	X_ONLY((byte)0x80), // Self test X axis only
 	Y_ONLY((byte)0x40), // Self test Y axis only
 	Z_ONLY((byte)0x20), // Self test Z axis only
 	XYZ((byte)0xE0);    // Self test X, Y & Z axes
 
 	final byte bits;
-	final byte bitmask = (byte)0xE0;
+	final static byte bitmask = (byte)0xE0;
 	
 	AccSelfTest(byte st){bits=st;};
 }
@@ -225,7 +225,7 @@ enum AccScale
 
     final byte bits;
     final int minMax;
-    final byte bitMask = (byte) 0x18;
+    final static byte bitMask = (byte) 0x18;
     
     AccScale(byte value, int minMax)
     {
@@ -240,7 +240,7 @@ enum A_DLFP
 	// Accelerometer Configuration 2 (MPU-9250 0x1D)
 	// The data output rate of the DLPF filter block can be further reduced by a factor of 1/(1+SMPLRT_DIV),
 	// where SMPLRT_DIV is an 8-bit integer. Following is a small subset of ODRs that are configurable for the
-	// accelerometer in the normal mode in this manner (Hz):
+	// accelerometer in the normal bits in this manner (Hz):
 	// 3.91, 7.81, 15.63, 31.25, 62.50, 125, 250, 500, 1K
 	// ACCEL_FCHOICE_B is ACCEL_CONFIG_2 bit 3(the inverted version of accel_fchoice as described in the table below).
 	// The literals represent choices of ACCEL_FCHOICE + A_DLPF_CFG. So ADLPF1_2 would be 
@@ -259,7 +259,7 @@ enum A_DLFP
 	final int rateKHz;
 	final float  delayMs;
 	final int noiseDensity ;
-    final byte bitMask = (byte) 0x07;
+    final static byte bitMask = (byte) 0x07;
 
 	A_DLFP(byte b, float abw, int rate, float delay, int noise)
 	{
@@ -273,14 +273,14 @@ enum A_DLFP
 // Gyroscope (and Thermometer) register setting values
 enum GyrSelfTest
 {
-	NONE((byte)0x00),   // normal mode, no self testing 
+	NONE((byte)0x00),   // normal bits, no self testing 
 	X_ONLY((byte)0x80), // Self test X axis only
 	Y_ONLY((byte)0x40), // Self test Y axis only
 	Z_ONLY((byte)0x20), // Self test Z axis only
 	XYZ((byte)0xE0);    // Self test X, Y & Z axes
 
 	final byte bits;
-	final byte bitmask = (byte)0xE0;
+	final static byte bitmask = (byte)0xE0;
 	
 	GyrSelfTest(byte st){bits=st;};
 }
@@ -293,7 +293,7 @@ enum GyrScale
 
     final byte bits;
     final int minMax;
-    final byte bitMask = (byte) 0x18;
+    final static byte bitMask = (byte) 0x18;
     
     GyrScale(byte bits, int minMax)
     {
@@ -328,7 +328,7 @@ enum GT_DLFP
     final int gyroFs;
     final int thermBandwidth;
     final float thermDelay;
-    final byte bitMask = (byte) 0x07;
+    final static byte bitMask = (byte) 0x07;
     
 	GT_DLFP(byte b, int gbw, float gd,int gf, int tbw, float tf)
 	{
@@ -345,17 +345,18 @@ enum GT_DLFP
 //note all magnetometer 16 bit quantities are stored littleEndian
 enum MagMode
 {
- MM_100HZ   ((byte)0x06,1500), // 6 for 100 Hz continuous magnetometer data read
- MM_8HZ	 ((byte)0x02,128); // 2 for 8 Hz, continuous magnetometer data read
+	MM_100HZ   ((byte)0x06,1500), // 6 for 100 Hz continuous magnetometer data read
+	MM_8HZ	 ((byte)0x02,128); // 2 for 8 Hz, continuous magnetometer data read
 
- final byte mode;
- final int sampleCount;
+	final byte bits;
+	final int sampleCount;
+	final static byte bitmask = (byte) 0x06;
  
- MagMode(byte mode,int sampleCount)
- {
- 	this.mode = mode;
- 	this.sampleCount = sampleCount;
- }  
+	MagMode(byte mode,int sampleCount)
+	{
+		this.bits = mode;
+		this.sampleCount = sampleCount;
+	}  
 }
 
 enum MagScale

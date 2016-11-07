@@ -36,7 +36,7 @@ public class MPU9250Gyroscope extends Sensor3D {
 	{
     	System.out.println("gyro.calibrate");
     	
-    	// Assumes we are in calibration mode via setCalibrationMode9250();
+    	// Assumes we are in calibration bits via setCalibrationMode9250();
 
         // Configure MPU6050 gyro for bias calculation
         ro.writeByteRegister(Registers.GYRO_CONFIG,(byte) GyrScale.GFS_250DPS.bits);  	// Set gyro full-scale to 250 degrees per second, maximum sensitivity
@@ -103,10 +103,12 @@ public class MPU9250Gyroscope extends Sensor3D {
         byte FS = 0; 
 
         final int TEST_LENGTH = 200;
+        System.out.println("gyro.selfTest");
 
         int[] aSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
         int[] gSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
         short[] registers; 
+
         ro.writeByteRegister(Registers.GYRO_CONFIG,GyrScale.GFS_250DPS.bits); // Set full scale range for the gyro to 250 dps (was FS<<3) 
 
         for(int s=0; s<TEST_LENGTH; s++)
@@ -175,11 +177,11 @@ public class MPU9250Gyroscope extends Sensor3D {
         System.out.println("y: " + AccuracyGyro[1] + "%");
         System.out.println("z: " + AccuracyGyro[2] + "%");
 
-        ro.writeByteRegister(Registers.GYRO_CONFIG,  (byte)(GyrSelfTest.NONE.bits | GyrScale.GFS_250DPS.bits)); //Clear self test mode and set gyro range to +/- 250 degrees/s
+        ro.writeByteRegister(Registers.GYRO_CONFIG,  (byte)(GyrSelfTest.NONE.bits | GyrScale.GFS_250DPS.bits)); //Clear self test bits and set gyro range to +/- 250 degrees/s
         
         Thread.sleep(25); // Delay a while to let the device stabilise
 
-        System.out.println("End selfTest");
+        System.out.println("End gyro.selfTest");
 	}
     public void setGyroBiases(short[] gyroBiasAvg)
     {

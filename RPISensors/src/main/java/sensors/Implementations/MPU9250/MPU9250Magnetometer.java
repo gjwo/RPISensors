@@ -125,7 +125,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 
         ro.writeByteRegister(Registers.AK8963_CNTL1,(byte) 0x00); // Power down magnetometer
         Thread.sleep(10);
-        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)0x0F); // Enter Fuse ROM access mode
+        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)0x0F); // Enter Fuse ROM access bits
         Thread.sleep(10);
         byte rawData[] = ro.readByteRegisters(Registers.AK8963_ASAX, 3);  // Read the x-, y-, and z-axis calibration values
         this.setValScaling(new DataFloat3D(	(float)(rawData[0] - 128)/256f + 1f,   // Return x-axis sensitivity adjustment values, etc.
@@ -136,8 +136,8 @@ public class MPU9250Magnetometer extends Sensor3D  {
         Thread.sleep(10);
         // Configure the magnetometer for continuous read and highest resolution
         // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL1 register,
-        // and enable continuous mode data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
-        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)(MagScale.MFS_16BIT.bits | magMode.mode)); // Set magnetometer data resolution and sample ODR ####16bit already shifted
+        // and enable continuous bits data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
+        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)(MagScale.MFS_16BIT.bits | magMode.bits)); // Set magnetometer data resolution and sample ODR ####16bit already shifted
         Thread.sleep(10);
     	System.out.println("End initAK8963");
 	}
