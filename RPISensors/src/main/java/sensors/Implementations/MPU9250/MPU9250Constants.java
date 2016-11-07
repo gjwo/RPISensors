@@ -18,7 +18,8 @@ enum Registers
     AK8963_ZOUT_L    (0x07),
     AK8963_ZOUT_H    (0x08),
     AK8963_ST2       (0x09),  // Data overflow bit 3 and data read error status bit 2
-    AK8963_CNTL      (0x0A),  // Power down (0000), single-measurement (0001), self-test (1000) and Fuse ROM (1111) modes on bits 3:0
+    AK8963_CNTL1     (0x0A),  // Power down (0000), single-measurement (0001), self-test (1000) and Fuse ROM (1111) modes on bits 3:0
+    AK8963_CNTL2     (0x0B),  // Reset bit 0
     AK8963_ASTC      (0x0C),  // Self test control
     AK8963_I2CDIS    (0x0F),  // I2C disable
     AK8963_ASAX      (0x10),  // Fuse ROM x-axis sensitivity adjustment address
@@ -158,48 +159,29 @@ enum MagMode
     MAG_MODE_100HZ   ((byte)0x06,1500), // 6 for 100 Hz continuous magnetometer data read
     MAG_MODE_8HZ	 ((byte)0x02,128); // 2 for 8 Hz, continuous magnetometer data read
 
-    private final byte mode;
-    private final int sampleCount;
+    final byte mode;
+    final int sampleCount;
     
     MagMode(byte mode,int sampleCount)
     {
     	this.mode = mode;
     	this.sampleCount = sampleCount;
-    }
-    public byte getMode()
-    {
-    	return this.mode;
-    }
-    public int getSampleCount()
-    {
-    	return this.sampleCount;
-    }
-    
+    }  
 }
 
 enum MagScale
 {
-    MFS_14BIT((byte)0x00,10f*4912f/8190f), //mscale val = 0, 14 bit will be shifted 4 left
-    MFS_16BIT((byte)0x01,10f*4912f/32760f); //mscale val = 1, 16 bit will be shifted 4 left
+    MFS_14BIT((byte)0x00,10f*4912f/8190f), //mscale val = 0, 14 bit
+    MFS_16BIT((byte)0x10,10f*4912f/32760f); //mscale val = 1, 16 bit
 
-    private final byte value;
-    private final float res;
-    MagScale(byte value, float res)
+    final byte bits;
+    final float res;
+    final byte bitMask = (byte) 0x10;
+    
+    MagScale(byte bits, float res)
     {
-        this.value = value;
+        this.bits = bits;
         this.res = res;
-    }
-    public byte getBits()
-    {
-        return value;
-    }
-    public float getRes()
-    {
-        return res;
-    }
-    public int getMinMax()
-    {
-        return 4800;
     }
 }
 
@@ -210,54 +192,37 @@ enum AccScale
     AFS_8G((byte)0x10,8),
     AFS_16G((byte)0x18,16);
 
-    private final byte value;
-    private final int minMax;
+    final byte bits;
+    final int minMax;
+    final byte bitMask = (byte) 0x18;
+    
     AccScale(byte value, int minMax)
     {
-        this.value = value;
+        this.bits = value;
         this.minMax = minMax;
     }
-    public byte getBits()
-    {
-        return (byte)value;
-    }
-    public float getRes()
-    {
-        return minMax/32768.0f;
-    }
-    public int getMinMax()
-    {
-        return minMax;
-    }
+    
+    public float getRes() {return minMax/32768.0f;}
 }
 
 enum GyrScale
 {
-    GFS_250DPS(0x00,250),
-    GFS_500DPS(0x08,500),
-    GFS_1000DPS(0x10,1000),
-    GFS_2000DPS(0x18,2000);
+    GFS_250DPS((byte)0x00,250),
+    GFS_500DPS((byte)0x08,500),
+    GFS_1000DPS((byte)0x10,1000),
+    GFS_2000DPS((byte)0x18,2000);
 
-
-    private final int value;
-    private final int minMax;
-    GyrScale(int value, int minMax)
+    final byte bits;
+    final int minMax;
+    final byte bitMask = (byte) 0x18;
+    
+    GyrScale(byte bits, int minMax)
     {
-        this.value = value;
+        this.bits = bits;
         this.minMax = minMax;
     }
-    public byte getValue()
-    {
-        return (byte)value;
-    }
-    public float getRes()
-    {
-        return minMax/32768.0f;
-    }
-    public int getMinMax()
-    {
-        return minMax;
-    }
+    
+    public float getRes() {return minMax/32768.0f;}
 }
 enum FIFO_MODE
 {
@@ -265,18 +230,21 @@ enum FIFO_MODE
 	FIFO_MODE_GYRO((byte)0x70),
 	FIFO_MODE_ACC((byte)0x08),
 	FIFO_MODE_GYRO_ACC((byte)0x78);
-    private final byte value;
-    FIFO_MODE(byte value)  { this.value = value; }
-    public byte getValue() { return value; }
+	
+    final byte bits;
+    final byte bitMask = (byte) 0x78;
+    
+    FIFO_MODE(byte bits)  { this.bits = bits; }
 }
+
 enum GT_DLFP
 {
 	//The DLPF is configured by DLPF_CFG, when FCHOICE_B [1:0] = 2b’00. The gyroscope and
-	//temperature sensor are filtered according to the value of DLPF_CFG and FCHOICE_B as shown in
-	//the table below. Note that FCHOICE mentioned in the table below is the inverted value of
+	//temperature sensor are filtered according to the bits of DLPF_CFG and FCHOICE_B as shown in
+	//the table below. Note that FCHOICE mentioned in the table below is the inverted bits of
 	//FCHOICE_B (e.g. FCHOICE=2b’00 is same as FCHOICE_B=2b’11). 
 	
-	DLFPx0_x((byte)0,8800, 0.064f, 32, 4000, 0.04f), //DLPF bits not relevant (value)
+	DLFPx0_x((byte)0,8800, 0.064f, 32, 4000, 0.04f), //DLPF bits not relevant (bits)
 	DLFP01_x((byte)0,3600, 0.11f, 32, 4000, 0.04f),
 	DLFP11_0((byte)0,250, 0.97f, 8, 4000, 0.04f),
 	DLFP11_1((byte)1,184, 2.9f, 1, 188, 1.9f),
@@ -287,13 +255,13 @@ enum GT_DLFP
 	DLFP11_6((byte)6,5, 33.48f, 1, 5, 18.6f),
 	DLFP11_7((byte)7,3600, 0.17f, 8, 4000, 0.04f);
 	
-    private final byte bits;
-    private final int gyroBandWidth;
-    private final float gyroDelay;
-    private final int gyroFs;
-    private final int thermBandwidth;
-    private final float thermDelay;
-    private final byte bitMask = (byte) 0x07;
+    final byte bits;
+    final int gyroBandWidth;
+    final float gyroDelay;
+    final int gyroFs;
+    final int thermBandwidth;
+    final float thermDelay;
+    final byte bitMask = (byte) 0x07;
     
 	GT_DLFP(byte b, int gbw, float gd,int gf, int tbw, float tf)
 	{
@@ -304,15 +272,6 @@ enum GT_DLFP
 	    thermBandwidth =tbw;
 	    thermDelay = tf;
 	}
-	
-	public int getGyroBandWidth() {return gyroBandWidth;}
-	public float getGyroDelay() {return gyroDelay;	}
-	public int getGyroFs() {return gyroFs;}
-	public int getThermBandwidth() {return thermBandwidth;}
-	public float getThermDelay() {return thermDelay;}
-    public byte getBits() { return bits; }
-    public byte getBitMask(){return bitMask;} 
-
 }
 enum A_DLFP
 {
@@ -334,11 +293,11 @@ enum A_DLFP
 	ADLPF1_6((byte)6,   5.05f,1, 32.48f, 300),	
 	ADLPF1_7((byte)7, 420f,   1,  1.38f, 300);	byte bits; 
 	
-	private final float accelBandWidthHz;
-	private final int rateKHz;
-	private final float  delayMs;
-	private final int noiseDensity ;
-    private final byte bitMask = (byte) 0x07;
+	final float accelBandWidthHz;
+	final int rateKHz;
+	final float  delayMs;
+	final int noiseDensity ;
+    final byte bitMask = (byte) 0x07;
 
 	A_DLFP(byte b, float abw, int rate, float delay, int noise)
 	{
@@ -348,11 +307,4 @@ enum A_DLFP
 	    delayMs = delay;
 	    noiseDensity = noise;
 	}
-	
-	public byte getBits() {return bits;}
-	public float getAccelBandWidthHz() {return accelBandWidthHz;}
-	public int getRateKHz() {return rateKHz;}
-	public float getDelayMs() {return delayMs;}
-	public int getNoiseDensity() {return noiseDensity;}
-	public byte getBitMask() {return bitMask;}
 }

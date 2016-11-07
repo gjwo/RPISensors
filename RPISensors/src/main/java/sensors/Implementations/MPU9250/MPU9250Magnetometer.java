@@ -73,7 +73,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
         Thread.sleep(4000);
 
         // shoot for ~fifteen seconds of mag data
-        for(int ii = 0; ii < magMode.getSampleCount(); ii++) {
+        for(int ii = 0; ii < magMode.sampleCount; ii++) {
             updateData();  // Read the mag data
             mag_temp[0] = (short) lastRawMagX;
             mag_temp[1] = (short) lastRawMagY;
@@ -92,9 +92,9 @@ public class MPU9250Magnetometer extends Sensor3D  {
 
         //!!!!!!!!!!!!!!!  may need another look   as 2 different values of magScaling
         
-        this.setValBias(new DataFloat3D(	(float) mag_bias[0]*magScale.getRes()* valScaling.getX(),  // save mag biases in G for main program
-        							(float) mag_bias[1]*magScale.getRes()* valScaling.getY(),
-        							(float) mag_bias[2]*magScale.getRes()* valScaling.getZ()));
+        this.setValBias(new DataFloat3D(	(float) mag_bias[0]*magScale.res* valScaling.getX(),  // save mag biases in G for main program
+        							(float) mag_bias[1]*magScale.res* valScaling.getY(),
+        							(float) mag_bias[2]*magScale.res* valScaling.getZ()));
 
         // Get soft iron correction estimate
         mag_scale[0]  = (mag_max[0] - mag_min[0])/2;  // get average x axis max chord length in counts
@@ -123,21 +123,21 @@ public class MPU9250Magnetometer extends Sensor3D  {
     	System.out.println("initAK8963");
         // First extract the factory calibration for each magnetometer axis
 
-        ro.writeByteRegister(Registers.AK8963_CNTL,(byte) 0x00); // Power down magnetometer
+        ro.writeByteRegister(Registers.AK8963_CNTL1,(byte) 0x00); // Power down magnetometer
         Thread.sleep(10);
-        ro.writeByteRegister(Registers.AK8963_CNTL, (byte)0x0F); // Enter Fuse ROM access mode
+        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)0x0F); // Enter Fuse ROM access mode
         Thread.sleep(10);
         byte rawData[] = ro.readByteRegisters(Registers.AK8963_ASAX, 3);  // Read the x-, y-, and z-axis calibration values
         this.setValScaling(new DataFloat3D(	(float)(rawData[0] - 128)/256f + 1f,   // Return x-axis sensitivity adjustment values, etc.
         								(float)(rawData[1] - 128)/256f + 1f,
         								(float)(rawData[2] - 128)/256f + 1f));
         
-        ro.writeByteRegister(Registers.AK8963_CNTL, (byte)0x00); // Power down magnetometer
+        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)0x00); // Power down magnetometer
         Thread.sleep(10);
         // Configure the magnetometer for continuous read and highest resolution
-        // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL register,
+        // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL1 register,
         // and enable continuous mode data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
-        ro.writeByteRegister(Registers.AK8963_CNTL, (byte)(MagScale.MFS_16BIT.getBits() << 4 | magMode.getMode())); // Set magnetometer data resolution and sample ODR
+        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)(MagScale.MFS_16BIT.bits | magMode.mode)); // Set magnetometer data resolution and sample ODR ####16bit already shifted
         Thread.sleep(10);
     	System.out.println("End initAK8963");
 	}

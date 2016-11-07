@@ -39,12 +39,12 @@ public class MPU9250Accelerometer extends Sensor3D  {
     	// Assumes we are in calibration mode via setCalibrationMode9250();
 
         // Configure MPU6050 accelerometer for bias calculation
-        ro.writeByteRegister(Registers.ACCEL_CONFIG,(byte) AccScale.AFS_2G.getBits()); 		// Set accelerometer full-scale to 2 g, maximum sensitivity
+        ro.writeByteRegister(Registers.ACCEL_CONFIG,(byte) AccScale.AFS_2G.bits); 		// Set accelerometer full-scale to 2 g, maximum sensitivity
 
 
         // Configure FIFO to capture accelerometer data for bias calculation
         ro.writeByteRegister(Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
-        ro.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_MODE.FIFO_MODE_ACC.getValue());     // Enable and accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
+        ro.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_MODE.FIFO_MODE_ACC.bits);     // Enable and accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
         Thread.sleep(40); // accumulate 40 samples in 40 milliseconds = 480 bytes
 
         // At end of sample accumulation, turn off FIFO sensor read
@@ -91,7 +91,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         c = ro.readByteRegister(Registers.ACCEL_CONFIG); // get current ACCEL_CONFIG register value
         c = (byte)(c & ~0xE0); // Clear self-test bits [7:5] ####
         c = (byte)(c & ~0x18);  // Clear AFS bits [4:3]
-        c = (byte)(c | AccScale.AFS_2G.getBits() ); // Set full scale range for the accelerometer #### does not require shifting!!!!
+        c = (byte)(c | AccScale.AFS_2G.bits ); // Set full scale range for the accelerometer #### does not require shifting!!!!
         ro.writeByteRegister(Registers.ACCEL_CONFIG, c); // Write new ACCEL_CONFIG register value
 
         // Set accelerometer sample rate configuration

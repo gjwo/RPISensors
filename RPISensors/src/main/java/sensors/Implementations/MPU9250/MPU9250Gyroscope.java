@@ -39,11 +39,11 @@ public class MPU9250Gyroscope extends Sensor3D {
     	// Assumes we are in calibration mode via setCalibrationMode9250();
 
         // Configure MPU6050 gyro for bias calculation
-        ro.writeByteRegister(Registers.GYRO_CONFIG,(byte) GyrScale.GFS_250DPS.getValue());  	// Set gyro full-scale to 250 degrees per second, maximum sensitivity
+        ro.writeByteRegister(Registers.GYRO_CONFIG,(byte) GyrScale.GFS_250DPS.bits);  	// Set gyro full-scale to 250 degrees per second, maximum sensitivity
 
         // Configure FIFO to capture gyro data for bias calculation
         ro.writeByteRegister(Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
-        ro.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_MODE.FIFO_MODE_GYRO.getValue());     // Enable gyro x,y,z sensors for FIFO  (max size 512 bytes in MPU-9150)
+        ro.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_MODE.FIFO_MODE_GYRO.bits);     // Enable gyro x,y,z sensors for FIFO  (max size 512 bytes in MPU-9150)
         Thread.sleep(40); // accumulate 40 samples in 40 milliseconds = 480 bytes
 
         // At end of sample accumulation, turn off FIFO sensor read
@@ -92,7 +92,7 @@ public class MPU9250Gyroscope extends Sensor3D {
         c = (byte)(c & ~0xE0); // Clear self-test bits [7:5]  ####
         c = (byte)(c & ~0x02); // Clear Fchoice bits [1:0]
         c = (byte)(c & ~0x18); // Clear AFS bits [4:3]
-        c = (byte)(c | GyrScale.GFS_2000DPS.getValue() ); // Set full scale range for the gyro GFS_2000DP = 0x18 = 24 #### does not require shifting!!!!
+        c = (byte)(c | GyrScale.GFS_2000DPS.bits ); // Set full scale range for the gyro GFS_2000DP = 0x18 = 24 #### does not require shifting!!!!
         c = (byte)(c | 0x00); // Set Fchoice for the gyro to 11 by writing its inverse to bits 1:0 of GYRO_CONFIG
         ro.writeByteRegister(Registers.GYRO_CONFIG, c ); // Write new GYRO_CONFIG value to register
 		
