@@ -34,9 +34,9 @@ public class MPU9250Accelerometer extends Sensor3D  {
 	private AccScale accelScale ;
 	private A_DLFP aDLFP;
 
-	MPU9250Accelerometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro)
+	MPU9250Accelerometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent)
 	{
-		super(sampleSize, sampleSize, ro);
+		super(sampleSize, sampleSize, ro,parent);
 		accelScale = AccScale.AFS_4G;
 		this.setValScaling(new DataFloat3D(	(float)AccScale.AFS_4G.getRes(),
 										(float)AccScale.AFS_4G.getRes(),
@@ -170,33 +170,19 @@ public class MPU9250Accelerometer extends Sensor3D  {
 
         // Configure MPU6050 accelerometer for bias calculation
         ro.writeByteRegister(Registers.ACCEL_CONFIG,(byte) AccScale.AFS_2G.bits); 		// Set accelerometer full-scale to 2 g, maximum sensitivity
+       
 
+        short[] readings = ((MPU9250)parent).operateFIFO(FIFO_Mode.ACC,40);
+        int readingCount = readings.length;
+        System.out.println("Read FIFO reading count: " + readingCount);
 
-        // Configure FIFO to capture accelerometer data for bias calculation
-        ro.writeByteRegister(Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
-        ro.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_Mode.ACC.bits);     // Enable accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
-        Thread.sleep(40); // accumulate 40 samples in 40 milliseconds = 480 bytes
-
-        // At end of sample accumulation, turn off FIFO sensor read
-        ro.writeByteRegister(Registers.FIFO_EN,(byte) 0x00);        // Disable gyro and accelerometer sensors for FIFO
-
-        short packetCount = ro.read16BitRegisters( Registers.FIFO_COUNTH, 1)[0];
-        int sampleCount =  packetCount / 12; // 12 bytes per sample 6 x 16 bit values
-
+        int sampleCount =  readingCount / 3; // 12 bytes per sample 6 x 16 bit values
         int[] accelBiasSum = new int[]{0,0,0}; //32 bit to allow for accumulation without overflow
-        short[] tempBias;
-        System.out.println("Read Fifo packetCount: "+packetCount);
-        
-        //Read FIFO
         for(int s = 0; s < sampleCount; s++)
         {
-            tempBias = ro.read16BitRegisters(Registers.FIFO_R_W,3); //6 bytes
-            //System.out.print("bias sample bytes: "+Arrays.toString(tempBias));
-        	//System.out.format(" [0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X]%n",tempBias[0],tempBias[1],tempBias[2],tempBias[3],tempBias[4],tempBias[5]);
-            
-            accelBiasSum[0] += tempBias[0]; // Sum individual signed 16-bit biases to get accumulated signed 32-bit biases
-            accelBiasSum[1] += tempBias[1];
-            accelBiasSum[2] += tempBias[2];
+            accelBiasSum[0] += readings[s]; // Sum individual signed 16-bit biases to get accumulated signed 32-bit biases
+            accelBiasSum[1] += readings[s+1];
+            accelBiasSum[2] += readings[s+2];
         }
         
         //calculate averages

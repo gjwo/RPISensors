@@ -34,9 +34,9 @@ public class MPU9250Gyroscope extends Sensor3D
 	private GyrScale gyroScale; 
 	private GT_DLFP cfgDLPF;
 
-	public MPU9250Gyroscope(int sampleRate, int sampleSize, MPU9250RegisterOperations ro) 
+	public MPU9250Gyroscope(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent) 
 	{
-		super(sampleRate, sampleSize, ro);
+		super(sampleRate, sampleSize, ro,parent);
 		gyroScale = GyrScale.GFS_2000DPS;
 		this.setValScaling( new DataFloat3D(	(float)gyroScale.getRes(),
 										(float)gyroScale.getRes(),

@@ -4,13 +4,14 @@ import java.io.IOException;
 
 import dataTypes.DataFloat1D;
 import dataTypes.TimestampedDataFloat1D;
+import sensors.models.NineDOF;
 import sensors.models.Sensor;
 
 public class MPU9250Thermometer extends Sensor<TimestampedDataFloat1D,DataFloat1D>  
 {
-	public MPU9250Thermometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro)
+	public MPU9250Thermometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, NineDOF parent)
 	{
-		super(sampleRate, sampleSize, ro);
+		super(sampleRate, sampleSize, ro,parent);
 		this.ro = ro;
 		// TODO Auto-generated constructor stub
 	}

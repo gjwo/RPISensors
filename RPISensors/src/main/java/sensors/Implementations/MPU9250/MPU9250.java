@@ -4,6 +4,7 @@ import devices.I2C.I2CImplementation;
 import sensors.models.NineDOF;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * MPU 9250 motion sensor
@@ -37,10 +38,10 @@ public class MPU9250 extends NineDOF
         // get device
         this.roMPU = new MPU9250RegisterOperations(mpu9250);
         this.roAK = new MPU9250RegisterOperations(ak8963);
-        gyro = new MPU9250Gyroscope(sampleSize, sampleSize, roMPU);
-        mag = new MPU9250Magnetometer(sampleSize, sampleSize, roAK);
-        accel = new MPU9250Accelerometer(sampleSize, sampleSize, roMPU);
-        therm = new MPU9250Thermometer(sampleSize, sampleSize, roMPU);
+        gyro = new MPU9250Gyroscope(sampleSize, sampleSize, roMPU,this);
+        mag = new MPU9250Magnetometer(sampleSize, sampleSize, roAK,this);
+        accel = new MPU9250Accelerometer(sampleSize, sampleSize, roMPU,this);
+        therm = new MPU9250Thermometer(sampleSize, sampleSize, roMPU,this);
         selfTest();
         calibrateGyroAcc();
         initMPU9250();
@@ -143,6 +144,26 @@ public class MPU9250 extends NineDOF
         //roMPU.outputConfigRegisters();
         Thread.sleep(100);
     	System.out.println("End initMPU9250");
+    }
+    
+    public short[] operateFIFO(FIFO_Mode mode, int msPeriod) throws InterruptedException
+    {
+    	short[] readings = null;
+    	
+        roMPU.writeByteRegister(Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
+        roMPU.writeByteRegister(Registers.FIFO_EN, mode.bits);     // Enable accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
+        Thread.sleep(msPeriod);
+
+        // At end of sample accumulation, turn off FIFO sensor read
+        roMPU.writeByteRegister(Registers.FIFO_EN,FIFO_Mode.NONE.bits);  // Disable all sensors for FIFO
+
+        short readingCount = roMPU.read16BitRegisters( Registers.FIFO_COUNTH, 1)[0];
+
+        System.out.println("Read Fifo packetCount: "+readingCount);
+        readings = roMPU.read16BitRegisters(Registers.FIFO_R_W,readingCount);
+        System.out.println("Readings"+ Arrays.toString(readings));
+    	
+    	return readings;
     }
 
 }

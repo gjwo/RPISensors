@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import dataTypes.DataFloat3D;
 import dataTypes.TimestampedDataFloat3D;
+import sensors.models.NineDOF;
 import sensors.models.Sensor3D;
 
 /**
@@ -25,8 +26,8 @@ public class MPU9250Magnetometer extends Sensor3D  {
     private short lastRawMagY;
     private short lastRawMagZ;
 
-	public MPU9250Magnetometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro) {
-		super(sampleRate, sampleSize, ro);
+	public MPU9250Magnetometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, NineDOF parent ) {
+		super(sampleRate, sampleSize, ro, parent);
 		// TODO Auto-generated constructor stub
 	}
 

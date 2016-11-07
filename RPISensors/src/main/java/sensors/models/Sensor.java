@@ -17,8 +17,9 @@ public abstract class Sensor <T,S>
     protected int sampleRate;
     protected int sampleSize;
     protected MPU9250RegisterOperations ro;
+    protected NineDOF parent;
 
-    public Sensor(int sampleRate, int sampleSize, MPU9250RegisterOperations ro)
+    public Sensor(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, NineDOF parent)
     {
         vals = new CircularArrayRing<T>();
         this.sampleRate = sampleRate;

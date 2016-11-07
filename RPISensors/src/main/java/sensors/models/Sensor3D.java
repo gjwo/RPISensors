@@ -10,8 +10,8 @@ import sensors.Implementations.MPU9250.MPU9250RegisterOperations;
  */
 public abstract class Sensor3D extends Sensor<TimestampedDataFloat3D,DataFloat3D>
 {	
-	public Sensor3D(int sampleRate, int sampleSize, MPU9250RegisterOperations ro) {
-		super(sampleRate, sampleSize, ro);
+	public Sensor3D(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, NineDOF parent) {
+		super(sampleRate, sampleSize, ro, parent);
 	    valBias = new DataFloat3D(0,0,0);
 	    valScaling= new DataFloat3D(1,1,1);
 
