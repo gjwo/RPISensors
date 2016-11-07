@@ -25,6 +25,7 @@ public abstract class Sensor <T,S>
         this.sampleRate = sampleRate;
         this.sampleSize = sampleSize;
         this.ro = ro;
+        this.parent = parent;
     }
 
     public T getLatestValue()

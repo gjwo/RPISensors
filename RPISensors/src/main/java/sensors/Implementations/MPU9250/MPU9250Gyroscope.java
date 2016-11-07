@@ -188,9 +188,9 @@ public class MPU9250Gyroscope extends Sensor3D
             //System.out.print("bias sample bytes: "+Arrays.toString(tempBias));
         	//System.out.format(" [0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X]%n",tempBias[0],tempBias[1],tempBias[2],tempBias[3],tempBias[4],tempBias[5]);
             
-            gyroBiasSum[0] += tempBias[3]; // Sum individual signed 16-bit biases to get accumulated signed 32-bit biases
-            gyroBiasSum[1] += tempBias[4];
-            gyroBiasSum[2] += tempBias[5];
+            gyroBiasSum[0] += tempBias[0]; // Sum individual signed 16-bit biases to get accumulated signed 32-bit biases
+            gyroBiasSum[1] += tempBias[1];
+            gyroBiasSum[2] += tempBias[2];
         }
         
         //calculate averages
@@ -230,12 +230,14 @@ public class MPU9250Gyroscope extends Sensor3D
     	ro.write16bitRegister(Registers.XG_OFFSET_H,gyroBiasAvgLSB[0]);
     	ro.write16bitRegister(Registers.YG_OFFSET_H,gyroBiasAvgLSB[1]);
     	ro.write16bitRegister(Registers.ZG_OFFSET_H,gyroBiasAvgLSB[2]);
-         
+        /* 
         // set super class NineDOF variables
         this.setValBias(new DataFloat3D(	(float) gyroBiasAvg[0]/(float) gyrosensitivity,
         							(float) gyroBiasAvg[1]/(float) gyrosensitivity,
         							(float) gyroBiasAvg[2]/(float) gyrosensitivity));
         //System.out.println("gyrBias (float): "+Arrays.toString(gyrBias));
+         * 
+         */
     	System.out.println("End setGyroBiases");
     }
 }

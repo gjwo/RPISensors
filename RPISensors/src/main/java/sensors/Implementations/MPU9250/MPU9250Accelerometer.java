@@ -194,7 +194,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         System.out.print("Accel Bias average: "+Arrays.toString(accelBiasAvg));
     	System.out.format(" [0x%X, 0x%X, 0x%X]%n",accelBiasAvg[0],accelBiasAvg[1],accelBiasAvg[2]);
     	
-        setAccelerometerBiases(accelBiasAvg);
+        //setAccelerometerBiases(accelBiasAvg);
         
     	System.out.println("End accel.calibrate");
 	}
@@ -247,10 +247,12 @@ public class MPU9250Accelerometer extends Sensor3D  {
         ro.write16bitRegister(Registers.YA_OFFSET_H, accelBiasReg[1]);
         ro.write16bitRegister(Registers.ZA_OFFSET_H, accelBiasReg[2]);
         
+        /*
         // set super class NineDOF variables
         this.setValBias(new DataFloat3D( 	(float)accelBiasAvg[0]/2/(float)accelSensitivity,
         								(float)accelBiasAvg[1]/2/(float)accelSensitivity,
         								(float)accelBiasAvg[2]/2/(float)accelSensitivity));
+        */								
     }
 
 }
