@@ -45,11 +45,11 @@ public class MPU9250 extends NineDOF
         byte FS = 0; 
 
         roMPU.writeByteRegister(Registers.SMPLRT_DIV,(byte)0x00); // Set gyro sample rate to 1 kHz
-        roMPU.writeByteRegister(Registers.CONFIG,(byte)0x02); // Set gyro sample rate to 1 kHz and DLPF to 92 Hz
+        roMPU.writeByteRegister(Registers.CONFIG,GT_DLFP.DLFP11_2.bits ); // Set gyro sample rate to 1 kHz and DLPF to 92 Hz
         roMPU.writeByteRegister(Registers.GYRO_CONFIG,GyrScale.GFS_250DPS.bits); // Set full scale range for the gyro to 250 dps (was FS<<3) 
         
-        roMPU.writeByteRegister(Registers.ACCEL_CONFIG,(byte)AccScale.AFS_2G.bits);// Set full scale range for the accelerometer to 2 g (was FS<<3 )
-        roMPU.writeByteRegister(Registers.ACCEL_CONFIG2,(byte)0x02); // Set accelerometer rate to 1 kHz and bandwidth to 92 Hz
+        roMPU.writeByteRegister(Registers.ACCEL_CONFIG,AccScale.AFS_2G.bits);// Set full scale range for the accelerometer to 2 g (was FS<<3 )
+        roMPU.writeByteRegister(Registers.ACCEL_CONFIG2,A_DLFP.ADLPF1_2.bits); // Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
         final int TEST_LENGTH = 200;
 
         int[] aSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
@@ -87,8 +87,8 @@ public class MPU9250 extends NineDOF
     	System.out.format(" [0x%X, 0x%X, 0x%X]%n", gAvg[0], gAvg[1], gAvg[2]);
         
         // Configure the accelerometer for self-test
-        roMPU.writeByteRegister(Registers.ACCEL_CONFIG, (byte)(0xE0 | AccScale.AFS_2G.bits)); // Enable self test on all three axes and set accelerometer range to +/- 2 g
-        roMPU.writeByteRegister(Registers.GYRO_CONFIG, (byte)(0xE0 | GyrScale.GFS_250DPS.bits));// Enable self test on all three axes and set gyro range to +/- 250 degrees/s
+        roMPU.writeByteRegister(Registers.ACCEL_CONFIG, (byte)(AccSelfTest.XYZ.bits | AccScale.AFS_2G.bits)); // Enable self test on all three axes and set accelerometer range to +/- 2 g
+        roMPU.writeByteRegister(Registers.GYRO_CONFIG, (byte)(GyrSelfTest.XYZ.bits | GyrScale.GFS_250DPS.bits));// Enable self test on all three axes and set gyro range to +/- 250 degrees/s
         Thread.sleep(25); // Delay a while to let the device stabilise
         //outputConfigRegisters();
         int[] aSelfTestSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
@@ -169,8 +169,8 @@ public class MPU9250 extends NineDOF
         System.out.println("y: " + AccuracyGyro[1] + "%");
         System.out.println("z: " + AccuracyGyro[2] + "%");
 
-        roMPU.writeByteRegister(Registers.ACCEL_CONFIG, (byte)(0x00 | AccScale.AFS_2G.bits)); //Clear self test mode and set accelerometer range to +/- 2 g
-        roMPU.writeByteRegister(Registers.GYRO_CONFIG,  (byte)(0x00 | GyrScale.GFS_250DPS.bits)); //Clear self test mode and set gyro range to +/- 250 degrees/s
+        roMPU.writeByteRegister(Registers.ACCEL_CONFIG, (byte)(AccSelfTest.NONE.bits | AccScale.AFS_2G.bits)); //Clear self test mode and set accelerometer range to +/- 2 g
+        roMPU.writeByteRegister(Registers.GYRO_CONFIG,  (byte)(AccSelfTest.NONE.bits | GyrScale.GFS_250DPS.bits)); //Clear self test mode and set gyro range to +/- 250 degrees/s
         
         Thread.sleep(25); // Delay a while to let the device stabilise
 

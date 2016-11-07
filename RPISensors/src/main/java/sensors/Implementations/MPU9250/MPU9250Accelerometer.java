@@ -44,7 +44,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
 
         // Configure FIFO to capture accelerometer data for bias calculation
         ro.writeByteRegister(Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
-        ro.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_MODE.FIFO_MODE_ACC.bits);     // Enable and accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
+        ro.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_MODE.FIFO_MODE_ACC.bits);     // Enable accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
         Thread.sleep(40); // accumulate 40 samples in 40 milliseconds = 480 bytes
 
         // At end of sample accumulation, turn off FIFO sensor read

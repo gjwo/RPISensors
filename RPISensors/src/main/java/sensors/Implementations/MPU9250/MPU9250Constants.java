@@ -153,38 +153,40 @@ enum Registers
         return address;
     }
 }
+// Register setting values
+// Convention1 - the 'bits' field holds the required bit settings in the correct bit positions in the register
+// Convention2 - the 'bitMask' field holds the bit mask to mask the bits in the correct bit position
+// Convention3 - fields intended for 8 8 bit register are held as an 8 bit byte
 
-enum MagMode
+//MPU9250 general register setting values
+enum FIFO_MODE
 {
-    MAG_MODE_100HZ   ((byte)0x06,1500), // 6 for 100 Hz continuous magnetometer data read
-    MAG_MODE_8HZ	 ((byte)0x02,128); // 2 for 8 Hz, continuous magnetometer data read
-
-    final byte mode;
-    final int sampleCount;
-    
-    MagMode(byte mode,int sampleCount)
-    {
-    	this.mode = mode;
-    	this.sampleCount = sampleCount;
-    }  
+	FIFO_MODE_NONE((byte)0x00),
+	FIFO_MODE_GYRO((byte)0x70),
+	FIFO_MODE_ACC((byte)0x08),
+	FIFO_MODE_GYRO_ACC((byte)0x78);
+	
+ final byte bits;
+ final byte bitMask = (byte) 0x78;
+ 
+ FIFO_MODE(byte bits)  { this.bits = bits; }
 }
 
-enum MagScale
+
+// Accelerometer register setting values
+enum AccSelfTest
 {
-    MFS_14BIT((byte)0x00,10f*4912f/8190f), //mscale val = 0, 14 bit
-    MFS_16BIT((byte)0x10,10f*4912f/32760f); //mscale val = 1, 16 bit
+	NONE((byte)0x00),   // normal mode, no self testing 
+	X_ONLY((byte)0x80), // Self test X axis only
+	Y_ONLY((byte)0x40), // Self test Y axis only
+	Z_ONLY((byte)0x20), // Self test Z axis only
+	XYZ((byte)0xE0);    // Self test X, Y & Z axes
 
-    final byte bits;
-    final float res;
-    final byte bitMask = (byte) 0x10;
-    
-    MagScale(byte bits, float res)
-    {
-        this.bits = bits;
-        this.res = res;
-    }
+	final byte bits;
+	final byte bitmask = (byte)0xE0;
+	
+	AccSelfTest(byte st){bits=st;};
 }
-
 enum AccScale
 {
     AFS_2G((byte)0x00,2),
@@ -204,13 +206,61 @@ enum AccScale
     
     public float getRes() {return minMax/32768.0f;}
 }
+enum A_DLFP
+{
+	// Accelerometer Configuration 2 (MPU-9250 0x1D)
+	// The data output rate of the DLPF filter block can be further reduced by a factor of 1/(1+SMPLRT_DIV),
+	// where SMPLRT_DIV is an 8-bit integer. Following is a small subset of ODRs that are configurable for the
+	// accelerometer in the normal mode in this manner (Hz):
+	// 3.91, 7.81, 15.63, 31.25, 62.50, 125, 250, 500, 1K
+	// ACCEL_FCHOICE_B is ACCEL_CONFIG_2 bit 3(the inverted version of accel_fchoice as described in the table below).
+	// The literals represent choices of ACCEL_FCHOICE + A_DLPF_CFG. So ADLPF1_2 would be 
+	// the pattern '010' in the lowest 3 bits of ACCEL_CONFIG2
+	ADLPF0_X((byte)0, 1046f,  4,  0.503f, 300), //DLPF bits not relevant (bits)
+	ADLPF1_0((byte)0, 218.1f, 1,  1.88f, 300),  //DLPF bits are relevant (bits)
+	ADLPF1_1((byte)1, 218.1f, 1,  1.88f, 300),
+	ADLPF1_2((byte)2,  99f,   1,  2.88f, 300),
+	ADLPF1_3((byte)3,  44.8f, 1,  4.88f, 300),
+	ADLPF1_4((byte)4,  21.2f, 1,  8.87f, 300),
+	ADLPF1_5((byte)5,  10.2f, 1, 16.83f, 300),
+	ADLPF1_6((byte)6,   5.05f,1, 32.48f, 300),	
+	ADLPF1_7((byte)7, 420f,   1,  1.38f, 300);	byte bits; 
+	
+	final float accelBandWidthHz;
+	final int rateKHz;
+	final float  delayMs;
+	final int noiseDensity ;
+    final byte bitMask = (byte) 0x07;
 
+	A_DLFP(byte b, float abw, int rate, float delay, int noise)
+	{
+		bits = b; 
+	    accelBandWidthHz = abw;
+	    rateKHz = rate;
+	    delayMs = delay;
+	    noiseDensity = noise;
+	}
+}
+// Gyroscope (and Thermometer) register setting values
+enum GyrSelfTest
+{
+	NONE((byte)0x00),   // normal mode, no self testing 
+	X_ONLY((byte)0x80), // Self test X axis only
+	Y_ONLY((byte)0x40), // Self test Y axis only
+	Z_ONLY((byte)0x20), // Self test Z axis only
+	XYZ((byte)0xE0);    // Self test X, Y & Z axes
+
+	final byte bits;
+	final byte bitmask = (byte)0xE0;
+	
+	GyrSelfTest(byte st){bits=st;};
+}
 enum GyrScale
 {
-    GFS_250DPS((byte)0x00,250),
-    GFS_500DPS((byte)0x08,500),
-    GFS_1000DPS((byte)0x10,1000),
-    GFS_2000DPS((byte)0x18,2000);
+    GFS_250DPS((byte)0x00,250),  //Gyro Full Scale Select: 250dps
+    GFS_500DPS((byte)0x08,500),  //Gyro Full Scale Select: 500dps
+    GFS_1000DPS((byte)0x10,1000),//Gyro Full Scale Select: 1000dps
+    GFS_2000DPS((byte)0x18,2000);//Gyro Full Scale Select: 2000dps
 
     final byte bits;
     final int minMax;
@@ -223,18 +273,6 @@ enum GyrScale
     }
     
     public float getRes() {return minMax/32768.0f;}
-}
-enum FIFO_MODE
-{
-	FIFO_MODE_NONE((byte)0x00),
-	FIFO_MODE_GYRO((byte)0x70),
-	FIFO_MODE_ACC((byte)0x08),
-	FIFO_MODE_GYRO_ACC((byte)0x78);
-	
-    final byte bits;
-    final byte bitMask = (byte) 0x78;
-    
-    FIFO_MODE(byte bits)  { this.bits = bits; }
 }
 
 enum GT_DLFP
@@ -273,38 +311,36 @@ enum GT_DLFP
 	    thermDelay = tf;
 	}
 }
-enum A_DLFP
-{
-	// Accelerometer Configuration 2
-	// The data output rate of the DLPF filter block can be further reduced by a factor of 1/(1+SMPLRT_DIV),
-	// where SMPLRT_DIV is an 8-bit integer. Following is a small subset of ODRs that are configurable for the
-	// accelerometer in the normal mode in this manner (Hz):
-	// 3.91, 7.81, 15.63, 31.25, 62.50, 125, 250, 500, 1K
-	// ACCEL_FCHOICE_B is ACCEL_CONFIG_2 bit 3(the inverted version of accel_fchoice as described in the table below).
-	// The literals represent choices of ACCEL_FCHOICE + A_DLPF_CFG. So ADLPF1_2 would be 
-	// the pattern '010' in the lowest 3 bits of ACCEL_CONFIG_2
-	ADLPF0_X((byte)0, 1046f,  4,  0.503f, 300), //DLPF bits not relevant (bits)
-	ADLPF1_0((byte)0, 218.1f, 1,  1.88f, 300),  //DLPF bits are relevant (bits)
-	ADLPF1_1((byte)1, 218.1f, 1,  1.88f, 300),
-	ADLPF1_2((byte)2,  99f,   1,  2.88f, 300),
-	ADLPF1_3((byte)3,  44.8f, 1,  4.88f, 300),
-	ADLPF1_4((byte)4,  21.2f, 1,  8.87f, 300),
-	ADLPF1_5((byte)5,  10.2f, 1, 16.83f, 300),
-	ADLPF1_6((byte)6,   5.05f,1, 32.48f, 300),	
-	ADLPF1_7((byte)7, 420f,   1,  1.38f, 300);	byte bits; 
-	
-	final float accelBandWidthHz;
-	final int rateKHz;
-	final float  delayMs;
-	final int noiseDensity ;
-    final byte bitMask = (byte) 0x07;
 
-	A_DLFP(byte b, float abw, int rate, float delay, int noise)
-	{
-		bits = b; 
-	    accelBandWidthHz = abw;
-	    rateKHz = rate;
-	    delayMs = delay;
-	    noiseDensity = noise;
-	}
+//Magnetometer register setting values
+//note all magnetometer 16 bit quantities are stored littleEndian
+enum MagMode
+{
+ MAG_MODE_100HZ   ((byte)0x06,1500), // 6 for 100 Hz continuous magnetometer data read
+ MAG_MODE_8HZ	 ((byte)0x02,128); // 2 for 8 Hz, continuous magnetometer data read
+
+ final byte mode;
+ final int sampleCount;
+ 
+ MagMode(byte mode,int sampleCount)
+ {
+ 	this.mode = mode;
+ 	this.sampleCount = sampleCount;
+ }  
+}
+
+enum MagScale
+{
+ MFS_14BIT((byte)0x00,10f*4912f/8190f), //mscale val = 0, 14 bit
+ MFS_16BIT((byte)0x10,10f*4912f/32760f); //mscale val = 1, 16 bit
+
+ final byte bits;
+ final float res;
+ final byte bitMask = (byte) 0x10;
+ 
+ MagScale(byte bits, float res)
+ {
+     this.bits = bits;
+     this.res = res;
+ }
 }
