@@ -333,10 +333,12 @@ enum A_DLFP
 	ADLPF1_5((byte)5,  10.2f, 1, 16.83f, 300),
 	ADLPF1_6((byte)6,   5.05f,1, 32.48f, 300),	
 	ADLPF1_7((byte)7, 420f,   1,  1.38f, 300);	byte bits; 
-    float accelBandWidthHz;
-    int rateKHz;
-    float  delayMs;
-    int noiseDensity ;
+	
+	private final float accelBandWidthHz;
+	private final int rateKHz;
+	private final float  delayMs;
+	private final int noiseDensity ;
+    private final byte bitMask = (byte) 0x07;
 
 	A_DLFP(byte b, float abw, int rate, float delay, int noise)
 	{
@@ -346,5 +348,11 @@ enum A_DLFP
 	    delayMs = delay;
 	    noiseDensity = noise;
 	}
-
+	
+	public byte getBits() {return bits;}
+	public float getAccelBandWidthHz() {return accelBandWidthHz;}
+	public int getRateKHz() {return rateKHz;}
+	public float getDelayMs() {return delayMs;}
+	public int getNoiseDensity() {return noiseDensity;}
+	public byte getBitMask() {return bitMask;}
 }
