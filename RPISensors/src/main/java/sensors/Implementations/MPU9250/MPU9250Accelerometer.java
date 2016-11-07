@@ -7,6 +7,29 @@ import dataTypes.DataFloat3D;
 import dataTypes.TimestampedDataFloat3D;
 import sensors.models.Sensor3D;
 
+/**
+ * MPU 9250 Accelerometer sensor
+ * Created by G.J.Wood on 1/11/2016
+ * Based on MPU9250_MS5637_t3 Basic Example Code by: Kris Winer date: April 1, 2014
+ * https://github.com/kriswiner/MPU-9250/blob/master/MPU9250_MS5637_AHRS_t3.ino
+ * 
+ * This class handles the operation of the Accelerometer sensor and is a subclass of Sensor3D, it provides those methods
+ * which are hardware specific to the MPU-9250 such as calibration configuring, self test and update
+ * This class is independent of the bus implementation, register addressing etc as this is handled by RegisterOperations
+ *  
+ * Hardware registers controlled by this class
+ * 0x0D 13 SELF_TEST_X_ACCEL 	- Accelerometer X axis self test byte
+ * 0x0E 14 SELF_TEST_Y_ACCEL 	- Accelerometer Y axis self test byte
+ * 0x0F 15 SELF_TEST_Z_ACCEL 	- Accelerometer Z axis self test byte
+ * 0x77 119 XA_OFFSET			- Accelerometer X axis bias offset (15 bits big endian [14:7], [6:0] bit0 is Thermometer Compensation)
+ * 0x7A 122 YA_OFFSET			- Accelerometer Y axis bias offset (15 bits big endian [14:7], [6:0] bit0 is Thermometer Compensation)
+ * 0x7B 123 YA_OFFSE			- Accelerometer Z axis bias offset (15 bits big endian [14:7], [6:0] bit0 is Thermometer Compensation)
+ * 0x1C 28 ACCEL_CONFIG			- Accelerometer configuration byte
+ * 0x1D 29 ACCEL_CONFIG 2		- Accelerometer configuration byte 2
+ * 0x3B 59 ACCEL_XOUT			- Accelerometer X axis reading (16 bits big endian)
+ * 0x3D 61 ACCEL_YOUT			- Accelerometer Y axis reading (16 bits big endian)
+ * 0x3F 63 ACCEL_ZOUT			- Accelerometer Z axis reading (16 bits big endian)
+**/
 public class MPU9250Accelerometer extends Sensor3D  {
 	private AccScale accelScale ;
 	private A_DLFP aDLFP;
@@ -29,58 +52,6 @@ public class MPU9250Accelerometer extends Sensor3D  {
         //ro.readByteRegister(Registers.ACCEL_XOUT_H, 6);  // Read again to trigger
         registers = ro.read16BitRegisters(Registers.ACCEL_XOUT_H,3);
         this.addValue(OffsetAndScale(new TimestampedDataFloat3D(registers[0],registers[1],registers[2])));
-	}
-	
-	@Override
-	public void calibrate() throws InterruptedException
-	{
-    	System.out.println("accel.calibrate");
-    	
-    	// Assumes we are in calibration bits via setCalibrationMode9250();
-
-        // Configure MPU6050 accelerometer for bias calculation
-        ro.writeByteRegister(Registers.ACCEL_CONFIG,(byte) AccScale.AFS_2G.bits); 		// Set accelerometer full-scale to 2 g, maximum sensitivity
-
-
-        // Configure FIFO to capture accelerometer data for bias calculation
-        ro.writeByteRegister(Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
-        ro.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_Mode.ACC.bits);     // Enable accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
-        Thread.sleep(40); // accumulate 40 samples in 40 milliseconds = 480 bytes
-
-        // At end of sample accumulation, turn off FIFO sensor read
-        ro.writeByteRegister(Registers.FIFO_EN,(byte) 0x00);        // Disable gyro and accelerometer sensors for FIFO
-
-        short packetCount = ro.read16BitRegisters( Registers.FIFO_COUNTH, 1)[0];
-        int sampleCount =  packetCount / 12; // 12 bytes per sample 6 x 16 bit values
-
-        int[] accelBiasSum = new int[]{0,0,0}; //32 bit to allow for accumulation without overflow
-        short[] tempBias;
-        System.out.println("Read Fifo packetCount: "+packetCount);
-        
-        //Read FIFO
-        for(int s = 0; s < sampleCount; s++)
-        {
-            tempBias = ro.read16BitRegisters(Registers.FIFO_R_W,3); //6 bytes
-            //System.out.print("bias sample bytes: "+Arrays.toString(tempBias));
-        	//System.out.format(" [0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X]%n",tempBias[0],tempBias[1],tempBias[2],tempBias[3],tempBias[4],tempBias[5]);
-            
-            accelBiasSum[0] += tempBias[0]; // Sum individual signed 16-bit biases to get accumulated signed 32-bit biases
-            accelBiasSum[1] += tempBias[1];
-            accelBiasSum[2] += tempBias[2];
-        }
-        
-        //calculate averages
-        short[] accelBiasAvg = new short[]{0,0,0}; //16 bit average
-        accelBiasAvg[0] = (short)((accelBiasSum[0] / sampleCount) & 0xffff); // Normalise sums to get average count biases
-        accelBiasAvg[1] = (short)((accelBiasSum[1] / sampleCount) & 0xffff); 
-        accelBiasAvg[2] = (short)((accelBiasSum[2] / sampleCount) & 0xffff); 
-        
-        System.out.print("Accel Bias average: "+Arrays.toString(accelBiasAvg));
-    	System.out.format(" [0x%X, 0x%X, 0x%X]%n",accelBiasAvg[0],accelBiasAvg[1],accelBiasAvg[2]);
-    	
-        //setAccelerometerBiases(accelBiasAvg);
-        
-    	System.out.println("End accel.calibrate");
 	}
 
 	@Override
@@ -188,6 +159,58 @@ public class MPU9250Accelerometer extends Sensor3D  {
         Thread.sleep(25); // Delay a while to let the device stabilise
 
         System.out.println("End acc.selfTest");
+	}
+	
+	@Override
+	public void calibrate() throws InterruptedException
+	{
+    	System.out.println("accel.calibrate");
+    	
+    	// Assumes we are in calibration bits via setCalibrationMode9250();
+
+        // Configure MPU6050 accelerometer for bias calculation
+        ro.writeByteRegister(Registers.ACCEL_CONFIG,(byte) AccScale.AFS_2G.bits); 		// Set accelerometer full-scale to 2 g, maximum sensitivity
+
+
+        // Configure FIFO to capture accelerometer data for bias calculation
+        ro.writeByteRegister(Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
+        ro.writeByteRegister(Registers.FIFO_EN,(byte) FIFO_Mode.ACC.bits);     // Enable accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
+        Thread.sleep(40); // accumulate 40 samples in 40 milliseconds = 480 bytes
+
+        // At end of sample accumulation, turn off FIFO sensor read
+        ro.writeByteRegister(Registers.FIFO_EN,(byte) 0x00);        // Disable gyro and accelerometer sensors for FIFO
+
+        short packetCount = ro.read16BitRegisters( Registers.FIFO_COUNTH, 1)[0];
+        int sampleCount =  packetCount / 12; // 12 bytes per sample 6 x 16 bit values
+
+        int[] accelBiasSum = new int[]{0,0,0}; //32 bit to allow for accumulation without overflow
+        short[] tempBias;
+        System.out.println("Read Fifo packetCount: "+packetCount);
+        
+        //Read FIFO
+        for(int s = 0; s < sampleCount; s++)
+        {
+            tempBias = ro.read16BitRegisters(Registers.FIFO_R_W,3); //6 bytes
+            //System.out.print("bias sample bytes: "+Arrays.toString(tempBias));
+        	//System.out.format(" [0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X]%n",tempBias[0],tempBias[1],tempBias[2],tempBias[3],tempBias[4],tempBias[5]);
+            
+            accelBiasSum[0] += tempBias[0]; // Sum individual signed 16-bit biases to get accumulated signed 32-bit biases
+            accelBiasSum[1] += tempBias[1];
+            accelBiasSum[2] += tempBias[2];
+        }
+        
+        //calculate averages
+        short[] accelBiasAvg = new short[]{0,0,0}; //16 bit average
+        accelBiasAvg[0] = (short)((accelBiasSum[0] / sampleCount) & 0xffff); // Normalise sums to get average count biases
+        accelBiasAvg[1] = (short)((accelBiasSum[1] / sampleCount) & 0xffff); 
+        accelBiasAvg[2] = (short)((accelBiasSum[2] / sampleCount) & 0xffff); 
+        
+        System.out.print("Accel Bias average: "+Arrays.toString(accelBiasAvg));
+    	System.out.format(" [0x%X, 0x%X, 0x%X]%n",accelBiasAvg[0],accelBiasAvg[1],accelBiasAvg[2]);
+    	
+        setAccelerometerBiases(accelBiasAvg);
+        
+    	System.out.println("End accel.calibrate");
 	}
     public void setAccelerometerBiases(short[] accelBiasAvg)
     {

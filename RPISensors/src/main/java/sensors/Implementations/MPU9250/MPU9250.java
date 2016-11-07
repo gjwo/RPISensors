@@ -14,6 +14,16 @@ import java.io.IOException;
  * Basic MPU-9250 gyroscope, accelerometer and magnetometer functionality including self test, initialisation, and calibration of the sensor,
  * getting properly scaled accelerometer, gyroscope, and magnetometer data out. This class is independent of the bus implementation, register 
  * addressing etc as this is handled by RegisterOperations 
+ * Hardware registers controlled by this class
+ * 0x19  25 SMPLRT_DIV 	- Sample Rate Divider
+ * 0x1A  26 CONFIG		- Configuration
+ * 0x23  35 FIFO_EN		- First In First Out Enable
+ * 0x6A 106 USER_CTRL	- User Control
+ * 0x6B 107 PWR_MGMT_1	- Power Management 1
+ * 0x6C 108 PWR_MGMT_2	- Power Management 2
+ * 0x72 114 FIFO_COUNT	- First In First Out byte count (13bit BigEndian [12:8],[7:0])
+ * 0x74 116 FIFO_R_W	- First In First Out byte
+ * 0x75 117 WHO_AM_I	- Device Address
  */
 public class MPU9250 extends NineDOF
 {
