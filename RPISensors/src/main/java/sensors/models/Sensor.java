@@ -3,7 +3,6 @@ package sensors.models;
 import java.io.IOException;
 
 import dataTypes.CircularArrayRing;
-import sensors.Implementations.MPU9250.MPU9250RegisterOperations;
 
 /**
  * RPITank - devices.sensors
@@ -16,16 +15,12 @@ public abstract class Sensor <T,S>
     protected S valScaling;
     protected int sampleRate;
     protected int sampleSize;
-    protected MPU9250RegisterOperations ro;
-    protected NineDOF parent;
 
-    public Sensor(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, NineDOF parent)
+    public Sensor(int sampleRate, int sampleSize)
     {
         vals = new CircularArrayRing<T>();
         this.sampleRate = sampleRate;
         this.sampleSize = sampleSize;
-        this.ro = ro;
-        this.parent = parent;
     }
 
     public T getLatestValue()

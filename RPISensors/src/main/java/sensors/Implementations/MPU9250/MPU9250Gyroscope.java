@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import dataTypes.DataFloat3D;
 import dataTypes.TimestampedDataFloat3D;
+import sensors.models.NineDOF;
 import sensors.models.Sensor3D;
 
 /**
@@ -31,16 +32,20 @@ import sensors.models.Sensor3D;
 **/
 public class MPU9250Gyroscope extends Sensor3D 
 {
+    protected MPU9250RegisterOperations ro;
+    protected NineDOF parent;
 	private GyrScale gyroScale; 
 	private GT_DLFP cfgDLPF;
 
 	public MPU9250Gyroscope(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent) 
 	{
-		super(sampleRate, sampleSize, ro,parent);
+		super(sampleRate, sampleSize);
 		gyroScale = GyrScale.GFS_2000DPS;
 		this.setValScaling( new DataFloat3D(	(float)gyroScale.getRes(),
 										(float)gyroScale.getRes(),
 										(float)gyroScale.getRes()));
+		this.ro = ro;
+		this.parent = parent;
 	}
 
 	public GT_DLFP getDFLP(){return cfgDLPF;}

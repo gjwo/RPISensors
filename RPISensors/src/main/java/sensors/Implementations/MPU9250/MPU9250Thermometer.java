@@ -9,10 +9,13 @@ import sensors.models.Sensor;
 
 public class MPU9250Thermometer extends Sensor<TimestampedDataFloat1D,DataFloat1D>  
 {
+    protected MPU9250RegisterOperations ro;
+    protected NineDOF parent;
 	public MPU9250Thermometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, NineDOF parent)
 	{
-		super(sampleRate, sampleSize, ro,parent);
+		super(sampleRate, sampleSize);
 		this.ro = ro;
+		this.parent = parent;
 		// TODO Auto-generated constructor stub
 	}
 	

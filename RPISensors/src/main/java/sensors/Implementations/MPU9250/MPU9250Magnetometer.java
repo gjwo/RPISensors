@@ -20,6 +20,8 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	 * @param sampleRate
 	 * @param sampleSize
 	 */
+    protected MPU9250RegisterOperations ro;
+    protected NineDOF parent;
     private static final MagScale magScale = MagScale.MFS_16BIT;
     private static final MagMode magMode = MagMode.MM_100HZ;
     private short lastRawMagX;  //needed during calibration
@@ -27,8 +29,9 @@ public class MPU9250Magnetometer extends Sensor3D  {
     private short lastRawMagZ;
 
 	public MPU9250Magnetometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, NineDOF parent ) {
-		super(sampleRate, sampleSize, ro, parent);
-		// TODO Auto-generated constructor stub
+		super(sampleRate, sampleSize);
+		this.ro = ro;
+		this.parent = parent;
 	}
 
 	/* (non-Javadoc)

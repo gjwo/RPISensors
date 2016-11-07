@@ -2,16 +2,14 @@ package sensors.models;
 
 import dataTypes.DataFloat3D;
 import dataTypes.TimestampedDataFloat3D;
-import sensors.Implementations.MPU9250.MPU9250RegisterOperations;
-
 /**
  * RPITank - devices.sensors
  * Created by GJWood on 18/07/2016.
  */
 public abstract class Sensor3D extends Sensor<TimestampedDataFloat3D,DataFloat3D>
 {	
-	public Sensor3D(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, NineDOF parent) {
-		super(sampleRate, sampleSize, ro, parent);
+	public Sensor3D(int sampleRate, int sampleSize) {
+		super(sampleRate, sampleSize);
 	    valBias = new DataFloat3D(0,0,0);
 	    valScaling= new DataFloat3D(1,1,1);
 

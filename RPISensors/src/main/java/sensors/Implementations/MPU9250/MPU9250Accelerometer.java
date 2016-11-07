@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import dataTypes.DataFloat3D;
 import dataTypes.TimestampedDataFloat3D;
+import sensors.models.NineDOF;
 import sensors.models.Sensor3D;
 
 /**
@@ -31,16 +32,20 @@ import sensors.models.Sensor3D;
  * 0x3F 63 ACCEL_ZOUT			- Accelerometer Z axis reading (16 bits big endian)
 **/
 public class MPU9250Accelerometer extends Sensor3D  {
+    protected MPU9250RegisterOperations ro;
+    protected NineDOF parent;
 	private AccScale accelScale ;
 	private A_DLFP aDLFP;
 
 	MPU9250Accelerometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent)
 	{
-		super(sampleSize, sampleSize, ro,parent);
+		super(sampleSize, sampleSize);
 		accelScale = AccScale.AFS_4G;
 		this.setValScaling(new DataFloat3D(	(float)AccScale.AFS_4G.getRes(),
 										(float)AccScale.AFS_4G.getRes(),
 										(float)AccScale.AFS_4G.getRes()));
+		this.ro = ro;
+		this.parent = parent;
 	}
 
 	public	AccScale getAccScale(){ return accelScale;}
