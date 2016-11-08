@@ -88,7 +88,9 @@ public class MPU9250Accelerometer extends Sensor3D  {
 
 		byte FS = 0; 
      
-        ro.writeByteRegister(Registers.ACCEL_CONFIG,AccScale.AFS_2G.bits);// Set full scale range for the accelerometer to 2 g (was FS<<3 )
+        ro.writeByteRegister(Registers.ACCEL_CONFIG, (byte)(	AccSelfTest.NONE.bits |	// no self test
+        														AccScale.AFS_2G.bits));	// Set full scale range for the accelerometer to 2 g 
+        ro.writeByteRegister(Registers.ACCEL_CONFIG2, (byte)(	A_DLFP.ADLPF1_2.bits ));	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
         final int TEST_LENGTH = 200;
 
         int[] aSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
@@ -106,14 +108,16 @@ public class MPU9250Accelerometer extends Sensor3D  {
         short[] aAvg = new short[] {0,0,0};
         for(int i = 0; i<3; i++)
         {
-            aAvg[i] = (short) ((short)(aSum[i]/TEST_LENGTH) & (short)0xFFFF); //average and mask off top bits
+            aAvg[i] = (short) ((short)((aSum[i]/TEST_LENGTH) & (short)0xFFFF)); //average and mask off top bits
         }
 
         System.out.print("aAvg average: "+Arrays.toString(aAvg));
     	System.out.format(" [0x%X, 0x%X, 0x%X]%n", aAvg[0], aAvg[1], aAvg[2]);
         
         // Configure the accelerometer for self-test
-        ro.writeByteRegister(Registers.ACCEL_CONFIG, (byte)(AccSelfTest.XYZ.bits | AccScale.AFS_2G.bits)); // Enable self test on all three axes and set accelerometer range to +/- 2 g
+        ro.writeByteRegister(Registers.ACCEL_CONFIG, (byte)(	AccSelfTest.XYZ.bits |	// Enable self test all axes
+        														AccScale.AFS_2G.bits)); // Set accelerometer range to +/- 2 g
+        ro.writeByteRegister(Registers.ACCEL_CONFIG2, (byte)(	A_DLFP.ADLPF1_2.bits ));	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
         Thread.sleep(25); // Delay a while to let the device stabilise
         //outputConfigRegisters();
         int[] aSelfTestSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
@@ -140,8 +144,8 @@ public class MPU9250Accelerometer extends Sensor3D  {
         // Calculate Accelerometer accuracy
         short[] selfTestAccel = new short[3]; //Longer than byte to allow for removal of sign bit as this is unsigned
         selfTestAccel[0] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_X_ACCEL) & 0xFF);
-        selfTestAccel[1] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_Y_ACCEL) & 0xFF);
-        selfTestAccel[2] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_Z_ACCEL) & 0xFF);
+        selfTestAccel[1] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_X_ACCEL) & 0xFF);
+        selfTestAccel[2] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_X_ACCEL) & 0xFF);
         System.out.print("Self test Accel bytes: "+Arrays.toString(selfTestAccel));
     	System.out.format(" [0x%X, 0x%X, 0x%X]%n", selfTestAccel[0], selfTestAccel[1], selfTestAccel[2]);
         
@@ -186,14 +190,16 @@ public class MPU9250Accelerometer extends Sensor3D  {
             accelBiasSum[1] += readings[s+1];
             accelBiasSum[2] += readings[s+2];
         }
+        System.out.print("Accel Bias sum: "+Arrays.toString(accelBiasSum));
+    	System.out.format(" [0x%X, 0x%X, 0x%X]%n",accelBiasSum[0],accelBiasSum[1],accelBiasSum[2]);
         
         //calculate averages
         short[] accelBiasAvg = new short[]{0,0,0}; //16 bit average
         accelBiasAvg[0] = (short)((accelBiasSum[0] / sampleCount) & 0xffff); // Normalise sums to get average count biases
         accelBiasAvg[1] = (short)((accelBiasSum[1] / sampleCount) & 0xffff); 
         accelBiasAvg[2] = (short)((accelBiasSum[2] / sampleCount) & 0xffff); 
-        
-        System.out.print("Accel Bias average: "+Arrays.toString(accelBiasAvg));
+        System.out.print("Accel sample count: " + sampleCount);
+        System.out.print("Accel bias average: " + Arrays.toString(accelBiasAvg));
     	System.out.format(" [0x%X, 0x%X, 0x%X]%n",accelBiasAvg[0],accelBiasAvg[1],accelBiasAvg[2]);
     	
         setAccelerometerBiases(accelBiasAvg);

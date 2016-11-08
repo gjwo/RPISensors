@@ -160,15 +160,13 @@ public class MPU9250 extends NineDOF
         System.out.println("Read Fifo byte count: " + byteCount);
         int readingCount = byteCount/2;
         short[]readings = new short[readingCount];
-
-        System.out.println("Read Fifo 16bit count: " + readingCount);
         byte high,low;
         for (int i = 0; i<readingCount; i++)
         {	
         	high = roMPU.readByteRegister(Registers.FIFO_R_W);
         	low = roMPU.readByteRegister(Registers.FIFO_R_W);
            	readings[i] = (short) ((high << 8) | (low&0xFF)) ;  // Turn the MSB and LSB into a signed 16-bit value
-        	System.out.format("%d: [0x%X, 0x%X] 0x%X %d%n", i,high,low, readings[i],readings[i]);
+        	//System.out.format("%d: [0x%X, 0x%X] 0x%X %d%n", i,high,low, readings[i],readings[i]);
         }
     	System.out.println("End operateFIFO");
     	return readings;

@@ -195,11 +195,11 @@ public class MPU9250RegisterOperations {
    {
 
        try {
-    	   busDevice.write(r.getAddress(),(byte)(((rv)  >> 8) & 0xFF)); //convert to Bytes
+    	   busDevice.write(r.getAddress(),(byte)(((rv)  >> 8) & 0xFF)); //extract and write most significant byte, mask after shift
     	   try {
 			Thread.sleep(2);// delay to allow register to settle
     	   } catch (InterruptedException e) {}
-    	   busDevice.write(r.getAddress()+1,(byte)((rv) & 0xFF)); 
+    	   busDevice.write(r.getAddress()+1,(byte)((rv) & 0xFF)); //extract and write least significant byte mask without shift
        } catch (IOException e) {
 		e.printStackTrace();
        }
