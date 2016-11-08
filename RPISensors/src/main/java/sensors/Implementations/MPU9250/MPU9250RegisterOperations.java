@@ -91,9 +91,9 @@ public class MPU9250RegisterOperations {
        DataShort3D[] datapoints = new DataShort3D[pointCount];
        for (int i=0;i<pointCount;i++)		
        {
-    	   datapoints[i].setX( (short) (((short)rawData[i*2] << 8) | rawData[(i*2)+1])) ;  // Turn the MSB and LSB into a signed 16-bit value
-    	   datapoints[i].setY( (short) (((short)rawData[(i+1)*2] << 8) | rawData[((i+1)*2)+1])) ;  // Turn the MSB and LSB into a signed 16-bit value
-    	   datapoints[i].setZ( (short) (((short)rawData[(i+2)*2] << 8) | rawData[((i+2)*2)+1])) ;  // Turn the MSB and LSB into a signed 16-bit value
+    	   datapoints[i].setX( (short) (((short)rawData[i*2] << 8) | (rawData[(i*2)+1]&0xFF))) ;  // Turn the MSB and LSB into a signed 16-bit value
+    	   datapoints[i].setY( (short) (((short)rawData[(i+1)*2] << 8) | (rawData[((i+1)*2)+1]&0xFF))) ;  // Turn the MSB and LSB into a signed 16-bit value
+    	   datapoints[i].setZ( (short) (((short)rawData[(i+2)*2] << 8) | (rawData[((i+2)*2)+1]&0xFF))) ;  // Turn the MSB and LSB into a signed 16-bit value
        }
        return datapoints;
    }
@@ -110,7 +110,7 @@ public class MPU9250RegisterOperations {
        short[] registers = new short[regCount];
        for (int i=0;i<regCount;i++)		
        {
-       	registers[i] = (short) (((short)rawData[i*2] << 8) | rawData[(i*2)+1]) ;  // Turn the MSB and LSB into a signed 16-bit value
+       	registers[i] = (short) (((short)rawData[i*2] << 8) | (rawData[(i*2)+1]&0xff)) ;  // Turn the MSB and LSB into a signed 16-bit value
        }
        return registers;
    }
@@ -127,7 +127,7 @@ public class MPU9250RegisterOperations {
        short[] registers = new short[regCount];
        for (int i=0;i<regCount;i++)		
        {
-       	registers[i] = (short) (((short)rawData[i*2+1] << 8) | rawData[(i*2)]) ;  // Turn the MSB and LSB into a signed 16-bit value
+       	registers[i] = (short) (((short)rawData[i*2+1] << 8) | (rawData[(i*2)]&0xFF)) ;  // Turn the MSB and LSB into a signed 16-bit value
        }
        return registers;
    }

@@ -5,7 +5,6 @@ import java.util.Arrays;
 
 import dataTypes.DataFloat3D;
 import dataTypes.TimestampedDataFloat3D;
-import sensors.models.NineDOF;
 import sensors.models.Sensor3D;
 
 /**
@@ -33,7 +32,7 @@ import sensors.models.Sensor3D;
 **/
 public class MPU9250Accelerometer extends Sensor3D  {
     protected MPU9250RegisterOperations ro;
-    protected NineDOF parent;
+    protected MPU9250 parent;
 	private AccScale accelScale ;
 	private A_DLFP aDLFP;
 
@@ -175,13 +174,11 @@ public class MPU9250Accelerometer extends Sensor3D  {
 
         // Configure MPU6050 accelerometer for bias calculation
         ro.writeByteRegister(Registers.ACCEL_CONFIG,(byte) AccScale.AFS_2G.bits); 		// Set accelerometer full-scale to 2 g, maximum sensitivity
-       
-
-        short[] readings = ((MPU9250)parent).operateFIFO(FIFO_Mode.ACC,40);
+        short[] readings = parent.operateFIFO(FIFO_Mode.ACC,40);
         int readingCount = readings.length;
-        System.out.println("Read FIFO reading count: " + readingCount);
+        System.out.println("Readings length: " + readingCount);
 
-        int sampleCount =  readingCount / 3; // 12 bytes per sample 6 x 16 bit values
+        int sampleCount =  readingCount / 3; // 6 bytes per sample 3 x 16 bit values
         int[] accelBiasSum = new int[]{0,0,0}; //32 bit to allow for accumulation without overflow
         for(int s = 0; s < sampleCount; s++)
         {
@@ -199,7 +196,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         System.out.print("Accel Bias average: "+Arrays.toString(accelBiasAvg));
     	System.out.format(" [0x%X, 0x%X, 0x%X]%n",accelBiasAvg[0],accelBiasAvg[1],accelBiasAvg[2]);
     	
-        //setAccelerometerBiases(accelBiasAvg);
+        setAccelerometerBiases(accelBiasAvg);
         
     	System.out.println("End accel.calibrate");
 	}

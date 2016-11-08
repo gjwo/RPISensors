@@ -148,8 +148,7 @@ public class MPU9250 extends NineDOF
     
     public short[] operateFIFO(FIFO_Mode mode, int msPeriod) throws InterruptedException
     {
-    	short[] readings = null;
-    	
+    	System.out.println("operateFIFO");
         roMPU.writeByteRegister(Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
         roMPU.writeByteRegister(Registers.FIFO_EN, mode.bits);     // Enable accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
         Thread.sleep(msPeriod);
@@ -157,19 +156,21 @@ public class MPU9250 extends NineDOF
         // At end of sample accumulation, turn off FIFO sensor read
         roMPU.writeByteRegister(Registers.FIFO_EN,FIFO_Mode.NONE.bits);  // Disable all sensors for FIFO
 
-        short readingCount = roMPU.read16BitRegisters( Registers.FIFO_COUNTH, 1)[0];
-        readings = new short[readingCount/2];
+        int byteCount = roMPU.read16BitRegisters( Registers.FIFO_COUNTH, 1)[0];
+        System.out.println("Read Fifo byte count: " + byteCount);
+        int readingCount = byteCount/2;
+        short[]readings = new short[readingCount];
 
-        System.out.println("Read Fifo packetCount: "+readingCount);
-        short high,low;
-        for (int i = 0; i<readingCount; i=i+2)
-        {
+        System.out.println("Read Fifo 16bit count: " + readingCount);
+        byte high,low;
+        for (int i = 0; i<readingCount; i++)
+        {	
         	high = roMPU.readByteRegister(Registers.FIFO_R_W);
         	low = roMPU.readByteRegister(Registers.FIFO_R_W);
-           	readings[i/2] = (short) ((high << 8) | low) ;  // Turn the MSB and LSB into a signed 16-bit value
+           	readings[i] = (short) ((high << 8) | (low&0xFF)) ;  // Turn the MSB and LSB into a signed 16-bit value
+        	System.out.format("%d: [0x%X, 0x%X] 0x%X %d%n", i,high,low, readings[i],readings[i]);
         }
-        System.out.println("Readings"+ Arrays.toString(readings));
-    	
+    	System.out.println("End operateFIFO");
     	return readings;
     }
 
