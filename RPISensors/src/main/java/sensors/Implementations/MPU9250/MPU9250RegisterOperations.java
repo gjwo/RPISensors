@@ -156,6 +156,36 @@ public class MPU9250RegisterOperations {
 	   else System.out.format("%20s : %8s 0x%X -> %8s 0x%X read as -> %8s 0x%X%n ",
 			   r.name(),byteToString(oldRegVal),oldRegVal,byteToString(rv),rv,byteToString(newRegVal),newRegVal);
    }
+   
+   /**
+    * Writes a byte to the specified byte register from the device this class is associated with
+    * @param r		- the register to be read
+    * @param mask	- a byte mask with bits set for the position of the field
+    * @param bits	- a byte with the bits set in the correct position for the field to give the required setting 
+    * 				  i.e in line with the mask. 
+    */
+   void writeByteRegisterfield(Registers r, byte mask, byte bits)
+   {
+	   byte rv = 0;
+	   byte oldRegVal = readByteRegister(r);
+	   rv = (byte) ((oldRegVal & ~mask)|bits);
+       try {
+		busDevice.write(r.getAddress(),rv);
+       } catch (IOException e) {
+		e.printStackTrace();
+       }
+       try {
+		Thread.sleep(2); // delay to allow register to settle
+       } catch (InterruptedException e) {}
+	   byte newRegVal = readByteRegister(r);
+	   if(newRegVal == rv)
+		   System.out.format("%20s : %8s 0x%X -> %8s 0x%X%n",
+				   r.name(),byteToString(oldRegVal),oldRegVal,byteToString(newRegVal),newRegVal);
+
+	   else System.out.format("%20s : %8s 0x%X -> %8s 0x%X read as -> %8s 0x%X%n ",
+			   r.name(),byteToString(oldRegVal),oldRegVal,byteToString(rv),rv,byteToString(newRegVal),newRegVal);
+   }
+   
    /**
     * Writes a byte to the specified byte register from the device this class is associated with
     * @param r		- the register to be read
@@ -169,7 +199,7 @@ public class MPU9250RegisterOperations {
     	   try {
 			Thread.sleep(2);// delay to allow register to settle
     	   } catch (InterruptedException e) {}
-    	   busDevice.write(r.getAddress(),(byte)((rv) & 0xFF)); 
+    	   busDevice.write(r.getAddress()+1,(byte)((rv) & 0xFF)); 
        } catch (IOException e) {
 		e.printStackTrace();
        }

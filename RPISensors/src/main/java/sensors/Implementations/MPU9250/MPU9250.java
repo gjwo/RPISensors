@@ -158,9 +158,16 @@ public class MPU9250 extends NineDOF
         roMPU.writeByteRegister(Registers.FIFO_EN,FIFO_Mode.NONE.bits);  // Disable all sensors for FIFO
 
         short readingCount = roMPU.read16BitRegisters( Registers.FIFO_COUNTH, 1)[0];
+        readings = new short[readingCount/2];
 
         System.out.println("Read Fifo packetCount: "+readingCount);
-        readings = roMPU.read16BitRegisters(Registers.FIFO_R_W,readingCount);
+        short high,low;
+        for (int i = 0; i<readingCount; i=i+2)
+        {
+        	high = roMPU.readByteRegister(Registers.FIFO_R_W);
+        	low = roMPU.readByteRegister(Registers.FIFO_R_W);
+           	readings[i/2] = (short) ((high << 8) | low) ;  // Turn the MSB and LSB into a signed 16-bit value
+        }
         System.out.println("Readings"+ Arrays.toString(readings));
     	
     	return readings;
