@@ -34,6 +34,7 @@ public class MPU9250Test {
             System.out.println("back from sleep");
             int ac = mpu9250.getAccelerometerReadingCount();
             System.out.println("AccReadingCount "+ac);
+
             for(int i = ac -1; i>=0; i--)
             {
                 System.out.println(" A: " + mpu9250.getAcceleration(i).toString());

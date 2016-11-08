@@ -41,9 +41,7 @@ public class MPU9250Gyroscope extends Sensor3D
 	{
 		super(sampleRate, sampleSize);
 		gyroScale = GyrScale.GFS_2000DPS;
-		this.setValScaling( new DataFloat3D(	(float)gyroScale.getRes(),
-										(float)gyroScale.getRes(),
-										(float)gyroScale.getRes()));
+		this.setValScaling( new DataFloat3D(gyroScale.getRes(), gyroScale.getRes(),gyroScale.getRes()));
 		this.ro = ro;
 		this.parent = parent;
 	}
@@ -64,7 +62,7 @@ public class MPU9250Gyroscope extends Sensor3D
 	{
 
         ro.writeByteRegister(Registers.GYRO_CONFIG,(byte)(	GyrSelfTest.NONE.bits |			// no self test
-															GyrScale.GFS_2000DPS.bits |		// Set full scale range for the gyro to 2000 dps
+        													gyroScale.bits |				// Set full scale range for the gyro to 2000 dps
 															GyrFchoiceB.FC_USE_DLPF.bits)); // use DLPF settings 
 	}
 	

@@ -271,7 +271,7 @@ enum AccScale
         this.minMax = minMax;
     }
     
-    public float getRes() {return minMax/32768.0f;}
+    public float getRes() {return ((float)minMax)/32768.0f;}
 }
 enum A_DLFP
 {
@@ -339,7 +339,7 @@ enum GyrScale
         this.minMax = minMax;
     }
     
-    public float getRes() {return minMax/32768.0f;}
+    public float getRes() {return ((float)minMax)/32768.0f;}
 }
 enum GyrFchoiceB
 {

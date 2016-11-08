@@ -40,9 +40,9 @@ public class MPU9250Accelerometer extends Sensor3D  {
 	{
 		super(sampleSize, sampleSize);
 		accelScale = AccScale.AFS_4G;
-		this.setValScaling(new DataFloat3D(	(float)AccScale.AFS_4G.getRes(),
-										(float)AccScale.AFS_4G.getRes(),
-										(float)AccScale.AFS_4G.getRes()));
+		this.setValScaling(new DataFloat3D(	(float)accelScale.getRes(),
+										(float)accelScale.getRes(),
+										(float)accelScale.getRes()));
 		this.ro = ro;
 		this.parent = parent;
 	}
@@ -66,7 +66,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         c = ro.readByteRegister(Registers.ACCEL_CONFIG); // get current ACCEL_CONFIG register value
         c = (byte)(c & ~AccSelfTest.bitmask); // Clear self-test bits [7:5] ####
         c = (byte)(c & ~AccScale.bitMask);  // Clear AFS bit 3 and bits 2:0
-        c = (byte)(c | AccScale.AFS_2G.bits ); // Set full scale range for the accelerometer #### does not require shifting!!!!
+        c = (byte)(c | accelScale.bits ); // Set full scale range for the accelerometer #### does not require shifting!!!!
         ro.writeByteRegister(Registers.ACCEL_CONFIG, c); // Write new ACCEL_CONFIG register value
 
         // Set accelerometer sample rate configuration
@@ -85,7 +85,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
 	public void selfTest() throws InterruptedException 
 	{
         System.out.println("acc.selfTest");
-
+        
 		byte FS = 0; 
      
         ro.writeByteRegister(Registers.ACCEL_CONFIG, (byte)(	AccSelfTest.NONE.bits |	// no self test
@@ -144,8 +144,8 @@ public class MPU9250Accelerometer extends Sensor3D  {
         // Calculate Accelerometer accuracy
         short[] selfTestAccel = new short[3]; //Longer than byte to allow for removal of sign bit as this is unsigned
         selfTestAccel[0] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_X_ACCEL) & 0xFF);
-        selfTestAccel[1] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_X_ACCEL) & 0xFF);
-        selfTestAccel[2] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_X_ACCEL) & 0xFF);
+        selfTestAccel[1] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_Y_ACCEL) & 0xFF);
+        selfTestAccel[2] = (short)((short)ro.readByteRegister(Registers.SELF_TEST_Z_ACCEL) & 0xFF);
         System.out.print("Self test Accel bytes: "+Arrays.toString(selfTestAccel));
     	System.out.format(" [0x%X, 0x%X, 0x%X]%n", selfTestAccel[0], selfTestAccel[1], selfTestAccel[2]);
         
@@ -164,6 +164,9 @@ public class MPU9250Accelerometer extends Sensor3D  {
         System.out.println("x: " + AccuracyAccel[0] + "%");
         System.out.println("y: " + AccuracyAccel[1] + "%");
         System.out.println("z: " + AccuracyAccel[2] + "%");
+        ro.writeByteRegister(Registers.ACCEL_CONFIG, (byte)(	AccSelfTest.NONE.bits |	// no self test
+																AccScale.AFS_2G.bits));	// Set scale range for the accelerometer to 2 g 
+        ro.writeByteRegister(Registers.ACCEL_CONFIG2, (byte)(	A_DLFP.ADLPF1_2.bits ));	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
         Thread.sleep(25); // Delay a while to let the device stabilise
 
         System.out.println("End acc.selfTest");
@@ -173,11 +176,13 @@ public class MPU9250Accelerometer extends Sensor3D  {
 	public void calibrate() throws InterruptedException
 	{
     	System.out.println("accel.calibrate");
-    	
+        System.out.println("Scaling: "+getValScaling().toString());
+        System.out.println("Bias: "+getValBias().toString());
+
     	// Assumes we are in calibration bits via setCalibrationMode9250();
 
         // Configure MPU6050 accelerometer for bias calculation
-        ro.writeByteRegister(Registers.ACCEL_CONFIG,(byte) AccScale.AFS_2G.bits); 		// Set accelerometer full-scale to 2 g, maximum sensitivity
+        ro.writeByteRegister(Registers.ACCEL_CONFIG,(byte) AccScale.AFS_16G.bits); 		// Set accelerometer full-scale to 16 g, maximum sensitivity
         short[] readings = parent.operateFIFO(FIFO_Mode.ACC,40);
         int readingCount = readings.length;
         System.out.println("Readings length: " + readingCount);
@@ -203,6 +208,8 @@ public class MPU9250Accelerometer extends Sensor3D  {
     	System.out.format(" [0x%X, 0x%X, 0x%X]%n",accelBiasAvg[0],accelBiasAvg[1],accelBiasAvg[2]);
     	
         setAccelerometerBiases(accelBiasAvg);
+        System.out.println("Scaling: "+getValScaling().toString());
+        System.out.println("Bias: "+getValBias().toString());
         
     	System.out.println("End accel.calibrate");
 	}
@@ -219,10 +226,11 @@ public class MPU9250Accelerometer extends Sensor3D  {
         // the bytes correct, then the preserved bit0 can be put back before the bytes are written to registers
     	System.out.println("setAccelerometerBiases");
 
+        /*
         short accelSensitivity = 16384;  // = 16384 LSB/g - OK in short max 32,767
         if(accelBiasAvg[2] > 0) {accelBiasAvg[2] -= accelSensitivity;}  // Remove gravity from the z-axis accelerometer bias calculation
         else {accelBiasAvg[2] += accelSensitivity;}
-    	System.out.format("z adjusted for gravity %d 0x%X%n",accelBiasAvg[2],accelBiasAvg[2]);
+    	System.out.format("z adjusted for gravity %d 0x%X%n",accelBiasAvg[2],accelBiasAvg[2]);*/
        
         short[] accelBiasReg = ro.read16BitRegisters( Registers.XA_OFFSET_H, 3);
         System.out.print("accelBiasReg with temp compensation bit: "+Arrays.toString(accelBiasReg));
@@ -236,6 +244,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
             //divide accelBiasReg by 2 to remove the bottom bit and preserve any sign (java has no unsigned 16 bit numbers)
             accelBiasReg[s] /=2;
         }
+        System.out.println("Temperature bits"+Arrays.toString(mask_bit));
         System.out.print("accelBiasReg without temp compensation bit: "+Arrays.toString(accelBiasReg));
     	System.out.format(" [0x%X, 0x%X, 0x%X] %n",accelBiasReg[0],accelBiasReg[1],accelBiasReg[2]);
         

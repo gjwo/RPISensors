@@ -53,10 +53,12 @@ public class MPU9250 extends NineDOF
     {
     	System.out.println("selfTest");
     	//NB gyro config controlled by general register
+    	/*
     	byte c;
         c = roMPU.readByteRegister(Registers.CONFIG); 
         c = (byte) (c &~GT_DLFP.bitMask|GT_DLFP.DLFP11_2.bits);// Set gyro sample rate to 1 kHz and DLPF to 92 Hz
-        roMPU.writeByteRegister(Registers.CONFIG,c ); 
+        roMPU.writeByteRegister(Registers.CONFIG,c ); */
+        roMPU.writeByteRegisterfield(Registers.CONFIG, GT_DLFP.bitMask, GT_DLFP.DLFP11_2.bits);
         roMPU.writeByteRegister(Registers.SMPLRT_DIV,(byte)0x00); // Internal_Sample_Rate / (1 + SMPLRT_DIV) for all devices
         gyro.selfTest();
         accel.selfTest();
@@ -82,12 +84,13 @@ public class MPU9250 extends NineDOF
         roMPU.writeByteRegister(Registers.FIFO_EN,FIFO_Mode.NONE.bits);      // Disable FIFO
         roMPU.writeByteRegister(Registers.PWR_MGMT_1,ClkSel.AUTO.bits);   // Turn on internal clock source
         roMPU.writeByteRegister(Registers.I2C_MST_CTRL,(byte) 0x00); // Disable I2C master
-        roMPU.writeByteRegister(Registers.USER_CTRL,(byte) 0x00);    // Disable FIFO and I2C master modes
+        //roMPU.writeByteRegister(Registers.USER_CTRL,(byte) 0x00);    // Disable FIFO and I2C master modes
+        //Thread.sleep(20);
         roMPU.writeByteRegister(Registers.USER_CTRL,(byte) 0x0C);    // Reset FIFO and DMP NB the 0x08 bit is the DMP shown as reserved in docs
         
         Thread.sleep(15);
         
-        roMPU.writeByteRegister(Registers.CONFIG,(byte) 0x01);       // Set low-pass filter to 188 Hz
+        roMPU.writeByteRegister(Registers.CONFIG,(byte) GT_DLFP.DLFP11_1.bits);       // Set low-pass filter to 188 Hz
         roMPU.writeByteRegister(Registers.SMPLRT_DIV,(byte) 0x00);   // Set sample rate to 1 kHz = Internal_Sample_Rate / (1 + SMPLRT_DIV)
     }
     

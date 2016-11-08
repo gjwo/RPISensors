@@ -49,9 +49,19 @@ public abstract class Sensor <T,S>
         this.valBias = valBias;
     }
 
+    public S getValBias()
+    {
+        return valBias;
+    }
+
     public void setValScaling(S valScaling)
     {
         this.valScaling = valScaling;
+    }
+
+    public S getValScaling()
+    {
+        return valScaling;
     }
 
     public void addValue(T value)
