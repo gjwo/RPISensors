@@ -2,12 +2,12 @@ package sensors.Implementations.MPU9250;
 
 import java.io.IOException;
 
-import dataTypes.DataFloat1D;
-import dataTypes.TimestampedDataFloat1D;
+import dataTypes.Data1f;
+import dataTypes.TimestampedData1f;
 import sensors.models.NineDOF;
 import sensors.models.Sensor;
 
-public class MPU9250Thermometer extends Sensor<TimestampedDataFloat1D,DataFloat1D>  
+public class MPU9250Thermometer extends Sensor<TimestampedData1f,Data1f>  
 {
     protected MPU9250RegisterOperations ro;
     protected NineDOF parent;
@@ -20,7 +20,7 @@ public class MPU9250Thermometer extends Sensor<TimestampedDataFloat1D,DataFloat1
 	}
 	
 	@Override
-	public  TimestampedDataFloat1D getAvgValue()
+	public  TimestampedData1f getAvgValue()
     {	
 		double sum = 0;
 		int count = getReadingCount();
@@ -28,7 +28,7 @@ public class MPU9250Thermometer extends Sensor<TimestampedDataFloat1D,DataFloat1
     	{
     		sum +=getValue(i).getX();
     	}
-		TimestampedDataFloat1D avg = getLatestValue().clone();
+		TimestampedData1f avg = getLatestValue().clone();
 		avg.setX((float)(sum/(float)count));
         return avg;
     }
@@ -41,7 +41,7 @@ public class MPU9250Thermometer extends Sensor<TimestampedDataFloat1D,DataFloat1
 		
     	short[] temperature = ro.read16BitRegisters(Registers.TEMP_OUT_H,1);
     	temperature = ro.read16BitRegisters(Registers.TEMP_OUT_H,1);
-    	addValue(new TimestampedDataFloat1D((float)temperature[0]));
+    	addValue(new TimestampedData1f((float)temperature[0]));
 	}
 
 }

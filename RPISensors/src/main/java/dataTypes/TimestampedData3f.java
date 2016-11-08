@@ -4,28 +4,28 @@ package dataTypes;
  * RPITank
  * Created by MAWood on 11/07/2016.
  */
-public class TimestampedDataFloat3D extends DataFloat3D
+public class TimestampedData3f extends Data3f
 {
     public static final long NANOS_PER_SEC = 1000000000;
     public final long nanoTime;
 
-    public TimestampedDataFloat3D(float x, float y, float z, long nanoTime)
+    public TimestampedData3f(float x, float y, float z, long nanoTime)
     {
         super(x, y, z);
         this.nanoTime = nanoTime;
     }
 
-    public TimestampedDataFloat3D(float x, float y, float z)
+    public TimestampedData3f(float x, float y, float z)
     {
         this(x, y, z, System.nanoTime());
     }
 
-    public TimestampedDataFloat3D(DataFloat3D data)
+    public TimestampedData3f(Data3f data)
     {
         this(data.getX(),data.getY(),data.getZ());
     }
 
-    public TimestampedDataFloat3D(TimestampedDataFloat3D data)
+    public TimestampedData3f(TimestampedData3f data)
     {
         super(data.getX(),data.getY(),data.getZ());
         this.nanoTime = data.nanoTime;
@@ -38,25 +38,25 @@ public class TimestampedDataFloat3D extends DataFloat3D
                 "] " + super.toString();
     }
 
-    public static TimestampedDataFloat3D integrate(TimestampedDataFloat3D sampleT, TimestampedDataFloat3D sampleTm1 )
+    public static TimestampedData3f integrate(TimestampedData3f sampleT, TimestampedData3f sampleTm1 )
     {
-        final float deltaT = (float)(sampleT.nanoTime-sampleTm1.nanoTime)/(float)TimestampedDataFloat3D.NANOS_PER_SEC; // time difference between samples in seconds
+        final float deltaT = (float)(sampleT.nanoTime-sampleTm1.nanoTime)/(float)TimestampedData3f.NANOS_PER_SEC; // time difference between samples in seconds
 
-        return new TimestampedDataFloat3D(
+        return new TimestampedData3f(
                 (sampleT.getX()+sampleTm1.getX())/2f*deltaT,//Trapezoidal area, average height X deltaT
                 (sampleT.getY()+sampleTm1.getY())/2f*deltaT,//Trapezoidal area, average height Y deltaT
                 (sampleT.getZ()+sampleTm1.getZ())/2f*deltaT,//Trapezoidal area, average height Z deltaT
                 sampleT.nanoTime); // preserve timestamp in result
     }
 
-    public TimestampedDataFloat3D integrate(TimestampedDataFloat3D sampleTm1 )
+    public TimestampedData3f integrate(TimestampedData3f sampleTm1 )
     {
         return integrate(sampleTm1,this);
     }
 
-    public TimestampedDataFloat3D clone()
+    public TimestampedData3f clone()
     {
-        return new TimestampedDataFloat3D(x,y,z,nanoTime);
+        return new TimestampedData3f(x,y,z,nanoTime);
     }
 
 }

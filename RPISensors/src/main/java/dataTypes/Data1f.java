@@ -4,11 +4,11 @@ package dataTypes;
  * RPITank - devices.sensors.dataTypes
  * Created by MAWood on 18/07/2016.
  */
-public class DataFloat1D
+public class Data1f
 {
     protected float x;
 
-    public DataFloat1D(float x) {
+    public Data1f(float x) {
         this.x = x;
     }
 
@@ -35,13 +35,13 @@ public class DataFloat1D
         final String format = "%+04.3f";
         return 	"x: " + String.format(format,x);
     }
-    public DataFloat1D clone()
+    public Data1f clone()
     {
-        return new DataFloat1D(x);
+        return new Data1f(x);
     }
-    public DataFloat1D multiply(DataFloat1D a, DataFloat1D b){
+    public Data1f multiply(Data1f a, Data1f b){
     	
-		return new DataFloat1D(a.getX()*b.getX());
+		return new Data1f(a.getX()*b.getX());
     	
     }
 }

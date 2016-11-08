@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
-import dataTypes.TimestampedDataFloat3D;
+import dataTypes.TimestampedData3f;
 
 import com.pi4j.io.i2c.I2CBus;
 
@@ -65,7 +65,7 @@ public class Navigate implements Runnable, SensorUpdateListener{
     @Override
     public void run()
     {
-    	TimestampedDataFloat3D ajustedGyr, ajustedMag;
+    	TimestampedData3f ajustedGyr, ajustedMag;
     	while(!Thread.interrupted())
         {
             if(dataReady) 
@@ -86,15 +86,15 @@ public class Navigate implements Runnable, SensorUpdateListener{
             	// Pass gyro rate as rad/s
             	//  MadgwickQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f,  my,  mx, mz);
 
-                ajustedGyr = new TimestampedDataFloat3D(Instruments.getGyroscope());
+                ajustedGyr = new TimestampedData3f(Instruments.getGyroscope());
                 ajustedGyr.setX(Instruments.getGyroscope().getX()*(float)Math.PI/180.0f); //Pass gyro rate as rad/s
                 ajustedGyr.setY(Instruments.getGyroscope().getY()*(float)Math.PI/180.0f);
                 ajustedGyr.setZ(Instruments.getGyroscope().getZ()*(float)Math.PI/180.0f);
-                ajustedMag = new TimestampedDataFloat3D(Instruments.getMagnetometer());
+                ajustedMag = new TimestampedData3f(Instruments.getMagnetometer());
                 ajustedMag.setX(Instruments.getMagnetometer().getY()); //swap X and Y, Z stays the same
                 ajustedMag.setY(Instruments.getMagnetometer().getX());
 
-                SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),ajustedGyr,ajustedMag,(float)(DELTA_T/TimestampedDataFloat3D.NANOS_PER_SEC));
+                SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),ajustedGyr,ajustedMag,(float)(DELTA_T/TimestampedData3f.NANOS_PER_SEC));
                 System.out.print(  "acc: " + Instruments.getAccelerometer().toString());
                 System.out.print(  "gyr: " + Instruments.getGyroscope().toString());
                 System.out.println("mag: " + Instruments.getMagnetometer().toString());

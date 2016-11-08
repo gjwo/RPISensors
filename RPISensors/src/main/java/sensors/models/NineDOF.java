@@ -2,9 +2,9 @@ package sensors.models;
 
 import java.io.IOException;
 
-import dataTypes.DataFloat1D;
-import dataTypes.TimestampedDataFloat1D;
-import dataTypes.TimestampedDataFloat3D;
+import dataTypes.Data1f;
+import dataTypes.TimestampedData1f;
+import dataTypes.TimestampedData3f;
 import sensors.interfaces.Accelerometer;
 import sensors.interfaces.Gyroscope;
 import sensors.interfaces.Magnetometer;
@@ -15,7 +15,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	protected Sensor3D mag;
 	protected Sensor3D accel;
 	protected Sensor3D gyro;
-	protected Sensor<TimestampedDataFloat1D,DataFloat1D> therm;
+	protected Sensor<TimestampedData1f,Data1f> therm;
 
 	protected NineDOF(int sampleRate, int sampleSize) 
 	{
@@ -23,29 +23,29 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	}
 
 	// Get average named sensor values
-	public TimestampedDataFloat3D getAvgAcceleration() {return accel.getAvgValue();}
+	public TimestampedData3f getAvgAcceleration() {return accel.getAvgValue();}
 
-	public TimestampedDataFloat3D getAvgGauss() {return mag.getAvgValue();}
+	public TimestampedData3f getAvgGauss() {return mag.getAvgValue();}
 
-	public TimestampedDataFloat3D getAvgRotationalAcceleration() {return gyro.getAvgValue();}
+	public TimestampedData3f getAvgRotationalAcceleration() {return gyro.getAvgValue();}
 
 	public float getAvgTemperature() {return therm.getAvgValue().getX();}
 
 	// Get latest named sensor values
-	public TimestampedDataFloat3D getLatestAcceleration() {return accel.getLatestValue();}
+	public TimestampedData3f getLatestAcceleration() {return accel.getLatestValue();}
 
-	public TimestampedDataFloat3D getLatestGaussianData() {return mag.getLatestValue();}
+	public TimestampedData3f getLatestGaussianData() {return mag.getLatestValue();}
 
-	public TimestampedDataFloat3D getLatestRotationalAcceleration() {return gyro.getLatestValue();}
+	public TimestampedData3f getLatestRotationalAcceleration() {return gyro.getLatestValue();}
 
 	public float getLatestTemperature() {return therm.getLatestValue().getX();}
 	
 	// Get specific named sensor values
-    public TimestampedDataFloat3D getAcceleration(int i) {return accel.getValue(i);}
+    public TimestampedData3f getAcceleration(int i) {return accel.getValue(i);}
 
-	public TimestampedDataFloat3D getGaussianData(int i) {return mag.getValue(i);}
+	public TimestampedData3f getGaussianData(int i) {return mag.getValue(i);}
 
-	public TimestampedDataFloat3D getRotationalAcceleration(int i) {return gyro.getValue(i);}
+	public TimestampedData3f getRotationalAcceleration(int i) {return gyro.getValue(i);}
 
 	public float getTemperature(int i) {return therm.getValue(i).getX();}
 	

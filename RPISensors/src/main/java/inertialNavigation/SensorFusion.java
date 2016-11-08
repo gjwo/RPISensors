@@ -1,7 +1,7 @@
 package inertialNavigation;
 
-import dataTypes.DataFloat3D;
-import dataTypes.TimestampedDataFloat3D;
+import dataTypes.Data3f;
+import dataTypes.TimestampedData3f;
 
 /**
  * SensorFusion
@@ -106,7 +106,7 @@ public class SensorFusion {
 	 * conventional Kalman-based filtering algorithms but is much less computationally intensive
 	 * it can be performed on a 3.3 V Pro Mini operating at 8 MHz!
 	 */
-	public static void MadgwickQuaternionUpdate(TimestampedDataFloat3D acc, TimestampedDataFloat3D grav, TimestampedDataFloat3D mag, float deltat) //delta t in seconds
+	public static void MadgwickQuaternionUpdate(TimestampedData3f acc, TimestampedData3f grav, TimestampedData3f mag, float deltat) //delta t in seconds
 
 	{
 		float q1 = q.a, q2 = q.b, q3 = q.c, q4 = q.d; // short name local
@@ -238,7 +238,7 @@ public class SensorFusion {
 	 * conventional Kalman-based filtering algorithms but is much less computationally intensive
 	 * it can be performed on a 3.3 V Pro Mini operating at 8 MHz!
 	 */
-	public static void MahonyQuaternionUpdate(DataFloat3D acc, DataFloat3D grav, DataFloat3D mag, float deltat) //delta t in seconds
+	public static void MahonyQuaternionUpdate(Data3f acc, Data3f grav, Data3f mag, float deltat) //delta t in seconds
 
 	{
 		float q1 = q.a, q2 = q.b, q3 = q.c, q4 = q.d; // short name local

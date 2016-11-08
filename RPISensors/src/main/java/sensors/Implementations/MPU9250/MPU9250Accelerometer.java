@@ -3,8 +3,8 @@ package sensors.Implementations.MPU9250;
 import java.io.IOException;
 import java.util.Arrays;
 
-import dataTypes.DataFloat3D;
-import dataTypes.TimestampedDataFloat3D;
+import dataTypes.Data3f;
+import dataTypes.TimestampedData3f;
 import sensors.models.Sensor3D;
 
 /**
@@ -40,7 +40,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
 	{
 		super(sampleSize, sampleSize);
 		accelScale = AccScale.AFS_4G;
-		this.setValScaling(new DataFloat3D(	(float)accelScale.getRes(),
+		this.setValScaling(new Data3f(	(float)accelScale.getRes(),
 										(float)accelScale.getRes(),
 										(float)accelScale.getRes()));
 		this.ro = ro;
@@ -55,7 +55,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
          short registers[];
         //ro.readByteRegister(Registers.ACCEL_XOUT_H, 6);  // Read again to trigger
         registers = ro.read16BitRegisters(Registers.ACCEL_XOUT_H,3);
-        this.addValue(OffsetAndScale(new TimestampedDataFloat3D(registers[0],registers[1],registers[2])));
+        this.addValue(OffsetAndScale(new TimestampedData3f(registers[0],registers[1],registers[2])));
 	}
 
 	@Override
@@ -207,7 +207,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         System.out.print("Accel bias average: " + Arrays.toString(accelBiasAvg));
     	System.out.format(" [0x%X, 0x%X, 0x%X]%n",accelBiasAvg[0],accelBiasAvg[1],accelBiasAvg[2]);
     	
-        setAccelerometerBiases(accelBiasAvg);
+        //setAccelerometerBiases(accelBiasAvg);
         System.out.println("Scaling: "+getValScaling().toString());
         System.out.println("Bias: "+getValBias().toString());
         
@@ -266,7 +266,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         
         /*
         // set super class NineDOF variables
-        this.setValBias(new DataFloat3D( 	(float)accelBiasAvg[0]/2/(float)accelSensitivity,
+        this.setValBias(new Data3f( 	(float)accelBiasAvg[0]/2/(float)accelSensitivity,
         								(float)accelBiasAvg[1]/2/(float)accelSensitivity,
         								(float)accelBiasAvg[2]/2/(float)accelSensitivity));
         */								

@@ -1,24 +1,24 @@
 package sensors.models;
 
-import dataTypes.DataFloat3D;
-import dataTypes.TimestampedDataFloat3D;
+import dataTypes.Data3f;
+import dataTypes.TimestampedData3f;
 /**
  * RPITank - devices.sensors
  * Created by GJWood on 18/07/2016.
  */
-public abstract class Sensor3D extends Sensor<TimestampedDataFloat3D,DataFloat3D>
+public abstract class Sensor3D extends Sensor<TimestampedData3f,Data3f>
 {	
 	public Sensor3D(int sampleRate, int sampleSize) {
 		super(sampleRate, sampleSize);
-	    valBias = new DataFloat3D(0,0,0);
-	    valScaling= new DataFloat3D(1,1,1);
+	    valBias = new Data3f(0,0,0);
+	    valScaling= new Data3f(1,1,1);
 
 	}
 
 	@Override
-	public TimestampedDataFloat3D OffsetAndScale(TimestampedDataFloat3D value)
+	public TimestampedData3f OffsetAndScale(TimestampedData3f value)
     {
-    		TimestampedDataFloat3D oSVal = value.clone();
+    		TimestampedData3f oSVal = value.clone();
             oSVal.setX(value.getX()*valScaling.getX() -valBias.getX()); //bias will be at current scale?
             oSVal.setY(value.getY()*valScaling.getY() -valBias.getY()); 
             oSVal.setZ(value.getZ()*valScaling.getZ() -valBias.getZ()); 
@@ -26,9 +26,9 @@ public abstract class Sensor3D extends Sensor<TimestampedDataFloat3D,DataFloat3D
     }
 
 	@Override
-	public TimestampedDataFloat3D getAvgValue()
+	public TimestampedData3f getAvgValue()
     {	
-		TimestampedDataFloat3D sum = new TimestampedDataFloat3D(0,0,0);
+		TimestampedData3f sum = new TimestampedData3f(0,0,0);
 		float count = getReadingCount(); // float for division later
     	for(int i = 0; i<count; i++)
     	{
@@ -36,6 +36,6 @@ public abstract class Sensor3D extends Sensor<TimestampedDataFloat3D,DataFloat3D
     		sum.setY(getValue(i).getY() + sum.getY());
     		sum.setZ(getValue(i).getZ() + sum.getZ());
     	}
-		return new TimestampedDataFloat3D(sum.getX()/count,sum.getY()/count,sum.getZ()/count);
+		return new TimestampedData3f(sum.getX()/count,sum.getY()/count,sum.getZ()/count);
     }
 }

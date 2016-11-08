@@ -4,11 +4,11 @@ package dataTypes;
  * dataTypes
  * Created by G.J.Wood 06/11/16
  */
-public class DataShort1D
+public class Data1s
 {
     protected short x;
 
-    public DataShort1D(short x) {this.x = x;}
+    public Data1s(short x) {this.x = x;}
 
     public short getX() {return x;}
 
@@ -30,10 +30,10 @@ public class DataShort1D
         return 	"x: " + String.format(format,x);
     }
     
-    public DataShort1D clone() {return new DataShort1D(x);}
+    public Data1s clone() {return new Data1s(x);}
     
-    public DataShort1D multiply(DataShort1D a, DataShort1D b){
+    public Data1s multiply(Data1s a, Data1s b){
     	
-		return new DataShort1D((short)(a.getX()*b.getX())); 	
+		return new Data1s((short)(a.getX()*b.getX())); 	
     }
 }

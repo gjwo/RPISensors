@@ -5,7 +5,7 @@ package sensors.Implementations.MPU9250;
 
 import java.io.IOException;
 
-import dataTypes.DataShort3D;
+import dataTypes.Data3s;
 import devices.I2C.I2CImplementation;
 
 /**
@@ -85,10 +85,10 @@ public class MPU9250RegisterOperations {
     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the more significant part of the register
     * The registers are then assigned to the x, y, z fields of the dataShort3D array element
     */
-   DataShort3D[] readShort3DsfromRegisters(Registers r, int pointCount)
+   Data3s[] readShort3DsfromRegisters(Registers r, int pointCount)
    {
        byte[] rawData = readByteRegisters(r, pointCount*6);
-       DataShort3D[] datapoints = new DataShort3D[pointCount];
+       Data3s[] datapoints = new Data3s[pointCount];
        for (int i=0;i<pointCount;i++)		
        {
     	   datapoints[i].setX( (short) (((short)rawData[i*2] << 8) | (rawData[(i*2)+1]&0xFF))) ;  // Turn the MSB and LSB into a signed 16-bit value

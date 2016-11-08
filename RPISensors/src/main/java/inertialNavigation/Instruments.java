@@ -1,6 +1,6 @@
 package inertialNavigation;
 
-import dataTypes.TimestampedDataFloat3D;
+import dataTypes.TimestampedData3f;
 
 /**
  * @author GJWood
@@ -20,12 +20,12 @@ public class Instruments {
 	private static float attitude = 0;
 	private static float bank = 0;
 	
-	private static TimestampedDataFloat3D position = new TimestampedDataFloat3D(0,0,0);
+	private static TimestampedData3f position = new TimestampedData3f(0,0,0);
 	
 	//data from individual sensors
-	private static TimestampedDataFloat3D magnetometer = new TimestampedDataFloat3D(0,0,0);
-	private static TimestampedDataFloat3D accelerometer = new TimestampedDataFloat3D(0,0,0);
-	private static TimestampedDataFloat3D gyroscope = new TimestampedDataFloat3D(0,0,0);
+	private static TimestampedData3f magnetometer = new TimestampedData3f(0,0,0);
+	private static TimestampedData3f accelerometer = new TimestampedData3f(0,0,0);
+	private static TimestampedData3f gyroscope = new TimestampedData3f(0,0,0);
 	
 	// getters
 	
@@ -48,24 +48,24 @@ public class Instruments {
 		return heading;
 	}
 
-	public static TimestampedDataFloat3D getPosition() {
+	public static TimestampedData3f getPosition() {
 		return position;
 	}
 
-	public static TimestampedDataFloat3D getMagnetometer() {
+	public static TimestampedData3f getMagnetometer() {
 		return magnetometer;
 	}
 
-	public static TimestampedDataFloat3D getAccelerometer() {
+	public static TimestampedData3f getAccelerometer() {
 		return accelerometer;
 	}
 
-	public static TimestampedDataFloat3D getGyroscope() {
+	public static TimestampedData3f getGyroscope() {
 		return gyroscope;
 	}
 	
-	public static TimestampedDataFloat3D getAngles(){
-		return new TimestampedDataFloat3D(yaw,pitch,roll);
+	public static TimestampedData3f getAngles(){
+		return new TimestampedData3f(yaw,pitch,roll);
 	}
 
 	//Setters
@@ -94,19 +94,19 @@ public class Instruments {
 		Instruments.heading = heading;
 	}
 
-	public static void setPosition(TimestampedDataFloat3D position) {
+	public static void setPosition(TimestampedData3f position) {
 		Instruments.position = position;
 	}
 
-	public static void setMagnetometer(TimestampedDataFloat3D magnetometer) {
+	public static void setMagnetometer(TimestampedData3f magnetometer) {
 		Instruments.magnetometer = magnetometer;
 	}
 
-	public static void setAccelerometer(TimestampedDataFloat3D accellerometer) {
+	public static void setAccelerometer(TimestampedData3f accellerometer) {
 		Instruments.accelerometer = accellerometer;
 	}
 
-	public static void setGyroscope(TimestampedDataFloat3D gyroscope) {
+	public static void setGyroscope(TimestampedData3f gyroscope) {
 		Instruments.gyroscope = gyroscope;
 	}
 

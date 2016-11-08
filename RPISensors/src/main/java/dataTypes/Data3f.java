@@ -4,11 +4,11 @@ package dataTypes;
  * RPITank - sensors
  * Created by matthew on 10/07/16.
  */
-public class DataFloat3D extends DataFloat2D{
+public class Data3f extends Data2f{
 
     protected float z;
 
-    public DataFloat3D(float x, float y, float z) {
+    public Data3f(float x, float y, float z) {
     	super(x,y);
         this.z = z;
     }
@@ -51,8 +51,8 @@ public class DataFloat3D extends DataFloat2D{
 		final String format = "%+04.3f";
 		return 	super.toString() + " z: " + String.format(format,z);
 	}
-    public DataFloat3D clone()
+    public Data3f clone()
     {
-        return new DataFloat3D(x,y,z);
+        return new Data3f(x,y,z);
     }
 }

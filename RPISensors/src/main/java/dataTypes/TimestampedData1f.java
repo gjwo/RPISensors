@@ -4,23 +4,23 @@ package dataTypes;
  * RPITank - devices.sensors.dataTypes
  * Created by MAWood on 18/07/2016.
  */
-public class TimestampedDataFloat1D extends DataFloat1D
+public class TimestampedData1f extends Data1f
 {
     public static final long NANOS_PER_SEC = 1000000000;
     public final long nanoTime;
 
-    public TimestampedDataFloat1D(float x, long nanoTime)
+    public TimestampedData1f(float x, long nanoTime)
     {
         super(x);
         this.nanoTime = nanoTime;
     }
 
-    public TimestampedDataFloat1D(float x)
+    public TimestampedData1f(float x)
     {
         this(x, System.nanoTime());
     }
 
-    public TimestampedDataFloat1D(DataFloat3D data)
+    public TimestampedData1f(Data3f data)
     {
         this(data.getX());
     }
@@ -32,22 +32,22 @@ public class TimestampedDataFloat1D extends DataFloat1D
                 " " + super.toString();
     }
 
-    public static TimestampedDataFloat1D integrate(TimestampedDataFloat1D sampleT, TimestampedDataFloat1D sampleTm1 )
+    public static TimestampedData1f integrate(TimestampedData1f sampleT, TimestampedData1f sampleTm1 )
     {
-        final float deltaT = (float)(sampleT.nanoTime-sampleTm1.nanoTime)/(float)TimestampedDataFloat3D.NANOS_PER_SEC; // time difference between samples in seconds
+        final float deltaT = (float)(sampleT.nanoTime-sampleTm1.nanoTime)/(float)TimestampedData3f.NANOS_PER_SEC; // time difference between samples in seconds
 
-        return new TimestampedDataFloat1D(
+        return new TimestampedData1f(
                 (sampleT.getX()+sampleTm1.getX())/2f*deltaT,//Trapezoidal area, average height X deltaT
                 sampleT.nanoTime); // preserve timestamp in result
     }
 
-    public TimestampedDataFloat1D integrate(TimestampedDataFloat1D sampleTm1)
+    public TimestampedData1f integrate(TimestampedData1f sampleTm1)
     {
         return integrate(this,sampleTm1);
     }
 
-    public TimestampedDataFloat1D clone()
+    public TimestampedData1f clone()
     {
-        return new TimestampedDataFloat1D(x,nanoTime);
+        return new TimestampedData1f(x,nanoTime);
     }
 }

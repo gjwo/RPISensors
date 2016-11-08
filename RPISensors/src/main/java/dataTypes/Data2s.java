@@ -4,11 +4,11 @@ package dataTypes;
  * RPIsensors.dataTypes
  * Created by G.J.Wood 6/11/2016.
  */
-public class DataShort2D extends DataShort1D
+public class Data2s extends Data1s
 {
     protected short y;
 
-    public DataShort2D(short x,short y)
+    public Data2s(short x,short y)
     {
         super(x);
         this.y = y;
@@ -41,8 +41,8 @@ public class DataShort2D extends DataShort1D
         final String format = "%+04n";
         return 	super.toString() + " y: " + String.format(format,y);
     }
-    public DataShort2D clone()
+    public Data2s clone()
     {
-        return new DataShort2D(x,y);
+        return new Data2s(x,y);
     }
 }
