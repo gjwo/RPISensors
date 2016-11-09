@@ -34,7 +34,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
     protected MPU9250RegisterOperations ro;
     protected MPU9250 parent;
 	private AccScale accelScale ;
-	private A_DLFP aDLFP;
+	//private A_DLFP aDLFP;
 
 	MPU9250Accelerometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent)
 	{

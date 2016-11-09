@@ -4,7 +4,6 @@ import devices.I2C.I2CImplementation;
 import sensors.models.NineDOF;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * MPU 9250 motion sensor
@@ -33,7 +32,15 @@ public class MPU9250 extends NineDOF
     private final MPU9250RegisterOperations roMPU;
     private final MPU9250RegisterOperations roAK;
 
-
+    /**
+     * MPU9250 Constructor
+     * @param mpu9250		- The IC2 bus for the MCU
+     * @param ak8963		- The IC2 bus for the Magnetometer 
+     * @param sampleRate	- sample rate in samples per second
+     * @param sampleSize	- The number of samples to be captured
+     * @throws IOException	- IC2 bus failures
+     * @throws InterruptedException - Wake up call
+     */
 	public MPU9250(I2CImplementation mpu9250,I2CImplementation ak8963,int sampleRate, int sampleSize) throws IOException, InterruptedException
     {
         super(sampleRate,sampleSize);
@@ -46,14 +53,15 @@ public class MPU9250 extends NineDOF
         therm = new MPU9250Thermometer(sampleSize, sampleSize, roMPU,this);
         selfTest();
         calibrateGyroAcc();
-        initMPU9250();
+        configure();
         mag.init();
         calibrateMagnetometer();
     }
-	  /**
-	   * Prints the contents of registers used by this class 
-	   */
-	  public void printRegisters()
+	
+	/**
+	 * printRegisters - Prints the contents of registers used by this class
+	 */
+	public void printRegisters()
 	   {
 	   	roMPU.printByteRegister(Registers.CONFIG);
 	   	roMPU.printByteRegister(Registers.WOM_THR);
@@ -73,7 +81,13 @@ public class MPU9250 extends NineDOF
 	   	roMPU.printByteRegister(Registers.PWR_MGMT_2);
 	   	roMPU.printByteRegister(Registers.WHO_AM_I_MPU9250);
 	   	roMPU.printByteRegister(Registers.SMPLRT_DIV);
-	   }
+	}
+	
+	/**
+	 * selfTest - Triggers self test for all the sensors which support it on this device
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
     private void selfTest() throws IOException, InterruptedException
     {
     	System.out.println("selfTest");
@@ -91,6 +105,12 @@ public class MPU9250 extends NineDOF
         System.out.println("End selfTest");
 
     }
+    
+    /**
+     * setCalibrationMode9250 - puts the device into calibrate mode
+     * @throws IOException
+     * @throws InterruptedException
+     */
     private void setCalibrationMode9250() throws IOException, InterruptedException
     {
     	System.out.println("setCalibrationMode");
@@ -119,7 +139,11 @@ public class MPU9250 extends NineDOF
         roMPU.writeByteRegister(Registers.SMPLRT_DIV,(byte) 0x00);   // Set sample rate to 1 kHz = Internal_Sample_Rate / (1 + SMPLRT_DIV)
     }
     
-    
+    /**
+     * calibrateGyroAcc - puts the device into calibrate mode then calibrates the Gyroscope and Accelerometer
+     * @throws IOException
+     * @throws InterruptedException
+     */
     private void calibrateGyroAcc() throws IOException, InterruptedException
     {
     	System.out.println("calibrateGyroAcc");
@@ -131,8 +155,12 @@ public class MPU9250 extends NineDOF
     	System.out.println("End calibrateGyroAcc");
     }
 
-    
-    private void initMPU9250() throws IOException, InterruptedException
+    /**
+	 * configure - Configures the MPU9250 device for normal use and also any sensors that support the configure method  
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    private void configure() throws IOException, InterruptedException
     {
     	System.out.println("initMPU9250");
         // wake up device
@@ -183,6 +211,13 @@ public class MPU9250 extends NineDOF
     	System.out.println("End initMPU9250");
     }
     
+    /**
+     * operateFIFO - Sets up the FIFO in the mode requested, captures data for a period, then shuts down the FIFO and returns the data 
+     * @param mode		- see the definition of FIFO_Mode
+     * @param msPeriod	- capture period in milliseconds
+     * @return			- the captured information in a array of signed 16bit shorts
+     * @throws InterruptedException
+     */
     public short[] operateFIFO(FIFO_Mode mode, int msPeriod) throws InterruptedException
     {
     	System.out.println("operateFIFO");
@@ -208,5 +243,4 @@ public class MPU9250 extends NineDOF
     	System.out.println("End operateFIFO");
     	return readings;
     }
-
 }

@@ -5,7 +5,6 @@ import java.util.Arrays;
 
 import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
-import sensors.models.NineDOF;
 import sensors.models.Sensor3D;
 
 /**
@@ -92,8 +91,7 @@ public class MPU9250Gyroscope extends Sensor3D
         final int TEST_LENGTH = 200;
         System.out.println("gyro.selfTest");
 
-        int[] aSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
-        int[] gSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
+         int[] gSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
         short[] registers; 
 
         ro.writeByteRegister(Registers.GYRO_CONFIG,(byte)(	GyrSelfTest.NONE.bits |			// no self test
@@ -225,7 +223,6 @@ public class MPU9250Gyroscope extends Sensor3D
     	//OffsetLSB = X_OFFS_USR * 4 / 2^FS_SEL
     	//OffsetDPS = X_OFFS_USR * 4 / 2^FS_SEL / Gyro_Sensitivity
     	
-        short gyrosensitivity = 131;     // 2^16 LSB / 500dps = 131 LSB/degrees/sec
         short[] gyroBiasAvgLSB = new short[] {0,0,0};
         
         // Construct the gyro biases for push to the hardware gyro bias registers, which are reset to zero upon device startup
@@ -244,6 +241,7 @@ public class MPU9250Gyroscope extends Sensor3D
     	ro.write16bitRegister(Registers.ZG_OFFSET_H,gyroBiasAvgLSB[2]);
         /* 
         // set super class NineDOF variables
+        short gyrosensitivity = 131;     // 2^16 LSB / 500dps = 131 LSB/degrees/sec
         this.setValBias(new Data3f(	(float) gyroBiasAvg[0]/(float) gyrosensitivity,
         							(float) gyroBiasAvg[1]/(float) gyrosensitivity,
         							(float) gyroBiasAvg[2]/(float) gyrosensitivity));
