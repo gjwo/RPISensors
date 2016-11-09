@@ -98,4 +98,9 @@ public abstract class Sensor <T,S>
     {
     	//if required implement and override in subclass
     }
+    public void printRegisters()
+    {
+    	//if required implement and override in subclass
+    }
+   
 }

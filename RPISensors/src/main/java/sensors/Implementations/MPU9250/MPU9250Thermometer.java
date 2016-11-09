@@ -4,14 +4,31 @@ import java.io.IOException;
 
 import dataTypes.Data1f;
 import dataTypes.TimestampedData1f;
-import sensors.models.NineDOF;
 import sensors.models.Sensor;
+/**
+ * @author GJWood
+ * MPU 9250 Magnetometer sensor
+ * Created by G.J.Wood on 1/11/2016
+ * Based on MPU9250_MS5637_t3 Basic Example Code by: Kris Winer date: April 1, 2014
+ * https://github.com/kriswiner/MPU-9250/blob/master/MPU9250_MS5637_AHRS_t3.ino
+ * 
+ * This class handles the operation of the Thermometer sensor and is a subclass of Sensor, it provides those methods
+ * which are hardware specific to the MPU-9250 such as update
+ * This class is independent of the bus implementation, register addressing etc as this is handled by RegisterOperations
+ *  
+ * Hardware registers controlled by this class
+ * 0x41 65 TEMP_OUT_H			- Thermometer Temperature reading
+ * 
+ * TEMP_degC = ((TEMP_OUT – RoomTemp_Offset)/Temp_Sensitivity) + 21degC
+ * Where Temp_degC is the temperature in degrees C measured by the temperature sensor. 
+ * TEMP_OUT is the actual output of the temperature sensor.
+ */
 
 public class MPU9250Thermometer extends Sensor<TimestampedData1f,Data1f>  
 {
     protected MPU9250RegisterOperations ro;
-    protected NineDOF parent;
-	public MPU9250Thermometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, NineDOF parent)
+    protected MPU9250 parent;
+	public MPU9250Thermometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent)
 	{
 		super(sampleRate, sampleSize);
 		this.ro = ro;
@@ -19,6 +36,14 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1f,Data1f>
 		// TODO Auto-generated constructor stub
 	}
 	
+	  /**
+	   * Prints the contents of registers used by this class 
+	   */
+	@Override
+	public void printRegisters()
+	{
+	   	ro.print16BitRegister(Registers.TEMP_OUT_H);
+	}
 	@Override
 	public  TimestampedData1f getAvgValue()
     {	
@@ -40,8 +65,8 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1f,Data1f>
 		//TEMP_degC = ((TEMP_OUT – RoomTemp_Offset)/Temp_Sensitivity) + 21degC
 		
     	short[] temperature = ro.read16BitRegisters(Registers.TEMP_OUT_H,1);
-    	temperature = ro.read16BitRegisters(Registers.TEMP_OUT_H,1);
-    	addValue(new TimestampedData1f((float)temperature[0]));
+    	float AdjustedTemp = temperature[0] -969f -9.5f +21f;
+    	addValue(new TimestampedData1f(AdjustedTemp));
 	}
 
 }

@@ -23,7 +23,7 @@ import sensors.models.Sensor3D;
  * 0x0F 15 SELF_TEST_Z_ACCEL 	- Accelerometer Z axis self test byte
  * 0x77 119 XA_OFFSET			- Accelerometer X axis bias offset (15 bits big endian [14:7], [6:0] bit0 is Thermometer Compensation)
  * 0x7A 122 YA_OFFSET			- Accelerometer Y axis bias offset (15 bits big endian [14:7], [6:0] bit0 is Thermometer Compensation)
- * 0x7B 123 YA_OFFSE			- Accelerometer Z axis bias offset (15 bits big endian [14:7], [6:0] bit0 is Thermometer Compensation)
+ * 0x7B 123 XA_OFFSET			- Accelerometer Z axis bias offset (15 bits big endian [14:7], [6:0] bit0 is Thermometer Compensation)
  * 0x1C 28 ACCEL_CONFIG			- Accelerometer configuration byte
  * 0x1D 29 ACCEL_CONFIG 2		- Accelerometer configuration byte 2
  * 0x3B 59 ACCEL_XOUT			- Accelerometer X axis reading (16 bits big endian)
@@ -46,10 +46,30 @@ public class MPU9250Accelerometer extends Sensor3D  {
 		this.ro = ro;
 		this.parent = parent;
 	}
+	
+	  /**
+	   * Prints the contents of registers used by this class 
+	   */
+	@Override
+	public void printRegisters()
+	{
+	   	ro.printByteRegister(Registers.ACCEL_CONFIG);
+	   	ro.printByteRegister(Registers.ACCEL_CONFIG2);
+	   	ro.printByteRegister(Registers.LP_ACCEL_ODR);
+	   	ro.printByteRegister(Registers.SELF_TEST_X_ACCEL);
+	   	ro.printByteRegister(Registers.SELF_TEST_Y_ACCEL);
+	   	ro.printByteRegister(Registers.SELF_TEST_Z_ACCEL);
+	   	ro.print16BitRegister(Registers.XA_OFFSET_H);
+	   	ro.print16BitRegister(Registers.YA_OFFSET_H);
+	   	ro.print16BitRegister(Registers.ZA_OFFSET_H);
+	   	ro.print16BitRegister(Registers.ACCEL_XOUT_H);
+	   	ro.print16BitRegister(Registers.ACCEL_YOUT_H);
+	   	ro.print16BitRegister(Registers.ACCEL_ZOUT_H);
+	}
 
 	public	AccScale getAccScale(){ return accelScale;}
 
-    @Override
+	@Override
 	public void updateData()
 	{
          short registers[];

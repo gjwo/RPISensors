@@ -25,6 +25,8 @@ import java.util.Arrays;
  * 0x72 114 FIFO_COUNT	- First In First Out byte count (13bit BigEndian [12:8],[7:0])
  * 0x74 116 FIFO_R_W	- First In First Out byte
  * 0x75 117 WHO_AM_I	- Device Address
+ * INT_PIN_CFG
+ * INT_ENABLE
  */
 public class MPU9250 extends NineDOF
 {
@@ -48,7 +50,30 @@ public class MPU9250 extends NineDOF
         mag.init();
         calibrateMagnetometer();
     }
-
+	  /**
+	   * Prints the contents of registers used by this class 
+	   */
+	  public void printRegisters()
+	   {
+	   	roMPU.printByteRegister(Registers.CONFIG);
+	   	roMPU.printByteRegister(Registers.WOM_THR);
+	   	roMPU.printByteRegister(Registers.MOT_DUR);
+	   	roMPU.printByteRegister(Registers.ZMOT_THR);
+	   	roMPU.printByteRegister(Registers.FIFO_EN);
+	   	roMPU.printByteRegister(Registers.I2C_MST_CTRL);
+	   	roMPU.printByteRegister(Registers.I2C_MST_STATUS);
+	   	roMPU.printByteRegister(Registers.INT_PIN_CFG);
+	   	roMPU.printByteRegister(Registers.INT_ENABLE);
+	   	roMPU.printByteRegister(Registers.INT_STATUS);
+	   	roMPU.printByteRegister(Registers.I2C_MST_DELAY_CTRL);
+	   	roMPU.printByteRegister(Registers.SIGNAL_PATH_RESET);
+	   	roMPU.printByteRegister(Registers.MOT_DETECT_CTRL);
+	   	roMPU.printByteRegister(Registers.USER_CTRL);
+	   	roMPU.printByteRegister(Registers.PWR_MGMT_1);
+	   	roMPU.printByteRegister(Registers.PWR_MGMT_2);
+	   	roMPU.printByteRegister(Registers.WHO_AM_I_MPU9250);
+	   	roMPU.printByteRegister(Registers.SMPLRT_DIV);
+	   }
     private void selfTest() throws IOException, InterruptedException
     {
     	System.out.println("selfTest");
@@ -144,8 +169,17 @@ public class MPU9250 extends NineDOF
         //ro.writeByteRegister(Registers.INT_PIN_CFG.getValue(), (byte)0x12);  // INT is 50 microsecond pulse and any read to clear
         roMPU.writeByteRegister(Registers.INT_PIN_CFG, (byte)0x22);  // INT is 50 microsecond pulse and any read to clear - as per MPUBASICAHRS_T3
         roMPU.writeByteRegister(Registers.INT_ENABLE, (byte)0x01);  // Enable data ready (bit 0) interrupt
-        //roMPU.outputConfigRegisters();
-        Thread.sleep(100);
+        printRegisters();
+        System.out.println();
+        gyro.printRegisters();
+        System.out.println();
+        accel.printRegisters();
+        System.out.println();
+        mag.printRegisters();
+        System.out.println();
+        therm.printRegisters();
+        System.out.println();
+       Thread.sleep(100);
     	System.out.println("End initMPU9250");
     }
     

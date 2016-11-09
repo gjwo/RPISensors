@@ -8,8 +8,8 @@ enum Registers
 {
     AK8963_ADDRESS   (0x0C), // i2c bus address
     
-    WHO_AM_I_AK8963  (0x00), // should return (0x48
-    INFO             (0x01),
+    AK8963_WHO_AM_I  (0x00), // should return (0x48
+    AK8963_INFO      (0x01),
     AK8963_ST1       (0x02),  // data ready status bit 0
     AK8963_XOUT_L    (0x03),  // data
     AK8963_XOUT_H    (0x04),

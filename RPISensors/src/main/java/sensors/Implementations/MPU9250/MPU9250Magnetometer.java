@@ -12,7 +12,29 @@ import sensors.models.Sensor3D;
 
 /**
  * @author GJWood
- *
+ * MPU 9250 Magnetometer sensor
+ * Created by G.J.Wood on 1/11/2016
+ * Based on MPU9250_MS5637_t3 Basic Example Code by: Kris Winer date: April 1, 2014
+ * https://github.com/kriswiner/MPU-9250/blob/master/MPU9250_MS5637_AHRS_t3.ino
+ * 
+ * This class handles the operation of the Magnetometer sensor and is a subclass of Sensor3D, it provides those methods
+ * which are hardware specific to the MPU-9250 such as calibration configuring, self test and update
+ * This class is independent of the bus implementation, register addressing etc as this is handled by RegisterOperations
+ *  
+ * Hardware registers controlled by this class
+ * 0x00 00 AK8963_WHO_AM_I		- Magnetometer Who Am I should return 48
+ * 0x01 01 AK8963_INFO			- Magnetometer Device information
+ * 0x02 02 AK8963_ST1			- Magnetometer status data ready status bit 0
+ * 0x03 03 AK8963_XOUT			- Magnetometer X axis reading (16 bits little endian)
+ * 0x05 05 AK8963_YOUT			- Magnetometer Y axis reading (16 bits little endian)
+ * 0x07 06 AK8963_ZOUT			- Magnetometer Z axis reading (16 bits little endian)
+ * 0x09 09 AK8963_ST2			- Magnetometer status data overflow bit 3 and data read error status bit 2
+ * 0x0A 10 AK8963_CNTL1			- Magnetometer configuration byte 1 Power down (0000), single-measurement (0001), self-test (1000) and Fuse ROM (1111) modes on bits 3:0
+ * 0x0B 11 AK8963_CNTL2			- Magnetometer configuration byte 2 Reset bit 0
+ * 0x0C 12 AK8963_ASTC			- Magnetometer Self test control
+ * 0x10 16 AK8963_ASAX			- Fuse ROM X-axis sensitivity factory adjustment
+ * 0x11 17 AK8963_ASAY			- Fuse ROM Y-axis sensitivity factory adjustment
+ * 0x12 18 AK8963_ASAZ			- Fuse ROM Z-axis sensitivity factory adjustment
  */
 public class MPU9250Magnetometer extends Sensor3D  {
 
@@ -34,6 +56,27 @@ public class MPU9250Magnetometer extends Sensor3D  {
 		this.parent = parent;
 	}
 
+	  /**
+	   * Prints the contents of registers used by this class 
+	   */
+	@Override
+	public void printRegisters()
+	{
+	   	ro.printByteRegister(Registers.AK8963_WHO_AM_I);
+	   	ro.printByteRegister(Registers.AK8963_INFO);
+	   	ro.printByteRegister(Registers.AK8963_ST1);
+	   	ro.printByteRegister(Registers.AK8963_ST2);
+	   	ro.printByteRegister(Registers.AK8963_CNTL1);
+	   	ro.printByteRegister(Registers.AK8963_CNTL2);
+	   	ro.printByteRegister(Registers.AK8963_ASTC);
+	   	ro.printByteRegister(Registers.AK8963_ASAX);
+	   	ro.printByteRegister(Registers.AK8963_ASAY);
+	   	ro.printByteRegister(Registers.AK8963_ASAZ);
+	   	ro.print16BitRegisterLittleEndian(Registers.AK8963_XOUT_L);
+	   	ro.print16BitRegisterLittleEndian(Registers.AK8963_YOUT_L);
+	   	ro.print16BitRegisterLittleEndian(Registers.AK8963_ZOUT_L);
+	}
+	
 	/* (non-Javadoc)
 	 * @see devices.sensors.interfaces.Magnetometer#getLatestGaussianData()
 	 */

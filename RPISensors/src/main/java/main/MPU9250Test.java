@@ -59,7 +59,7 @@ public class MPU9250Test {
             
             int tc = mpu9250.getThermometerReadingCount();
             System.out.println("ThermReadingCount "+tc);
-            System.out.println(" Average Temperature: " + mpu9250.getAvgTemperature() + " F");
+            System.out.println(" Average Temperature: " + mpu9250.getAvgTemperature() + " C");
             
            Thread.sleep(1000);
             sensor.interrupt();

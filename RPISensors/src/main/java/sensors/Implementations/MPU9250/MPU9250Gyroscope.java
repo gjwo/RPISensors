@@ -46,6 +46,25 @@ public class MPU9250Gyroscope extends Sensor3D
 		this.parent = parent;
 	}
 
+	  /**
+	   * Prints the contents of registers used by this class 
+	   */
+	@Override
+	public void printRegisters()
+	{
+	   	ro.printByteRegister(Registers.CONFIG); //belongs to MPU9250 but holds control data for Gyroscope
+	   	ro.printByteRegister(Registers.GYRO_CONFIG);
+	   	ro.printByteRegister(Registers.SELF_TEST_X_GYRO);
+	   	ro.printByteRegister(Registers.SELF_TEST_Y_GYRO);
+	   	ro.printByteRegister(Registers.SELF_TEST_Z_GYRO);
+	   	ro.print16BitRegister(Registers.XG_OFFSET_H);
+	   	ro.print16BitRegister(Registers.YG_OFFSET_H);
+	   	ro.print16BitRegister(Registers.ZG_OFFSET_H);
+	   	ro.print16BitRegister(Registers.GYRO_XOUT_H);
+	   	ro.print16BitRegister(Registers.GYRO_YOUT_H);
+	   	ro.print16BitRegister(Registers.GYRO_ZOUT_H);
+	}
+	
 	public GT_DLFP getDFLP(){return cfgDLPF;}
 
 	@Override
