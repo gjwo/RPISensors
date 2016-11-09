@@ -1,67 +1,88 @@
 package inertialNavigation;
 
 import java.io.IOException;
-
 import com.pi4j.io.i2c.I2CFactory;
-import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
-
 import dataTypes.TimestampedData3f;
-
 import com.pi4j.io.i2c.I2CBus;
-
 import devices.I2C.Pi4jI2CDevice;
 import sensors.Implementations.MPU9250.MPU9250;
-import sensors.interfaces.Accelerometer;
-import sensors.interfaces.Gyroscope;
-import sensors.interfaces.Magnetometer;
 import sensors.interfaces.SensorUpdateListener;
 
 
 public class Navigate implements Runnable, SensorUpdateListener{
-	
-	private static final int SAMPLE_RATE = 100; //sample at 100 Hertz
+	static Navigate nav ;
+	I2CBus bus;
+	private MPU9250 mpu9250;
+	private static final int SAMPLE_RATE = 10; //sample at 100 Hertz
 	private static final int SAMPLE_SIZE = 100; //sample at 100 Hertz
 	private static final long DELTA_T = 1000000000L/SAMPLE_RATE; // average time difference in between readings in nano seconds
 	private Boolean dataReady;
 	
-	private Accelerometer acc;
-	private Magnetometer mag;
-	private Gyroscope gyr;
+	public static int getSampleRate() {return SAMPLE_RATE;}
+	public static long getDeltaT() {return DELTA_T;}
 	
-	public static int getSampleRate() {
-		return SAMPLE_RATE;
-	}
-	public static long getDeltaT() {
-		return DELTA_T;
-	}
+	/**
+	 * Navigate - Constructor to use from this class's main program
+	 */
 	public Navigate()
 	{
-		dataReady  = false;
-	    I2CBus bus = null;
-		try {
-            bus = I2CFactory.getInstance(I2CBus.BUS_0);
-
-            MPU9250 mpu9250 = new MPU9250(
+		MPU9250 mpu9250;
+        I2CBus bus = null;
+    	//System.out.println("Attempt to get Bus 1");
+        try {
+        	//final GpioController gpio = GpioFactory.getInstance();
+            bus = I2CFactory.getInstance(I2CBus.BUS_1); 
+            System.out.println("Bus acquired");
+            mpu9250 = new MPU9250(
                     new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 I2C device
-                    new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C device
-                    SAMPLE_RATE,                                    // sample rate
-                    SAMPLE_SIZE);                                   // sample size
-            Thread sensor = new Thread(mpu9250);
-            sensor.start();
-			mpu9250.registerInterest(this);
-			new Thread(mpu9250).start();
-			acc = mpu9250;
-			mag = mpu9250;
-			gyr = mpu9250;
-			
-		} catch (UnsupportedBusNumberException | IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
-    }
-	public static void main(String[] args)throws IOException, I2CFactory.UnsupportedBusNumberException, InterruptedException
-	{
-        new Navigate();
+                    new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C 
+                    SAMPLE_RATE,                                     // sample rate per second
+                    SAMPLE_SIZE); 									// sample size
+    		new Thread(mpu9250).start();
+            initialise(mpu9250);
+            System.out.println("MPU9250 created");
+        } catch (I2CFactory.UnsupportedBusNumberException | InterruptedException | IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
 	}
+
+	/**
+	 * Navigate - Constructor to use from another class's main program that sets up the and starts the MPU-9250
+	 * @param mpu9250
+	 */
+	public Navigate(MPU9250 mpu9250)
+	{
+		initialise(mpu9250);
+    }
+	public void initialise(MPU9250 mpu9250)
+	{
+		dataReady  = false;
+        this.mpu9250 = mpu9250;
+		this.mpu9250.registerInterest(this);		
+	}
+    public static void main(String[] args)
+    {
+    	try
+    	{
+    		System.out.println("Start Navigate main()");
+    		nav = new Navigate();
+            nav.mpu9250.registerInterest(nav);
+            Thread sensor = new Thread(nav.mpu9250);
+            sensor.start();
+            Thread.sleep(1000*15); //Collect data for n seconds
+            System.out.println("Shutdown Sensor");
+            sensor.interrupt();
+            Thread.sleep(1000);
+            System.out.println("Shutdown Bus");
+            nav.bus.close();
+    		System.out.println("Stop Navigate main()");   
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        System.exit(0);
+    }
 	
     @Override
     public void run()
@@ -73,9 +94,9 @@ public class Navigate implements Runnable, SensorUpdateListener{
             try
             {    
         		dataReady = false;
-            	Instruments.setMagnetometer( mag.getLatestGaussianData());
-                Instruments.setAccelerometer(acc.getLatestAcceleration());
-                Instruments.setGyroscope(gyr.getLatestRotationalAcceleration());
+            	Instruments.setMagnetometer( mpu9250.getLatestGaussianData());
+                Instruments.setAccelerometer(mpu9250.getLatestAcceleration());
+                Instruments.setGyroscope(mpu9250.getLatestRotationalAcceleration());
                 
             	// Examples of calling the filters, READ BEFORE USING!!		!!!
             	// sensors x (y)-axis of the accelerometer is aligned with the y (x)-axis of the magnetometer;
@@ -96,9 +117,7 @@ public class Navigate implements Runnable, SensorUpdateListener{
                 ajustedMag.setY(Instruments.getMagnetometer().getX());
 
                 SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),ajustedGyr,ajustedMag,(float)(DELTA_T/TimestampedData3f.NANOS_PER_SEC));
-                System.out.print(  "acc: " + Instruments.getAccelerometer().toString());
-                System.out.print(  "gyr: " + Instruments.getGyroscope().toString());
-                System.out.println("mag: " + Instruments.getMagnetometer().toString());
+                System.out.println("A " + mpu9250.getAvgAcceleration().toString()+" G " + mpu9250.getAvgRotationalAcceleration().toString()+" M "  + mpu9250.getAvgGauss().toString());
                 System.out.println("Yaw,Pirch & Roll: " + Instruments.getAngles().toString());
 
                 Thread.sleep(1);

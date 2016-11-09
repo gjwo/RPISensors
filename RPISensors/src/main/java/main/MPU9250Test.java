@@ -8,12 +8,16 @@ import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 
 import devices.I2C.Pi4jI2CDevice;
+import inertialNavigation.Navigate;
 import sensors.Implementations.MPU9250.MPU9250;
 import sensors.interfaces.SensorUpdateListener;
 
 public class MPU9250Test implements SensorUpdateListener{
-	static MPU9250Test tester ;
+	static MPU9250Test tester;
+	static Thread navigator;
+	static Thread sensorPackage;
 	MPU9250 mpu9250;
+	Navigate nav;
 
     public static void main(String[] args)
     {
@@ -31,12 +35,19 @@ public class MPU9250Test implements SensorUpdateListener{
                     10,                                     // sample rate per second
                     100); 									// sample size
             System.out.println("MPU9250 created");
-            tester.mpu9250.registerInterest(tester);
-            Thread sensor = new Thread(tester.mpu9250);
-            sensor.start();
+            //tester.mpu9250.registerInterest(tester);
+            tester.nav = new Navigate(tester.mpu9250);
+            sensorPackage = new Thread(tester.mpu9250);
+            navigator = new Thread(tester.nav);
+            sensorPackage.start();
+            navigator.start();
+            
             Thread.sleep(1000*15); //Collect data for n seconds
+            
+            System.out.println("Shutdown Navigator");
+            navigator.interrupt();
             System.out.println("Shutdown Sensor");
-            sensor.interrupt();
+            sensorPackage.interrupt();
             Thread.sleep(1000);
             System.out.println("Shutdown Bus");
             bus.close();
@@ -50,10 +61,10 @@ public class MPU9250Test implements SensorUpdateListener{
 	@Override
 	public void dataUpdated() {
         //System.out.println("### Listener called ###");
-        displaySumaryData();
+        displaySummaryData();
 	}
 	
-	public void displaySumaryData()
+	public void displaySummaryData()
 	{
         int ac = mpu9250.getAccelerometerReadingCount();
         int gc = mpu9250.getGyroscopeReadingCount();
