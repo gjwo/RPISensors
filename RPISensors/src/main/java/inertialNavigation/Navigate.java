@@ -62,6 +62,7 @@ public class Navigate implements Runnable, SensorUpdateListener{
 	{
         new Navigate();
 	}
+	
     @Override
     public void run()
     {

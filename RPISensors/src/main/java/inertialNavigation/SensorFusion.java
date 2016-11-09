@@ -39,7 +39,7 @@ public class SensorFusion {
     // filter update rates of 36 - 145 and ~38 Hz for the Madgwick and Mahony schemes, respectively. 
     // This is presumably because the magnetometer read takes longer than the gyro or accelerometer reads.
     // This filter update rate should be fast enough to maintain accurate platform orientation for 
-    // stabilization control of a fast-moving robot or quadcopter. Compare to the update rate of 200 Hz
+    // Stabilisation control of a fast-moving robot or quadcopter. Compare to the update rate of 200 Hz
     // produced by the on-board Digital Motion Processor of Invensense's MPU6050 6 DoF and MPU9150 9DoF sensors.
     // The 3.3 V 8 MHz Pro Mini is doing pretty well!
 	
@@ -49,46 +49,19 @@ public class SensorFusion {
 	// We have to make some allowance for this orientation mismatch in feeding the output to the quaternion filter.
 	// For the MPU-9250, we have chosen a magnetic rotation that keeps the sensor forward along the x-axis just like
 	// in the LSM9DS0 sensor. This rotation can be modified to allow any convenient orientation convention.
-	// This is ok by aircraft orientation standards!  
+	// This is OK by aircraft orientation standards!  
 	// Pass gyro rate as rad/s
 	//  MadgwickQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f,  my,  mx, mz);
 	//  MahonyQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f, my, mx, mz);
 
-	
-	
-
-	public float[] geteInt() {
-		return eInt;
-	}
-
-	public Quaternion getQ() {
-		return q;
-	}
-
-
-	public static float getGyroMeasurementError() {
-		return GYRO_MEASUREMENT_ERROR;
-	}
-
-	public static float getGyroMeasurementDrift() {
-		return GYRO_MEASUREMENT_DRIFT;
-	}
-
-	public static float getBeta() {
-		return BETA;
-	}
-
-	public static float getZeta() {
-		return ZETA;
-	}
-
-	public static float getKp() {
-		return KP;
-	}
-
-	public static float getKi() {
-		return KI;
-	}
+	public static float[] geteInt() {return eInt;}
+	public static Quaternion getQ() {return q;}
+	public static float getGyroMeasurementError() {return GYRO_MEASUREMENT_ERROR;}
+	public static float getGyroMeasurementDrift() {	return GYRO_MEASUREMENT_DRIFT;}
+	public static float getBeta() {return BETA;}
+	public static float getZeta() {return ZETA;}
+	public static float getKp() {return KP;}
+	public static float getKi() {return KI;}
 
 	/**
 	 * Update Madgewick Quaternion
@@ -140,11 +113,9 @@ public class SensorFusion {
 		float q3q3 = q3 * q3;
 		float q3q4 = q3 * q4;
 		float q4q4 = q4 * q4;
-
 		
 		acc.normalize(); // Normalise accelerometer measurement
 		mag.normalize(); // Normalise magnetometer measurement
-
 
 		// Reference direction of Earth's magnetic field
 		_2q1mx = 2.0f * q1 * mag.getX();
@@ -216,10 +187,8 @@ public class SensorFusion {
 		q.setAll(q1, q2, q3, q4);
 		q.normalize();// Normalise quaternion
 		Instruments.updateYawPitchRoll(q);
-
 	}
 
-	
 	/**
 	 * Update Mahoney Quaternion
 	 * @param acc - accelerometer reading
@@ -239,7 +208,6 @@ public class SensorFusion {
 	 * it can be performed on a 3.3 V Pro Mini operating at 8 MHz!
 	 */
 	public static void MahonyQuaternionUpdate(Data3f acc, Data3f grav, Data3f mag, float deltat) //delta t in seconds
-
 	{
 		float q1 = q.a, q2 = q.b, q3 = q.c, q4 = q.d; // short name local
 														// variable for
@@ -261,7 +229,6 @@ public class SensorFusion {
 		float q3q4 = q3 * q4;
 		float q4q4 = q4 * q4;
 
-		
 		acc.normalize();// Normalise accelerometer measurement
 		mag.normalize();// Normalise magnetometer measurement
 		
@@ -287,7 +254,7 @@ public class SensorFusion {
 		ex = (acc.getY() * vz - acc.getZ() * vy) + (mag.getY() * wz -mag.getZ() * wy);
 		ey = (acc.getZ() * vx - acc.getX() * vz) + (mag.getZ() * wx -mag.getX() * wz);
 		ez = (acc.getX() * vy - acc.getY() * vx) + (mag.getX() * wy -mag.getY() * wx);
-		if (KI > 0.0f) {
+		if (KI > 0.0f) {  //warning because KI is a final = 0.0f
 			eInt[0] += ex; // accumulate integral error
 			eInt[1] += ey;
 			eInt[2] += ez;

@@ -28,87 +28,28 @@ public class Instruments {
 	private static TimestampedData3f gyroscope = new TimestampedData3f(0,0,0);
 	
 	// getters
-	
-	public static float getYaw() {
-		return yaw;
-	}
-
-	public static float getPitch() {
-		return pitch;
-	}
-
-	public static float getRoll() {
-		return roll;
-	}
-	public static float getSpeed() {
-		return speed;
-	}
-
-	public static float getHeading() {
-		return heading;
-	}
-
-	public static TimestampedData3f getPosition() {
-		return position;
-	}
-
-	public static TimestampedData3f getMagnetometer() {
-		return magnetometer;
-	}
-
-	public static TimestampedData3f getAccelerometer() {
-		return accelerometer;
-	}
-
-	public static TimestampedData3f getGyroscope() {
-		return gyroscope;
-	}
-	
-	public static TimestampedData3f getAngles(){
-		return new TimestampedData3f(yaw,pitch,roll);
-	}
+	public static float getYaw() {return yaw;}
+	public static float getPitch() {return pitch;}
+	public static float getRoll() {return roll;}
+	public static float getSpeed() {return speed;}
+	public static float getHeading() {return heading;}
+	public static TimestampedData3f getPosition() {return position;}
+	public static TimestampedData3f getMagnetometer() {return magnetometer;}
+	public static TimestampedData3f getAccelerometer() {return accelerometer;}
+	public static TimestampedData3f getGyroscope() {return gyroscope;}
+	public static TimestampedData3f getAngles(){return new TimestampedData3f(yaw,pitch,roll);}
 
 	//Setters
-	
-	public static float getAttitude() {
-		return attitude;
-	}
-
-	public static float getBank() {
-		return bank;
-	}
-
-	public static void setBank(float bank) {
-		Instruments.bank = bank;
-	}
-
-	public static void setAttitude(float attitude) {
-		Instruments.attitude = attitude;
-	}
-
-	public static void setPitch(float pitch) {
-		Instruments.pitch = pitch;
-	}
-
-	public static void setHeading(float heading) {
-		Instruments.heading = heading;
-	}
-
-	public static void setPosition(TimestampedData3f position) {
-		Instruments.position = position;
-	}
-
-	public static void setMagnetometer(TimestampedData3f magnetometer) {
-		Instruments.magnetometer = magnetometer;
-	}
-
-	public static void setAccelerometer(TimestampedData3f accellerometer) {
-		Instruments.accelerometer = accellerometer;
-	}
-
-	public static void setGyroscope(TimestampedData3f gyroscope) {
-		Instruments.gyroscope = gyroscope;
-	}
+	public static float getAttitude() {return attitude;}
+	public static float getBank() {return bank;}
+	public static void setBank(float bank) {Instruments.bank = bank;}
+	public static void setAttitude(float attitude) {Instruments.attitude = attitude;}
+	public static void setPitch(float pitch) {Instruments.pitch = pitch;}
+	public static void setHeading(float heading) {Instruments.heading = heading;}
+	public static void setPosition(TimestampedData3f position) {Instruments.position = position;}
+	public static void setMagnetometer(TimestampedData3f magnetometer) {Instruments.magnetometer = magnetometer;}
+	public static void setAccelerometer(TimestampedData3f accellerometer) {Instruments.accelerometer = accellerometer;}
+	public static void setGyroscope(TimestampedData3f gyroscope) {Instruments.gyroscope = gyroscope;}
 
 	/**
 	 * Update output acceleration variables Yaw, Pitch and Roll based on fused sensor data

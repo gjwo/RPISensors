@@ -53,7 +53,7 @@ public class MPU9250Test implements SensorUpdateListener{
         displaySumaryData();
 	}
 	
-	private void displaySumaryData()
+	public void displaySumaryData()
 	{
         int ac = mpu9250.getAccelerometerReadingCount();
         int gc = mpu9250.getGyroscopeReadingCount();
@@ -66,7 +66,7 @@ public class MPU9250Test implements SensorUpdateListener{
         */
 	}
 	
-	private void displayAllData()
+	public void displayAllData()
 	{
         int ac = mpu9250.getAccelerometerReadingCount();
         System.out.println("AccReadingCount "+ac);

@@ -117,7 +117,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
         		mag_temp[] = {0, 0, 0};
 
         System.out.println("Mag Calibration: Wave device in a figure eight until done!");
-        Thread.sleep(4000);
+        Thread.sleep(2000);
 
         // shoot for ~fifteen seconds of mag data
         for(int ii = 0; ii < magMode.sampleCount; ii++) {
@@ -137,7 +137,6 @@ public class MPU9250Magnetometer extends Sensor3D  {
         mag_bias[1]  = (mag_max[1] + mag_min[1])/2;  // get average y mag bias in counts
         mag_bias[2]  = (mag_max[2] + mag_min[2])/2;  // get average z mag bias in counts
 
-        //!!!!!!!!!!!!!!!  may need another look   as 2 different values of magScaling
         
         this.setValBias(new Data3f(	(float) mag_bias[0]*magScale.res* valScaling.getX(),  // save mag biases in G for main program
         							(float) mag_bias[1]*magScale.res* valScaling.getY(),
@@ -154,7 +153,6 @@ public class MPU9250Magnetometer extends Sensor3D  {
         this.setValScaling(new Data3f(	avg_rad/((float)mag_scale[0]),
         								avg_rad/((float)mag_scale[1]),
         								avg_rad/((float)mag_scale[2])));
-        //!!!!!!!!!!!!!!!  may need another look   as 2 different values of magScaling
 
         System.out.println("End calibrateMag");
 	}
