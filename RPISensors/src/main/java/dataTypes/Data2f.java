@@ -38,7 +38,7 @@ public class Data2f extends Data1f
 
     public String toString()
     {
-        final String format = "%+04.3f";
+        final String format = "%+07.3f";
         return 	super.toString() + " y: " + String.format(format,y);
     }
     public Data2f clone()

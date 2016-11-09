@@ -6,7 +6,8 @@ import sensors.models.NineDOF;
 import java.io.IOException;
 
 /**
- * MPU 9250 motion sensor
+ * MPU-9250 9 degrees of freedom motion sensor implementation
+ * @author GJWood
  * Created by MAWood on 17/07/2016 with major rewrite by G.J.Wood
  * Based on MPU9250_MS5637_t3 Basic Example Code by: Kris Winer date: April 1, 2014
  * https://github.com/kriswiner/MPU-9250/blob/master/MPU9250_MS5637_AHRS_t3.ino

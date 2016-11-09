@@ -9,11 +9,15 @@ import com.pi4j.io.i2c.I2CFactory;
 
 import devices.I2C.Pi4jI2CDevice;
 import sensors.Implementations.MPU9250.MPU9250;
+import sensors.interfaces.SensorUpdateListener;
 
-public class MPU9250Test {
+public class MPU9250Test implements SensorUpdateListener{
+	static MPU9250Test tester ;
+	MPU9250 mpu9250;
 
     public static void main(String[] args)
     {
+    	tester = new MPU9250Test();
     	System.out.println("Start MPU9250Test main()");
         I2CBus bus = null;
     	//System.out.println("Attempt to get Bus 1");
@@ -21,49 +25,20 @@ public class MPU9250Test {
         	//final GpioController gpio = GpioFactory.getInstance();
             bus = I2CFactory.getInstance(I2CBus.BUS_1); 
             System.out.println("Bus acquired");
-            MPU9250 mpu9250 = new MPU9250(
+            tester.mpu9250 = new MPU9250(
                     new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 I2C device
                     new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C 
                     10,                                     // sample rate per second
                     100); 									// sample size
             System.out.println("MPU9250 created");
-            Thread sensor = new Thread(mpu9250);
+            tester.mpu9250.registerInterest(tester);
+            Thread sensor = new Thread(tester.mpu9250);
             sensor.start();
-
-            Thread.sleep(15000);
-            System.out.println("back from sleep");
-            int ac = mpu9250.getAccelerometerReadingCount();
-            System.out.println("AccReadingCount "+ac);
-
-            for(int i = ac -1; i>=0; i--)
-            {
-                System.out.println(" A: " + mpu9250.getAcceleration(i).toString());
-            }
-            System.out.println("Average Acceleration " + mpu9250.getAvgAcceleration().toString());
-            
-            int gc = mpu9250.getGyroscopeReadingCount();
-            System.out.println("GyroReadingCount "+gc);
-            for(int i = gc -1; i>=0; i--)
-            {
-                System.out.println("G: " + mpu9250.getRotationalAcceleration(i).toString());
-            }
-            System.out.println("Average Rotation " + mpu9250.getAvgRotationalAcceleration().toString());
-            
-            int mc = mpu9250.getMagnetometerReadingCount();
-            System.out.println("MagReadingCount "+mc);
-            for(int i = mc -1; i>=0; i--)
-            {
-               System.out.println(" M: " + mpu9250.getGaussianData(i).toString());
-            }
-            System.out.println("Average Gauss " + mpu9250.getAvgGauss().toString());
-            
-            int tc = mpu9250.getThermometerReadingCount();
-            System.out.println("ThermReadingCount "+tc);
-            System.out.println(" Average Temperature: " + mpu9250.getAvgTemperature() + " C");
-            
-           Thread.sleep(1000);
+            Thread.sleep(1000*15); //Collect data for n seconds
+            System.out.println("Shutdown Sensor");
             sensor.interrupt();
             Thread.sleep(1000);
+            System.out.println("Shutdown Bus");
             bus.close();
         } catch (I2CFactory.UnsupportedBusNumberException | InterruptedException | IOException e) {
             e.printStackTrace();
@@ -72,4 +47,54 @@ public class MPU9250Test {
         System.exit(0);
     }
 
+	@Override
+	public void dataUpdated() {
+        //System.out.println("### Listener called ###");
+        displaySumaryData();
+	}
+	
+	private void displaySumaryData()
+	{
+        int ac = mpu9250.getAccelerometerReadingCount();
+        int gc = mpu9250.getGyroscopeReadingCount();
+        int mc = mpu9250.getMagnetometerReadingCount();
+        System.out.println("A("+ac+") " + mpu9250.getAvgAcceleration().toString()+" G("+gc+") " + mpu9250.getAvgRotationalAcceleration().toString()+" M("+mc+") "  + mpu9250.getAvgGauss().toString());
+        /*
+        int tc = mpu9250.getThermometerReadingCount();
+        System.out.println("ThermReadingCount "+tc);
+        System.out.println(" Average Temperature: " + mpu9250.getAvgTemperature() + " C");
+        */
+	}
+	
+	private void displayAllData()
+	{
+        int ac = mpu9250.getAccelerometerReadingCount();
+        System.out.println("AccReadingCount "+ac);
+
+        for(int i = ac -1; i>=0; i--)
+        {
+            System.out.println(" A: " + mpu9250.getAcceleration(i).toString());
+        }
+        System.out.println("Average Acceleration " + mpu9250.getAvgAcceleration().toString());
+        
+        int gc = mpu9250.getGyroscopeReadingCount();
+        System.out.println("GyroReadingCount "+gc);
+        for(int i = gc -1; i>=0; i--)
+        {
+            System.out.println("G: " + mpu9250.getRotationalAcceleration(i).toString());
+        }
+        System.out.println("Average Rotation " + mpu9250.getAvgRotationalAcceleration().toString());
+        
+        int mc = mpu9250.getMagnetometerReadingCount();
+        System.out.println("MagReadingCount "+mc);
+        for(int i = mc -1; i>=0; i--)
+        {
+           System.out.println(" M: " + mpu9250.getGaussianData(i).toString());
+        }
+        System.out.println("Average Gauss " + mpu9250.getAvgGauss().toString());
+        
+        int tc = mpu9250.getThermometerReadingCount();
+        System.out.println("ThermReadingCount "+tc);
+        System.out.println(" Average Temperature: " + mpu9250.getAvgTemperature() + " C");
+	}
 }
