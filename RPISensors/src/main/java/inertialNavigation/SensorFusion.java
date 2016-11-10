@@ -81,7 +81,9 @@ public class SensorFusion {
 	 */
 	public static void MadgwickQuaternionUpdate(TimestampedData3f acc, TimestampedData3f grav, TimestampedData3f mag, float deltat) //delta t in seconds
 
-	{
+	{	/*
+		System.out.print("Madgwick"+acc.toString()+grav.unStamp().toString()+mag.unStamp().toString());
+		System.out.format(" deltaT %12.10f ",deltat); */
 		float q1 = q.a, q2 = q.b, q3 = q.c, q4 = q.d; // short name local
 														// variable for
 														// readability
@@ -186,6 +188,7 @@ public class SensorFusion {
 		
 		q.setAll(q1, q2, q3, q4);
 		q.normalize();// Normalise quaternion
+		//System.out.println(q.toString());
 		Instruments.updateYawPitchRoll(q);
 	}
 
@@ -281,5 +284,6 @@ public class SensorFusion {
 		q.setAll(q1, q2, q3, q4);
 		q.normalize();// Normalise quaternion
 		Instruments.updateYawPitchRoll(q);
+		System.out.println("End Madgwick");
 	}
 }

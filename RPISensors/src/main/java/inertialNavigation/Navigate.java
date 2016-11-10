@@ -116,12 +116,14 @@ public class Navigate implements Runnable, SensorUpdateListener{
                 ajustedMag.setX(Instruments.getMagnetometer().getY()); //swap X and Y, Z stays the same
                 ajustedMag.setY(Instruments.getMagnetometer().getX());
 
-                SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),ajustedGyr,ajustedMag,(float)(DELTA_T/TimestampedData3f.NANOS_PER_SEC));
+                SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),ajustedGyr,ajustedMag,((float)(DELTA_T)/((float)TimestampedData3f.NANOS_PER_SEC)));
+                
                 System.out.println(	"A " + mpu9250.getAvgAcceleration().toString()+
                 					" G " + mpu9250.getAvgRotationalAcceleration().unStamp().toString()+
                 					" M "  + mpu9250.getAvgGauss().unStamp().toString()+
                 					" | Y,P&R: " + Instruments.getAngles().toString());
-                Thread.sleep(1);
+                
+                Thread.sleep(5);
             } catch (InterruptedException e)
             {
                 e.printStackTrace();
