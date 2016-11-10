@@ -42,26 +42,4 @@ public class TimestampedData3f extends Data3f
         return 	"[" + String.format(format,(float)(nanoTime/(float)NANOS_PER_SEC)) +
                 "] " + super.toString();
     }
-
-    public static TimestampedData3f integrate(TimestampedData3f sampleT, TimestampedData3f sampleTm1 )
-    {
-        final float deltaT = (float)(sampleT.nanoTime-sampleTm1.nanoTime)/(float)TimestampedData3f.NANOS_PER_SEC; // time difference between samples in seconds
-
-        return new TimestampedData3f(
-                (sampleT.getX()+sampleTm1.getX())/2f*deltaT,//Trapezoidal area, average height X deltaT
-                (sampleT.getY()+sampleTm1.getY())/2f*deltaT,//Trapezoidal area, average height Y deltaT
-                (sampleT.getZ()+sampleTm1.getZ())/2f*deltaT,//Trapezoidal area, average height Z deltaT
-                sampleT.nanoTime); // preserve timestamp in result
-    }
-
-    public TimestampedData3f integrate(TimestampedData3f sampleTm1 )
-    {
-        return integrate(sampleTm1,this);
-    }
-
-    public TimestampedData3f clone()
-    {
-        return new TimestampedData3f(x,y,z,nanoTime);
-    }
-
 }
