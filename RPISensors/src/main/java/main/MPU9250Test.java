@@ -12,16 +12,23 @@ import inertialNavigation.Navigate;
 import sensors.Implementations.MPU9250.MPU9250;
 import sensors.interfaces.SensorUpdateListener;
 
-public class MPU9250Test implements SensorUpdateListener{
-	static MPU9250Test tester;
-	static Thread navigator;
-	static Thread sensorPackage;
+class MPU9250Test implements SensorUpdateListener{
 	MPU9250 mpu9250;
 	Navigate nav;
 
+	private MPU9250Test(MPU9250 mpu9250, Navigate nav)
+	{
+		this.mpu9250 = mpu9250;
+		this.nav = nav;
+        mpu9250.registerInterest(this);
+	}
     public static void main(String[] args)
     {
-    	tester = new MPU9250Test();
+     	Thread navigator;
+    	Thread sensorPackage;
+    	MPU9250 mpu9250;
+    	Navigate nav;
+    	
     	System.out.println("Start MPU9250Test main()");
         I2CBus bus = null;
     	//System.out.println("Attempt to get Bus 1");
@@ -29,19 +36,20 @@ public class MPU9250Test implements SensorUpdateListener{
         	//final GpioController gpio = GpioFactory.getInstance();
             bus = I2CFactory.getInstance(I2CBus.BUS_1); 
             System.out.println("Bus acquired");
-            tester.mpu9250 = new MPU9250(
+            mpu9250 = new MPU9250(
                     new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 I2C device
                     new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C 
                     10,                                     // sample rate per second
                     100); 									// sample size
             System.out.println("MPU9250 created");
-            //tester.mpu9250.registerInterest(tester);
-            tester.nav = new Navigate(tester.mpu9250);
-            sensorPackage = new Thread(tester.mpu9250);
-            navigator = new Thread(tester.nav);
+            nav = new Navigate(mpu9250);
+            
+            sensorPackage = new Thread(mpu9250);
+            navigator = new Thread(nav);
             sensorPackage.start();
             navigator.start();
-            
+        	new MPU9250Test(mpu9250,nav);
+           
             Thread.sleep(1000*15); //Collect data for n seconds
             
             System.out.println("Shutdown Navigator");
@@ -65,7 +73,7 @@ public class MPU9250Test implements SensorUpdateListener{
 	@Override
 	public void dataUpdated() {
         //System.out.println("### Listener called ###");
-        displaySummaryData();
+        //displaySummaryData();
 	}
 	
 	public void displaySummaryData()

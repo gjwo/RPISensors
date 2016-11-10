@@ -2,6 +2,8 @@ package inertialNavigation;
 
 import java.io.IOException;
 import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
+
 import dataTypes.TimestampedData3f;
 import com.pi4j.io.i2c.I2CBus;
 import devices.I2C.Pi4jI2CDevice;
@@ -22,14 +24,24 @@ public class Navigate implements Runnable, SensorUpdateListener{
 	public static long getDeltaT() {return DELTA_T;}
 	
 	/**
-	 * Navigate - Constructor to use from this class's main program
+	 * Navigate - Constructor to use from another class's main program that sets up the and starts the MPU-9250
+	 * @param mpu9250
 	 */
-	public Navigate()
+	public Navigate(MPU9250 mpu9250)
 	{
+		dataReady  = false;
+        this.mpu9250 = mpu9250;
+		this.mpu9250.registerInterest(this);		
+    }
+	
+    public static void main(String[] args)
+    {
 		MPU9250 mpu9250;
         I2CBus bus = null;
-    	//System.out.println("Attempt to get Bus 1");
-        try {
+
+    	try
+    	{
+    		System.out.println("Start Navigate main()");
         	//final GpioController gpio = GpioFactory.getInstance();
             bus = I2CFactory.getInstance(I2CBus.BUS_1); 
             System.out.println("Bus acquired");
@@ -38,46 +50,20 @@ public class Navigate implements Runnable, SensorUpdateListener{
                     new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C 
                     SAMPLE_RATE,                                     // sample rate per second
                     SAMPLE_SIZE); 									// sample size
-    		new Thread(mpu9250).start();
-            initialise(mpu9250);
             System.out.println("MPU9250 created");
-        } catch (I2CFactory.UnsupportedBusNumberException | InterruptedException | IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-	}
-
-	/**
-	 * Navigate - Constructor to use from another class's main program that sets up the and starts the MPU-9250
-	 * @param mpu9250
-	 */
-	public Navigate(MPU9250 mpu9250)
-	{
-		initialise(mpu9250);
-    }
-	public void initialise(MPU9250 mpu9250)
-	{
-		dataReady  = false;
-        this.mpu9250 = mpu9250;
-		this.mpu9250.registerInterest(this);		
-	}
-    public static void main(String[] args)
-    {
-    	try
-    	{
-    		System.out.println("Start Navigate main()");
-    		nav = new Navigate();
+    		nav = new Navigate(mpu9250);
             nav.mpu9250.registerInterest(nav);
             Thread sensor = new Thread(nav.mpu9250);
             sensor.start();
-            Thread.sleep(1000*15); //Collect data for n seconds
+            final int n = 15;
+            Thread.sleep(1000*n); //Collect data for n seconds
             System.out.println("Shutdown Sensor");
             sensor.interrupt();
             Thread.sleep(1000);
             System.out.println("Shutdown Bus");
             nav.bus.close();
     		System.out.println("Stop Navigate main()");   
-        } catch (InterruptedException | IOException e) {
+        } catch (InterruptedException | IOException | UnsupportedBusNumberException e) {
             e.printStackTrace();
             System.exit(1);
         }
