@@ -39,7 +39,7 @@ class MPU9250Test implements SensorUpdateListener{
             mpu9250 = new MPU9250(
                     new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 I2C device
                     new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C 
-                    10,                                     // sample rate per second
+                    200,                                    // sample rate per second
                     100); 									// sample size
             System.out.println("MPU9250 created");
             nav = new Navigate(mpu9250);
