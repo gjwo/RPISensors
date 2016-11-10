@@ -65,7 +65,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		try {
 			accel.calibrate();
 		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -75,7 +74,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		try {
 			gyro.calibrate();
 		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -85,7 +83,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
     	try {
 			mag.calibrate();
 		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -94,7 +91,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		try {
 			therm.calibrate();
 		} catch( InterruptedException|IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -105,7 +101,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		try {
 			mag.init();
 		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -114,7 +109,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		try {
 			accel.selfTest();
 		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -124,7 +118,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		try {
 			gyro.selfTest();
 		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -133,7 +126,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		try {
 			mag.selfTest();
 		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -142,7 +134,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		try {
 			therm.selfTest();
 		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -153,7 +144,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
     	try {
 			accel.updateData();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -163,7 +153,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
     	try {
 			gyro.updateData();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }	
@@ -172,7 +161,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
     	try {
 			mag.updateData();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -182,7 +170,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
     	try {
 			therm.updateData();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
