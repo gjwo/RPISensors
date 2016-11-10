@@ -34,7 +34,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
     protected MPU9250RegisterOperations ro;
     protected MPU9250 parent;
 	private AccScale accelScale ;
-	//private A_DLFP aDLFP;
+	//private A_DLPF aDLFP;
 
 	MPU9250Accelerometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent)
 	{
@@ -94,8 +94,8 @@ public class MPU9250Accelerometer extends Sensor3D  {
         // accel_fchoice_b bit [3]; in this case the bandwidth is 1.13 kHz
         
         c = ro.readByteRegister(Registers.ACCEL_CONFIG2); // get current ACCEL_CONFIG2 register value
-        c = (byte)(c & ~A_DLFP.bitMask); // Clear accel_fchoice_b (bit 3) and A_DLPFG (bits [2:0]) ### this should be bits 3:2 & 1:0 but all bottom 4 bits are cleared!!!
-        c = (byte)(c | A_DLFP.ADLPF1_3.bits);  // Set accelerometer rate to 1 kHz and bandwidth to 44.8 Hz  
+        c = (byte)(c & ~A_DLPF.bitMask); // Clear accel_fchoice_b (bit 3) and A_DLPFG (bits [2:0]) ### this should be bits 3:2 & 1:0 but all bottom 4 bits are cleared!!!
+        c = (byte)(c | A_DLPF.F1BW0044_3.bits);  // Set accelerometer rate to 1 kHz and bandwidth to 44.8 Hz  
         ro.writeByteRegister(Registers.ACCEL_CONFIG2, c); // Write new ACCEL_CONFIG2 register value
 
 	}
@@ -110,7 +110,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
      
         ro.writeByteRegister(Registers.ACCEL_CONFIG, (byte)(	AccSelfTest.NONE.bits |	// no self test
         														AccScale.AFS_2G.bits));	// Set full scale range for the accelerometer to 2 g 
-        ro.writeByteRegister(Registers.ACCEL_CONFIG2, (byte)(	A_DLFP.ADLPF1_2.bits ));	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
+        ro.writeByteRegister(Registers.ACCEL_CONFIG2, (byte)(	A_DLPF.F1BW0099_2.bits ));	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
         final int TEST_LENGTH = 200;
 
         int[] aSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
@@ -137,7 +137,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         // Configure the accelerometer for self-test
         ro.writeByteRegister(Registers.ACCEL_CONFIG, (byte)(	AccSelfTest.XYZ.bits |	// Enable self test all axes
         														AccScale.AFS_2G.bits)); // Set accelerometer range to +/- 2 g
-        ro.writeByteRegister(Registers.ACCEL_CONFIG2, (byte)(	A_DLFP.ADLPF1_2.bits ));	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
+        ro.writeByteRegister(Registers.ACCEL_CONFIG2, (byte)(	A_DLPF.F1BW0099_2.bits ));	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
         Thread.sleep(25); // Delay a while to let the device stabilise
         //outputConfigRegisters();
         int[] aSelfTestSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
@@ -186,7 +186,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         System.out.println("z: " + AccuracyAccel[2] + "%");
         ro.writeByteRegister(Registers.ACCEL_CONFIG, (byte)(	AccSelfTest.NONE.bits |	// no self test
 																AccScale.AFS_2G.bits));	// Set scale range for the accelerometer to 2 g 
-        ro.writeByteRegister(Registers.ACCEL_CONFIG2, (byte)(	A_DLFP.ADLPF1_2.bits ));	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
+        ro.writeByteRegister(Registers.ACCEL_CONFIG2, (byte)(	A_DLPF.F1BW0099_2.bits ));	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
         Thread.sleep(25); // Delay a while to let the device stabilise
 
         System.out.println("End acc.selfTest");

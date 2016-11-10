@@ -273,7 +273,7 @@ enum AccScale
     
     public float getRes() {return ((float)minMax)/32768.0f;}
 }
-enum A_DLFP
+enum A_DLPF
 {
 	// Accelerometer Configuration 2 (MPU-9250 0x1D 29)
 	// The data output rate of the DLPF filter block can be further reduced by a factor of 1/(1+SMPLRT_DIV),
@@ -281,17 +281,17 @@ enum A_DLFP
 	// accelerometer in the normal bits in this manner (Hz):
 	// 3.91, 7.81, 15.63, 31.25, 62.50, 125, 250, 500, 1K
 	// ACCEL_FCHOICE_B is ACCEL_CONFIG_2 bit 3(the inverted version of accel_fchoice as described in the table below).
-	// The literals represent choices of ACCEL_FCHOICE + A_DLPF_CFG. So ADLPF1_2 would be 
+	// The literals represent choices of ACCEL_FCHOICE + A_DLPF_CFG. So F1BW0099_2 would be 
 	// the pattern '010' in the lowest 3 bits of ACCEL_CONFIG2
-	ADLPF0_X((byte)0x40, 1046f,  4,  0.503f, 300), 	//DLPF bits not relevant (bits) accel_fchoice_b = 1
-	ADLPF1_0((byte)0x00, 218.1f, 1,  1.88f, 300),  	//DLPF bits are relevant (bits) accel_fchoice_b = 0 A_DLPF_CFG = 0
-	ADLPF1_1((byte)0x01, 218.1f, 1,  1.88f, 300),	//accel_fchoice_b = 1 DFLP_CFG = 1
-	ADLPF1_2((byte)0x02,  99f,   1,  2.88f, 300),	//accel_fchoice_b = 1 DFLP_CFG = 2 etc...
-	ADLPF1_3((byte)0x03,  44.8f, 1,  4.88f, 300),
-	ADLPF1_4((byte)0x04,  21.2f, 1,  8.87f, 300),
-	ADLPF1_5((byte)0x05,  10.2f, 1, 16.83f, 300),
-	ADLPF1_6((byte)0x06,   5.05f,1, 32.48f, 300),	
-	ADLPF1_7((byte)0x07, 420f,   1,  1.38f, 300);	byte bits; 
+	F4BW1046_X((byte)0x40, 1046f,  4,  0.503f, 300), 	//DLPF bits not relevant (bits) accel_fchoice_b = 1
+	F1BW0218_0((byte)0x00, 218.1f, 1,  1.88f, 300),  	//DLPF bits are relevant (bits) accel_fchoice_b = 0 A_DLPF_CFG = 0
+	F1BW0218_1((byte)0x01, 218.1f, 1,  1.88f, 300),	//accel_fchoice_b = 1 DFLP_CFG = 1
+	F1BW0099_2((byte)0x02,  99f,   1,  2.88f, 300),	//accel_fchoice_b = 1 DFLP_CFG = 2 etc...
+	F1BW0044_3((byte)0x03,  44.8f, 1,  4.88f, 300),
+	F1BW0021_4((byte)0x04,  21.2f, 1,  8.87f, 300),
+	F1BW0010_5((byte)0x05,  10.2f, 1, 16.83f, 300),
+	F1BW0005_6((byte)0x06,   5.05f,1, 32.48f, 300),	
+	F1BW0420_7((byte)0x07, 420f,   1,  1.38f, 300);	byte bits; 
 	
 	final float accelBandWidthHz;
 	final int rateKHz;
@@ -299,7 +299,7 @@ enum A_DLFP
 	final int noiseDensity ;
     final static byte bitMask = (byte) 0x0F; //covers accel_fchoice bit 3 and A_DLPF_CFG bits 2:1
 
-	A_DLFP(byte b, float abw, int rate, float delay, int noise)
+	A_DLPF(byte b, float abw, int rate, float delay, int noise)
 	{
 		bits = b; 
 	    accelBandWidthHz = abw;
