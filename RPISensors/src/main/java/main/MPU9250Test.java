@@ -50,7 +50,11 @@ public class MPU9250Test implements SensorUpdateListener{
             sensorPackage.interrupt();
             Thread.sleep(1000);
             System.out.println("Shutdown Bus");
-            bus.close();
+            try {
+				bus.close();
+			} catch (IOException e) {
+				// ignore has already been closed! 
+			}
         } catch (I2CFactory.UnsupportedBusNumberException | InterruptedException | IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -69,7 +73,9 @@ public class MPU9250Test implements SensorUpdateListener{
         int ac = mpu9250.getAccelerometerReadingCount();
         int gc = mpu9250.getGyroscopeReadingCount();
         int mc = mpu9250.getMagnetometerReadingCount();
-        System.out.println("A("+ac+") " + mpu9250.getAvgAcceleration().toString()+" G("+gc+") " + mpu9250.getAvgRotationalAcceleration().toString()+" M("+mc+") "  + mpu9250.getAvgGauss().toString());
+        System.out.println(	"A("+ac+") " + mpu9250.getAvgAcceleration().toString()+
+        					" G("+gc+") " + mpu9250.getAvgRotationalAcceleration().unStamp().toString()+
+        					" M("+mc+") "  + mpu9250.getAvgGauss().unStamp().toString());
         /*
         int tc = mpu9250.getThermometerReadingCount();
         System.out.println("ThermReadingCount "+tc);
