@@ -54,6 +54,7 @@ class MPU9250Test implements SensorUpdateListener{
             
             System.out.println("Shutdown Navigator");
             navigator.interrupt();
+            Thread.sleep(1000);
             System.out.println("Shutdown Sensor");
             sensorPackage.interrupt();
             Thread.sleep(1000);
