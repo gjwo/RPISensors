@@ -159,6 +159,24 @@ enum Registers
 // Convention3 - fields intended for 8 8 bit register are held as an 8 bit byte
 
 //MPU9250 general register setting values
+// SMPLRT_DIV is the rate divider register, SAMPLE_RATE= Internal_Sample_Rate(DLPF.rateKHz) / (1 + SMPLRT_DIV)
+enum SampleRateDiv
+{
+	NONE((byte)0,1000),  //rates given are for a 1KHz base rate, for other base frequencies calculate accordingly 
+	HZ200((byte)4,200),
+	HZ100((byte)9,100),
+	HZ050((byte)19,50),
+	HZ010((byte)99,10),
+	HZ001((byte)999,1);
+	
+	final byte bits;
+	final int rate1KHz;
+	final static byte bitMask = (byte) 0xFF;
+
+	SampleRateDiv(byte bits, int rate)  { this.bits = bits; this.rate1KHz = rate; }
+	
+}
+// FIFO_MOde controls which combination of devices will generate FIFO data (not all are included here)
 enum FIFO_Mode
 {
 	NONE((byte)0x00),
@@ -174,9 +192,12 @@ enum FIFO_Mode
 //PWR_MGMT_1 contains H_Reset and CLKSEL (and some other standby stuff)
 enum H_Reset
 {
+	DEFAULT((byte)0x00),
 	RESET((byte)0x80); //1 – Reset the internal registers and restores the default settings. Write a 1 to	set the reset, the bit will auto clear.
+	
 	final byte bits;
 	final static byte bitmask = (byte) 0x80;
+	
 	H_Reset(byte hr){bits = hr;}
 }
 enum ClkSel
@@ -223,7 +244,7 @@ enum GT_DLPF
     final byte bits;
     final int gyroBandWidth;
     final float gyroDelay;
-    final int gyroFs;
+    final int gyroRateKHz;
     final int thermBandwidth;
     final float thermDelay;
     final static byte bitMask = (byte) 0x07;
@@ -233,7 +254,7 @@ enum GT_DLPF
 		bits = b; 
 	    gyroBandWidth = gbw;
 	    gyroDelay = gd;
-	    gyroFs = gf;
+	    gyroRateKHz = gf;
 	    thermBandwidth =tbw;
 	    thermDelay = tf;
 	}

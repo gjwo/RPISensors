@@ -96,10 +96,10 @@ public class MPU9250 extends NineDOF
     	/*
     	byte c;
         c = roMPU.readByteRegister(Registers.CONFIG); 
-        c = (byte) (c &~GT_DLFP.bitMask|GT_DLFP.DLFP11_2.bits);// Set gyro sample rate to 1 kHz and DLPF to 92 Hz
+        c = (byte) (c &~GT_DLPF.bitMask|GT_DLPF.F01BW0092.bits);// Set gyro sample rate to 1 kHz and DLPF to 92 Hz
         roMPU.writeByteRegister(Registers.CONFIG,c ); */
-        roMPU.writeByteRegisterfield(Registers.CONFIG, GT_DLFP.bitMask, GT_DLFP.DLFP11_2.bits);
-        roMPU.writeByteRegister(Registers.SMPLRT_DIV,(byte)0x00); // Internal_Sample_Rate / (1 + SMPLRT_DIV) for all devices
+        roMPU.writeByteRegisterfield(Registers.CONFIG, GT_DLPF.bitMask, GT_DLPF.F01BW0092.bits);
+        roMPU.writeByteRegister(Registers.SMPLRT_DIV,SampleRateDiv.NONE.bits); // Internal_Sample_Rate / (1 + SMPLRT_DIV) for all devices
         gyro.selfTest();
         accel.selfTest();
         
@@ -136,8 +136,8 @@ public class MPU9250 extends NineDOF
         
         Thread.sleep(15);
         
-        roMPU.writeByteRegister(Registers.CONFIG,(byte) GT_DLFP.DLFP11_1.bits);       // Set low-pass filter to 188 Hz
-        roMPU.writeByteRegister(Registers.SMPLRT_DIV,(byte) 0x00);   // Set sample rate to 1 kHz = Internal_Sample_Rate / (1 + SMPLRT_DIV)
+        roMPU.writeByteRegister(Registers.CONFIG,(byte) GT_DLPF.F01BW0184.bits);       // Set low-pass filter to 188 Hz
+        roMPU.writeByteRegister(Registers.SMPLRT_DIV,SampleRateDiv.NONE.bits);   // Set sample rate to 1 kHz = Internal_Sample_Rate / (1 + SMPLRT_DIV)
     }
     
     /**
@@ -164,9 +164,8 @@ public class MPU9250 extends NineDOF
     private void configure() throws IOException, InterruptedException
     {
     	System.out.println("initMPU9250");
-        // wake up device
-        // Clear sleep bits bit (6), enable all sensors
-        roMPU.writeByteRegister(Registers.PWR_MGMT_1, (byte)0x00);
+        
+        roMPU.writeByteRegister(Registers.PWR_MGMT_1, H_Reset.DEFAULT.bits); // wake up device, Clear sleep bits bit (6), enable all sensors
         Thread.sleep(100); // Wait for all registers to reset
 
         // get stable time source
@@ -179,10 +178,10 @@ public class MPU9250 extends NineDOF
         // be higher than 1 / 0.0059 = 170 Hz
         // DLPF_CFG = bits 2:0 = 011; this limits the sample rate to 1000 Hz for both
         // With the MPU9250_Pi4j, it is possible to get gyro sample rates of 32 kHz (!), 8 kHz, or 1 kHz
-        roMPU.writeByteRegister(Registers.CONFIG, GT_DLFP.DLFP11_3.bits);//set thermometer and gyro bandwidth to 41 and 42 Hz, respectively;
+        roMPU.writeByteRegister(Registers.CONFIG, GT_DLPF.F01BW0041.bits);//set thermometer and gyro bandwidth to 41 and 42 Hz, respectively;
 
         // Set sample rate = gyroscope output rate/(1 + SMPLRT_DIV)
-        roMPU.writeByteRegister(Registers.SMPLRT_DIV, (byte)0x04);  // Use a 200 Hz rate; a rate consistent with the filter update rate
+        roMPU.writeByteRegister(Registers.SMPLRT_DIV, SampleRateDiv.HZ200.bits);  // Use a 200 Hz rate; a rate consistent with the filter update rate
         // determined inset in CONFIG above
         
         gyro.configure();
