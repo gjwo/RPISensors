@@ -34,7 +34,7 @@ public class MPU9250Gyroscope extends Sensor3D
     protected MPU9250RegisterOperations ro;
     protected MPU9250 parent;
 	private GyrScale gyroScale; 
-	private GT_DLFP cfgDLPF;
+	private GT_DLPF cfgDLPF;
 
 	public MPU9250Gyroscope(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent) 
 	{
@@ -64,7 +64,7 @@ public class MPU9250Gyroscope extends Sensor3D
 	   	ro.print16BitRegister(Registers.GYRO_ZOUT_H);
 	}
 	
-	public GT_DLFP getDFLP(){return cfgDLPF;}
+	public GT_DLPF getDFLP(){return cfgDLPF;}
 
 	@Override
 	public void updateData() throws IOException {
