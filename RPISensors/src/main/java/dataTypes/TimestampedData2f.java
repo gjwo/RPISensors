@@ -1,64 +1,78 @@
 package dataTypes;
 
 /**
- * RPITank - devices.sensors.dataTypes
- * Created by MAWood on 18/07/2016.
+ * TimestampedData2f - 2 dimensional time stamped floating point data structure
+ * Created by MAWood on 18/07/2016, modified by G.J.Wood 10/11/2016
  */
 public class TimestampedData2f extends Data2f
 {
     public static final long NANOS_PER_SEC = 1000000000;
-    public final long nanoTime;
+    public static final float NANOS_PER_SECF = 1000000000f;
+    protected final long nanoTime;
 
+    /**
+     * TimestampedData2f	- Constructor from 2 scalars and a time
+     * @param x
+     * @param y
+     * @param nanoTime
+     */
     public TimestampedData2f(float x, float y, long nanoTime)
     {
         super(x, y);
         this.nanoTime = nanoTime;
     }
 
+    /**
+     * TimestampedData2f	- Constructor from 2 floats, system time is added
+     * @param x
+     * @param y
+     */
     public TimestampedData2f(float x, float y)
     {
         this(x, y, System.nanoTime());
     }
 
+    /**
+      * TimestampedData2f	- Constructor Data2f, system time is added
+     * @param data
+     */
     public TimestampedData2f(Data2f data)
     {
         this(data.getX(),data.getY());
     }
     
+    /**
+     * getTime - get the timestamp
+     * @return
+     */
+    public	long getTime()
+    {
+    	return nanoTime;
+    }
+  
+    /**
+     * unStamp	- return the data without the timestamp
+     * @return	base data
+     */
     public Data2f unStamp()
     {
         return (new Data2f(this.getX(),this.getY()));
     }
 
-    public TimestampedData2f(TimestampedData2f data)
-    {
-        super(data.getX(),data.getY());
-        this.nanoTime = data.nanoTime;
-    }
-
+    /**
+     * toString - return a formatted string representation for printing
+     */
     public String toString()
     {
-        String format = "%+04.4f";
-        return 	" t: " + String.format(format,(float)(nanoTime/NANOS_PER_SEC)) +
+        String format = "%8.4f";
+        return 	" t: " + String.format(format,((float)nanoTime)/NANOS_PER_SECF) +
                 " " + super.toString();
     }
-
-    public static TimestampedData2f integrate(TimestampedData2f sampleT, TimestampedData2f sampleTm1 )
-    {
-        final float deltaT = (float)(sampleT.nanoTime-sampleTm1.nanoTime)/(float)TimestampedData3f.NANOS_PER_SEC; // time difference between samples in seconds
-
-        return new TimestampedData2f(
-                (sampleT.getX()+sampleTm1.getX())/2f*deltaT,//Trapezoidal area, average height X deltaT
-                (sampleT.getY()+sampleTm1.getY())/2f*deltaT,//Trapezoidal area, average height Y deltaT
-                sampleT.nanoTime); // preserve timestamp in result
-    }
-
-    public TimestampedData2f integrate(TimestampedData2f sampleTm1 )
-    {
-        return integrate(sampleTm1,this);
-    }
-
-    public TimestampedData2f clone()
+    
+    /**
+     * clone	- return a new instance with the same timestamp and values
+     */
+     public TimestampedData2f clone()
     {
         return new TimestampedData2f(x,y,nanoTime);
     }
