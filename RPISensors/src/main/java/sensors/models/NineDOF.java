@@ -16,48 +16,34 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	protected Sensor3D accel;
 	protected Sensor3D gyro;
 	protected Sensor<TimestampedData1f,Data1f> therm;
+	protected int sampleSize;
 
 	protected NineDOF(int sampleRate, int sampleSize) 
 	{
 		super(sampleRate);
+		this.sampleSize = sampleSize;		
 	}
 
 	// Get average named sensor values
 	public TimestampedData3f getAvgAcceleration() {return accel.getAvgValue();}
-
 	public TimestampedData3f getAvgGauss() {return mag.getAvgValue();}
-
 	public TimestampedData3f getAvgRotationalAcceleration() {return gyro.getAvgValue();}
-
 	public float getAvgTemperature() {return therm.getAvgValue().getX();}
-
 	// Get latest named sensor values
 	public TimestampedData3f getLatestAcceleration() {return accel.getLatestValue();}
-
 	public TimestampedData3f getLatestGaussianData() {return mag.getLatestValue();}
-
 	public TimestampedData3f getLatestRotationalAcceleration() {return gyro.getLatestValue();}
-
 	public float getLatestTemperature() {return therm.getLatestValue().getX();}
-	
 	// Get specific named sensor values
     public TimestampedData3f getAcceleration(int i) {return accel.getValue(i);}
-
 	public TimestampedData3f getGaussianData(int i) {return mag.getValue(i);}
-
 	public TimestampedData3f getRotationalAcceleration(int i) {return gyro.getValue(i);}
-
 	public float getTemperature(int i) {return therm.getValue(i).getX();}
-	
 	// Get named sensor reading counts
 	public int getAccelerometerReadingCount() {return accel.getReadingCount();}
-
 	public int getGyroscopeReadingCount() {return gyro.getReadingCount();}
-
 	public int getMagnetometerReadingCount() {return mag.getReadingCount();}
-
 	public int getThermometerReadingCount() {return therm.getReadingCount();}
-	
 	
 	//calibrate sensors
     public void calibrateAccelerometer()
@@ -105,6 +91,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		}
 	}
 
+	//Self test sensors
 	public void selfTestAccelerometer() {
 		try {
 			accel.selfTest();
@@ -113,7 +100,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		}
 	}
 
-	//Self test sensors
 	public void selfTestGyroscope() {
 		try {
 			gyro.selfTest();
@@ -139,6 +125,19 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	}
 
 	//Update data from sensors
+	
+	//Update all sensors
+	public void updateData() {
+		try {
+			gyro.updateData();
+			mag.updateData();
+			accel.updateData();
+			therm.updateData();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void updateAccelerometerData()
     {
     	try {
@@ -155,7 +154,8 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    }	
+    }
+	
 	public void updateMagnetometerData()
     {
     	try {
@@ -173,16 +173,4 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 			e.printStackTrace();
 		}
     }
-	
-	//Update all sensors
-	public void updateData() {
-		try {
-			gyro.updateData();
-			mag.updateData();
-			accel.updateData();
-			therm.updateData();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 }

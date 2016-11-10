@@ -15,8 +15,8 @@ public class Navigate implements Runnable, SensorUpdateListener{
 	static Navigate nav ;
 	I2CBus bus;
 	private MPU9250 mpu9250;
-	private static final int SAMPLE_RATE = 10; //sample at 100 Hertz
-	private static final int SAMPLE_SIZE = 100; //sample at 100 Hertz
+	private static final int SAMPLE_RATE = 10; //sample at 10 Hertz
+	private static final int SAMPLE_SIZE = 100; 
 	private static final long DELTA_T = 1000000000L/SAMPLE_RATE; // average time difference in between readings in nano seconds
 	private Boolean dataReady;
 	

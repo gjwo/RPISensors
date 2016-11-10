@@ -1,21 +1,21 @@
 package sensors.models;
 
 import java.util.ArrayList;
-
 import sensors.interfaces.SensorUpdateListener;
 
 /**
- * Created by MAWood on 17/07/2016.
+ * Created by MAWood on 17/07/2016. modified by G.J.Wood 10/11/2016 
  */
 public abstract class SensorPackage implements Runnable
 {
-
     private final int sampleRate;
-
     private boolean paused;
-
     private ArrayList<SensorUpdateListener> listeners;
 
+    /**
+     * SensorPackage		- Constructor
+     * @param sampleRate
+     */
     SensorPackage(int sampleRate)
     {
         this.sampleRate = sampleRate;
@@ -25,21 +25,24 @@ public abstract class SensorPackage implements Runnable
         listeners = new ArrayList<>();
     }
 
-    public void pause()
-    {
-        paused = true;
-    }
+    /**
+     * pause		- Thread will stop processing data until unpaused
+     */
+    public void pause() {paused = true;}
 
-    public void unpause()
-    {
-        paused = false;
-    }
+    /**
+     * unpause		- Thread will resume processing data
+     */
+    public void unpause() {paused = false;}
 
+    /**
+     * run		- The main execution loop of the thread
+     */
     @Override
     public void run()
     {
         long lastTime;
-        final long waitTime = 1000000000L /sampleRate;
+        final long waitTime = 1000000000L / sampleRate;
         while(!Thread.interrupted())
         {
             if(!paused)
@@ -52,14 +55,21 @@ public abstract class SensorPackage implements Runnable
 
                     while(System.nanoTime() - lastTime < waitTime);
                 } catch (Exception ignored)
-                {
+                {	//do nothing
                 }
             }
         }
     }
 
+    /**
+     * updateData		- To be implemented by extending classes, will update data based on implementation
+     */
     public abstract void updateData();
 
+    /**
+     * registerInterest		- add a listener which will be informed when data is updated
+     * @param listener
+     */
     public void registerInterest(SensorUpdateListener listener)
     {
         listeners.add(listener);
