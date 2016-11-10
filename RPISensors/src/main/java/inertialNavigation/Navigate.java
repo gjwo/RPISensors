@@ -34,42 +34,9 @@ public class Navigate implements Runnable, SensorUpdateListener{
 		this.mpu9250.registerInterest(this);		
     }
 	
-    public static void main(String[] args)
-    {
-		MPU9250 mpu9250;
-        I2CBus bus = null;
-
-    	try
-    	{
-    		System.out.println("Start Navigate main()");
-        	//final GpioController gpio = GpioFactory.getInstance();
-            bus = I2CFactory.getInstance(I2CBus.BUS_1); 
-            System.out.println("Bus acquired");
-            mpu9250 = new MPU9250(
-                    new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 I2C device
-                    new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C 
-                    SAMPLE_RATE,                                     // sample rate per second
-                    SAMPLE_SIZE); 									// sample size
-            System.out.println("MPU9250 created");
-    		nav = new Navigate(mpu9250);
-            nav.mpu9250.registerInterest(nav);
-            Thread sensor = new Thread(nav.mpu9250);
-            sensor.start();
-            final int n = 15;
-            Thread.sleep(1000*n); //Collect data for n seconds
-            System.out.println("Shutdown Sensor");
-            sensor.interrupt();
-            Thread.sleep(1000);
-            System.out.println("Shutdown Bus");
-            nav.bus.close();
-    		System.out.println("Stop Navigate main()");   
-        } catch (InterruptedException | IOException | UnsupportedBusNumberException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-        System.exit(0);
-    }
-	
+	/**
+	 * run		- This is the thread run loop, it gets the data (if ready) and processes it
+	 */
     @Override
     public void run()
     {
@@ -113,13 +80,53 @@ public class Navigate implements Runnable, SensorUpdateListener{
             } catch (InterruptedException e)
             {
                 e.printStackTrace();
-            }
-            
+            }       
         }
     }
+    
+    /**
+     * dataUpdated - This is the Sensor Update Listener method, sets a flag for the thead's run loop
+     */
 	@Override
-	public void dataUpdated() {
-		dataReady = true;
-		
-	}
+	public void dataUpdated() {dataReady = true;}
+	
+	/**
+	 * main			- For use in stand alone mode, currently not used the class is initiated from MPU9250Test
+	 * @param args
+	 */
+	public static void main(String[] args)
+    {
+		MPU9250 mpu9250;
+        I2CBus bus = null;
+
+    	try
+    	{
+    		System.out.println("Start Navigate main()");
+        	//final GpioController gpio = GpioFactory.getInstance();
+            bus = I2CFactory.getInstance(I2CBus.BUS_1); 
+            System.out.println("Bus acquired");
+            mpu9250 = new MPU9250(
+                    new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 I2C device
+                    new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C 
+                    SAMPLE_RATE,                                     // sample rate per second
+                    SAMPLE_SIZE); 									// sample size
+            System.out.println("MPU9250 created");
+    		nav = new Navigate(mpu9250);
+            nav.mpu9250.registerInterest(nav);
+            Thread sensor = new Thread(nav.mpu9250);
+            sensor.start();
+            final int n = 15;
+            Thread.sleep(1000*n); //Collect data for n seconds
+            System.out.println("Shutdown Sensor");
+            sensor.interrupt();
+            Thread.sleep(1000);
+            System.out.println("Shutdown Bus");
+            nav.bus.close();
+    		System.out.println("Stop Navigate main()");   
+        } catch (InterruptedException | IOException | UnsupportedBusNumberException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        System.exit(0);
+    }
 }
