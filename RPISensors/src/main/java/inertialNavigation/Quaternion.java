@@ -43,5 +43,9 @@ public class Quaternion
 		this.c = c;
 		this.d = d;
 	}
-
+	public String toString()
+	{
+		final String format = "%+07.3f ";
+		return 	"[ " + String.format(format,a)+ String.format(format,b)+ String.format(format,c)+ String.format(format,d)+"]";
+	}
 }
