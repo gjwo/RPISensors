@@ -24,6 +24,11 @@ public class TimestampedData1f extends Data1f
     {
         this(data.getX());
     }
+    
+    public Data1f unStamp()
+    {
+        return (new Data1f(this.getX()));
+    }
 
     public String toString()
     {

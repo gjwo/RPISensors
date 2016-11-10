@@ -24,6 +24,11 @@ public class TimestampedData2f extends Data2f
     {
         this(data.getX(),data.getY());
     }
+    
+    public Data2f unStamp()
+    {
+        return (new Data2f(this.getX(),this.getY()));
+    }
 
     public TimestampedData2f(TimestampedData2f data)
     {

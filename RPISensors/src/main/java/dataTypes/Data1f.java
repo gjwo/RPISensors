@@ -39,9 +39,8 @@ public class Data1f
     {
         return new Data1f(x);
     }
-    public Data1f multiply(Data1f a, Data1f b){
-    	
-		return new Data1f(a.getX()*b.getX());
-    	
+    public Data1f multiply(Data1f a, Data1f b)
+    {  	
+		return new Data1f(a.getX()*b.getX());	
     }
 }

@@ -25,6 +25,11 @@ public class TimestampedData3f extends Data3f
         this(data.getX(),data.getY(),data.getZ());
     }
 
+    public Data3f unStamp()
+    {
+        return (new Data3f(this.getX(),this.getY(),this.getZ()));
+    }
+
     public TimestampedData3f(TimestampedData3f data)
     {
         super(data.getX(),data.getY(),data.getZ());

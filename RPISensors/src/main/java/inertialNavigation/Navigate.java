@@ -118,7 +118,7 @@ public class Navigate implements Runnable, SensorUpdateListener{
 
                 SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),ajustedGyr,ajustedMag,(float)(DELTA_T/TimestampedData3f.NANOS_PER_SEC));
                 System.out.println("A " + mpu9250.getAvgAcceleration().toString()+" G " + mpu9250.getAvgRotationalAcceleration().toString()+" M "  + mpu9250.getAvgGauss().toString());
-                System.out.println("Yaw,Pirch & Roll: " + Instruments.getAngles().toString());
+                System.out.println("Yaw, Pitch & Roll: " + Instruments.getAngles().toString());
 
                 Thread.sleep(1);
             } catch (InterruptedException e)
