@@ -4,52 +4,39 @@ package dataTypes;
  * TimestampedData
  * Created by G.J Wood on 09/11/2016.
  */
-public abstract class TimestampedData <E> extends Data1 <E>
+public abstract class TimestampedData <E> extends Data <E>
 {
     public static final long NANOS_PER_SEC = 1000000000;
-    public final long nanoTime;
-
-    public TimestampedData(TimestampedData <E> tsd)
-    {
-        super(tsd.unStamp());
-        this.nanoTime = tsd.time();
-    }
+    private final long nanoTime;
+    private Data <E> data;
     
-    public TimestampedData(E data, long nanoTime)
+    /**
+     * TimestampedData	-	Constructor
+     * @param data		-	the data	
+     * @param nanoTime	-	a timestamp	
+     */    
+    public TimestampedData(Data <E> data, long nanoTime)
     {
-        super(data);
         this.nanoTime = nanoTime;
+        this.data = data;
     }
 
-    public TimestampedData(E data)
-    {
-        this(data, System.nanoTime());
-    }
-
-    public TimestampedData()
-    {
-        this(null, System.nanoTime());
-    }
-
-    public E unStamp()
-    {
-        return x;
-    }
-    public long time()
-    {
-        return nanoTime;
-    }
+    /**
+     * TimestampedData	-	Constructor
+     * @param data		-	the data	
+     */    
+    public TimestampedData(Data <E> data){this(data, System.nanoTime());}
+    
+    public Data <E> unStamp(){return data;}
+    public long time() {return nanoTime;}
+    public void add(Data <E> data){this.data = data.clone();}	//Adds a new data object via clone of the object whilst keeping the original timestamp 
 
     public String toString()
     {
-        String format = "%+04.4f";
-        return 	"[" + String.format(format,(float)(nanoTime/(float)NANOS_PER_SEC)) +
-                "] " + super.toString();
+        String format = "%+08.3f";
+        return 	"[" + String.format(format,(float)(nanoTime/(float)NANOS_PER_SEC)) +"] " + data.toString();
     }
-
-    public TimestampedData <E> clone()
-    {
-       // return new TimestampedData<E> (this);
-    	return null;
-    }
+    
+    // methods that must be implemented when the type of data is known
+   public abstract TimestampedData <E> clone();    //clones the timestamp object, including cloning the data
 }
