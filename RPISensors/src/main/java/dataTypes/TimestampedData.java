@@ -7,8 +7,8 @@ package dataTypes;
 public abstract class TimestampedData <E> extends Data <E>
 {
     public static final long NANOS_PER_SEC = 1000000000;
-    private final long nanoTime;
-    private Data <E> data;
+    protected final long nanoTime;
+    protected Data <E> data;
     
     /**
      * TimestampedData	-	Constructor

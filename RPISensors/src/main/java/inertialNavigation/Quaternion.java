@@ -27,19 +27,13 @@ public class Quaternion
 	/**
 	 * Quaternion	- blank Constructor
 	 */
-	public Quaternion()
-	{
-		this(0,0,0,0);
-	}
+	public Quaternion(){this(0,0,0,0);}
 	
 	/**
 	 * Quaternion	- Constructor from an array of 4 values
 	 * @param data
 	 */
-	public Quaternion(float[] data)
-	{
-		this(data[0], data[1], data[2], data[3]);
-	}
+	public Quaternion(float[] data){this(data[0], data[1], data[2], data[3]);}
 	
 	/**
 	 * normalise	- normalise by dividing each value by the square root of the sum of the squares of the values
