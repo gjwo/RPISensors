@@ -36,12 +36,16 @@ class MPU9250Test implements SensorUpdateListener{
         	//final GpioController gpio = GpioFactory.getInstance();
             bus = I2CFactory.getInstance(I2CBus.BUS_1); 
             System.out.println("Bus acquired");
+            // sample rate (SR) per second sensor frequency (SF) is 200
+            // sample size (SS) needs to be >= SF/SR or readings will be missed
+            // overlap gives smoothing as average is over the sample
             mpu9250 = new MPU9250(
                     new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 I2C device
                     new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C 
-                    200,                                    // sample rate per second
-                    100); 									// sample size
+                    10,                                     // sample rate (SR) per second 
+                    25); 									// sample size (SS)
             System.out.println("MPU9250 created");
+            Thread.sleep(2000); //Give time to stop movement after mag calibration
             nav = new Navigate(mpu9250);
             
             sensorPackage = new Thread(mpu9250);
