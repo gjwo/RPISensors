@@ -33,7 +33,6 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1f,Data1f>
 		super(sampleRate, sampleSize);
 		this.ro = ro;
 		this.parent = parent;
-		// TODO Auto-generated constructor stub
 	}
 	
 	  /**
@@ -61,9 +60,7 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1f,Data1f>
 	@Override
 	public void updateData() throws IOException 
 	{
-		
 		//TEMP_degC = ((TEMP_OUT – RoomTemp_Offset)/Temp_Sensitivity) + 21degC
-		
     	short[] temperature = ro.read16BitRegisters(Registers.TEMP_OUT_H,1);
     	float AdjustedTemp = temperature[0] -969f -9.5f +21f;
     	addValue(new TimestampedData1f(AdjustedTemp));
@@ -74,5 +71,4 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1f,Data1f>
 		// no scaling required
 		return value;
 	}
-
 }

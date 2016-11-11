@@ -15,6 +15,7 @@ public abstract class Sensor <T,S>
     protected S valScaling;
     protected int sampleRate;
     protected int sampleSize;
+    private int debugLevel;
 
     /**
      * Sensor		- Constructor
@@ -26,6 +27,7 @@ public abstract class Sensor <T,S>
         vals = new CircularArrayRing<T>(sampleSize);
         this.sampleRate = sampleRate;
         this.sampleSize = sampleSize;
+        this.debugLevel=0;
     }
 
     // Methods implemented here, shouldn't need overriding
@@ -37,7 +39,9 @@ public abstract class Sensor <T,S>
     public void setValScaling(S valScaling){this.valScaling = valScaling;}
     public S getValScaling(){return valScaling;}
     public void addValue(T value){vals.add(value);}
-
+    public int debugLevel(){return debugLevel;}
+    public void setDebugLevel(int l){debugLevel=l;}
+    
     // Methods must be implemented but which can't be done here because the types are not known
     public abstract T getAvgValue();
     public abstract T OffsetAndScale(T value);

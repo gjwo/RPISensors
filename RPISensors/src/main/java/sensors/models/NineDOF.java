@@ -18,9 +18,9 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	protected Sensor<TimestampedData1f,Data1f> therm;
 	protected int sampleSize;
 
-	protected NineDOF(int sampleRate, int sampleSize) 
+	protected NineDOF(int sampleRate, int sampleSize, int debugLevel) 
 	{
-		super(sampleRate);
+		super(sampleRate,debugLevel);
 		this.sampleSize = sampleSize;		
 	}
 

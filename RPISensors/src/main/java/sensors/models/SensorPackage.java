@@ -11,18 +11,18 @@ public abstract class SensorPackage implements Runnable
     private final int sampleRate;
     private boolean paused;
     private ArrayList<SensorUpdateListener> listeners;
+    private int debugLevel;
 
     /**
      * SensorPackage		- Constructor
      * @param sampleRate
      */
-    SensorPackage(int sampleRate)
+    SensorPackage(int sampleRate, int debugLevel)
     {
         this.sampleRate = sampleRate;
-
-        paused = false;
-
-        listeners = new ArrayList<>();
+        this.paused = false;
+        this.listeners = new ArrayList<>();
+        this.debugLevel = debugLevel;
     }
 
     /**
@@ -38,6 +38,9 @@ public abstract class SensorPackage implements Runnable
     /**
      * run		- The main execution loop of the thread
      */
+    public int debugLevel(){return debugLevel;}
+    public void setDebugLevel(int l){debugLevel=l;}
+
     @Override
     public void run()
     {

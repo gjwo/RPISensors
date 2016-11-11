@@ -19,10 +19,12 @@ import devices.I2C.I2CImplementation;
  */
 public class MPU9250RegisterOperations {
 	private I2CImplementation busDevice;
+	private int debugLevel;
 	
-	public MPU9250RegisterOperations(I2CImplementation device)
+	public MPU9250RegisterOperations(I2CImplementation device,int debugLevel)
 	{
 		this.busDevice = device; // the device on the IC2 bus that the registers belong to
+		this.debugLevel = debugLevel;
 	}
 	
 	/**
@@ -169,7 +171,7 @@ public class MPU9250RegisterOperations {
     */
    void writeByteRegister(Registers r, byte rv)
    {
-	   //byte oldRegVal = readByteRegister(r);
+	   byte oldRegVal = readByteRegister(r);
        try {
 		busDevice.write(r.getAddress(),rv);
        } catch (IOException e) {
@@ -178,15 +180,16 @@ public class MPU9250RegisterOperations {
        try {
 		Thread.sleep(2); // delay to allow register to settle
        } catch (InterruptedException e) {}
-	   /*
-	   byte newRegVal = readByteRegister(r);
-	   if(newRegVal == rv)
+       if (debugLevel >=9)
+       {
+    	   byte newRegVal = readByteRegister(r);
+    	   if(newRegVal == rv)
 		   System.out.format("%20s : %8s 0x%X -> %8s 0x%X%n",
-				   r.name(),byteToBitString(oldRegVal),oldRegVal,byteToBitString(newRegVal),newRegVal);
+				   	r.name(),byteToBitString(oldRegVal),oldRegVal,byteToBitString(newRegVal),newRegVal);
 
-	   else System.out.format("%20s : %8s 0x%X -> %8s 0x%X read as -> %8s 0x%X%n ",
-			   r.name(),byteToBitString(oldRegVal),oldRegVal,byteToBitString(rv),rv,byteToBitString(newRegVal),newRegVal);
-		*/
+    	   else System.out.format("%20s : %8s 0x%X -> %8s 0x%X read as -> %8s 0x%X%n ",
+    			   r.name(),byteToBitString(oldRegVal),oldRegVal,byteToBitString(rv),rv,byteToBitString(newRegVal),newRegVal);
+       }
    }
    
    /**
@@ -209,15 +212,20 @@ public class MPU9250RegisterOperations {
        try {
 		Thread.sleep(2); // delay to allow register to settle
        } catch (InterruptedException e) {}
-       /*
-	   byte newRegVal = readByteRegister(r);
-	   if(newRegVal == rv)
-		   System.out.format("%20s : %8s 0x%X -> %8s 0x%X%n",
-				   r.name(),byteToBitString(oldRegVal),oldRegVal,byteToBitString(newRegVal),newRegVal);
+       if (debugLevel >=9)
+       {
+    	   byte newRegVal = readByteRegister(r);
+    	   if(newRegVal == rv)
+    		   System.out.format("%20s : %8s 0x%X -> %8s 0x%X%n",
+    				   				r.name(),byteToBitString(oldRegVal),
+    				   				oldRegVal,byteToBitString(newRegVal),
+    				   				newRegVal);
 
-	   else System.out.format("%20s : %8s 0x%X -> %8s 0x%X read as -> %8s 0x%X%n ",
-			   r.name(),byteToBitString(oldRegVal),oldRegVal,byteToBitString(rv),rv,byteToBitString(newRegVal),newRegVal);
-		*/	   
+    	   else System.out.format("%20s : %8s 0x%X -> %8s 0x%X read as -> %8s 0x%X%n ",
+    			   					r.name(),byteToBitString(oldRegVal),oldRegVal,
+    			   					byteToBitString(rv),rv,byteToBitString(newRegVal),
+    			   					newRegVal);
+       }	   
    }
    
    /**

@@ -42,16 +42,20 @@ public class MPU9250 extends NineDOF
      * @throws IOException	- IC2 bus failures
      * @throws InterruptedException - Wake up call
      */
-	public MPU9250(I2CImplementation mpu9250,I2CImplementation ak8963,int sampleRate, int sampleSize) throws IOException, InterruptedException
+	public MPU9250(I2CImplementation mpu9250,I2CImplementation ak8963,int sampleRate, int sampleSize, int debugLevel) throws IOException, InterruptedException
     {
-        super(sampleRate,sampleSize);
+        super(sampleRate,sampleSize,debugLevel);
         // get device
-        this.roMPU = new MPU9250RegisterOperations(mpu9250);
-        this.roAK = new MPU9250RegisterOperations(ak8963);
+        this.roMPU = new MPU9250RegisterOperations(mpu9250,debugLevel);
+        this.roAK = new MPU9250RegisterOperations(ak8963,debugLevel);
         gyro = new MPU9250Gyroscope(sampleSize, sampleSize, roMPU,this);
+        gyro.setDebugLevel(debugLevel);
         mag = new MPU9250Magnetometer(sampleSize, sampleSize, roAK,this);
+        mag.setDebugLevel(debugLevel);
         accel = new MPU9250Accelerometer(sampleSize, sampleSize, roMPU,this);
+        accel.setDebugLevel(debugLevel);
         therm = new MPU9250Thermometer(sampleSize, sampleSize, roMPU,this);
+        therm.setDebugLevel(debugLevel);
         selfTest();
         calibrateGyroAcc();
         configure();
@@ -91,7 +95,7 @@ public class MPU9250 extends NineDOF
 	 */
     private void selfTest() throws IOException, InterruptedException
     {
-    	System.out.println("selfTest");
+    	if (debugLevel() >=3) System.out.println("MPU-9250.selfTest");
     	//NB gyro config controlled by general register
     	/*
     	byte c;
@@ -103,8 +107,7 @@ public class MPU9250 extends NineDOF
         gyro.selfTest();
         accel.selfTest();
         
-        System.out.println("End selfTest");
-
+        if (debugLevel() >=3) System.out.println("End MPU-9250.selfTest");
     }
     
     /**
@@ -112,9 +115,9 @@ public class MPU9250 extends NineDOF
      * @throws IOException
      * @throws InterruptedException
      */
-    private void setCalibrationMode9250() throws IOException, InterruptedException
+    private void setCalibrationMode() throws IOException, InterruptedException
     {
-    	System.out.println("setCalibrationMode");
+    	if (debugLevel() >=4) System.out.println("setCalibrationMode");
         // Write a one to bit 7 reset bit; toggle reset device
         roMPU.writeByteRegister(Registers.PWR_MGMT_1,H_Reset.RESET.bits);
         Thread.sleep(100);
@@ -138,6 +141,7 @@ public class MPU9250 extends NineDOF
         
         roMPU.writeByteRegister(Registers.CONFIG,(byte) GT_DLPF.F01BW0184.bits);       // Set low-pass filter to 188 Hz
         roMPU.writeByteRegister(Registers.SMPLRT_DIV,SampleRateDiv.NONE.bits);   // Set sample rate to 1 kHz = Internal_Sample_Rate / (1 + SMPLRT_DIV)
+        if (debugLevel() >=4) System.out.println("End setCalibtationMode");
     }
     
     /**
@@ -147,13 +151,13 @@ public class MPU9250 extends NineDOF
      */
     private void calibrateGyroAcc() throws IOException, InterruptedException
     {
-    	System.out.println("calibrateGyroAcc");
+    	if (debugLevel() >=4) System.out.println("calibrateGyroAcc");
     	
-    	setCalibrationMode9250();
+    	setCalibrationMode();
     	accel.calibrate();
     	gyro.calibrate();
 
-    	System.out.println("End calibrateGyroAcc");
+    	if (debugLevel() >=4) System.out.println("End calibrateGyroAcc");
     }
 
     /**
@@ -163,7 +167,7 @@ public class MPU9250 extends NineDOF
      */
     private void configure() throws IOException, InterruptedException
     {
-    	System.out.println("initMPU9250");
+    	if (debugLevel() >=3) System.out.println("MPU-9250.configure");
         
         roMPU.writeByteRegister(Registers.PWR_MGMT_1, H_Reset.DEFAULT.bits); // wake up device, Clear sleep bits bit (6), enable all sensors
         Thread.sleep(100); // Wait for all registers to reset
@@ -197,18 +201,21 @@ public class MPU9250 extends NineDOF
         //ro.writeByteRegister(Registers.INT_PIN_CFG.getValue(), (byte)0x12);  // INT is 50 microsecond pulse and any read to clear
         roMPU.writeByteRegister(Registers.INT_PIN_CFG, (byte)0x22);  // INT is 50 microsecond pulse and any read to clear - as per MPUBASICAHRS_T3
         roMPU.writeByteRegister(Registers.INT_ENABLE, (byte)0x01);  // Enable data ready (bit 0) interrupt
-        printRegisters();
-        System.out.println();
-        gyro.printRegisters();
-        System.out.println();
-        accel.printRegisters();
-        System.out.println();
-        mag.printRegisters();
-        System.out.println();
-        therm.printRegisters();
-        System.out.println();
-       Thread.sleep(100);
-    	System.out.println("End initMPU9250");
+        if (debugLevel() >=6) 
+        {
+        	printRegisters();
+        	System.out.println();
+        	gyro.printRegisters();
+        	System.out.println();
+        	accel.printRegisters();
+        	System.out.println();
+        	mag.printRegisters();
+        	System.out.println();
+        	therm.printRegisters();
+        	System.out.println();
+        }
+        Thread.sleep(100);
+        if (debugLevel() >=3) System.out.println("End MPU-9250.configure");
     }
     
     /**
@@ -220,7 +227,7 @@ public class MPU9250 extends NineDOF
      */
     public short[] operateFIFO(FIFO_Mode mode, int msPeriod) throws InterruptedException
     {
-    	System.out.println("operateFIFO");
+    	if (debugLevel() >=4) System.out.println("MPU-9250.operateFIFO");
         roMPU.writeByteRegister(Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
         roMPU.writeByteRegister(Registers.FIFO_EN, mode.bits);     // Enable accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
         Thread.sleep(msPeriod);
@@ -229,7 +236,7 @@ public class MPU9250 extends NineDOF
         roMPU.writeByteRegister(Registers.FIFO_EN,FIFO_Mode.NONE.bits);  // Disable all sensors for FIFO
 
         int byteCount = roMPU.read16BitRegisters( Registers.FIFO_COUNTH, 1)[0];
-        System.out.println("Read Fifo byte count: " + byteCount);
+        if (debugLevel() >=5) System.out.println("Read Fifo byte count: " + byteCount);
         int readingCount = byteCount/2;
         short[]readings = new short[readingCount];
         byte high,low;
@@ -240,7 +247,7 @@ public class MPU9250 extends NineDOF
            	readings[i] = (short) ((high << 8) | (low&0xFF)) ;  // Turn the MSB and LSB into a signed 16-bit value
         	//System.out.format("%d: [0x%X, 0x%X] 0x%X %d%n", i,high,low, readings[i],readings[i]);
         }
-    	System.out.println("End operateFIFO");
+        if (debugLevel() >=4) System.out.println("End MPU-9250.operateFIFO");
     	return readings;
     }
 }

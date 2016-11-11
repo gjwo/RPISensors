@@ -28,14 +28,31 @@ class MPU9250Test implements SensorUpdateListener{
     	Thread sensorPackage;
     	MPU9250 mpu9250;
     	Navigate nav;
+    	int debugLevel = 1;
+    	int	debugLevelSensors = 1;
+    	int debugLevelNavigate = 5;
     	
-    	System.out.println("Start MPU9250Test main()");
+    	/*
+    	 * debugLevel settings
+    	 * 0	-	No diagnostic prints
+    	 * 1	-	User instructions, substantive output
+    	 * 2	-	Normal user output, progress etc
+    	 * 3	-	Main class methods entry & exit
+    	 * 4	-	Internal methods entry and exit
+    	 * 5	-	variable changes
+    	 * 6	-	Device/Sensor register summaries
+    	 * 7	-
+    	 * 8	-	Loop internal variables
+    	 * 9	-	Hardware writes
+    	 */
+    	
+    	if (debugLevel >=2) System.out.println("Start MPU9250Test main()");
         I2CBus bus = null;
     	//System.out.println("Attempt to get Bus 1");
         try {
         	//final GpioController gpio = GpioFactory.getInstance();
             bus = I2CFactory.getInstance(I2CBus.BUS_1); 
-            System.out.println("Bus acquired");
+            if (debugLevel >=2) System.out.println("Bus acquired");
             // sample rate (SR) per second sensor frequency (SF) is 200
             // sample size (SS) needs to be >= SF/SR or readings will be missed
             // overlap gives smoothing as average is over the sample
@@ -43,10 +60,11 @@ class MPU9250Test implements SensorUpdateListener{
                     new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 I2C device
                     new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C 
                     10,                                     // sample rate (SR) per second 
-                    25); 									// sample size (SS)
-            System.out.println("MPU9250 created");
+                    25,										// sample size (SS)
+                    debugLevelSensors); 					// debug level
+            if (debugLevel >=2) System.out.println("MPU9250 created");
             Thread.sleep(2000); //Give time to stop movement after mag calibration
-            nav = new Navigate(mpu9250);
+            nav = new Navigate(mpu9250,debugLevelNavigate);
             
             sensorPackage = new Thread(mpu9250);
             navigator = new Thread(nav);
@@ -56,13 +74,13 @@ class MPU9250Test implements SensorUpdateListener{
            
             Thread.sleep(1000*15); //Collect data for n seconds
             
-            System.out.println("Shutdown Navigator");
+            if (debugLevel >=2) System.out.println("Shutdown Navigator");
             navigator.interrupt();
             Thread.sleep(1000);
-            System.out.println("Shutdown Sensor");
+            if (debugLevel >=2) System.out.println("Shutdown Sensor");
             sensorPackage.interrupt();
             Thread.sleep(1000);
-            System.out.println("Shutdown Bus");
+            if (debugLevel >=2) System.out.println("Shutdown Bus");
             try {
 				bus.close();
 			} catch (IOException e) {

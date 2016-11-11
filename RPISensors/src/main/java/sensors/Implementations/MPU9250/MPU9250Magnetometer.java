@@ -109,14 +109,14 @@ public class MPU9250Magnetometer extends Sensor3D  {
 
 	@Override
 	public void calibrate() throws  InterruptedException{
-    	System.out.println("calibrateMag");
+		if (debugLevel() >=3) System.out.println("calibrateMag");
 
         int  mag_bias[] = {0, 0, 0}, mag_scale[] = {0, 0, 0};
         short mag_max[] = {(short)0x8000, (short)0x8000, (short)0x8000},
         		mag_min[] = {(short)0x7FFF, (short)0x7FFF, (short)0x7FFF},
         		mag_temp[] = {0, 0, 0};
 
-        System.out.println("Mag Calibration: Wave device in a figure eight until done!");
+        if (debugLevel() >=1) System.out.println("Mag Calibration: Wave device in a figure eight until done!");
         Thread.sleep(2000);
 
         // shoot for ~fifteen seconds of mag data
@@ -132,6 +132,8 @@ public class MPU9250Magnetometer extends Sensor3D  {
             if(magMode == MagMode.MM_8HZ) Thread.sleep(135);  // at 8 Hz ODR, new mag data is available every 125 ms
             if(magMode == MagMode.MM_100HZ) Thread.sleep(12);  // at 100 Hz ODR, new mag data is available every 10 ms
         }
+        if (debugLevel() >=1) System.out.println("Mag Calibration: Finished");
+        
         // Get hard iron correction
         mag_bias[0]  = (mag_max[0] + mag_min[0])/2;  // get average x mag bias in counts
         mag_bias[1]  = (mag_max[1] + mag_min[1])/2;  // get average y mag bias in counts
@@ -154,18 +156,14 @@ public class MPU9250Magnetometer extends Sensor3D  {
         								avg_rad/((float)mag_scale[1]),
         								avg_rad/((float)mag_scale[2])));
 
-        System.out.println("End calibrateMag");
+        if (debugLevel() >=3) System.out.println("End calibrateMag");
 	}
-
-	@Override
-	public void selfTest() {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
+	// No self Test
+	
 	@Override
 	public void init() throws InterruptedException, IOException {
-    	System.out.println("initAK8963");
+		if (debugLevel() >=3) System.out.println("initAK8963");
         // First extract the factory calibration for each magnetometer axis
 
         ro.writeByteRegister(Registers.AK8963_CNTL1,(byte) 0x00); // Power down magnetometer
@@ -184,7 +182,6 @@ public class MPU9250Magnetometer extends Sensor3D  {
         // and enable continuous bits data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
         ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)(MagScale.MFS_16BIT.bits | magMode.bits)); // Set magnetometer data resolution and sample ODR ####16bit already shifted
         Thread.sleep(10);
-    	System.out.println("End initAK8963");
+        if (debugLevel() >=3) System.out.println("End initAK8963");
 	}
-
 }

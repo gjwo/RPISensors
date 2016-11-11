@@ -19,19 +19,22 @@ public class Navigate implements Runnable, SensorUpdateListener{
 	private static final int SAMPLE_SIZE = 100; 
 	private static final long DELTA_T = 1000000000L/SAMPLE_RATE; // average time difference in between readings in nano seconds
 	private Boolean dataReady;
+	private int debugLevel;
 	
 	public static int getSampleRate() {return SAMPLE_RATE;}
 	public static long getDeltaT() {return DELTA_T;}
+	public int debugLevel() {return debugLevel;}
 	
 	/**
 	 * Navigate - Constructor to use from another class's main program that sets up the and starts the MPU-9250
 	 * @param mpu9250
 	 */
-	public Navigate(MPU9250 mpu9250)
+	public Navigate(MPU9250 mpu9250, int debugLevel)
 	{
 		dataReady  = false;
         this.mpu9250 = mpu9250;
-		this.mpu9250.registerInterest(this);		
+		this.mpu9250.registerInterest(this);
+		this.debugLevel = debugLevel;
     }
 	
 	/**
@@ -98,31 +101,33 @@ public class Navigate implements Runnable, SensorUpdateListener{
     {
 		MPU9250 mpu9250;
         I2CBus bus = null;
+        int debugLevel = 2;
 
     	try
     	{
-    		System.out.println("Start Navigate main()");
+    		if (debugLevel>=2) System.out.println("Start Navigate main()");
         	//final GpioController gpio = GpioFactory.getInstance();
             bus = I2CFactory.getInstance(I2CBus.BUS_1); 
-            System.out.println("Bus acquired");
+            if (debugLevel>=2) System.out.println("Bus acquired");
             mpu9250 = new MPU9250(
                     new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 I2C device
                     new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C 
                     SAMPLE_RATE,                                     // sample rate per second
-                    SAMPLE_SIZE); 									// sample size
-            System.out.println("MPU9250 created");
-    		nav = new Navigate(mpu9250);
+                    SAMPLE_SIZE,  									// sample size
+                    debugLevel);
+            if (debugLevel>=2) System.out.println("MPU9250 created");
+    		nav = new Navigate(mpu9250,debugLevel);
             nav.mpu9250.registerInterest(nav);
             Thread sensor = new Thread(nav.mpu9250);
             sensor.start();
             final int n = 15;
             Thread.sleep(1000*n); //Collect data for n seconds
-            System.out.println("Shutdown Sensor");
+            if (debugLevel>=2) System.out.println("Shutdown Sensor");
             sensor.interrupt();
             Thread.sleep(1000);
-            System.out.println("Shutdown Bus");
+            if (debugLevel>=2) System.out.println("Shutdown Bus");
             nav.bus.close();
-    		System.out.println("Stop Navigate main()");   
+            if (debugLevel>=2) System.out.println("Stop Navigate main()");   
         } catch (InterruptedException | IOException | UnsupportedBusNumberException e) {
             e.printStackTrace();
             System.exit(1);
