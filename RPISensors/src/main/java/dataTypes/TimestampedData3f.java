@@ -66,7 +66,7 @@ public class TimestampedData3f extends Data3f
      */
     public String toString()
     {
-        String format = "%8.4f";
+        String format = "%08.3f";
         return 	"[" + String.format(format,((float)nanoTime)/NANOS_PER_SECF) +
                 "] " + super.toString();
     }

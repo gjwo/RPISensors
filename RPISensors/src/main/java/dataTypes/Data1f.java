@@ -32,7 +32,7 @@ public class Data1f
 
     public String toString()
     {
-        final String format = "%+07.3f";
+        final String format = "%+08.3f";
         return 	"x: " + String.format(format,x);
     }
     public Data1f clone()
