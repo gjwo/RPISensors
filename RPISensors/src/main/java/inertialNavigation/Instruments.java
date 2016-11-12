@@ -1,6 +1,11 @@
 package inertialNavigation;
 
+import dataTypes.Data;
+import dataTypes.Data3f;
+import dataTypes.TimestampedData;
 import dataTypes.TimestampedData3f;
+import dataTypes.YawPitchRoll;
+import dataTypes.YawPitchRollTimestamped;
 
 /**
  * @author GJWood
@@ -38,10 +43,10 @@ public class Instruments {
 	public static TimestampedData3f getAccelerometer() {return accelerometer;}
 	public static TimestampedData3f getGyroscope() {return gyroscope;}
 	public static TimestampedData3f getAngles(){return new TimestampedData3f(yaw,pitch,roll);}
-
-	//Setters
 	public static float getAttitude() {return attitude;}
 	public static float getBank() {return bank;}
+
+	//Setters
 	public static void setBank(float bank) {Instruments.bank = bank;}
 	public static void setAttitude(float attitude) {Instruments.attitude = attitude;}
 	public static void setPitch(float pitch) {Instruments.pitch = pitch;}
