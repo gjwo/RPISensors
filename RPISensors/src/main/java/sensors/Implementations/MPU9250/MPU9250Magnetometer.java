@@ -99,7 +99,8 @@ public class MPU9250Magnetometer extends Sensor3D  {
         		lastRawMagY = (short) ((buffer[3] << 8) | buffer[2]); // Data stored as little Endian
         		lastRawMagZ = (short) ((buffer[5] << 8) | buffer[4]);
         	raw = new TimestampedData3f(lastRawMagX,lastRawMagY,lastRawMagZ);
-            this.addValue(OffsetAndScale(raw));
+            //this.addValue(OffsetAndScale(raw));
+        	this.addValue(raw);
         }
 	}
 
