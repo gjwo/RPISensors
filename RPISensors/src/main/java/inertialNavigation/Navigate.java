@@ -68,7 +68,7 @@ public class Navigate implements Runnable, SensorUpdateListener{
                 ajustedGyr.setX(Instruments.getGyroscope().getX()*(float)Math.PI/180.0f); //Pass gyro rate as rad/s
                 ajustedGyr.setY(Instruments.getGyroscope().getY()*(float)Math.PI/180.0f);
                 ajustedGyr.setZ(Instruments.getGyroscope().getZ()*(float)Math.PI/180.0f);
-                ajustedMag = new TimestampedData3f(Instruments.getMagnetometer());
+                ajustedMag = new TimestampedData3f(Instruments.getMagnetometer()); //set timestamp and Z
                 ajustedMag.setX(Instruments.getMagnetometer().getY()); //swap X and Y, Z stays the same
                 ajustedMag.setY(Instruments.getMagnetometer().getX());
 

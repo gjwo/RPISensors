@@ -10,8 +10,8 @@ public abstract class Sensor3D extends Sensor<TimestampedData3f,Data3f>
 {	
 	public Sensor3D(int sampleRate, int sampleSize) {
 		super(sampleRate, sampleSize);
-	    valBias = new Data3f(0,0,0);
-	    valScaling= new Data3f(1,1,1);
+	    deviceBias = new Data3f(0f,0f,0f);
+	    deviceScaling= new Data3f(1f,1f,1f);
 
 	}
 
@@ -19,9 +19,9 @@ public abstract class Sensor3D extends Sensor<TimestampedData3f,Data3f>
 	public TimestampedData3f OffsetAndScale(TimestampedData3f value)
     {
     		TimestampedData3f oSVal = value.clone();
-            oSVal.setX(value.getX()*valScaling.getX() -valBias.getX()); //bias will be at current scale?
-            oSVal.setY(value.getY()*valScaling.getY() -valBias.getY()); 
-            oSVal.setZ(value.getZ()*valScaling.getZ() -valBias.getZ()); 
+            oSVal.setX(value.getX()*deviceScaling.getX() -deviceBias.getX()); //bias will be at current scale?
+            oSVal.setY(value.getY()*deviceScaling.getY() -deviceBias.getY()); 
+            oSVal.setZ(value.getZ()*deviceScaling.getZ() -deviceBias.getZ()); 
             return oSVal;
     }
 
