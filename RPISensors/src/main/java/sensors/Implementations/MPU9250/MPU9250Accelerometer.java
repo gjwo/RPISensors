@@ -75,7 +75,8 @@ public class MPU9250Accelerometer extends Sensor3D  {
          short registers[];
         //ro.readByteRegister(Registers.ACCEL_XOUT_H, 6);  // Read again to trigger
         registers = ro.read16BitRegisters(Registers.ACCEL_XOUT_H,3);
-        this.addValue(OffsetAndScale(new TimestampedData3f(registers[0],registers[1],registers[2])));
+        //this.addValue(OffsetAndScale(new TimestampedData3f(registers[0],registers[1],registers[2])));
+        this.addValue(new TimestampedData3f(registers[0],registers[1],registers[2]));
 	}
 
 	@Override
