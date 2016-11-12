@@ -1,6 +1,6 @@
 package dataTypes;
 
-public enum NavFeilds
+public enum NavFields
 {
 	F1("Yaw",1),
 	F2("Pitch",2),
@@ -9,7 +9,7 @@ public enum NavFeilds
 	final String name;
 	final int Position;
 	
-	NavFeilds(String name, int Position)  { this.name = name; this.Position = Position; }		
+	NavFields(String name, int Position)  { this.name = name; this.Position = Position; }		
 
 	public String getName(){return this.name;}
 }
