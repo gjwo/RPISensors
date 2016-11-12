@@ -11,7 +11,7 @@ public class YawPitchRollTimestamped extends TimestampedData <YawPitchRoll> {
 	}
 
 	@Override
-	public TimestampedData<YawPitchRoll> clone() {
+	public TimestampedData <YawPitchRoll> clone() {
 		return new YawPitchRollTimestamped(data,nanoTime);
 	}
 
