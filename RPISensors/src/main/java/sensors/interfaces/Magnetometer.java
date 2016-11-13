@@ -17,5 +17,5 @@ public interface Magnetometer
     void updateMagnetometerData() throws Exception;
     void calibrateMagnetometer() throws InterruptedException, IOException;
     void selfTestMagnetometer();
-    void initMagnetometer() throws InterruptedException, IOException;
+    void configMagnetometer() throws InterruptedException, IOException;
 }

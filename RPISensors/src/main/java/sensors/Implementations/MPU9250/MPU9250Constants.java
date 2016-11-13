@@ -379,8 +379,8 @@ enum GyrFchoiceB
 //note all magnetometer 16 bit quantities are stored littleEndian
 enum MagMode
 {
-	MM_100HZ   ((byte)0x06,1500), // 6 for 100 Hz continuous magnetometer data read
-	MM_8HZ	 ((byte)0x02,128); // 2 for 8 Hz, continuous magnetometer data read
+	MM_100HZ   ((byte)0x06,1500), // 6 for 100 Hz ODR continuous magnetometer data read,new mag data is available every 10 ms
+	MM_8HZ	 ((byte)0x02,128); // 2 for 8 Hz ODR, continuous magnetometer data read, new mag data is available every 125 ms
 
 	final byte bits;
 	final int sampleCount;

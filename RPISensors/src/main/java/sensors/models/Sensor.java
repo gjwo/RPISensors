@@ -42,6 +42,17 @@ public abstract class Sensor <T,S>
     public int debugLevel(){return debugLevel;}
     public void setDebugLevel(int l){debugLevel=l;}
     
+    // Methods that may need extending by sub classes
+    public void printState()
+    {
+    	System.out.println("Vals: "+ vals.size());
+    	System.out.println("deviceBias: "+ deviceBias.toString());
+    	System.out.println("deviceScaling: "+ deviceBias.toString());
+    	System.out.print("sampleRate: "+ sampleRate);
+    	System.out.print(" sampleSize: "+ sampleSize);
+    	System.out.println(" debugLevel: "+ debugLevel);  	  	
+    }
+    
     // Methods must be implemented but which can't be done here because the types are not known
     public abstract T getAvgValue();
     public abstract T scale(T value);
@@ -51,6 +62,5 @@ public abstract class Sensor <T,S>
     public void calibrate() throws IOException, InterruptedException{/*if required implement and override in subclass*/}
     public void configure() throws IOException, InterruptedException{/*if required implement and override in subclass*/}
     public void selfTest() throws IOException, InterruptedException{/*if required implement and override in subclass*/}
-    public void init() throws IOException, InterruptedException{/*if required implement and override in subclass*/}
     public void printRegisters(){/*if required implement and override in subclass*/} 
 }

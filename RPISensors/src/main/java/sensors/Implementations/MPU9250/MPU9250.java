@@ -59,7 +59,7 @@ public class MPU9250 extends NineDOF
         selfTest();
         calibrateGyroAcc();
         configure();
-        mag.init();
+        mag.configure();
         calibrateMagnetometer();
     }
 	
@@ -250,4 +250,9 @@ public class MPU9250 extends NineDOF
         if (debugLevel() >=4) System.out.println("End MPU-9250.operateFIFO");
     	return readings;
     }
+
+	@Override
+	public void configMagnetometer() throws InterruptedException, IOException {
+		mag.configure();	
+	}
 }

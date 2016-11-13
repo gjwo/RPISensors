@@ -81,16 +81,6 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 		}
 	}
 
-	//initialise sensors for normal operation
-	public void initMagnetometer()
-	{
-		try {
-			mag.init();
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
 	//Self test sensors
 	public void selfTestAccelerometer() {
 		try {

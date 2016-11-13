@@ -29,7 +29,7 @@ class MPU9250Test implements SensorUpdateListener{
     	MPU9250 mpu9250;
     	Navigate nav;
     	int debugLevel = 1;
-    	int	debugLevelSensors = 1;
+    	int	debugLevelSensors = 3;
     	int debugLevelNavigate = 5;
     	
     	/*

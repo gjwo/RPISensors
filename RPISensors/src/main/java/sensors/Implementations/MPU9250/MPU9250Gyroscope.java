@@ -31,11 +31,11 @@ import sensors.models.Sensor3D;
 **/
 public class MPU9250Gyroscope extends Sensor3D 
 {
-    protected MPU9250RegisterOperations ro;
-    protected MPU9250 parent;
+    private MPU9250RegisterOperations ro;
+    private MPU9250 parent;
 	private GyrScale gyroScale; 
 	private GT_DLPF cfgDLPF;
-	private final short gyrosensitivity = 131;     // 2^16 LSB / 500dps = 131 LSB/degrees/sec
+	private final short gyroSensitivity = 131;     // 2^16 LSB / 500dps = 131 LSB/degrees/sec
 
 	public MPU9250Gyroscope(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent) 
 	{
@@ -46,6 +46,15 @@ public class MPU9250Gyroscope extends Sensor3D
 		this.parent = parent;
 	}
 
+    // Methods that may need extending by sub classes
+    public void printState()
+    {
+    	super.printState();
+    	System.out.println("gyroScale: "+ gyroScale.toString()+ " MinMax: "+gyroScale.minMax+" res: "+gyroScale.getRes() );
+    	System.out.println("cfgDLPF: "+ cfgDLPF);
+    }
+	
+	
 	  /**
 	   * Prints the contents of registers used by this class 
 	   */
@@ -83,6 +92,7 @@ public class MPU9250Gyroscope extends Sensor3D
         ro.writeByteRegister(Registers.GYRO_CONFIG,(byte)(	GyrSelfTest.NONE.bits |			// no self test
         													gyroScale.bits |				// Set full scale range for the gyro to 2000 dps
 															GyrFchoiceB.FC_USE_DLPF.bits)); // use DLPF settings 
+        if (debugLevel() >=3) printState();
         if (debugLevel() >=3) System.out.println("End gyro.configure");
 	}
 	
@@ -176,12 +186,14 @@ public class MPU9250Gyroscope extends Sensor3D
         
         Thread.sleep(25); // Delay a while to let the device stabilise
 
+        if (debugLevel() >=3) printState();
         if (debugLevel() >=3) System.out.println("End gyro.selfTest");
 	}
 
 	@Override
 	public void calibrate() throws InterruptedException
 	{
+		// part of accelgyrocalMPU9250 in Kris Winer code - this code is only the Gyroscope elements
 		if (debugLevel() >=3) System.out.println("gyro.calibrate");
     	
     	// Assumes we are in calibration bits via setCalibrationMode9250();
@@ -189,7 +201,7 @@ public class MPU9250Gyroscope extends Sensor3D
         // Configure MPU6050 gyro for bias calculation
         ro.writeByteRegister(Registers.GYRO_CONFIG,(byte) GyrScale.GFS_250DPS.bits);  	// Set gyro full-scale to 250 degrees per second, maximum sensitivity
 
-        short[] readings = parent.operateFIFO(FIFO_Mode.GYRO,40);
+        short[] readings = parent.operateFIFO(FIFO_Mode.GYRO,40); //get a set of readings via the FIFO (MCU9250 function)
         int readingCount = readings.length;
         if (debugLevel() >=5) System.out.println("Readings length: " + readingCount);
 
@@ -210,19 +222,25 @@ public class MPU9250Gyroscope extends Sensor3D
        
         //calculate averages
         short[] gyroBiasAvg = new short[]{0,0,0}; //16 bit average
-        gyroBiasAvg[0] = (short)((gyroBiasSum[0] / sampleCount) & 0xffff);
+        gyroBiasAvg[0] = (short)((gyroBiasSum[0] / sampleCount) & 0xffff); //mask out any sign extension
         gyroBiasAvg[1] = (short)((gyroBiasSum[1] / sampleCount) & 0xffff);
         gyroBiasAvg[2] = (short)((gyroBiasSum[2] / sampleCount) & 0xffff);
 
         if (debugLevel() >=5) System.out.print("Gyro Bias average: "+Arrays.toString(gyroBiasAvg));
         if (debugLevel() >=5) System.out.format(" [0x%X, 0x%X, 0x%X]%n",gyroBiasAvg[0],gyroBiasAvg[1],gyroBiasAvg[2]);
     	
-        setGyroBiases(gyroBiasAvg);
+        setHardwareBiases(gyroBiasAvg);
         
+        // set super class NineDOF variables
+        this.deviceBias = (new Data3f(	(float) gyroBiasAvg[0]/(float) gyroSensitivity,
+        							(float) gyroBiasAvg[1]/(float) gyroSensitivity,
+        							(float) gyroBiasAvg[2]/(float) gyroSensitivity));
+
+        if (debugLevel() >=3) printState();
         if (debugLevel() >=3) System.out.println("End gyro.calibrate");
 	}
 	
-    private void setGyroBiases(short[] gyroBiasAvg)
+    private void setHardwareBiases(short[] gyroBiasAvg)
     {
     	if (debugLevel() >=4) System.out.println("setGyroBiases");
     	//OffsetLSB = X_OFFS_USR * 4 / 2^FS_SEL
@@ -245,12 +263,6 @@ public class MPU9250Gyroscope extends Sensor3D
     	ro.write16bitRegister(Registers.YG_OFFSET_H,gyroBiasAvgLSB[1]);
     	ro.write16bitRegister(Registers.ZG_OFFSET_H,gyroBiasAvgLSB[2]);
          
-        // set super class NineDOF variables
-        this.deviceBias = (new Data3f(	(float) gyroBiasAvg[0]/(float) gyrosensitivity,
-        							(float) gyroBiasAvg[1]/(float) gyrosensitivity,
-        							(float) gyroBiasAvg[2]/(float) gyrosensitivity));
-        if (debugLevel() >=5) System.out.println("gyrBias (float): "+deviceBias.toString());
-
     	if (debugLevel() >=4) System.out.println("End setGyroBiases");
     }
 }
