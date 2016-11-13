@@ -11,8 +11,6 @@ import dataTypes.CircularArrayRing;
 public abstract class Sensor <T,S>
 {
     protected final CircularArrayRing<T> vals;
-    protected S deviceBias; 	//Hardware bias data calculated in calibration
-    protected S deviceScaling;	//Hardware scale, depends on the scale set up when configuring the device
     protected int sampleRate;
     protected int sampleSize;
     private int debugLevel;
@@ -34,10 +32,6 @@ public abstract class Sensor <T,S>
     public T getLatestValue(){return vals.get(0);}
     public T getValue(int i){return vals.get(i);}
     public int getReadingCount(){return vals.size();}
-    public void setDeviceBias(S deviceBias){this.deviceBias = deviceBias;}
-    public S getDeviceBias(){ return deviceBias;}
-    public void setDeviceScaling(S deviceScaling){this.deviceScaling = deviceScaling;}
-    public S getDeviceScaling(){return deviceScaling;}
     public void addValue(T value){vals.add(value);}
     public int debugLevel(){return debugLevel;}
     public void setDebugLevel(int l){debugLevel=l;}
@@ -46,9 +40,7 @@ public abstract class Sensor <T,S>
     public void printState()
     {
     	System.out.println("Vals: "+ vals.size());
-    	System.out.println("deviceBias: "+ deviceBias.toString());
-    	System.out.println("deviceScaling: "+ deviceBias.toString());
-    	System.out.print("sampleRate: "+ sampleRate);
+     	System.out.print("sampleRate: "+ sampleRate);
     	System.out.print(" sampleSize: "+ sampleSize);
     	System.out.println(" debugLevel: "+ debugLevel);  	  	
     }
