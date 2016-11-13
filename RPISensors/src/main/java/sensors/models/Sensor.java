@@ -11,8 +11,8 @@ import dataTypes.CircularArrayRing;
 public abstract class Sensor <T,S>
 {
     protected final CircularArrayRing<T> vals;
-    protected S deviceBias; //Hardware bias data calculated in calibration
-    protected S deviceScaling;
+    protected S deviceBias; 	//Hardware bias data calculated in calibration
+    protected S deviceScaling;	//Hardware scale, depends on the scale set up when configuring the device
     protected int sampleRate;
     protected int sampleSize;
     private int debugLevel;
@@ -34,17 +34,17 @@ public abstract class Sensor <T,S>
     public T getLatestValue(){return vals.get(0);}
     public T getValue(int i){return vals.get(i);}
     public int getReadingCount(){return vals.size();}
-    public void setValBias(S valBias){this.deviceBias = valBias;}
-    public S getValBias(){ return deviceBias;}
-    public void setValScaling(S valScaling){this.deviceScaling = valScaling;}
-    public S getValScaling(){return deviceScaling;}
+    public void setDeviceBias(S deviceBias){this.deviceBias = deviceBias;}
+    public S getDeviceBias(){ return deviceBias;}
+    public void setDeviceScaling(S deviceScaling){this.deviceScaling = deviceScaling;}
+    public S getDeviceScaling(){return deviceScaling;}
     public void addValue(T value){vals.add(value);}
     public int debugLevel(){return debugLevel;}
     public void setDebugLevel(int l){debugLevel=l;}
     
     // Methods must be implemented but which can't be done here because the types are not known
     public abstract T getAvgValue();
-    public abstract T OffsetAndScale(T value);
+    public abstract T scale(T value);
     public abstract void updateData() throws IOException;
 
     // Optional Methods

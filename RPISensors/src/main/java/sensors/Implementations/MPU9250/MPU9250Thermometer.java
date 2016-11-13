@@ -67,7 +67,7 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1f,Data1f>
 	}
 
 	@Override
-	public TimestampedData1f OffsetAndScale(TimestampedData1f value) {
+	public TimestampedData1f scale(TimestampedData1f value) {
 		// no scaling required
 		return value;
 	}

@@ -34,15 +34,16 @@ public class MPU9250Accelerometer extends Sensor3D  {
     protected MPU9250RegisterOperations ro;
     protected MPU9250 parent;
 	private AccScale accelScale ;
+	private final short accelSensitivity = 16384;  // = 16384 LSB/g
 	//private A_DLPF aDLFP;
 
 	MPU9250Accelerometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent)
 	{
 		super(sampleSize, sampleSize);
 		accelScale = AccScale.AFS_4G;
-		this.setValScaling(new Data3f(	(float)accelScale.getRes(),
-										(float)accelScale.getRes(),
-										(float)accelScale.getRes()));
+		this.setDeviceScaling(new Data3f(	(float)accelScale.getRes(),
+											(float)accelScale.getRes(),
+											(float)accelScale.getRes()));
 		this.ro = ro;
 		this.parent = parent;
 	}
@@ -75,8 +76,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
          short registers[];
         //ro.readByteRegister(Registers.ACCEL_XOUT_H, 6);  // Read again to trigger
         registers = ro.read16BitRegisters(Registers.ACCEL_XOUT_H,3);
-        //this.addValue(OffsetAndScale(new TimestampedData3f(registers[0],registers[1],registers[2])));
-        this.addValue(new TimestampedData3f(registers[0],registers[1],registers[2]));
+        this.addValue(scale(new TimestampedData3f(registers[0],registers[1],registers[2])));
 	}
 
 	@Override
@@ -200,8 +200,8 @@ public class MPU9250Accelerometer extends Sensor3D  {
 	public void calibrate() throws InterruptedException
 	{
 		if (debugLevel() >=3) System.out.println("accel.calibrate");
-		if (debugLevel() >=5) System.out.println("Scaling: "+getValScaling().toString());
-		if (debugLevel() >=5)  System.out.println("Bias: "+getValBias().toString());
+		if (debugLevel() >=5) System.out.println("Scaling: "+getDeviceScaling().toString());
+		if (debugLevel() >=5)  System.out.println("Bias: "+getDeviceBias().toString());
 
     	// Assumes we are in calibration bits via setCalibrationMode9250();
 
@@ -235,8 +235,8 @@ public class MPU9250Accelerometer extends Sensor3D  {
         }
     	
         //setAccelerometerBiases(accelBiasAvg);
-        if (debugLevel() >=5) System.out.println("Scaling: "+getValScaling().toString());
-        if (debugLevel() >=5)  System.out.println("Bias: "+getValBias().toString());
+        if (debugLevel() >=5) System.out.println("Scaling: "+getDeviceScaling().toString());
+        if (debugLevel() >=5)  System.out.println("Bias: "+getDeviceBias().toString());
         
         if (debugLevel() >=3) System.out.println("End accel.calibrate");
 	}
@@ -294,12 +294,11 @@ public class MPU9250Accelerometer extends Sensor3D  {
         ro.write16bitRegister(Registers.YA_OFFSET_H, accelBiasReg[1]);
         ro.write16bitRegister(Registers.ZA_OFFSET_H, accelBiasReg[2]);
         
-        /*
         // set super class NineDOF variables
-        this.setValBias(new Data3f( 	(float)accelBiasAvg[0]/2/(float)accelSensitivity,
+        this.setDeviceBias(new Data3f( 	(float)accelBiasAvg[0]/2/(float)accelSensitivity,
         								(float)accelBiasAvg[1]/2/(float)accelSensitivity,
         								(float)accelBiasAvg[2]/2/(float)accelSensitivity));
-        */								
+							
         if (debugLevel() >=5) System.out.println("End setAccelerometerBiases");
     }
 }

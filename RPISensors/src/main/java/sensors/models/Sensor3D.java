@@ -16,12 +16,12 @@ public abstract class Sensor3D extends Sensor<TimestampedData3f,Data3f>
 	}
 
 	@Override
-	public TimestampedData3f OffsetAndScale(TimestampedData3f value)
+	public TimestampedData3f scale(TimestampedData3f value)
     {
     		TimestampedData3f oSVal = value.clone();
-            oSVal.setX(value.getX()*deviceScaling.getX() -deviceBias.getX()); //bias will be at current scale?
-            oSVal.setY(value.getY()*deviceScaling.getY() -deviceBias.getY()); 
-            oSVal.setZ(value.getZ()*deviceScaling.getZ() -deviceBias.getZ()); 
+            oSVal.setX(value.getX()*deviceScaling.getX()); //from super class
+            oSVal.setY(value.getY()*deviceScaling.getY()); 
+            oSVal.setZ(value.getZ()*deviceScaling.getZ()); 
             return oSVal;
     }
 

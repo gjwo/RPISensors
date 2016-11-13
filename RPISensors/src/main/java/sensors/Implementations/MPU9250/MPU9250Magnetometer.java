@@ -95,16 +95,15 @@ public class MPU9250Magnetometer extends Sensor3D  {
         byte status2 = buffer[6]; // Status2 register must be read as part of data read to show device data has been read
         if((status2 & 0x08) == 0) //bit3 HOFL: Magnetic sensor overflow is normal (no Overflow), data is valid
         { 
-
-        		lastRawMagX = (short) ((buffer[1] << 8) | buffer[0]); // Turn the MSB and LSB into a signed 16-bit value
-        		lastRawMagY = (short) ((buffer[3] << 8) | buffer[2]); // Data stored as little Endian
-        		lastRawMagZ = (short) ((buffer[5] << 8) | buffer[4]);
-        		
-        		lastCalibratedReading = new TimestampedData3f(	(lastRawMagX*magScale.res - deviceBias.getX())*deviceScaling.getX(),
-        														(lastRawMagY*magScale.res - deviceBias.getY())*deviceScaling.getY(),
-        														(lastRawMagZ*magScale.res - deviceBias.getZ())*deviceScaling.getZ());
-            //this.addValue(OffsetAndScale(raw));
-        	this.addValue(lastCalibratedReading);
+        	lastRawMagX = (short) ((buffer[1] << 8) | buffer[0]); // Turn the MSB and LSB into a signed 16-bit value
+        	lastRawMagY = (short) ((buffer[3] << 8) | buffer[2]); // Data stored as little Endian
+        	lastRawMagZ = (short) ((buffer[5] << 8) | buffer[4]);
+	
+        	//the stored calibration results is applied here as there is no hardware correction stored in the hardware via calibration 
+       		lastCalibratedReading = new TimestampedData3f(	lastRawMagX*magScale.res*magCalibration.getX() - deviceBias.getX(),
+       														lastRawMagY*magScale.res*magCalibration.getY() - deviceBias.getY(),
+       														lastRawMagZ*magScale.res*magCalibration.getZ() - deviceBias.getZ());
+        	this.addValue(scale(lastCalibratedReading));
         }
 	}
 

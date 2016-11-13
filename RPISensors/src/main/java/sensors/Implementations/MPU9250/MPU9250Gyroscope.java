@@ -35,12 +35,13 @@ public class MPU9250Gyroscope extends Sensor3D
     protected MPU9250 parent;
 	private GyrScale gyroScale; 
 	private GT_DLPF cfgDLPF;
+	private final short gyrosensitivity = 131;     // 2^16 LSB / 500dps = 131 LSB/degrees/sec
 
 	public MPU9250Gyroscope(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent) 
 	{
 		super(sampleRate, sampleSize);
 		gyroScale = GyrScale.GFS_2000DPS;
-		this.setValScaling( new Data3f(gyroScale.getRes(), gyroScale.getRes(),gyroScale.getRes()));
+		this.setDeviceScaling( new Data3f(gyroScale.getRes(), gyroScale.getRes(),gyroScale.getRes())); //held in super class 
 		this.ro = ro;
 		this.parent = parent;
 	}
@@ -71,8 +72,7 @@ public class MPU9250Gyroscope extends Sensor3D
         short registers[];
         //ro.readByteRegister(Registers.GYRO_XOUT_H, 6);  // Read again to trigger
         registers = ro.read16BitRegisters(Registers.GYRO_XOUT_H,3); //GYRO_XOUT = Gyro_Sensitivity * X_angular_rate
-        //this.addValue(OffsetAndScale(new TimestampedData3f(registers[0],registers[1],registers[2])));
-        this.addValue(new TimestampedData3f(registers[0],registers[1],registers[2]));
+        this.addValue(scale(new TimestampedData3f(registers[0],registers[1],registers[2]))); //value depends on which scale is in use
 	}
 	
 
@@ -244,15 +244,13 @@ public class MPU9250Gyroscope extends Sensor3D
     	ro.write16bitRegister(Registers.XG_OFFSET_H,gyroBiasAvgLSB[0]);
     	ro.write16bitRegister(Registers.YG_OFFSET_H,gyroBiasAvgLSB[1]);
     	ro.write16bitRegister(Registers.ZG_OFFSET_H,gyroBiasAvgLSB[2]);
-        /* 
+         
         // set super class NineDOF variables
-        short gyrosensitivity = 131;     // 2^16 LSB / 500dps = 131 LSB/degrees/sec
-        this.setValBias(new Data3f(	(float) gyroBiasAvg[0]/(float) gyrosensitivity,
+        this.deviceBias = (new Data3f(	(float) gyroBiasAvg[0]/(float) gyrosensitivity,
         							(float) gyroBiasAvg[1]/(float) gyrosensitivity,
         							(float) gyroBiasAvg[2]/(float) gyrosensitivity));
-        //System.out.println("gyrBias (float): "+Arrays.toString(gyrBias));
-         * 
-         */
+        if (debugLevel() >=5) System.out.println("gyrBias (float): "+deviceBias.toString());
+
     	if (debugLevel() >=4) System.out.println("End setGyroBiases");
     }
 }
