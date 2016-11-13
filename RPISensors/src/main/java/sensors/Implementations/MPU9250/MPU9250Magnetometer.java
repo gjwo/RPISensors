@@ -49,7 +49,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
     private short lastRawMagX;  //updated by updateData() needed during calibration 
     private short lastRawMagY;
     private short lastRawMagZ;
-    private TimestampedData3f lastCalibratedReading;
+    private TimestampedData3f lastCalibratedReading = new TimestampedData3f(0,0,0);
     private Data3f magCalibration = null; //Hardware factory calibration data from AK8963, sent up in init(), used in update()
 
 	public MPU9250Magnetometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, NineDOF parent ) {
@@ -93,7 +93,8 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	 * @see devices.sensors.interfaces.Magnetometer#getLatestGaussianData()
 	 */
     @Override
-	public void updateData() {
+	public void updateData()
+    { //loop() - readMagData
         byte dataReady = (byte)(ro.readByteRegister(Registers.AK8963_ST1) & 0x01); //DRDY - Data ready bit0 1 = data is ready
         if (dataReady == 0) return; //no data ready
         
@@ -110,10 +111,10 @@ public class MPU9250Magnetometer extends Sensor3D  {
         	lastRawMagZ = (short) ((buffer[5] << 8) | buffer[4]);
 	
         	//the stored calibration results is applied here as there is no hardware correction stored in the hardware via calibration 
-       		lastCalibratedReading = new TimestampedData3f(	lastRawMagX*magScale.res*magCalibration.getX() - deviceBias.getX(),
-       														lastRawMagY*magScale.res*magCalibration.getY() - deviceBias.getY(),
-       														lastRawMagZ*magScale.res*magCalibration.getZ() - deviceBias.getZ());
-        	this.addValue(scale(lastCalibratedReading));
+       		lastCalibratedReading = scale(new TimestampedData3f(	lastRawMagX*magScale.res*magCalibration.getX() - deviceBias.getX(),
+       																lastRawMagY*magScale.res*magCalibration.getY() - deviceBias.getY(),
+       																lastRawMagZ*magScale.res*magCalibration.getZ() - deviceBias.getZ()));
+        	this.addValue(lastCalibratedReading);
         }
 	}
 
@@ -155,9 +156,9 @@ public class MPU9250Magnetometer extends Sensor3D  {
         bias[2]  = (max[2] + min[2])/2;  // get average z mag bias in counts
 
         
-        this.deviceBias = new Data3f(	((float) bias[0])*this.magScale.res*magCalibration.getX(), // save mag biases in G for main program
+        this.setDeviceBias(new Data3f(	((float) bias[0])*this.magScale.res*magCalibration.getX(), // save mag biases in G for main program
         								((float) bias[1])*this.magScale.res*magCalibration.getY(),	// deviceBias was dest1 in Kris Winer code
-        								((float) bias[2])*this.magScale.res*magCalibration.getZ());
+        								((float) bias[2])*this.magScale.res*magCalibration.getZ()));
         
         if (debugLevel() >=4) System.out.println("Devicebias: "+ this.deviceBias.toString());
         
@@ -166,11 +167,11 @@ public class MPU9250Magnetometer extends Sensor3D  {
         scale[1]  = (max[1] - min[1])/2;  // get average y axis max chord length in counts
         scale[2]  = (max[2] - min[2])/2;  // get average z axis max chord length in counts
 
-        float avgRad = ((float) scale[0] + scale[1] + scale[2]) / 3.0f;
+        float avgRad = (float) (scale[0] + scale[1] + scale[2]) / 3.0f;
 
-        this.deviceScaling = new Data3f(avgRad/((float)scale[0]), // save mag scale for main program
+        this.setDeviceScaling(new Data3f(avgRad/((float)scale[0]), // save mag scale for main program
         								avgRad/((float)scale[1]), // deviceScale was dest2 in Kris Winer code
-        								avgRad/((float)scale[2]));
+        								avgRad/((float)scale[2])));
 
         if (debugLevel() >=3) printState();
         if (debugLevel() >=3) System.out.println("End calibrateMag");
@@ -188,9 +189,9 @@ public class MPU9250Magnetometer extends Sensor3D  {
         ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)0x0F); // Enter Fuse ROM access bits
         Thread.sleep(10);
         byte rawData[] = ro.readByteRegisters(Registers.AK8963_ASAX, 3);  // Read the x-, y-, and z-axis calibration values
-        this.magCalibration = new Data3f(	(float)(rawData[0] - 128)/256f + 1f,   // Return x-axis sensitivity adjustment values, etc.
-        									(float)(rawData[1] - 128)/256f + 1f,
-        									(float)(rawData[2] - 128)/256f + 1f);
+        this.magCalibration = new Data3f(	((float)(rawData[0] - 128))/256f + 1f,   // Return x-axis sensitivity adjustment values, etc.
+        									((float)(rawData[1] - 128))/256f + 1f,
+        									((float)(rawData[2] - 128))/256f + 1f);
         
         ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)0x00); // Power down magnetometer
         Thread.sleep(10);

@@ -232,9 +232,9 @@ public class MPU9250Gyroscope extends Sensor3D
         setHardwareBiases(gyroBiasAvg);
         
         // set super class NineDOF variables
-        this.deviceBias = (new Data3f(	(float) gyroBiasAvg[0]/(float) gyroSensitivity,
-        							(float) gyroBiasAvg[1]/(float) gyroSensitivity,
-        							(float) gyroBiasAvg[2]/(float) gyroSensitivity));
+        this.setDeviceBias(new Data3f(	(float) gyroBiasAvg[0]/(float) gyroSensitivity,
+        								(float) gyroBiasAvg[1]/(float) gyroSensitivity,
+        								(float) gyroBiasAvg[2]/(float) gyroSensitivity));
 
         if (debugLevel() >=3) printState();
         if (debugLevel() >=3) System.out.println("End gyro.calibrate");

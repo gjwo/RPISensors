@@ -9,7 +9,7 @@ import dataTypes.TimestampedData3f;
 public abstract class Sensor3D extends Sensor<TimestampedData3f,Data3f>
 {	
     protected Data3f deviceBias; 	//Hardware bias data calculated in calibration
-    protected Data3f deviceScaling;	//Hardware scale, depends on the scale set up when configuring the device
+    private Data3f deviceScaling;	//Hardware scale, depends on the scale set up when configuring the device
 
     public Sensor3D(int sampleRate, int sampleSize) {
 		super(sampleRate, sampleSize);
@@ -20,7 +20,7 @@ public abstract class Sensor3D extends Sensor<TimestampedData3f,Data3f>
     {
     	super.printState();
     	System.out.println("deviceBias: "+ deviceBias.toString());
-    	System.out.println("deviceScaling: "+ deviceBias.toString());
+    	System.out.println("deviceScaling: "+ deviceScaling.toString());
     }
 
     public void setDeviceBias(Data3f deviceBias){this.deviceBias = deviceBias.clone();}
