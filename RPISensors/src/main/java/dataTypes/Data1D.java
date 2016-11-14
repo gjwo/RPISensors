@@ -11,20 +11,7 @@ public class Data1D extends Data1 <Double> {
 
 	public Data1D(Double x) {
 		super(x);
-		// TODO Auto-generated constructor stub
 	}
-	@Override
-    public void scale(Double xScale)
-    {
-    	System.out.println("Function not implemented");
-    }
-
-	@Override
-    public void offset(Double xOffset)
-    {
-    	System.out.println("Function not implemented");
-    }
-
 	@Override
    public String toString()
     {
@@ -34,11 +21,10 @@ public class Data1D extends Data1 <Double> {
 	@Override
     public Data1D clone()
     {
-        return new Data1D(x);
+        return new Data1D (x);
     }
-    public Data1D multiply(Data1D a, Data1D b){
-    	System.out.println("Function not implemented");
-    	return null;
-    }
-
+	@Override
+	public Data1<Double> multiply(Data1<Double> a, Data1<Double> b) {
+		return new Data1D (a.get()*b.get());
+	}
 }

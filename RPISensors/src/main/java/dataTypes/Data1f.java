@@ -8,39 +8,18 @@ public class Data1f
 {
     protected float x;
 
-    public Data1f(float x) {
-        this.x = x;
-    }
+    public Data1f(float x) {this.x = x;}
 
-    public float getX() {
-        return x;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public void scale(float xScale)
-    {
-        x *= xScale;
-    }
-
-    public void offset(float xOffset)
-    {
-        x += xOffset;
-    }
+    public float getX() {return x;}
+    public void setX(float x){this.x =x;}
 
     public String toString()
     {
         final String format = "%+08.3f";
         return 	"x: " + String.format(format,x);
     }
-    public Data1f clone()
-    {
-        return new Data1f(x);
-    }
-    public Data1f multiply(Data1f a, Data1f b)
-    {  	
-		return new Data1f(a.getX()*b.getX());	
-    }
+    
+    public Data1f clone(){return new Data1f(x); }
+    public Data1f multiply(Data1f data){return new Data1f(this.getX()*data.getX());}
+    public Data1f add(Data1f data){return new Data1f(this.getX()+data.getX());}
 }

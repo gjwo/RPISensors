@@ -20,19 +20,6 @@ public class Data3f extends Data2f{
 	public void setZ(float z) {
 		this.z = z;
 	}
-
-    public void scale(float xScale,float yScale,float zScale)
-    {
-        super.scale(xScale,yScale);
-        z *= zScale;
-    }
-
-    public void offset(float xOffset,float yOffset,float zOffset)
-    {
-        super.offset(xOffset,yOffset);
-        z += zOffset;
-    }
-
     public void normalize(){
 		float norm;
 		// Normalise measurements
@@ -42,8 +29,7 @@ public class Data3f extends Data2f{
 		norm = 1f / norm;
 		x *= norm;
 		y *= norm;
-		z *= norm;
-		
+		z *= norm;		
 	}
 
 	public String toString()
@@ -51,8 +37,9 @@ public class Data3f extends Data2f{
 		final String format = "%+08.3f";
 		return 	super.toString() + " z: " + String.format(format,z);
 	}
-    public Data3f clone()
-    {
-        return new Data3f(x,y,z);
-    }
+	
+    public Data3f clone(){return new Data3f(x,y,z);}
+    public Data3f multiply(Data3f data){return new Data3f(this.getX()*data.getX(),this.getY()*data.getY(),this.getZ()*data.getZ());}
+    public Data3f add(Data3f data){return new Data3f(this.getX()+data.getX(),this.getY()+data.getY(),this.getZ()+data.getZ());}
+
 }
