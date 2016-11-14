@@ -73,16 +73,22 @@ public class Instruments {
 	 * 
 	 * @param q a quaternion containing the fused input data - see https://en.wikipedia.org/wiki/Quaternion
 	 */
-	public static void updateYawPitchRoll(Quaternion q)
-	{
-		    yaw   = (float)Math.atan2(2.0f * (q.b * q.c + q.a * q.d), q.a * q.a + q.b * q.b - q.c * q.c - q.d * q.d);   
-		    pitch = -(float)Math.asin(2.0f * (q.b * q.d - q.a * q.c));
-		    roll  = (float)Math.atan2(2.0f * (q.a * q.b + q.c * q.d), q.a * q.a - q.b * q.b - q.c * q.c + q.d * q.d);
-		    pitch *= 180.0f / (float)Math.PI; //radians to degrees
+	public static void updateInstruments(Quaternion q)
+	{		//see circa line 625
+		    yaw   = (float)Math.atan2(2.0f * (q.b * q.c + q.a * q.d), q.a * q.a + q.b * q.b - q.c * q.c - q.d * q.d);
 		    yaw   *= 180.0f / (float)Math.PI; //radians to degrees
 		    //yaw   -= 13.8; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
 		    yaw   -= -44f/60f; // Declination at Letchworth England is minus O degrees and 44 Seconds on 2016-07-11
+		    if(yaw < 0) yaw   += 360.0f; // Ensure yaw stays between 0 and 360
+		    heading = yaw;
+		    
+		    pitch = -(float)Math.asin(2.0f * (q.b * q.d - q.a * q.c));
+		    pitch *= 180.0f / (float)Math.PI; //radians to degrees
+		    attitude = pitch;
+		    
+		    roll  = (float)Math.atan2(2.0f * (q.a * q.b + q.c * q.d), q.a * q.a - q.b * q.b - q.c * q.c + q.d * q.d);
 		    roll  *= 180.0f / (float)Math.PI; //radians to degrees
+		    bank = roll;
 	}
 
 }

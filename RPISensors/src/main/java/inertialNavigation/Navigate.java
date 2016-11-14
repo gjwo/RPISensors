@@ -1,6 +1,8 @@
 package inertialNavigation;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
@@ -20,6 +22,13 @@ public class Navigate implements Runnable, SensorUpdateListener{
 	private static final long DELTA_T = 1000000000L/SAMPLE_RATE; // average time difference in between readings in nano seconds
 	private Boolean dataReady;
 	private int debugLevel;
+	private float deltaTSec;			// integration interval for both filter schemes time difference fractions of a second
+	private float sumDeltas;          		// integration interval for both filter schemes
+	private int countDeltas;
+	private long lastUpdateNanoS; 		// used to calculate integration interval using nanotime
+	private long firstUpdateNanoS; 		// used to calculate integration interval using nanotime
+	private long nowNanoS;              // used to calculate integration interval using nanotime
+
 	
 	public static int getSampleRate() {return SAMPLE_RATE;}
 	public static long getDeltaT() {return DELTA_T;}
@@ -35,6 +44,12 @@ public class Navigate implements Runnable, SensorUpdateListener{
         this.mpu9250 = mpu9250;
 		this.mpu9250.registerInterest(this);
 		this.debugLevel = debugLevel;
+		deltaTSec = 0.0f;
+		sumDeltas = 0.0f;
+		countDeltas = 0;
+		nowNanoS =  System.nanoTime();
+		lastUpdateNanoS =  nowNanoS;  //stop the first iteration having a massive delta
+		firstUpdateNanoS =  nowNanoS;
     }
 	
 	/**
@@ -71,8 +86,14 @@ public class Navigate implements Runnable, SensorUpdateListener{
                 ajustedMag = new TimestampedData3f(Instruments.getMagnetometer()); //set timestamp and Z
                 ajustedMag.setX(Instruments.getMagnetometer().getY()); //swap X and Y, Z stays the same
                 ajustedMag.setY(Instruments.getMagnetometer().getX());
-
-                SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),ajustedGyr,ajustedMag,((float)(DELTA_T)/((float)TimestampedData3f.NANOS_PER_SEC)));
+                
+                nowNanoS = System.nanoTime();
+                deltaTSec = ((float)nowNanoS-lastUpdateNanoS)/((float)TimestampedData3f.NANOS_PER_SEC);
+                lastUpdateNanoS = nowNanoS;
+                sumDeltas +=deltaTSec;
+                countDeltas++;
+                
+                SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),ajustedGyr,ajustedMag,deltaTSec);
                 if (debugLevel >=1)
                 {
                 	System.out.println(	"A " + mpu9250.getAvgAcceleration().toString()+
@@ -81,7 +102,7 @@ public class Navigate implements Runnable, SensorUpdateListener{
                 						" | Y,P&R: " + Instruments.getAngles().toString());
                 }
                 
-                Thread.sleep(5);
+                TimeUnit.MILLISECONDS.sleep(5);
             } catch (InterruptedException e)
             {
                 e.printStackTrace();

@@ -82,7 +82,7 @@ public class SensorFusion {
 	public static void MadgwickQuaternionUpdate(TimestampedData3f acc, TimestampedData3f grav, TimestampedData3f mag, float deltat) //delta t in seconds
 
 	{	/*
-		System.out.print("Madgwick"+acc.toString()+grav.unStamp().toString()+mag.unStamp().toString());
+		System.out.print("MadgwickQuaternionUpdate "+acc.toString()+grav.unStamp().toString()+mag.unStamp().toString());
 		System.out.format(" deltaT %12.10f ",deltat); */
 		float q1 = q.a, q2 = q.b, q3 = q.c, q4 = q.d; // short name local
 														// variable for
@@ -189,7 +189,9 @@ public class SensorFusion {
 		q.setAll(q1, q2, q3, q4);
 		q.normalize();// Normalise quaternion
 		//System.out.println(q.toString());
-		Instruments.updateYawPitchRoll(q);
+		
+		Instruments.updateInstruments(q);
+		//if(debugLevel >=3) System.out.println("End MadgwickQuaternionUpdate");
 	}
 
 	/**
@@ -212,6 +214,10 @@ public class SensorFusion {
 	 */
 	public static void MahonyQuaternionUpdate(Data3f acc, Data3f grav, Data3f mag, float deltat) //delta t in seconds
 	{
+		/*
+		System.out.print("MahonyQuaternionUpdate "+acc.toString()+grav.unStamp().toString()+mag.unStamp().toString());
+		System.out.format(" deltaT %12.10f ",deltat);
+		 */
 		float q1 = q.a, q2 = q.b, q3 = q.c, q4 = q.d; // short name local
 														// variable for
 														// readability
@@ -283,7 +289,7 @@ public class SensorFusion {
 
 		q.setAll(q1, q2, q3, q4);
 		q.normalize();// Normalise quaternion
-		Instruments.updateYawPitchRoll(q);
-		System.out.println("End Madgwick");
+		Instruments.updateInstruments(q);
+		//System.out.println("End MahonyQuaternionUpdate");
 	}
 }
