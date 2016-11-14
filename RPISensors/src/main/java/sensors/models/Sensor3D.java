@@ -8,7 +8,7 @@ import dataTypes.TimestampedData3f;
  */
 public abstract class Sensor3D extends Sensor<TimestampedData3f,Data3f>
 {	
-    protected Data3f deviceBias; 	//Hardware bias data calculated in calibration
+    private Data3f deviceBias; 	//Hardware bias data calculated in calibration
     private Data3f deviceScaling;	//Hardware scale, depends on the scale set up when configuring the device
 
     public Sensor3D(int sampleRate, int sampleSize) {

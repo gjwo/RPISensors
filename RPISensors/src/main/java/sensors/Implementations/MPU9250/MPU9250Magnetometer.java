@@ -111,9 +111,9 @@ public class MPU9250Magnetometer extends Sensor3D  {
         	lastRawMagZ = (short) ((buffer[5] << 8) | buffer[4]);
 	
         	//the stored calibration results is applied here as there is no hardware correction stored in the hardware via calibration 
-       		lastCalibratedReading = scale(new TimestampedData3f(	lastRawMagX*magScale.res*magCalibration.getX() - deviceBias.getX(),
-       																lastRawMagY*magScale.res*magCalibration.getY() - deviceBias.getY(),
-       																lastRawMagZ*magScale.res*magCalibration.getZ() - deviceBias.getZ()));
+       		lastCalibratedReading = scale(new TimestampedData3f(	lastRawMagX*magScale.res*magCalibration.getX() - getDeviceBias().getX(),
+       																lastRawMagY*magScale.res*magCalibration.getY() - getDeviceBias().getY(),
+       																lastRawMagZ*magScale.res*magCalibration.getZ() - getDeviceBias().getZ()));
         	this.addValue(lastCalibratedReading);
         }
 	}
@@ -160,7 +160,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
         								((float) bias[1])*this.magScale.res*magCalibration.getY(),	// deviceBias was dest1 in Kris Winer code
         								((float) bias[2])*this.magScale.res*magCalibration.getZ()));
         
-        if (debugLevel() >=4) System.out.println("Devicebias: "+ this.deviceBias.toString());
+        if (debugLevel() >=4) System.out.println("Devicebias: "+ this.getDeviceBias().toString());
         
         // Get soft iron correction estimate
         scale[0]  = (max[0] - min[0])/2;  // get average x axis max chord length in counts
