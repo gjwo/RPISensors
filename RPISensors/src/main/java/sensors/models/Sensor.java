@@ -10,9 +10,9 @@ import dataTypes.CircularArrayRing;
  */
 public abstract class Sensor <T,S>
 {
-    protected final CircularArrayRing<T> vals;
-    protected int sampleRate;
-    protected int sampleSize;
+    private final CircularArrayRing<T> readings;
+    private int sampleRate;
+    private int sampleSize;
     private int debugLevel;
 
     /**
@@ -22,24 +22,24 @@ public abstract class Sensor <T,S>
      */
     public Sensor(int sampleRate, int sampleSize)
     {
-        vals = new CircularArrayRing<T>(sampleSize);
+        readings = new CircularArrayRing<T>(sampleSize);
         this.sampleRate = sampleRate;
         this.sampleSize = sampleSize;
         this.debugLevel=0;
     }
 
     // Methods implemented here, shouldn't need overriding
-    public T getLatestValue(){return vals.get(0);}
-    public T getValue(int i){return vals.get(i);}
-    public int getReadingCount(){return vals.size();}
-    public void addValue(T value){vals.add(value);}
+    public T getLatestValue(){return readings.get(0);}
+    public T getValue(int i){return readings.get(i);}
+    public int getReadingCount(){return readings.size();}
+    public void addValue(T value){readings.add(value);}
     public int debugLevel(){return debugLevel;}
     public void setDebugLevel(int l){debugLevel=l;}
     
     // Methods that may need extending by sub classes
     public void printState()
     {
-    	System.out.println("Vals: "+ vals.size());
+    	System.out.println("readings: "+ readings.size());
      	System.out.print("sampleRate: "+ sampleRate);
     	System.out.print(" sampleSize: "+ sampleSize);
     	System.out.println(" debugLevel: "+ debugLevel);  	  	
