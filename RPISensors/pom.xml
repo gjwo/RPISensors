@@ -94,18 +94,18 @@
 								<!-- ensure the target directory exists on the Raspberry Pi -->
 								<sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"
 									password="${pi.password}" trust="true" failonerror="false"
-									verbose="true" command="mkdir --parents ${pi.deployDirectory}" />
+									verbose="false" command="mkdir --parents ${pi.deployDirectory}" />
 
 								<!-- copy the JAR file to the Raspberry Pi -->
 								<scp file="${project.build.directory}/${project.build.finalName}.jar"
 									todir="${pi.user}:${pi.password}@${pi.host}:${pi.deployDirectory}"
-									port="${pi.port}" trust="true" verbose="true" failonerror="true" />
+									port="${pi.port}" trust="true" verbose="false" failonerror="true" />
 
 
 								<!-- run the JAR file on the Raspberry Pi -->
 								<sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"
 									password="${pi.password}" trust="true" failonerror="false"
-									verbose="true"
+									verbose="false"
 									command="java -jar ${pi.deployDirectory}/${project.build.finalName}.jar" />
 							</target>
 
