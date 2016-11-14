@@ -1,6 +1,8 @@
 package sensors.models;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 import sensors.interfaces.SensorUpdateListener;
 
 /**
@@ -56,7 +58,10 @@ public abstract class SensorPackage implements Runnable
                     updateData();
                     for(SensorUpdateListener listener:listeners) listener.dataUpdated();
 
-                    while(System.nanoTime() - lastTime < waitTime);
+                    while(System.nanoTime() - lastTime < waitTime)
+                    	{
+                    		TimeUnit.MICROSECONDS.sleep(500);
+                    	}
                 } catch (Exception ignored)
                 {	//do nothing
                 }
