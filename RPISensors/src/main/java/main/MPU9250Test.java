@@ -84,7 +84,7 @@ class MPU9250Test implements SensorUpdateListener{
 			e1.printStackTrace();
 		}
     	try {
-			tester.runTests(300);
+			tester.runTests(30);
 		} catch (InterruptedException e) {
 			System.out.println("Interupted whilst running tests");
 			e.printStackTrace();
