@@ -46,24 +46,27 @@ public abstract class SensorPackage implements Runnable
     @Override
     public void run()
     {
-        long lastTime;
-        final long waitTime = 1000000000L / sampleRate;
-        while(!Thread.interrupted())
+        long lastTime = 0;
+        final long waitTime = TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS) / sampleRate;
+        long now;
+        boolean stop = false;
+        while(!Thread.interrupted() && !stop)
         {
             if(!paused)
             {
                 try
                 {
-                    lastTime = System.nanoTime();
-                    updateData();
-                    for(SensorUpdateListener listener:listeners) listener.dataUpdated();
-
-                    while(System.nanoTime() - lastTime < waitTime)
-                    	{
-                    		TimeUnit.MICROSECONDS.sleep(500);
-                    	}
-                } catch (Exception ignored)
-                {	//do nothing
+                    now = System.nanoTime();
+                    if( now-lastTime >= waitTime )
+                    {
+                    	lastTime = now;
+                        updateData();
+                        for(SensorUpdateListener listener:listeners) listener.dataUpdated();
+                    }
+                    TimeUnit.NANOSECONDS.sleep(waitTime/2);
+                } catch (Exception interrupted)
+                {	//close down signal
+                	stop = true;
                 }
             }
         }

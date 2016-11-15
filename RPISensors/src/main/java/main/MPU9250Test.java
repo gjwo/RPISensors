@@ -56,8 +56,8 @@ class MPU9250Test implements SensorUpdateListener{
             mpu9250 = new MPU9250(
                     new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 I2C device
                     new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C 
-                    10,                                     // sample rate (SR) per second 
-                    25,										// sample size (SS)
+                    200,                                    // sample rate (SR) per second 
+                    250,									// sample size (SS)
                     debugLevelSensors); 					// debug level
             if (debugLevelTester >=3) System.out.println("MPU9250 created");
             nav = new Navigate(mpu9250,debugLevelNavigate);           
@@ -84,7 +84,7 @@ class MPU9250Test implements SensorUpdateListener{
 			e1.printStackTrace();
 		}
     	try {
-			tester.runTests(10);
+			tester.runTests(300);
 		} catch (InterruptedException e) {
 			System.out.println("Interupted whilst running tests");
 			e.printStackTrace();

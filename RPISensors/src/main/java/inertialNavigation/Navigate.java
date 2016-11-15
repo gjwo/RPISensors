@@ -15,7 +15,8 @@ import sensors.interfaces.SensorUpdateListener;
 
 public class Navigate implements Runnable, SensorUpdateListener{
 	static Navigate nav ;
-	I2CBus bus;
+	static private final float nanosPerSecf = ((float)TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS));
+	private I2CBus bus;
 	private MPU9250 mpu9250;
 	private static final int SAMPLE_RATE = 10; //sample at 10 Hertz
 	private static final int SAMPLE_SIZE = 100; 
@@ -23,11 +24,14 @@ public class Navigate implements Runnable, SensorUpdateListener{
 	private Boolean dataReady;
 	private int debugLevel;
 	private float deltaTSec;			// integration interval for both filter schemes time difference fractions of a second
-	private float sumDeltas;          		// integration interval for both filter schemes
-	private int countDeltas;
 	private long lastUpdateNanoS; 		// used to calculate integration interval using nanotime
-	private long firstUpdateNanoS; 		// used to calculate integration interval using nanotime
 	private long nowNanoS;              // used to calculate integration interval using nanotime
+	private float sumDeltas;          	//Total time between calculations
+	private int countDeltas;			//number of calculations
+	private float calculationFrequency;	//calculation frequency in Hz
+	private long lastDisplayNanoS;		//used to calculate when to display
+	private long displayFrequencyHz;	//display frequency in Hertz
+	private boolean stop;
 
 	
 	public static int getSampleRate() {return SAMPLE_RATE;}
@@ -40,6 +44,7 @@ public class Navigate implements Runnable, SensorUpdateListener{
 	 */
 	public Navigate(MPU9250 mpu9250, int debugLevel)
 	{
+		stop = false;
 		dataReady  = false;
         this.mpu9250 = mpu9250;
 		this.mpu9250.registerInterest(this);
@@ -48,8 +53,9 @@ public class Navigate implements Runnable, SensorUpdateListener{
 		sumDeltas = 0.0f;
 		countDeltas = 0;
 		nowNanoS =  System.nanoTime();
-		lastUpdateNanoS =  nowNanoS;  //stop the first iteration having a massive delta
-		firstUpdateNanoS =  nowNanoS;
+		lastUpdateNanoS =  nowNanoS;  	//stop the first iteration having a massive delta
+		lastDisplayNanoS = nowNanoS;
+		displayFrequencyHz = 2;		//refresh the display every 1/2 a second
     }
 	
 	/**
@@ -59,7 +65,7 @@ public class Navigate implements Runnable, SensorUpdateListener{
     public void run()
     {
     	TimestampedData3f ajustedGyr, ajustedMag;
-    	while(!Thread.interrupted())
+    	while(!Thread.interrupted()&&!stop)
         {
             if(dataReady) 
             try
@@ -86,26 +92,36 @@ public class Navigate implements Runnable, SensorUpdateListener{
                 ajustedMag = new TimestampedData3f(Instruments.getMagnetometer()); //set timestamp and Z
                 ajustedMag.setX(Instruments.getMagnetometer().getY()); //swap X and Y, Z stays the same
                 ajustedMag.setY(Instruments.getMagnetometer().getX());
-                
+
+                //Calculate integration interval
                 nowNanoS = System.nanoTime();
-                deltaTSec = ((float)nowNanoS-lastUpdateNanoS)/((float)TimestampedData3f.NANOS_PER_SEC);
+                deltaTSec = ((float)nowNanoS-lastUpdateNanoS)/nanosPerSecf;
                 lastUpdateNanoS = nowNanoS;
+                //calculate measurement frequency
                 sumDeltas +=deltaTSec;
                 countDeltas++;
+                calculationFrequency = countDeltas/sumDeltas;
                 
                 SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),ajustedGyr,ajustedMag,deltaTSec);
-                if (debugLevel >=1)
+                if(((float)nowNanoS-lastDisplayNanoS)/nanosPerSecf >= 1f/displayFrequencyHz)
                 {
-                	System.out.println(	"A " + mpu9250.getAvgAcceleration().toString()+
-                						" G " + mpu9250.getAvgRotationalAcceleration().unStamp().toString()+
-                						" M "  + mpu9250.getAvgGauss().unStamp().toString()+
-                						" | Y,P&R: " + Instruments.getAngles().toString());
+                	lastDisplayNanoS = nowNanoS;
+                    if (debugLevel >=1)
+                    {
+                    	System.out.print(	"A " + mpu9250.getAvgAcceleration().toString()+
+                    						" G " + mpu9250.getAvgRotationalAcceleration().unStamp().toString()+
+                    						" M "  + mpu9250.getAvgGauss().unStamp().toString()+
+                    						" | Y,P&R: " + Instruments.getAngles().toString());
+                    	System.out.format(	" Freq: %5.1f Hz%n",calculationFrequency);
+                    }
+
                 }
                 
-                TimeUnit.MILLISECONDS.sleep(5);
+                TimeUnit.MILLISECONDS.sleep(2);
             } catch (InterruptedException e)
             {
-                e.printStackTrace();
+                //close down signal
+            	stop = true;
             }       
         }
     }
