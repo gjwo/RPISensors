@@ -83,7 +83,7 @@ public class Navigate implements Runnable, SensorUpdateListener{
             	// in the LSM9DS0 sensor. This rotation can be modified to allow any convenient orientation convention.
             	// This is ok by aircraft orientation standards!  
             	// Pass gyro rate as rad/s
-            	//  MadgwickQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f,  my,  mx, mz);
+            	// MadgwickQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f, my, mx, mz);
 
                 ajustedGyr = new TimestampedData3f(Instruments.getGyroscope());
                 ajustedGyr.setX(Instruments.getGyroscope().getX()*(float)Math.PI/180.0f); //Pass gyro rate as rad/s
@@ -112,7 +112,7 @@ public class Navigate implements Runnable, SensorUpdateListener{
                     						" G " + mpu9250.getAvgRotationalAcceleration().unStamp().toString()+
                     						" M "  + mpu9250.getAvgGauss().unStamp().toString()+
                     						" | Y,P&R: " + Instruments.getAngles().toString());
-                    	System.out.format(	" Freq: %5.1f Hz%n",calculationFrequency);
+                    	System.out.format(	" Freq: %5.1fHz %dk calcs%n",calculationFrequency,countDeltas/1000);
                     }
 
                 }

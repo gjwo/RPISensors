@@ -10,6 +10,9 @@ public abstract class Sensor3D extends Sensor<TimestampedData3f,Data3f>
 {	
     private Data3f deviceBias; 	//Hardware bias data calculated in calibration
     private Data3f deviceScaling;	//Hardware scale, depends on the scale set up when configuring the device
+    private float deviceScalingX;
+    private float deviceScalingY;
+    private float deviceScalingZ;
 
     public Sensor3D(int sampleRate, int sampleSize) {
 		super(sampleRate, sampleSize);
@@ -25,17 +28,24 @@ public abstract class Sensor3D extends Sensor<TimestampedData3f,Data3f>
 
     public void setDeviceBias(Data3f deviceBias){this.deviceBias = deviceBias.clone();}
     public Data3f getDeviceBias(){ return deviceBias;}
-    public void setDeviceScaling(Data3f deviceScaling){this.deviceScaling = deviceScaling.clone();}
+    public void setDeviceScaling(Data3f deviceScaling)
+    {
+    	this.deviceScaling = deviceScaling.clone();
+    	deviceScalingX = deviceScaling.getX(); //saved separately for time critical elements
+    	deviceScalingY = deviceScaling.getY(); 
+    	deviceScalingZ = deviceScaling.getZ(); 
+
+    	}
     public Data3f getDeviceScaling(){return deviceScaling;}
 
 	@Override
 	public TimestampedData3f scale(TimestampedData3f value)
-    {
-    		TimestampedData3f scaledValue = value.clone();
-            scaledValue.setX(value.getX()*deviceScaling.getX());
-            scaledValue.setY(value.getY()*deviceScaling.getY()); 
-            scaledValue.setZ(value.getZ()*deviceScaling.getZ()); 
-            return scaledValue;
+    {		//remove cloning to save execution time on critical path 
+    		//TimestampedData3f scaledValue = value.clone();
+            value.setX(value.getX()*deviceScalingX);
+            value.setY(value.getY()*deviceScalingY); 
+            value.setZ(value.getZ()*deviceScalingZ); 
+            return value;
     }
 
 	@Override

@@ -63,7 +63,7 @@ public abstract class SensorPackage implements Runnable
                         updateData();
                         for(SensorUpdateListener listener:listeners) listener.dataUpdated();
                     }
-                    TimeUnit.NANOSECONDS.sleep(waitTime/2);
+                    TimeUnit.NANOSECONDS.sleep(waitTime/10); //empirically this seems to deliver an optimum calculation frequency via navigate of 180+ Hz
                 } catch (Exception interrupted)
                 {	//close down signal
                 	stop = true;

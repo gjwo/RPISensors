@@ -122,7 +122,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 			gyro.updateData();
 			mag.updateData();
 			accel.updateData();
-			therm.updateData();
+			//therm.updateData(); not using this currently so comment out to save time in critical path
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
