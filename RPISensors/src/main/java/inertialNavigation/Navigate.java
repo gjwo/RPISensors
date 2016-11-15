@@ -31,7 +31,7 @@ public class Navigate implements Runnable, SensorUpdateListener{
 	private float calculationFrequency;	//calculation frequency in Hz
 	private long lastDisplayNanoS;		//used to calculate when to display
 	private long displayFrequencyHz;	//display frequency in Hertz
-	private boolean stop;
+	private boolean stop, dataValid;
 
 	
 	public static int getSampleRate() {return SAMPLE_RATE;}
@@ -46,6 +46,7 @@ public class Navigate implements Runnable, SensorUpdateListener{
 	{
 		stop = false;
 		dataReady  = false;
+		dataValid = false;
         this.mpu9250 = mpu9250;
 		this.mpu9250.registerInterest(this);
 		this.debugLevel = debugLevel;
@@ -67,57 +68,63 @@ public class Navigate implements Runnable, SensorUpdateListener{
     	TimestampedData3f ajustedGyr, ajustedMag;
     	while(!Thread.interrupted()&&!stop)
         {
-            if(dataReady) 
             try
             {    
-        		dataReady = false;
-            	Instruments.setMagnetometer( mpu9250.getLatestGaussianData());
-                Instruments.setAccelerometer(mpu9250.getLatestAcceleration());
-                Instruments.setGyroscope(mpu9250.getLatestRotationalAcceleration());
-                
-            	// Examples of calling the filters, READ BEFORE USING!!		!!!
-            	// sensors x (y)-axis of the accelerometer is aligned with the y (x)-axis of the magnetometer;
-            	// the magnetometer z-axis (+ down) is opposite to z-axis (+ up) of accelerometer and gyro!
-            	// We have to make some allowance for this orientation mismatch in feeding the output to the quaternion filter.
-            	// For the MPU-9250, we have chosen a magnetic rotation that keeps the sensor forward along the x-axis just like
-            	// in the LSM9DS0 sensor. This rotation can be modified to allow any convenient orientation convention.
-            	// This is ok by aircraft orientation standards!  
-            	// Pass gyro rate as rad/s
-            	// MadgwickQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f, my, mx, mz);
-
-                ajustedGyr = new TimestampedData3f(Instruments.getGyroscope());
-                ajustedGyr.setX(Instruments.getGyroscope().getX()*(float)Math.PI/180.0f); //Pass gyro rate as rad/s
-                ajustedGyr.setY(Instruments.getGyroscope().getY()*(float)Math.PI/180.0f);
-                ajustedGyr.setZ(Instruments.getGyroscope().getZ()*(float)Math.PI/180.0f);
-                ajustedMag = new TimestampedData3f(Instruments.getMagnetometer()); //set timestamp and Z
-                ajustedMag.setX(Instruments.getMagnetometer().getY()); //swap X and Y, Z stays the same
-                ajustedMag.setY(Instruments.getMagnetometer().getX());
-
-                //Calculate integration interval
-                nowNanoS = System.nanoTime();
-                deltaTSec = ((float)nowNanoS-lastUpdateNanoS)/nanosPerSecf;
-                lastUpdateNanoS = nowNanoS;
-                //calculate measurement frequency
-                sumDeltas +=deltaTSec;
-                countDeltas++;
-                calculationFrequency = countDeltas/sumDeltas;
-                
-                SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),ajustedGyr,ajustedMag,deltaTSec);
-                if(((float)nowNanoS-lastDisplayNanoS)/nanosPerSecf >= 1f/displayFrequencyHz)
-                {
-                	lastDisplayNanoS = nowNanoS;
-                    if (debugLevel >=1)
-                    {
-                    	System.out.print(	"A " + mpu9250.getAvgAcceleration().toString()+
-                    						" G " + mpu9250.getAvgRotationalAcceleration().unStamp().toString()+
-                    						" M "  + mpu9250.getAvgGauss().unStamp().toString()+
-                    						" | Y,P&R: " + Instruments.getAngles().toString());
-                    	System.out.format(	" Freq: %5.1fHz %dk calcs%n",calculationFrequency,countDeltas/1000);
-                    }
-
+                if(dataReady) 
+                {	//Store the latest data
+	        		dataReady = false;
+	            	Instruments.setMagnetometer( mpu9250.getLatestGaussianData());
+	                Instruments.setAccelerometer(mpu9250.getLatestAcceleration());
+	                Instruments.setGyroscope(mpu9250.getLatestRotationalAcceleration());
+	                dataValid = true;
                 }
-                
-                TimeUnit.MILLISECONDS.sleep(2);
+                if (dataValid) // must have at least one value to start calculations
+                {
+	                // new data or not recalulate the quaternion every 1 ms
+	                
+	            	// Examples of calling the filters, READ BEFORE USING!!		!!!
+	            	// sensors x (y)-axis of the accelerometer is aligned with the y (x)-axis of the magnetometer;
+	            	// the magnetometer z-axis (+ down) is opposite to z-axis (+ up) of accelerometer and gyro!
+	            	// We have to make some allowance for this orientation mismatch in feeding the output to the quaternion filter.
+	            	// For the MPU-9250, we have chosen a magnetic rotation that keeps the sensor forward along the x-axis just like
+	            	// in the LSM9DS0 sensor. This rotation can be modified to allow any convenient orientation convention.
+	            	// This is ok by aircraft orientation standards!  
+	            	// Pass gyro rate as rad/s
+	            	// MadgwickQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f, my, mx, mz);
+	
+	                ajustedGyr = new TimestampedData3f(Instruments.getGyroscope());
+	                ajustedGyr.setX(Instruments.getGyroscope().getX()*(float)Math.PI/180.0f); //Pass gyro rate as rad/s
+	                ajustedGyr.setY(Instruments.getGyroscope().getY()*(float)Math.PI/180.0f);
+	                ajustedGyr.setZ(Instruments.getGyroscope().getZ()*(float)Math.PI/180.0f);
+	                ajustedMag = new TimestampedData3f(Instruments.getMagnetometer()); //set timestamp and Z
+	                ajustedMag.setX(Instruments.getMagnetometer().getY()); //swap X and Y, Z stays the same
+	                ajustedMag.setY(Instruments.getMagnetometer().getX());
+	
+	                //Calculate integration interval
+	                nowNanoS = System.nanoTime();
+	                deltaTSec = ((float)nowNanoS-lastUpdateNanoS)/nanosPerSecf;
+	                lastUpdateNanoS = nowNanoS;
+	                //calculate measurement frequency
+	                sumDeltas +=deltaTSec;
+	                countDeltas++;
+	                calculationFrequency = countDeltas/sumDeltas;
+	                
+	                SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),ajustedGyr,ajustedMag,deltaTSec);
+	                if(((float)nowNanoS-lastDisplayNanoS)/nanosPerSecf >= 1f/displayFrequencyHz)
+	                {
+	                	lastDisplayNanoS = nowNanoS;
+	                    if (debugLevel >=1)
+	                    {
+	                    	System.out.print(	"A " + mpu9250.getAvgAcceleration().toString()+
+	                    						" G " + mpu9250.getAvgRotationalAcceleration().unStamp().toString()+
+	                    						" M "  + mpu9250.getAvgGauss().unStamp().toString()+
+	                    						" | Y,P&R: " + Instruments.getAngles().toString());
+	                    	System.out.format(	" Freq: %5.1fHz %dk calcs%n",calculationFrequency,countDeltas/1000);
+	                    }
+	
+	                }
+                }
+                TimeUnit.MICROSECONDS.sleep(900);// allow for 0.1ms calculation time in the loop to give 1ms interval	            
             } catch (InterruptedException e)
             {
                 //close down signal
