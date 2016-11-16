@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 
+import comms.NavResponder;
+import comms.NavResponder.NavResponderMode;
 import devices.I2C.Pi4jI2CDevice;
 import inertialNavigation.Navigate;
 import sensors.Implementations.MPU9250.MPU9250;
@@ -34,7 +36,9 @@ class MPU9250Test implements SensorUpdateListener{
 	private int debugLevelTester;
 	private int	debugLevelSensors;
 	private int debugLevelNavigate;
+	private int debugLevelNavResponder;
 	private I2CBus bus = null;
+	private NavResponder navR;
 
 	/**
 	 * MPU9250Test	-	Constructor
@@ -43,7 +47,8 @@ class MPU9250Test implements SensorUpdateListener{
 	{
 		debugLevelTester = 2;
 		debugLevelSensors = 2;
-		debugLevelNavigate = 5;
+		debugLevelNavigate = 3;
+		debugLevelNavResponder = 5;
 
 		 if (debugLevelTester >=3) System.out.println("Attempt to get Bus 1");
         try {
@@ -61,7 +66,7 @@ class MPU9250Test implements SensorUpdateListener{
                     debugLevelSensors); 					// debug level
             if (debugLevelTester >=3) System.out.println("MPU9250 created");
             nav = new Navigate(mpu9250,debugLevelNavigate);           
-            
+            navR = new NavResponder("NavResponder rpi3gjw",NavResponderMode.SINGLE,debugLevelNavResponder);
             
         } catch (I2CFactory.UnsupportedBusNumberException | InterruptedException | IOException e) {
             e.printStackTrace();
@@ -106,6 +111,7 @@ class MPU9250Test implements SensorUpdateListener{
         TimeUnit.SECONDS.sleep(3); //Give time to stop movement after mag calibration
         sensorPackage = new Thread(mpu9250);
         navigator = new Thread(nav);
+        
 	}
 	
 	private void runTests(int n) throws InterruptedException
@@ -114,6 +120,7 @@ class MPU9250Test implements SensorUpdateListener{
         if (debugLevelTester >=2) System.out.println("SensorPackage started");
         sensorPackage.start();
         navigator.start();
+        navR.start();
         TimeUnit.SECONDS.sleep(n); //Collect data for n seconds
 	}
 	
