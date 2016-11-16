@@ -4,8 +4,14 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.concurrent.TimeUnit;
 
-public class NavResponder extends Thread{
+import inertialNavigation.Instruments;
+import inertialNavigation.Navigate;
+import sensors.interfaces.UpdateListener;
+
+public class NavResponder extends Thread implements UpdateListener
+{
 	private static final int serverPortNbr = 9876;
 	private static final int bufferSize = 256;
 	private InetAddress clientAddress;
@@ -14,22 +20,27 @@ public class NavResponder extends Thread{
 	private boolean clientRegistered;
     private DatagramSocket socket = null;
     private boolean stop = false;
+    private volatile boolean dataReady;
     public enum NavResponderMode {SINGLE,STREAM}
     private NavResponderMode mode;
     private int debugLevel;
+    private Navigate nav;
  
-    public NavResponder() throws IOException {
-    this("NavResponder rpi3gjw",NavResponderMode.SINGLE,3);
+    public NavResponder(Navigate nav) throws IOException {
+    this(nav,"NavResponder rpi3gjw",NavResponderMode.SINGLE,3);
     }
     
  
-    public NavResponder(String name,NavResponderMode mode, int debugLevel) throws IOException {
+    public NavResponder(Navigate nav,String name,NavResponderMode mode, int debugLevel) throws IOException {
         super(name);
+    	if (debugLevel >=3) System.out.println("NavResponder Constructor");
         this.mode = mode;
         socket = new DatagramSocket(serverPortNbr);
         clientRegistered = false;
         this.debugLevel = debugLevel;
-        
+        this.dataReady = false;
+        this.nav = nav;
+        this.nav.registerInterest(this);
     }
 
     public void stopNavResponder(){stop = true;}
@@ -50,11 +61,14 @@ public class NavResponder extends Thread{
                 switch(mode)	
                 {
                 case SINGLE:
-                    reading = getNextReading();
-                    sendReadingToClient(reading);
+                	if (dataReady)
+                	{
+                        reading = getNextReading();
+                        sendReadingToClient(reading);
+                	}
                     break; //go round and wait for another request
                 case STREAM:
-                	streamReadingsToClient();
+                	streamReadingsToClient(); //doesn't come back until stop signal
                 	break;
                 }
                
@@ -69,7 +83,8 @@ public class NavResponder extends Thread{
  
     private String getNextReading() {
     	if (debugLevel >=3) System.out.println("getNextReading");
-        String returnValue = "Hello from Nav Responder";
+    	dataReady = false;
+        String returnValue = "Yaw Pitch and Roll: "+Instruments.getAngles().toString();
         return returnValue;
     }
     
@@ -102,7 +117,25 @@ public class NavResponder extends Thread{
     }
     private void streamReadingsToClient()
     {
+    	String reading = null;
        	if (debugLevel >=3) System.out.println("streamReadingsToClient");
-       	System.out.println("Can't handle stream yet");
+       	while (!stop)
+       	{
+       		if (dataReady && !stop)
+       		{
+       			reading = getNextReading();
+       			sendReadingToClient(reading);
+       		} else
+				try {
+					TimeUnit.MILLISECONDS.sleep(200);
+				} catch (InterruptedException e) {
+					stop = true;
+			       	if (debugLevel >=5) System.out.println("streamReadingsToClient interrupted");
+				}
+       	}
+       	if (debugLevel >=3) System.out.println("End streamReadingsToClient");
     }
+
+    //update listener
+	public void dataUpdated() {dataReady=true;}
 }

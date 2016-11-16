@@ -3,7 +3,7 @@ package sensors.models;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import sensors.interfaces.SensorUpdateListener;
+import sensors.interfaces.UpdateListener;
 
 /**
  * Created by MAWood on 17/07/2016. modified by G.J.Wood 10/11/2016 
@@ -12,7 +12,7 @@ public abstract class SensorPackage implements Runnable
 {
     private final int sampleRate;
     private boolean paused;
-    private ArrayList<SensorUpdateListener> listeners;
+    private ArrayList<UpdateListener> listeners;
     private int debugLevel;
 
     /**
@@ -61,7 +61,7 @@ public abstract class SensorPackage implements Runnable
                     {
                     	lastTime = now;
                         updateData();
-                        for(SensorUpdateListener listener:listeners) listener.dataUpdated();
+                        for(UpdateListener listener:listeners) listener.dataUpdated();
                     }
                     TimeUnit.NANOSECONDS.sleep(waitTime/10); //empirically this seems to deliver an optimum calculation frequency via navigate of 180+ Hz
                 } catch (Exception interrupted)
@@ -81,7 +81,7 @@ public abstract class SensorPackage implements Runnable
      * registerInterest		- add a listener which will be informed when data is updated
      * @param listener
      */
-    public void registerInterest(SensorUpdateListener listener)
+    public void registerInterest(UpdateListener listener)
     {
         listeners.add(listener);
     }

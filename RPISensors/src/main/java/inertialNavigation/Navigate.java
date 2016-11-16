@@ -1,6 +1,7 @@
 package inertialNavigation;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import com.pi4j.io.i2c.I2CFactory;
@@ -10,10 +11,10 @@ import dataTypes.TimestampedData3f;
 import com.pi4j.io.i2c.I2CBus;
 import devices.I2C.Pi4jI2CDevice;
 import sensors.Implementations.MPU9250.MPU9250;
-import sensors.interfaces.SensorUpdateListener;
+import sensors.interfaces.UpdateListener;
 
 
-public class Navigate implements Runnable, SensorUpdateListener{
+public class Navigate implements Runnable, UpdateListener{
 	static Navigate nav ;
 	static private final float nanosPerSecf = ((float)TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS));
 	private I2CBus bus;
@@ -21,7 +22,7 @@ public class Navigate implements Runnable, SensorUpdateListener{
 	private static final int SAMPLE_RATE = 10; //sample at 10 Hertz
 	private static final int SAMPLE_SIZE = 100; 
 	private static final long DELTA_T = 1000000000L/SAMPLE_RATE; // average time difference in between readings in nano seconds
-	private Boolean dataReady;
+	private volatile Boolean dataReady;
 	private int debugLevel;
 	private float deltaTSec;			// integration interval for both filter schemes time difference fractions of a second
 	private long lastUpdateNanoS; 		// used to calculate integration interval using nanotime
@@ -32,7 +33,8 @@ public class Navigate implements Runnable, SensorUpdateListener{
 	private long lastDisplayNanoS;		//used to calculate when to display
 	private long displayFrequencyHz;	//display frequency in Hertz
 	private boolean stop, dataValid;
-
+    private volatile ArrayList<UpdateListener> listeners;
+    
 	
 	public static int getSampleRate() {return SAMPLE_RATE;}
 	public static long getDeltaT() {return DELTA_T;}
@@ -44,19 +46,20 @@ public class Navigate implements Runnable, SensorUpdateListener{
 	 */
 	public Navigate(MPU9250 mpu9250, int debugLevel)
 	{
-		stop = false;
-		dataReady  = false;
-		dataValid = false;
+		this.stop = false;
+		this.dataReady  = false;
+		this.dataValid = false;
         this.mpu9250 = mpu9250;
 		this.mpu9250.registerInterest(this);
 		this.debugLevel = debugLevel;
-		deltaTSec = 0.0f;
-		sumDeltas = 0.0f;
-		countDeltas = 0;
-		nowNanoS =  System.nanoTime();
-		lastUpdateNanoS =  nowNanoS;  	//stop the first iteration having a massive delta
-		lastDisplayNanoS = nowNanoS;
-		displayFrequencyHz = 2;		//refresh the display every 1/2 a second
+		this.deltaTSec = 0.0f;
+		this.sumDeltas = 0.0f;
+		this.countDeltas = 0;
+		this.nowNanoS =  System.nanoTime();
+		this.lastUpdateNanoS =  nowNanoS;  	//stop the first iteration having a massive delta
+		this.lastDisplayNanoS = nowNanoS;
+		this.displayFrequencyHz = 2;		//refresh the display every 1/2 a second
+		this.listeners = new ArrayList<UpdateListener>();
     }
 	
 	/**
@@ -123,6 +126,7 @@ public class Navigate implements Runnable, SensorUpdateListener{
 	                    }
 	
 	                }
+                    for(UpdateListener listener:listeners) listener.dataUpdated();
                 }
                 TimeUnit.MICROSECONDS.sleep(900);// allow for 0.1ms calculation time in the loop to give 1ms interval	            
             } catch (InterruptedException e)
@@ -143,6 +147,11 @@ public class Navigate implements Runnable, SensorUpdateListener{
 	 * main			- For use in stand alone mode, currently not used the class is initiated from MPU9250Test
 	 * @param args
 	 */
+    public void registerInterest(UpdateListener listener)
+    {
+        this.listeners.add(listener);
+    }
+
 	public static void main(String[] args)
     {
 		MPU9250 mpu9250;

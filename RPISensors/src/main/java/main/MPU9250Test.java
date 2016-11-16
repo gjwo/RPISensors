@@ -13,9 +13,9 @@ import comms.NavResponder.NavResponderMode;
 import devices.I2C.Pi4jI2CDevice;
 import inertialNavigation.Navigate;
 import sensors.Implementations.MPU9250.MPU9250;
-import sensors.interfaces.SensorUpdateListener;
+import sensors.interfaces.UpdateListener;
 
-class MPU9250Test implements SensorUpdateListener{
+class MPU9250Test implements UpdateListener{
 	/*
 	 * debugLevelTester settings
 	 * 0	-	No diagnostic prints
@@ -47,8 +47,8 @@ class MPU9250Test implements SensorUpdateListener{
 	{
 		debugLevelTester = 2;
 		debugLevelSensors = 2;
-		debugLevelNavigate = 3;
-		debugLevelNavResponder = 5;
+		debugLevelNavigate = 0;
+		debugLevelNavResponder = 2;
 
 		 if (debugLevelTester >=3) System.out.println("Attempt to get Bus 1");
         try {
@@ -58,15 +58,15 @@ class MPU9250Test implements SensorUpdateListener{
             // sample rate (SR) per second sensor frequency (SF) is 200
             // sample size (SS) needs to be >= SF/SR or readings will be missed
             // overlap gives smoothing as average is over the sample
-            mpu9250 = new MPU9250(
+            this.mpu9250 = new MPU9250(
                     new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 I2C device
                     new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C 
                     200,                                    // sample rate (SR) per second 
                     250,									// sample size (SS)
                     debugLevelSensors); 					// debug level
             if (debugLevelTester >=3) System.out.println("MPU9250 created");
-            nav = new Navigate(mpu9250,debugLevelNavigate);           
-            navR = new NavResponder("NavResponder rpi3gjw",NavResponderMode.SINGLE,debugLevelNavResponder);
+            this.nav = new Navigate(mpu9250,debugLevelNavigate);           
+            this.navR = new NavResponder(this.nav,"NavResponder rpi3gjw",NavResponderMode.STREAM, debugLevelNavResponder);
             
         } catch (I2CFactory.UnsupportedBusNumberException | InterruptedException | IOException e) {
             e.printStackTrace();
@@ -110,7 +110,9 @@ class MPU9250Test implements SensorUpdateListener{
         this.mpu9250.registerInterest(this);
         TimeUnit.SECONDS.sleep(3); //Give time to stop movement after mag calibration
         sensorPackage = new Thread(mpu9250);
+        sensorPackage.setName("MCU9250 Thread");
         navigator = new Thread(nav);
+        navigator.setName("Navigator Thread");
         
 	}
 	
@@ -126,6 +128,8 @@ class MPU9250Test implements SensorUpdateListener{
 	
 	private void shutdownTester() throws InterruptedException
 	{
+        if (debugLevelTester >=2) System.out.println("Shutdown NavResponder");
+        navR.interrupt();
         if (debugLevelTester >=2) System.out.println("Shutdown Navigator");
         navigator.interrupt();
         TimeUnit.SECONDS.sleep(1);
