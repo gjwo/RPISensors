@@ -77,6 +77,7 @@ public class NavResponder extends Thread implements UpdateListener
                 e.printStackTrace();
             }
         }
+        sendReadingToClient("STOP,0,0,0,0");
         socket.close();
     	if (debugLevel >=2) System.out.println("End NavResponder run");
     }
@@ -84,7 +85,7 @@ public class NavResponder extends Thread implements UpdateListener
     private String getNextReading() {
     	if (debugLevel >=3) System.out.println("getNextReading");
     	dataReady = false;
-        String returnValue = "Yaw Pitch and Roll: "+Instruments.getAngles().toString();
+        String returnValue = "Angles,"+Instruments.getAngles().toCSV();
         return returnValue;
     }
     
