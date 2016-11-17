@@ -1,11 +1,6 @@
 package inertialNavigation;
 
-import dataTypes.Data;
-import dataTypes.Data3f;
-import dataTypes.TimestampedData;
 import dataTypes.TimestampedData3f;
-import dataTypes.YawPitchRoll;
-import dataTypes.YawPitchRollTimestamped;
 
 /**
  * @author GJWood
