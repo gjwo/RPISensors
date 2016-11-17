@@ -8,10 +8,10 @@ import java.util.concurrent.TimeUnit;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 
-import comms.NavResponder;
-import comms.NavResponder.NavResponderMode;
 import devices.I2C.Pi4jI2CDevice;
+import inertialNavigation.NavResponder;
 import inertialNavigation.Navigate;
+import inertialNavigation.NavResponder.NavResponderMode;
 import sensors.Implementations.MPU9250.MPU9250;
 import sensors.interfaces.UpdateListener;
 
@@ -47,7 +47,7 @@ class MPU9250Test implements UpdateListener{
 	{
 		debugLevelTester = 2;
 		debugLevelSensors = 2;
-		debugLevelNavigate = 0;
+		debugLevelNavigate = 2;
 		debugLevelNavResponder = 2;
 
 		 if (debugLevelTester >=3) System.out.println("Attempt to get Bus 1");

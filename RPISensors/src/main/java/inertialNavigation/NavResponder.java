@@ -1,4 +1,4 @@
-package comms;
+package inertialNavigation;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -6,8 +6,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
-import inertialNavigation.Instruments;
-import inertialNavigation.Navigate;
 import sensors.interfaces.UpdateListener;
 
 public class NavResponder extends Thread implements UpdateListener
