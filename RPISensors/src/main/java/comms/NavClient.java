@@ -23,15 +23,16 @@ public class NavClient {
         InetAddress address = InetAddress.getByName(args[0]);
         DatagramPacket packet = new DatagramPacket(buf, buf.length, address, serverPortNbr);
         socket.send(packet);
-     
-            // get response
-        packet = new DatagramPacket(buf, buf.length);
-        socket.receive(packet);
+        while (true)
+        {
+                        // get response
+            packet = new DatagramPacket(buf, buf.length);
+            socket.receive(packet);
  
-        // display response
-        String received = new String(packet.getData(), 0, packet.getLength());
-        System.out.println("Data: " + received);
-     
-        socket.close();
+                    // display response
+            String received = new String(packet.getData(), 0, packet.getLength());
+            System.out.println("Data: " + received);
+        }
+        //socket.close();
     }
 }
