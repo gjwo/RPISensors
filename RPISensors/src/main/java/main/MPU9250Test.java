@@ -76,11 +76,29 @@ class MPU9250Test implements UpdateListener{
 	
 	/**
 	 * Main			-	entry point	
-	 * @param args	-	command line arguments
+	 * @param args	-	arg[0] the number of seconds to generate data for
 	 */
 	public static void main(String[] args)
     {
     	MPU9250Test  tester;
+    	int runSecs = 30;
+    	int arg1 = 0;
+    	
+        if (args.length > 0) {
+            try {
+                arg1 = Integer.parseInt(args[0]);
+                if (arg1 >0){runSecs = arg1;}
+                else {
+                    System.err.println("Argument" + args[0] + " must be > 0, using default of "+ runSecs + " seconds ");
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("Argument" + args[0] + " must be an integer, using default of "+ runSecs + " seconds ");
+            }
+        } else
+        {
+        	System.out.println("No run time specified, using default of "+ runSecs + " seconds ");
+        }
+
     	tester = new MPU9250Test();
     	try {
 			tester.initialiseTester();
@@ -89,7 +107,7 @@ class MPU9250Test implements UpdateListener{
 			e1.printStackTrace();
 		}
     	try {
-			tester.runTests(30);
+			tester.runTests(runSecs);
 		} catch (InterruptedException e) {
 			System.out.println("Interupted whilst running tests");
 			e.printStackTrace();
