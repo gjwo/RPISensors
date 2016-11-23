@@ -16,6 +16,7 @@ import sensors.models.Sensor3D;
  * Created by G.J.Wood on 1/11/2016
  * Based on MPU9250_MS5637_t3 Basic Example Code by: Kris Winer date: April 1, 2014
  * https://github.com/kriswiner/MPU-9250/blob/master/MPU9250_MS5637_AHRS_t3.ino
+ * #KW references the original code in above location
  * 
  * This class handles the operation of the Magnetometer sensor and is a subclass of Sensor3D, it provides those methods
  * which are hardware specific to the MPU-9250 such as calibration configuring, self test and update
@@ -50,7 +51,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
     private short lastRawMagY;
     private short lastRawMagZ;
     private TimestampedData3f lastCalibratedReading = new TimestampedData3f(0,0,0);
-    private Data3f magCalibration = null; //Hardware factory calibration data from AK8963, sent up in init(), used in update()
+    private Data3f magCalibration = null; //#KW 271 Hardware factory calibration data from AK8963, sent up in init(* param), used in update()
 
 	public MPU9250Magnetometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, NineDOF parent ) {
 		super(sampleRate, sampleSize);
@@ -94,27 +95,27 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	 */
     @Override
 	public void updateData()
-    { //loop() - readMagData
+    { //#KW loop() L490 calls - readMagData L812
         byte dataReady = (byte)(ro.readByteRegister(Registers.AK8963_ST1) & 0x01); //DRDY - Data ready bit0 1 = data is ready
         if (dataReady == 0) return; //no data ready
         
-        // data is ready, read it NB bug fix here read was starting from ST1 not XOUT_L
-        byte[] buffer = ro.readByteRegisters(Registers.AK8963_XOUT_L, 7); //6 data bytes x,y,z 16 bits stored as little Endian (L/H)
-        
+        // #KW 494 readMagData - data is ready, read it NB bug fix here read was starting from ST1 not XOUT_L
+        byte[] buffer = ro.readByteRegisters(Registers.AK8963_XOUT_L, 7); // #KW L815 6 data bytes x,y,z 16 bits stored as little Endian (L/H)
         // Check if magnetic sensor overflow set, if not then report data	
         //roAK.readByteRegister(Registers.AK8963_ST2);// Data overflow bit 3 and data read error status bit 2
         byte status2 = buffer[6]; // Status2 register must be read as part of data read to show device data has been read
-        if((status2 & 0x08) == 0) //bit3 HOFL: Magnetic sensor overflow is normal (no Overflow), data is valid
-        { 
+        if((status2 & 0x08) == 0) //#KW 817 bit3 HOFL: Magnetic sensor overflow is normal (no Overflow), data is valid
+        {   //#KW L818-820
         	lastRawMagX = (short) ((buffer[1] << 8) | buffer[0]); // Turn the MSB and LSB into a signed 16-bit value
         	lastRawMagY = (short) ((buffer[3] << 8) | buffer[2]); // Data stored as little Endian
         	lastRawMagZ = (short) ((buffer[5] << 8) | buffer[4]);
 	
-        	//the stored calibration results is applied here as there is no hardware correction stored in the hardware via calibration 
+        	//the stored calibration results is applied here as there is no hardware correction stored in the hardware via calibration
+        	//#KW L496-L501. scale() does the multiplication by magScale L499-501
        		lastCalibratedReading = scale(new TimestampedData3f(	lastRawMagX*magScale.res*magCalibration.getX() - getDeviceBias().getX(),
        																lastRawMagY*magScale.res*magCalibration.getY() - getDeviceBias().getY(),
        																lastRawMagZ*magScale.res*magCalibration.getZ() - getDeviceBias().getZ()));
-        	this.addValue(lastCalibratedReading);
+        	this.addValue(lastCalibratedReading); //store the result
         }
 	}
 
@@ -124,18 +125,18 @@ public class MPU9250Magnetometer extends Sensor3D  {
 
 	@Override
 	public void calibrate() throws  InterruptedException{
-		// magcalMPU9250 in Kris Winer's code
+		// #KW L1064 magcalMPU9250
 		if (debugLevel() >=3) System.out.println("calibrateMag");
 
         int  bias[] = {0, 0, 0}, scale[] = {0, 0, 0};
-        short max[] = {(short)0x8000, (short)0x8000, (short)0x8000},
-        		min[] = {(short)0x7FFF, (short)0x7FFF, (short)0x7FFF},
+        short max[] = {(short)-32767, (short)-32767, (short)-32767},
+        		min[] = {(short)32767, (short)32767, (short)32767},
         		temp[] = {0, 0, 0};
 
         if (debugLevel() >=1) System.out.println("Mag Calibration: Wave device in a figure eight until done!");
         Thread.sleep(2000);
 
-        // shoot for ~fifteen seconds of mag data
+        // #KW 1073 shoot for ~fifteen seconds of mag data
         for(int i = 0; i < magMode.sampleCount; i++) {
             updateData();  // Read the mag data
             temp[0] = (short) lastRawMagX;
@@ -150,7 +151,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
         }
         if (debugLevel() >=1) System.out.println("Mag Calibration: Finished");
         
-        // Get hard iron correction
+        // #KW 1090 Get hard iron correction
         bias[0]  = (max[0] + min[0])/2;  // get average x mag bias in counts
         bias[1]  = (max[1] + min[1])/2;  // get average y mag bias in counts
         bias[2]  = (max[2] + min[2])/2;  // get average z mag bias in counts
@@ -162,15 +163,15 @@ public class MPU9250Magnetometer extends Sensor3D  {
         
         if (debugLevel() >=4) System.out.println("Devicebias: "+ this.getDeviceBias().toString());
         
-        // Get soft iron correction estimate
+        // #KW1099 Get soft iron correction estimate
         scale[0]  = (max[0] - min[0])/2;  // get average x axis max chord length in counts
         scale[1]  = (max[1] - min[1])/2;  // get average y axis max chord length in counts
         scale[2]  = (max[2] - min[2])/2;  // get average z axis max chord length in counts
 
-        float avgRad = (float) (scale[0] + scale[1] + scale[2]) / 3.0f;
+        float avgRad = (float) (scale[0] + scale[1] + scale[2]) / 3.0f; // #KW 1104-5
 
-        this.setDeviceScaling(new Data3f(avgRad/((float)scale[0]), // save mag scale for main program
-        								avgRad/((float)scale[1]), // deviceScale was dest2 in Kris Winer code
+        this.setDeviceScaling(new Data3f(avgRad/((float)scale[0]), // #KW1107-9 save mag scale for main program
+        								avgRad/((float)scale[1]), // deviceScale was pass by ref dest2 in Kris Winer code
         								avgRad/((float)scale[2])));
 
         if (debugLevel() >=3) printState();
@@ -179,26 +180,32 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	
 	// No self Test
 	
+	/**
+	 * Configure -	sets up device for normal operation
+	 * 
+	 * The method is equivalent to #KW initAK8963 L832
+	 */
 	@Override
 	public void configure() throws InterruptedException, IOException {
 		if (debugLevel() >=3) System.out.println("initAK8963");
         // First extract the factory calibration for each magnetometer axis
 
-        ro.writeByteRegister(Registers.AK8963_CNTL1,(byte) 0x00); // Power down magnetometer
+        ro.writeByteRegister(Registers.AK8963_CNTL1,(byte) 0x00); // #KW 836 Power down magnetometer
         Thread.sleep(10);
-        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)0x0F); // Enter Fuse ROM access bits
+        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)0x0F); // #KW 838 Enter Fuse ROM access bits
         Thread.sleep(10);
         byte rawData[] = ro.readByteRegisters(Registers.AK8963_ASAX, 3);  // Read the x-, y-, and z-axis calibration values
-        this.magCalibration = new Data3f(	((float)(rawData[0] - 128))/256f + 1f,   // Return x-axis sensitivity adjustment values, etc.
+        this.magCalibration = new Data3f(	((float)(rawData[0] - 128))/256f + 1f,   // #KW 841-843 Return x-axis sensitivity adjustment values, etc.
         									((float)(rawData[1] - 128))/256f + 1f,
         									((float)(rawData[2] - 128))/256f + 1f);
         
-        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)0x00); // Power down magnetometer
+        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)0x00); // #KW 844 Power down magnetometer
         Thread.sleep(10);
         // Configure the magnetometer for continuous read and highest resolution
         // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL1 register,
         // and enable continuous bits data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
-        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)(MagScale.MFS_16BIT.bits | magMode.bits)); // Set magnetometer data resolution and sample ODR ####16bit already shifted
+        // set to MagScale.MFS_16BIT.bits and MagMode.MM_100HZ set as final lines 48 & 49. register write should be 0x16
+        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)(magScale.bits | magMode.bits)); // #KW 849 Set magnetometer data resolution and sample ODR ####16bit already shifted
         Thread.sleep(10);
         if (debugLevel() >=3) printState();
         if (debugLevel() >=3) System.out.println("End initAK8963");
