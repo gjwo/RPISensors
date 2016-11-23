@@ -115,83 +115,89 @@ public class SensorFusion {
 		float q3q3 = q3 * q3;
 		float q3q4 = q3 * q4;
 		float q4q4 = q4 * q4;
-		
-		acc.normalize(); // Normalise accelerometer measurement
-		mag.normalize(); // Normalise magnetometer measurement
-
-		// Reference direction of Earth's magnetic field
-		_2q1mx = 2.0f * q1 * mag.getX();
-		_2q1my = 2.0f * q1 *mag.getY();
-		_2q1mz = 2.0f * q1 *mag.getZ();
-		_2q2mx = 2.0f * q2 * mag.getX();
-		hx = mag.getX() * q1q1 - _2q1my * q4 + _2q1mz * q3 + mag.getX() * q2q2 + _2q2 *mag.getY() * q3
-				+ _2q2 *mag.getZ() * q4 - mag.getX() * q3q3 - mag.getX() * q4q4;
-		hy = _2q1mx * q4 +mag.getY() * q1q1 - _2q1mz * q2 + _2q2mx * q3 -mag.getY() * q2q2
-				+mag.getY() * q3q3 + _2q3 *mag.getZ() * q4 -mag.getY() * q4q4;
-		_2bx = (float) Math.sqrt(hx * hx + hy * hy);
-		_2bz = -_2q1mx * q3 + _2q1my * q2 +mag.getZ() * q1q1 + _2q2mx * q4 -mag.getZ() * q2q2
-				+ _2q3 *mag.getY() * q4 -mag.getZ() * q3q3 +mag.getZ() * q4q4;
-		_4bx = 2.0f * _2bx;
-		_4bz = 2.0f * _2bz;
-
-		// Gradient decent algorithm corrective step
-		s1 = -_2q3 * (2.0f * q2q4 - _2q1q3 - acc.getX()) + _2q2
-				* (2.0f * q1q2 + _2q3q4 - acc.getY()) - _2bz * q3
-				* (_2bx * (0.5f - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mag.getX())
-				+ (-_2bx * q4 + _2bz * q2)
-				* (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) -mag.getY()) + _2bx
-				* q3
-				* (_2bx * (q1q3 + q2q4) + _2bz * (0.5f - q2q2 - q3q3) -mag.getZ());
-		s2 = _2q4 * (2.0f * q2q4 - _2q1q3 - acc.getX()) + _2q1
-				* (2.0f * q1q2 + _2q3q4 - acc.getY()) - 4.0f * q2
-				* (1.0f - 2.0f * q2q2 - 2.0f * q3q3 - acc.getZ()) + _2bz * q4
-				* (_2bx * (0.5f - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mag.getX())
-				+ (_2bx * q3 + _2bz * q1)
-				* (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) -mag.getY())
-				+ (_2bx * q4 - _4bz * q2)
-				* (_2bx * (q1q3 + q2q4) + _2bz * (0.5f - q2q2 - q3q3) -mag.getZ());
-		s3 = -_2q1 * (2.0f * q2q4 - _2q1q3 - acc.getX()) + _2q4
-				* (2.0f * q1q2 + _2q3q4 - acc.getY()) - 4.0f * q3
-				* (1.0f - 2.0f * q2q2 - 2.0f * q3q3 - acc.getZ())
-				+ (-_4bx * q3 - _2bz * q1)
-				* (_2bx * (0.5f - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mag.getX())
-				+ (_2bx * q2 + _2bz * q4)
-				* (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) -mag.getY())
-				+ (_2bx * q1 - _4bz * q3)
-				* (_2bx * (q1q3 + q2q4) + _2bz * (0.5f - q2q2 - q3q3) -mag.getZ());
-		s4 = _2q2 * (2.0f * q2q4 - _2q1q3 - acc.getX()) + _2q3
-				* (2.0f * q1q2 + _2q3q4 - acc.getY()) + (-_4bx * q4 + _2bz * q2)
-				* (_2bx * (0.5f - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mag.getX())
-				+ (-_2bx * q1 + _2bz * q3)
-				* (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) -mag.getY()) + _2bx
-				* q2
-				* (_2bx * (q1q3 + q2q4) + _2bz * (0.5f - q2q2 - q3q3) -mag.getZ());
-		
-		norm = (float) Math.sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s4 * s4); // normalise step magnitude
-		norm = 1.0f / norm;
-		s1 *= norm;
-		s2 *= norm;
-		s3 *= norm;
-		s4 *= norm;
-
-		// Compute rate of change of quaternion
-		qDot1 = 0.5f * (-q2 * grav.getX() - q3 * grav.getY() - q4 * grav.getZ()) - BETA * s1;
-		qDot2 = 0.5f * (q1 * grav.getX() + q3 * grav.getZ() - q4 * grav.getY()) - BETA * s2;
-		qDot3 = 0.5f * (q1 * grav.getY() - q2 * grav.getZ() + q4 * grav.getX()) - BETA * s3;
-		qDot4 = 0.5f * (q1 * grav.getZ() + q2 * grav.getY() - q3 * grav.getX()) - BETA * s4;
-
-		// Integrate to yield quaternion
-		q1 += qDot1 * deltat;
-		q2 += qDot2 * deltat;
-		q3 += qDot3 * deltat;
-		q4 += qDot4 * deltat;
-		
-		q.setAll(q1, q2, q3, q4);
-		q.normalize();// Normalise quaternion
-		//System.out.println(q.toString());
-		
-		Instruments.updateInstruments(q);
-		//if(debugLevel >=3) System.out.println("End MadgwickQuaternionUpdate");
+		try
+		{
+			acc.normalize(); // Normalise accelerometer measurement
+			mag.normalize(); // Normalise magnetometer measurement
+	
+			// Reference direction of Earth's magnetic field
+			_2q1mx = 2.0f * q1 * mag.getX();
+			_2q1my = 2.0f * q1 *mag.getY();
+			_2q1mz = 2.0f * q1 *mag.getZ();
+			_2q2mx = 2.0f * q2 * mag.getX();
+			hx = mag.getX() * q1q1 - _2q1my * q4 + _2q1mz * q3 + mag.getX() * q2q2 + _2q2 *mag.getY() * q3
+					+ _2q2 *mag.getZ() * q4 - mag.getX() * q3q3 - mag.getX() * q4q4;
+			hy = _2q1mx * q4 +mag.getY() * q1q1 - _2q1mz * q2 + _2q2mx * q3 -mag.getY() * q2q2
+					+mag.getY() * q3q3 + _2q3 *mag.getZ() * q4 -mag.getY() * q4q4;
+			_2bx = (float) Math.sqrt(hx * hx + hy * hy);
+			_2bz = -_2q1mx * q3 + _2q1my * q2 +mag.getZ() * q1q1 + _2q2mx * q4 -mag.getZ() * q2q2
+					+ _2q3 *mag.getY() * q4 -mag.getZ() * q3q3 +mag.getZ() * q4q4;
+			_4bx = 2.0f * _2bx;
+			_4bz = 2.0f * _2bz;
+	
+			// Gradient decent algorithm corrective step
+			s1 = -_2q3 * (2.0f * q2q4 - _2q1q3 - acc.getX()) + _2q2
+					* (2.0f * q1q2 + _2q3q4 - acc.getY()) - _2bz * q3
+					* (_2bx * (0.5f - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mag.getX())
+					+ (-_2bx * q4 + _2bz * q2)
+					* (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) -mag.getY()) + _2bx
+					* q3
+					* (_2bx * (q1q3 + q2q4) + _2bz * (0.5f - q2q2 - q3q3) -mag.getZ());
+			s2 = _2q4 * (2.0f * q2q4 - _2q1q3 - acc.getX()) + _2q1
+					* (2.0f * q1q2 + _2q3q4 - acc.getY()) - 4.0f * q2
+					* (1.0f - 2.0f * q2q2 - 2.0f * q3q3 - acc.getZ()) + _2bz * q4
+					* (_2bx * (0.5f - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mag.getX())
+					+ (_2bx * q3 + _2bz * q1)
+					* (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) -mag.getY())
+					+ (_2bx * q4 - _4bz * q2)
+					* (_2bx * (q1q3 + q2q4) + _2bz * (0.5f - q2q2 - q3q3) -mag.getZ());
+			s3 = -_2q1 * (2.0f * q2q4 - _2q1q3 - acc.getX()) + _2q4
+					* (2.0f * q1q2 + _2q3q4 - acc.getY()) - 4.0f * q3
+					* (1.0f - 2.0f * q2q2 - 2.0f * q3q3 - acc.getZ())
+					+ (-_4bx * q3 - _2bz * q1)
+					* (_2bx * (0.5f - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mag.getX())
+					+ (_2bx * q2 + _2bz * q4)
+					* (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) -mag.getY())
+					+ (_2bx * q1 - _4bz * q3)
+					* (_2bx * (q1q3 + q2q4) + _2bz * (0.5f - q2q2 - q3q3) -mag.getZ());
+			s4 = _2q2 * (2.0f * q2q4 - _2q1q3 - acc.getX()) + _2q3
+					* (2.0f * q1q2 + _2q3q4 - acc.getY()) + (-_4bx * q4 + _2bz * q2)
+					* (_2bx * (0.5f - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mag.getX())
+					+ (-_2bx * q1 + _2bz * q3)
+					* (_2bx * (q2q3 - q1q4) + _2bz * (q1q2 + q3q4) -mag.getY()) + _2bx
+					* q2
+					* (_2bx * (q1q3 + q2q4) + _2bz * (0.5f - q2q2 - q3q3) -mag.getZ());
+			
+			norm = (float) Math.sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s4 * s4); // normalise step magnitude
+			norm = 1.0f / norm;
+			s1 *= norm;
+			s2 *= norm;
+			s3 *= norm;
+			s4 *= norm;
+	
+			// Compute rate of change of quaternion
+			qDot1 = 0.5f * (-q2 * grav.getX() - q3 * grav.getY() - q4 * grav.getZ()) - BETA * s1;
+			qDot2 = 0.5f * (q1 * grav.getX() + q3 * grav.getZ() - q4 * grav.getY()) - BETA * s2;
+			qDot3 = 0.5f * (q1 * grav.getY() - q2 * grav.getZ() + q4 * grav.getX()) - BETA * s3;
+			qDot4 = 0.5f * (q1 * grav.getZ() + q2 * grav.getY() - q3 * grav.getX()) - BETA * s4;
+	
+			// Integrate to yield quaternion
+			q1 += qDot1 * deltat;
+			q2 += qDot2 * deltat;
+			q3 += qDot3 * deltat;
+			q4 += qDot4 * deltat;
+			
+			q.setAll(q1, q2, q3, q4);
+			q.normalize();// Normalise quaternion
+			//System.out.println(q.toString());
+			
+			Instruments.updateInstruments(q);
+			//if(debugLevel >=3) System.out.println("End MadgwickQuaternionUpdate");
+		} catch(ArithmeticException e)
+		{
+			System.err.println("ArithmeticException caught in MadgwickQuaternionUpdate - keep calm and carry on");
+			e.printStackTrace();
+		}
 	}
 
 	/**
