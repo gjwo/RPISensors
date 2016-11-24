@@ -106,13 +106,15 @@ public class Navigate implements Runnable, UpdateListener{
 	
 	                adjustedAcc = new TimestampedData3f(Instruments.getAccelerometer());//preserve the timestamp set y & z
 	                adjustedAcc.setX(-adjustedAcc.getX());								//-ax
+	                
 	                adjustedGyr = new TimestampedData3f(Instruments.getGyroscope()); 	//preserve the timestamp
 	                adjustedGyr.setX(adjustedGyr.getX()*(float)Math.PI/180.0f); 		//Pass gyro rate as rad/s
 	                adjustedGyr.setY(-adjustedGyr.getY()*(float)Math.PI/180.0f);		//-gy
 	                adjustedGyr.setZ(-adjustedGyr.getZ()*(float)Math.PI/180.0f);		//-gz
+	                
 	                adjustedMag = new TimestampedData3f(Instruments.getMagnetometer()); //set timestamp and Z
-	                adjustedMag.setX(-adjustedMag.getY()); 								//swap X and Y, Z stays the same
-	                adjustedMag.setY(adjustedMag.getX());
+	                adjustedMag.setX(adjustedMag.getY()); 								//swap X and Y, Z stays the same
+	                adjustedMag.setY(-adjustedMag.getX());
 	
 	                SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),adjustedGyr,adjustedMag,deltaTSec); // #KW L921
 	                if(((float)nowNanoS-lastDisplayNanoS)/nanosPerSecf >= 1f/displayFrequencyHz)
