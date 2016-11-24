@@ -67,8 +67,8 @@ public class Navigate implements Runnable, UpdateListener{
 	 */
     @Override
     public void run()
-    {
-    	TimestampedData3f ajustedGyr, ajustedMag;
+    {	//#KW L471 - this maps to part of the loop, in this code getting the data is done in a different thread, which prompts this thread to fetch results
+    	TimestampedData3f adjustedAcc, adjustedGyr, adjustedMag;
     	while(!Thread.interrupted()&&!stop)
         {
             try
@@ -76,16 +76,25 @@ public class Navigate implements Runnable, UpdateListener{
                 if(dataReady) 
                 {	//Store the latest data
 	        		dataReady = false;
-	            	Instruments.setMagnetometer( mpu9250.getLatestGaussianData());
-	                Instruments.setAccelerometer(mpu9250.getLatestAcceleration());
-	                Instruments.setGyroscope(mpu9250.getLatestRotationalAcceleration());
+	            	Instruments.setMagnetometer( mpu9250.getLatestGaussianData()); 		// #KW L492-501 done elsewhere, get the results
+	                Instruments.setAccelerometer(mpu9250.getLatestAcceleration());		// #KW L478-481 done elsewhere, get the results
+	                Instruments.setGyroscope(mpu9250.getLatestRotationalAcceleration());// #KW L485-488 done elsewhere, get the results
 	                dataValid = true;
                 }
                 if (dataValid) // must have at least one value to start calculations
                 {
 	                // new data or not recalulate the quaternion every 1 ms
 	                
-	            	// Examples of calling the filters, READ BEFORE USING!!		!!!
+	                //Calculate integration interval
+	                nowNanoS = System.nanoTime();
+	                deltaTSec = ((float)nowNanoS-lastUpdateNanoS)/nanosPerSecf; // #KW L506
+	                lastUpdateNanoS = nowNanoS;									// #KW L507
+	                //calculate measurement frequency
+	                sumDeltas +=deltaTSec;										// #KW L509
+	                countDeltas++;												// #KW L510
+	                calculationFrequency = countDeltas/sumDeltas;
+	                
+	            	// #KW L512 Examples of calling the filters, READ BEFORE USING!!		!!!
 	            	// sensors x (y)-axis of the accelerometer is aligned with the y (x)-axis of the magnetometer;
 	            	// the magnetometer z-axis (+ down) is opposite to z-axis (+ up) of accelerometer and gyro!
 	            	// We have to make some allowance for this orientation mismatch in feeding the output to the quaternion filter.
@@ -93,26 +102,19 @@ public class Navigate implements Runnable, UpdateListener{
 	            	// in the LSM9DS0 sensor. This rotation can be modified to allow any convenient orientation convention.
 	            	// This is ok by aircraft orientation standards!  
 	            	// Pass gyro rate as rad/s
-	            	// MadgwickQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f, my, mx, mz);
+	            	// MadgwickQuaternionUpdate(-ax, ay, az, gx*PI/180.0f, -gy*PI/180.0f, -gz*PI/180.0f,  my,  -mx, mz); #KW L521
 	
-	                ajustedGyr = new TimestampedData3f(Instruments.getGyroscope());
-	                ajustedGyr.setX(Instruments.getGyroscope().getX()*(float)Math.PI/180.0f); //Pass gyro rate as rad/s
-	                ajustedGyr.setY(Instruments.getGyroscope().getY()*(float)Math.PI/180.0f);
-	                ajustedGyr.setZ(Instruments.getGyroscope().getZ()*(float)Math.PI/180.0f);
-	                ajustedMag = new TimestampedData3f(Instruments.getMagnetometer()); //set timestamp and Z
-	                ajustedMag.setX(Instruments.getMagnetometer().getY()); //swap X and Y, Z stays the same
-	                ajustedMag.setY(Instruments.getMagnetometer().getX());
+	                adjustedAcc = new TimestampedData3f(Instruments.getAccelerometer());
+	                adjustedAcc.setX(-Instruments.getAccelerometer().getX());
+	                adjustedGyr = new TimestampedData3f(Instruments.getGyroscope()); 			//preserve the timestamp
+	                adjustedGyr.setX(Instruments.getGyroscope().getX()*(float)Math.PI/180.0f); 	//Pass gyro rate as rad/s
+	                adjustedGyr.setY(-Instruments.getGyroscope().getY()*(float)Math.PI/180.0f);
+	                adjustedGyr.setZ(-Instruments.getGyroscope().getZ()*(float)Math.PI/180.0f);
+	                adjustedMag = new TimestampedData3f(Instruments.getMagnetometer()); //set timestamp and Z
+	                adjustedMag.setX(-Instruments.getMagnetometer().getY()); //swap X and Y, Z stays the same
+	                adjustedMag.setY(Instruments.getMagnetometer().getX());
 	
-	                //Calculate integration interval
-	                nowNanoS = System.nanoTime();
-	                deltaTSec = ((float)nowNanoS-lastUpdateNanoS)/nanosPerSecf;
-	                lastUpdateNanoS = nowNanoS;
-	                //calculate measurement frequency
-	                sumDeltas +=deltaTSec;
-	                countDeltas++;
-	                calculationFrequency = countDeltas/sumDeltas;
-	                
-	                SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),ajustedGyr,ajustedMag,deltaTSec);
+	                SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),adjustedGyr,adjustedMag,deltaTSec); // #KW L921
 	                if(((float)nowNanoS-lastDisplayNanoS)/nanosPerSecf >= 1f/displayFrequencyHz)
 	                {
 	                	lastDisplayNanoS = nowNanoS;
