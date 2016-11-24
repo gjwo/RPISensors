@@ -65,7 +65,7 @@ public class MPU9250RegisterOperations {
     public void print16BitRegister(Registers r)
     {
     	short[] rv = read16BitRegisters(r,1);
-    	System.out.format("%20s (16bits) : %8s 0x%04X %d%n",r.name(),shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
+    	System.out.format("%20s (16bits) : %16s 0x%04X %d%n",r.name(),shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
     }
    
     /**
@@ -75,7 +75,7 @@ public class MPU9250RegisterOperations {
     public void print16BitRegisterLittleEndian(Registers r)
     {
     	short[] rv = read16BitRegistersLittleEndian(r,1);
-    	System.out.format("%20s (16bits) : %8s 0x%04X %d%n",r.name(),shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
+    	System.out.format("%20s (16bits) : %16s 0x%04X %d%n",r.name(),shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
     }
    
   /**
