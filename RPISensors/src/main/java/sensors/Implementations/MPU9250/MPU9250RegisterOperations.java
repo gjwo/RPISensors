@@ -45,7 +45,7 @@ public class MPU9250RegisterOperations {
 	 */
     public String shortToBitString(short r)
     {
-    	String s = String.format("%8s", Integer.toBinaryString(r & 0xFFFF)).replace(' ', '0');
+    	String s = String.format("%16s", Integer.toBinaryString(r & 0xFFFF)).replace(' ', '0');
     	return s;  	
     }
     
