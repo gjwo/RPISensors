@@ -113,7 +113,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
         {   //#KW L818-820
         	lastRawMagX = (short) ((buffer[1] << 8) | (buffer[0]&0xFF)); // Turn the MSB and LSB into a signed 16-bit value
         	lastRawMagY = (short) ((buffer[3] << 8) | (buffer[2]&0xFF)); // Data stored as little Endian
-        	lastRawMagZ = (short) ((buffer[5] << 8) | (buffer[4]&0xFF)); // mask to prevent sign extension in LSB
+        	lastRawMagZ = (short) ((buffer[5] << 8) | (buffer[4]&0xFF)); // mask to prevent sign extension in LSB (bug fix)
 	
         	//the stored calibration results is applied here as there is no hardware correction stored in the hardware via calibration
         	//#KW L496-L501. scale() does the multiplication by magScale L499-501
