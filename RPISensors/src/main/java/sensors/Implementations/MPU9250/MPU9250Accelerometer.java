@@ -223,10 +223,10 @@ public class MPU9250Accelerometer extends Sensor3D  {
 
         int sampleCount =  readingCount / 3; // 6 bytes per sample 3 x 16 bit values
         int[] accelBiasSum = new int[]{0,0,0}; //32 bit to allow for accumulation without overflow
-        for(int s = 0; s < sampleCount; s++)
+        for(int s = 0; s < sampleCount; s++) //#KW L962
         {
-            accelBiasSum[0] += readings[s]; // Sum individual signed 16-bit biases to get accumulated signed 32-bit biases
-            accelBiasSum[1] += readings[s+1];
+            accelBiasSum[0] += readings[s];		//#KW L972
+            accelBiasSum[1] += readings[s+1]; 	// Sum individual signed 16-bit biases to get accumulated signed 32-bit biases
             accelBiasSum[2] += readings[s+2];
         }
         if (debugLevel() >=5)  System.out.print("Accel Bias sum: "+Arrays.toString(accelBiasSum));
@@ -234,9 +234,13 @@ public class MPU9250Accelerometer extends Sensor3D  {
         
         //calculate averages
         short[] accelBiasAvg = new short[]{0,0,0}; //16 bit average
-        accelBiasAvg[0] = (short)((accelBiasSum[0] / sampleCount) & 0xffff); // Normalise sums to get average count biases
-        accelBiasAvg[1] = (short)((accelBiasSum[1] / sampleCount) & 0xffff); 
+        accelBiasAvg[0] = (short)((accelBiasSum[0] / sampleCount) & 0xffff); // #KW L980
+        accelBiasAvg[1] = (short)((accelBiasSum[1] / sampleCount) & 0xffff); // Normalise sums to get average count biases
         accelBiasAvg[2] = (short)((accelBiasSum[2] / sampleCount) & 0xffff); 
+        
+        if (accelBiasAvg[2] > 0) accelBiasAvg[2] -= accelSensitivity; // #KW 987 Remove gravity from the z-axis accelerometer bias calculation
+        else accelBiasAvg[2] += accelSensitivity;
+        
         if (debugLevel() >=5)
         {
         	System.out.print("Accel sample count: " + sampleCount);
