@@ -11,13 +11,13 @@ import dataTypes.TimestampedData3f;
  */
 public class SensorFusion {
 
-	private static final float[] eInt = new float[]{0,0,0}; // vector to hold integral error for Mahony method
-	private static final Quaternion q = new Quaternion(1,0,0,0);  // vector to hold quaternion
+	private static final float[] eInt = new float[]{0f,0f,0f}; 			// KW L304 vector to hold integral error for Mahony method
+	private static final Quaternion q = new Quaternion(1f,0f,0f,0f);  	// KW L303 vector to hold quaternion now a class
 	
 
 	// global constants for 9 DoF fusion and AHRS (Attitude and Heading Reference System)
-	private static final float GYRO_MEASUREMENT_ERROR = (float)Math.PI * (40.0f / 180.0f);   // gyroscope measurement error in rads/s (start at 40 deg/s)
-	private static final float GYRO_MEASUREMENT_DRIFT = (float)Math.PI  * (0.0f  / 180.0f);   // gyroscope measurement drift in rad/s/s (start at 0.0 deg/s/s)
+	private static final float GYRO_MEASUREMENT_ERROR = (float)Math.PI * (40.0f / 180.0f);   	// #KW L279 gyroscope measurement error in rads/s (start at 40 deg/s)
+	private static final float GYRO_MEASUREMENT_DRIFT = (float)Math.PI  * (0.0f  / 180.0f);   	// #KW L280 gyroscope measurement drift in rad/s/s (start at 0.0 deg/s/s)
 	// There is a tradeoff in the BETA parameter between accuracy and response speed.
 	// In the original Madgwick study, BETA of 0.041 (corresponding to GYRO_MEASUREMENT_ERROR of 2.7 degrees/s) was found to give optimal accuracy.
 	// However, with this value, the LSM9SD0 response time is about 10 seconds to a stable initial quaternion.
@@ -26,10 +26,10 @@ public class SensorFusion {
 	// I haven't noticed any reduction in solution accuracy. This is essentially the I coefficient in a PID control sense; 
 	// the bigger the feedback coefficient, the faster the solution converges, usually at the expense of accuracy. 
 	// In any case, this is the free parameter in the Madgwick filtering and fusion scheme.
-	private static final float BETA = (float)Math.sqrt(3.0f / 4.0f) * GYRO_MEASUREMENT_ERROR;   // compute BETA
-	private static final float ZETA = (float)Math.sqrt(3.0f / 4.0f) * GYRO_MEASUREMENT_DRIFT;   // compute ZETA, the other free parameter in the Madgwick scheme usually set to a small or zero value
-	private static final float KP = 2.0f * 5.0f; // these are the free parameters in the Mahony filter and fusion scheme, KP for proportional feedback, KI for integral
-	private static final float KI = 0.0f;
+	private static final float BETA = (float)Math.sqrt(3.0f / 4.0f) * GYRO_MEASUREMENT_ERROR;   // #KW L289 compute BETA
+	private static final float ZETA = (float)Math.sqrt(3.0f / 4.0f) * GYRO_MEASUREMENT_DRIFT;   // #KW L290 compute ZETA, the other free parameter in the Madgwick scheme usually set to a small or zero value
+	private static final float KP = 2.0f * 5.0f;// #KW L291 these are the free parameters in the Mahony filter and fusion scheme, KP for proportional feedback, KI for integral
+	private static final float KI = 0.0f;		// #KW L292
 
     // With these settings the filter is updating at a ~145 Hz rate using the Madgwick scheme and 
     // >200 Hz using the Mahony scheme even though the display refreshes at only 2 Hz.
@@ -66,10 +66,11 @@ public class SensorFusion {
 	/**
 	 * Update Madgewick Quaternion
 	 * @param acc - accelerometer reading
-	 * @param grav - gyrometer reading 
+	 * @param gyro - gyrometer reading 
 	 * @param mag -  magenetometer reading
 	 * @param deltat - time interval between readings in seconds
 	 * 
+	 * #MW quaternionFilters.ino L2
 	 * Implementation of Sebastian Madgwick's efficient orientation filter for inertial/magnetic sensor arrays
 	 * (see http://www.x-io.co.uk/category/open-source/ for examples and more details)
 	 * which fuses acceleration, rotation rate, and magnetic moments to produce
@@ -79,14 +80,12 @@ public class SensorFusion {
 	 * conventional Kalman-based filtering algorithms but is much less computationally intensive
 	 * it can be performed on a 3.3 V Pro Mini operating at 8 MHz!
 	 */
-	public static void MadgwickQuaternionUpdate(TimestampedData3f acc, TimestampedData3f grav, TimestampedData3f mag, float deltat) //delta t in seconds
+	public static void MadgwickQuaternionUpdate(TimestampedData3f acc, TimestampedData3f gyro, TimestampedData3f mag, float deltat) //delta t in seconds
 
 	{	/*
-		System.out.print("MadgwickQuaternionUpdate "+acc.toString()+grav.unStamp().toString()+mag.unStamp().toString());
+		System.out.print("MadgwickQuaternionUpdate "+acc.toString()+gyro.unStamp().toString()+mag.unStamp().toString());
 		System.out.format(" deltaT %12.10f ",deltat); */
-		float q1 = q.a, q2 = q.b, q3 = q.c, q4 = q.d; // short name local
-														// variable for
-														// readability
+		float q1 = q.a, q2 = q.b, q3 = q.c, q4 = q.d; 	// #MW L10 short name local  variable for readability
 		float norm;
 		float hx, hy, _2bx, _2bz;
 		float s1, s2, s3, s4;
@@ -114,13 +113,13 @@ public class SensorFusion {
 		float q2q4 = q2 * q4;
 		float q3q3 = q3 * q3;
 		float q3q4 = q3 * q4;
-		float q4q4 = q4 * q4;
+		float q4q4 = q4 * q4;	//KW L38
 		try
 		{
-			acc.normalize(); // Normalise accelerometer measurement
-			mag.normalize(); // Normalise magnetometer measurement
+			acc.normalize(); // #KW L41-46 Normalise accelerometer measurement
+			mag.normalize(); // #KW L49-54 Normalise magnetometer measurement
 	
-			// Reference direction of Earth's magnetic field
+			// #KW L56 Reference direction of Earth's magnetic field
 			_2q1mx = 2.0f * q1 * mag.getX();
 			_2q1my = 2.0f * q1 *mag.getY();
 			_2q1mz = 2.0f * q1 *mag.getZ();
@@ -135,7 +134,7 @@ public class SensorFusion {
 			_4bx = 2.0f * _2bx;
 			_4bz = 2.0f * _2bz;
 	
-			// Gradient decent algorithm corrective step
+			// #KW L68 Gradient decent algorithm corrective step
 			s1 = -_2q3 * (2.0f * q2q4 - _2q1q3 - acc.getX()) + _2q2
 					* (2.0f * q1q2 + _2q3q4 - acc.getY()) - _2bz * q3
 					* (_2bx * (0.5f - q3q3 - q4q4) + _2bz * (q2q4 - q1q3) - mag.getX())
@@ -168,27 +167,27 @@ public class SensorFusion {
 					* q2
 					* (_2bx * (q1q3 + q2q4) + _2bz * (0.5f - q2q2 - q3q3) -mag.getZ());
 			
-			norm = (float) Math.sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s4 * s4); // normalise step magnitude
+			norm = (float) Math.sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s4 * s4); // #KW L73 normalise step magnitude
 			norm = 1.0f / norm;
 			s1 *= norm;
 			s2 *= norm;
 			s3 *= norm;
 			s4 *= norm;
 	
-			// Compute rate of change of quaternion
-			qDot1 = 0.5f * (-q2 * grav.getX() - q3 * grav.getY() - q4 * grav.getZ()) - BETA * s1;
-			qDot2 = 0.5f * (q1 * grav.getX() + q3 * grav.getZ() - q4 * grav.getY()) - BETA * s2;
-			qDot3 = 0.5f * (q1 * grav.getY() - q2 * grav.getZ() + q4 * grav.getX()) - BETA * s3;
-			qDot4 = 0.5f * (q1 * grav.getZ() + q2 * grav.getY() - q3 * grav.getX()) - BETA * s4;
+			// #KW L80 Compute rate of change of quaternion
+			qDot1 = 0.5f * (-q2 * gyro.getX() - q3 * gyro.getY() - q4 * gyro.getZ()) - BETA * s1;
+			qDot2 = 0.5f * (q1 * gyro.getX() + q3 * gyro.getZ() - q4 * gyro.getY()) - BETA * s2;
+			qDot3 = 0.5f * (q1 * gyro.getY() - q2 * gyro.getZ() + q4 * gyro.getX()) - BETA * s3;
+			qDot4 = 0.5f * (q1 * gyro.getZ() + q2 * gyro.getY() - q3 * gyro.getX()) - BETA * s4;
 	
-			// Integrate to yield quaternion
+			// #KW L86 Integrate to yield quaternion
 			q1 += qDot1 * deltat;
 			q2 += qDot2 * deltat;
 			q3 += qDot3 * deltat;
 			q4 += qDot4 * deltat;
 			
 			q.setAll(q1, q2, q3, q4);
-			q.normalize();// Normalise quaternion
+			q.normalize();				// #KW L 91-96 Normalise quaternion
 			//System.out.println(q.toString());
 			
 			Instruments.updateInstruments(q);
@@ -204,7 +203,7 @@ public class SensorFusion {
 	/**
 	 * Update Mahoney Quaternion
 	 * @param acc - accelerometer reading
-	 * @param grav - gyrometer reading 
+	 * @param gyro - gyrometer reading 
 	 * @param mag -  magenetometer reading
 	 * @param deltat - time interval between readings in seconds
 	 * 
@@ -219,10 +218,10 @@ public class SensorFusion {
 	 * conventional Kalman-based filtering algorithms but is much less computationally intensive
 	 * it can be performed on a 3.3 V Pro Mini operating at 8 MHz!
 	 */
-	public static void MahonyQuaternionUpdate(Data3f acc, Data3f grav, Data3f mag, float deltat) //delta t in seconds
-	{
+	public static void MahonyQuaternionUpdate(Data3f acc, Data3f gyro, Data3f mag, float deltat) //delta t in seconds
+	{ // #KW L104 
 		/*
-		System.out.print("MahonyQuaternionUpdate "+acc.toString()+grav.unStamp().toString()+mag.unStamp().toString());
+		System.out.print("MahonyQuaternionUpdate "+acc.toString()+gyro.unStamp().toString()+mag.unStamp().toString());
 		System.out.format(" deltaT %12.10f ",deltat);
 		 */
 		float q1 = q.a, q2 = q.b, q3 = q.c, q4 = q.d; // short name local
@@ -281,18 +280,18 @@ public class SensorFusion {
 		}
 
 		// Apply feedback terms
-		grav.setX( grav.getX() + KP * ex + KI * eInt[0]);
-		grav.setY( grav.getY() + KP * ey + KI * eInt[1]);
-		grav.setZ( grav.getZ() + KP * ez + KI * eInt[2]);
+		gyro.setX( gyro.getX() + KP * ex + KI * eInt[0]);
+		gyro.setY( gyro.getY() + KP * ey + KI * eInt[1]);
+		gyro.setZ( gyro.getZ() + KP * ez + KI * eInt[2]);
 
 		// Integrate rate of change of quaternion
 		pa = q2;
 		pb = q3;
 		pc = q4;
-		q1 = q1 + (-q2 * grav.getX() - q3 * grav.getY() - q4 * grav.getZ()) * (0.5f * deltat);
-		q2 = pa + (q1 * grav.getX() + pb * grav.getZ() - pc * grav.getY()) * (0.5f * deltat);
-		q3 = pb + (q1 * grav.getY() - pa * grav.getZ() + pc * grav.getX()) * (0.5f * deltat);
-		q4 = pc + (q1 * grav.getZ() + pa * grav.getY() - pb * grav.getX()) * (0.5f * deltat);
+		q1 = q1 + (-q2 * gyro.getX() - q3 * gyro.getY() - q4 * gyro.getZ()) * (0.5f * deltat);
+		q2 = pa + (q1 * gyro.getX() + pb * gyro.getZ() - pc * gyro.getY()) * (0.5f * deltat);
+		q3 = pb + (q1 * gyro.getY() - pa * gyro.getZ() + pc * gyro.getX()) * (0.5f * deltat);
+		q4 = pc + (q1 * gyro.getZ() + pa * gyro.getY() - pb * gyro.getX()) * (0.5f * deltat);
 
 		q.setAll(q1, q2, q3, q4);
 		q.normalize();// Normalise quaternion
