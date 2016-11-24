@@ -104,15 +104,15 @@ public class Navigate implements Runnable, UpdateListener{
 	            	// Pass gyro rate as rad/s
 	            	// MadgwickQuaternionUpdate(-ax, ay, az, gx*PI/180.0f, -gy*PI/180.0f, -gz*PI/180.0f,  my,  -mx, mz); #KW L521
 	
-	                adjustedAcc = new TimestampedData3f(Instruments.getAccelerometer());
-	                adjustedAcc.setX(-Instruments.getAccelerometer().getX());
-	                adjustedGyr = new TimestampedData3f(Instruments.getGyroscope()); 			//preserve the timestamp
-	                adjustedGyr.setX(Instruments.getGyroscope().getX()*(float)Math.PI/180.0f); 	//Pass gyro rate as rad/s
-	                adjustedGyr.setY(-Instruments.getGyroscope().getY()*(float)Math.PI/180.0f);
-	                adjustedGyr.setZ(-Instruments.getGyroscope().getZ()*(float)Math.PI/180.0f);
+	                adjustedAcc = new TimestampedData3f(Instruments.getAccelerometer());//preserve the timestamp set y & z
+	                adjustedAcc.setX(-adjustedAcc.getX());								//-ax
+	                adjustedGyr = new TimestampedData3f(Instruments.getGyroscope()); 	//preserve the timestamp
+	                adjustedGyr.setX(adjustedGyr.getX()*(float)Math.PI/180.0f); 		//Pass gyro rate as rad/s
+	                adjustedGyr.setY(-adjustedGyr.getY()*(float)Math.PI/180.0f);		//-gy
+	                adjustedGyr.setZ(-adjustedGyr.getZ()*(float)Math.PI/180.0f);		//-gz
 	                adjustedMag = new TimestampedData3f(Instruments.getMagnetometer()); //set timestamp and Z
-	                adjustedMag.setX(-Instruments.getMagnetometer().getY()); //swap X and Y, Z stays the same
-	                adjustedMag.setY(Instruments.getMagnetometer().getX());
+	                adjustedMag.setX(-adjustedMag.getY()); 								//swap X and Y, Z stays the same
+	                adjustedMag.setY(adjustedMag.getX());
 	
 	                SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),adjustedGyr,adjustedMag,deltaTSec); // #KW L921
 	                if(((float)nowNanoS-lastDisplayNanoS)/nanosPerSecf >= 1f/displayFrequencyHz)
