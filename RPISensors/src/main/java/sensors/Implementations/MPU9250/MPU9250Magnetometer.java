@@ -111,9 +111,9 @@ public class MPU9250Magnetometer extends Sensor3D  {
         byte status2 = buffer[6]; // Status2 register must be read as part of data read to show device data has been read
         if((status2 & 0x08) == 0) //#KW 817 bit3 HOFL: Magnetic sensor overflow is normal (no Overflow), data is valid
         {   //#KW L818-820
-        	lastRawMagX = (short) ((buffer[1] << 8) | buffer[0]); // Turn the MSB and LSB into a signed 16-bit value
-        	lastRawMagY = (short) ((buffer[3] << 8) | buffer[2]); // Data stored as little Endian
-        	lastRawMagZ = (short) ((buffer[5] << 8) | buffer[4]);
+        	lastRawMagX = (short) ((buffer[1] << 8) | (buffer[0]&0xFF)); // Turn the MSB and LSB into a signed 16-bit value
+        	lastRawMagY = (short) ((buffer[3] << 8) | (buffer[2]&0xFF)); // Data stored as little Endian
+        	lastRawMagZ = (short) ((buffer[5] << 8) | (buffer[4]&0xFF)); // mask to prevent sign extension in LSB
 	
         	//the stored calibration results is applied here as there is no hardware correction stored in the hardware via calibration
         	//#KW L496-L501. scale() does the multiplication by magScale L499-501
