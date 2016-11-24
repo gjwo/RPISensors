@@ -77,21 +77,26 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	{
 	   	ro.printByteRegister(Registers.AK8963_WHO_AM_I);
 	   	ro.printByteRegister(Registers.AK8963_INFO);
-	   	ro.printByteRegister(Registers.AK8963_ST1);
-	   	ro.printByteRegister(Registers.AK8963_ST2);
 	   	ro.printByteRegister(Registers.AK8963_CNTL1);
 	   	ro.printByteRegister(Registers.AK8963_CNTL2);
 	   	ro.printByteRegister(Registers.AK8963_ASTC);
 	   	ro.printByteRegister(Registers.AK8963_ASAX);
 	   	ro.printByteRegister(Registers.AK8963_ASAY);
 	   	ro.printByteRegister(Registers.AK8963_ASAZ);
+	   	//these registers must be read in this order to clear the read flag
+	   	ro.printByteRegister(Registers.AK8963_ST1);
 	   	ro.print16BitRegisterLittleEndian(Registers.AK8963_XOUT_L);
 	   	ro.print16BitRegisterLittleEndian(Registers.AK8963_YOUT_L);
 	   	ro.print16BitRegisterLittleEndian(Registers.AK8963_ZOUT_L);
+	   	ro.printByteRegister(Registers.AK8963_ST2);
 	}
 	
-	/* (non-Javadoc)
+	/**
+	 * updateData	-	Get a data sample from the device, store in Circular ring array
+	 * 
+	 * This method is time critical as it is part of the main real time processing loop for the sensor
 	 * @see devices.sensors.interfaces.Magnetometer#getLatestGaussianData()
+	 * @see devices.sensors.dataTypes.Sensor1D#updateData()
 	 */
     @Override
 	public void updateData()
@@ -118,65 +123,6 @@ public class MPU9250Magnetometer extends Sensor3D  {
         	this.addValue(lastCalibratedReading); //store the result
         }
 	}
-
-	/* (non-Javadoc)
-	 * @see devices.sensors.dataTypes.Sensor1D#updateData()
-	 */
-
-	@Override
-	public void calibrate() throws  InterruptedException{
-		// #KW L1064 magcalMPU9250
-		if (debugLevel() >=3) System.out.println("calibrateMag");
-
-        int  bias[] = {0, 0, 0}, scale[] = {0, 0, 0};
-        short max[] = {(short)-32767, (short)-32767, (short)-32767},
-        		min[] = {(short)32767, (short)32767, (short)32767},
-        		temp[] = {0, 0, 0};
-
-        if (debugLevel() >=1) System.out.println("Mag Calibration: Wave device in a figure eight until done!");
-        Thread.sleep(2000);
-
-        // #KW 1073 shoot for ~fifteen seconds of mag data
-        for(int i = 0; i < magMode.sampleCount; i++) {
-            updateData();  // Read the mag data
-            temp[0] = (short) lastRawMagX;
-            temp[1] = (short) lastRawMagY;
-            temp[2] = (short) lastRawMagZ;
-            for (int j = 0; j < 3; j++) {
-                if(temp[j] > max[j]) max[j] = temp[j];
-                if(temp[j] < min[j]) min[j] = temp[j];
-            }
-            if(magMode == MagMode.MM_8HZ) Thread.sleep(135);  // at 8 Hz ODR, new mag data is available every 125 ms
-            if(magMode == MagMode.MM_100HZ) Thread.sleep(12);  // at 100 Hz ODR, new mag data is available every 10 ms
-        }
-        if (debugLevel() >=1) System.out.println("Mag Calibration: Finished");
-        
-        // #KW 1090 Get hard iron correction
-        bias[0]  = (max[0] + min[0])/2;  // get average x mag bias in counts
-        bias[1]  = (max[1] + min[1])/2;  // get average y mag bias in counts
-        bias[2]  = (max[2] + min[2])/2;  // get average z mag bias in counts
-
-        
-        this.setDeviceBias(new Data3f(	((float) bias[0])*this.magScale.res*magCalibration.getX(), // save mag biases in G for main program
-        								((float) bias[1])*this.magScale.res*magCalibration.getY(),	// deviceBias was dest1 in Kris Winer code
-        								((float) bias[2])*this.magScale.res*magCalibration.getZ()));
-        
-        if (debugLevel() >=4) System.out.println("Devicebias: "+ this.getDeviceBias().toString());
-        
-        // #KW1099 Get soft iron correction estimate
-        scale[0]  = (max[0] - min[0])/2;  // get average x axis max chord length in counts
-        scale[1]  = (max[1] - min[1])/2;  // get average y axis max chord length in counts
-        scale[2]  = (max[2] - min[2])/2;  // get average z axis max chord length in counts
-
-        float avgRad = (float) (scale[0] + scale[1] + scale[2]) / 3.0f; // #KW 1104-5
-
-        this.setDeviceScaling(new Data3f(avgRad/((float)scale[0]), // #KW1107-9 save mag scale for main program
-        								avgRad/((float)scale[1]), // deviceScale was pass by ref dest2 in Kris Winer code
-        								avgRad/((float)scale[2])));
-
-        if (debugLevel() >=3) printState();
-        if (debugLevel() >=3) System.out.println("End calibrateMag");
-	}
 	
 	// No self Test
 	
@@ -187,7 +133,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	 */
 	@Override
 	public void configure() throws InterruptedException, IOException {
-		if (debugLevel() >=3) System.out.println("initAK8963");
+		if (debugLevel() >=3) System.out.println("configure mag AK8963");
         // First extract the factory calibration for each magnetometer axis
 
         ro.writeByteRegister(Registers.AK8963_CNTL1,(byte) 0x00); // #KW 836 Power down magnetometer
@@ -208,6 +154,59 @@ public class MPU9250Magnetometer extends Sensor3D  {
         ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)(magScale.bits | magMode.bits)); // #KW 849 Set magnetometer data resolution and sample ODR ####16bit already shifted
         Thread.sleep(10);
         if (debugLevel() >=3) printState();
-        if (debugLevel() >=3) System.out.println("End initAK8963");
+        if (debugLevel() >=3) System.out.println("End configure mag initAK8963");
+	}
+
+	@Override
+	public void calibrate() throws  InterruptedException{
+		// #KW L1064 magcalMPU9250
+		if (debugLevel() >=3) System.out.println("calibrate mag initAK8963");
+
+        int  bias[] = {0, 0, 0}, scale[] = {0, 0, 0};
+        short max[] = {(short)-32767, (short)-32767, (short)-32767},
+        		min[] = {(short)32767, (short)32767, (short)32767},
+        		temp[] = {0, 0, 0};
+
+        if (debugLevel() >=1) System.out.println("Magnetometer Calibration: Wave device in a figure eight until done!");
+        Thread.sleep(2000);
+
+        // #KW L1073 shoot for ~fifteen seconds of mag data
+        for(int i = 0; i < magMode.sampleCount; i++) {
+            updateData();  // Read the mag data
+            temp[0] = (short) lastRawMagX;
+            temp[1] = (short) lastRawMagY;
+            temp[2] = (short) lastRawMagZ;
+            for (int j = 0; j < 3; j++) {
+                if(temp[j] > max[j]) max[j] = temp[j];
+                if(temp[j] < min[j]) min[j] = temp[j];
+            }
+            if(magMode == MagMode.MM_8HZ) Thread.sleep(135);  // at 8 Hz ODR, new mag data is available every 125 ms
+            if(magMode == MagMode.MM_100HZ) Thread.sleep(12);  // at 100 Hz ODR, new mag data is available every 10 ms
+        }
+        if (debugLevel() >=1) System.out.println("Magnetometer Calibration: Finished");
+        
+        // #KW L1090 Get hard iron correction
+        bias[0]  = (max[0] + min[0])/2;  // get average x mag bias in counts
+        bias[1]  = (max[1] + min[1])/2;  // get average y mag bias in counts
+        bias[2]  = (max[2] + min[2])/2;  // get average z mag bias in counts
+
+        this.setDeviceBias(new Data3f(	((float) bias[0])*this.magScale.res*magCalibration.getX(), // save mag biases in G for main program
+        								((float) bias[1])*this.magScale.res*magCalibration.getY(),	// deviceBias was dest1 in Kris Winer code
+        								((float) bias[2])*this.magScale.res*magCalibration.getZ()));
+                
+        // #KW L1099 Get soft iron correction estimate
+        scale[0]  = (max[0] - min[0])/2;  // get average x axis max chord length in counts
+        scale[1]  = (max[1] - min[1])/2;  // get average y axis max chord length in counts
+        scale[2]  = (max[2] - min[2])/2;  // get average z axis max chord length in counts
+
+        float avgRad = (float) (scale[0] + scale[1] + scale[2]) / 3.0f; // #KW L1104-5
+
+        this.setDeviceScaling(new Data3f(avgRad/((float)scale[0]), // #KW L1107-9 save mag scale for main program
+        								avgRad/((float)scale[1]), // deviceScale was pass by ref dest2 in Kris Winer code
+        								avgRad/((float)scale[2])));
+
+        if (debugLevel() >=4) printState();
+        if (debugLevel() >=4) printRegisters();
+        if (debugLevel() >=3) System.out.println("End calibrate mag initAK8963");
 	}
 }
