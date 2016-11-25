@@ -3,24 +3,19 @@ package inertialNavigation;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import sensors.interfaces.UpdateListener;
 
-public class NavResponder extends Thread implements UpdateListener
+public class NavResponder extends Thread
 {
 	private static final int serverPortNbr = 9876;
 	private static final int bufferSize = 256;
-	private InetAddress clientAddress;
-	private int clientPort;
-	private String clientName;
-	private boolean clientRegistered;
+	private ArrayList<Client> clients;
     private DatagramSocket socket = null;
-    private boolean stop = false;
-    private volatile boolean dataReady;
+    private boolean stop;
     public enum NavResponderMode {SINGLE,STREAM}
-    private NavResponderMode mode;
     private int debugLevel;
     private Navigate nav;
  
@@ -31,14 +26,12 @@ public class NavResponder extends Thread implements UpdateListener
  
     public NavResponder(Navigate nav,String name,NavResponderMode mode, int debugLevel) throws IOException {
         super(name);
+        clients = new ArrayList<>();
     	if (debugLevel >=3) System.out.println("NavResponder Constructor");
-        this.mode = mode;
         socket = new DatagramSocket(serverPortNbr);
-        clientRegistered = false;
         this.debugLevel = debugLevel;
-        this.dataReady = false;
         this.nav = nav;
-        this.nav.registerInterest(this);
+        this.stop = false;
     }
 
     public void stopNavResponder(){stop = true;}
@@ -51,90 +44,24 @@ public class NavResponder extends Thread implements UpdateListener
         while (!Thread.interrupted()&&!stop) {
             try {
             	socket.receive(inPacket); //wait for a client request
-                if (!clientRegistered)
-                {
-                	registerClient(inPacket);
-                }
-                //assuming only one client for now
-                switch(mode)	
-                {
-                case SINGLE:
-                	if (dataReady)
-                	{
-                        reading = getNextReading();
-                        sendReadingToClient(reading);
-                	}
-                    break; //go round and wait for another request
-                case STREAM:
-                	streamReadingsToClient(); //doesn't come back until stop signal
-                	break;
-                }
-               
+                registerClient(inPacket);
             } catch (IOException e) {
             	stop = true;
                 e.printStackTrace();
             }
         }
-        sendReadingToClient("STOP,0,0,0,0");
         socket.close();
     	if (debugLevel >=2) System.out.println("End NavResponder run");
-    }
- 
-    private String getNextReading() {
-    	if (debugLevel >=3) System.out.println("getNextReading");
-    	dataReady = false;
-        String returnValue = "Angles,"+Instruments.getAngles().toCSV();
-        return returnValue;
     }
     
     private void registerClient(DatagramPacket packet)
     {
     	if (debugLevel >=3) System.out.println("registerClient");
-        clientAddress = packet.getAddress();
-        clientPort = packet.getPort();
-        clientName = clientAddress.getHostName();
-        clientRegistered = true;
-        System.out.println("Client registered: "+clientName+" Address: "+ clientAddress.getHostAddress()+" Port: "+ clientPort);
+    	Client client = new Client(packet.getAddress(),packet.getPort(),packet.getAddress().getHostName(), socket);
+    	for(Client existingClient:clients) if(client.toString().equals(existingClient.toString())) return;
+    	new Thread(client).start();
+    	nav.registerInterest(client);
+        clients.add(client);
+        System.out.println("Client registered: " + client.toString());
     }
-    private void sendReadingToClient(String reading)
-    {
-    	if (debugLevel >=3) System.out.println("sendReadingToClient");
-
-        byte[] outBuf = new byte[bufferSize];
-        
-        outBuf = reading.getBytes();
-        // send the response to the client at "address" and "port"
-    	DatagramPacket outPacket = new DatagramPacket(outBuf, outBuf.length);
-        outPacket = new DatagramPacket(outBuf, outBuf.length, clientAddress, clientPort);
-        try {
-			socket.send(outPacket);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-    }
-    private void streamReadingsToClient()
-    {
-    	String reading = null;
-       	if (debugLevel >=3) System.out.println("streamReadingsToClient");
-       	while (!stop)
-       	{
-       		if (dataReady && !stop)
-       		{
-       			reading = getNextReading();
-       			sendReadingToClient(reading);
-       		} else
-				try {
-					TimeUnit.MILLISECONDS.sleep(200);
-				} catch (InterruptedException e) {
-					stop = true;
-			       	if (debugLevel >=5) System.out.println("streamReadingsToClient interrupted");
-				}
-       	}
-       	if (debugLevel >=3) System.out.println("End streamReadingsToClient");
-    }
-
-    //update listener
-	public void dataUpdated() {dataReady=true;}
 }
