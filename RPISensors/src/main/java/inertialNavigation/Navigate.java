@@ -113,8 +113,10 @@ public class Navigate implements Runnable, UpdateListener{
 	                adjustedGyr.setZ(-adjustedGyr.getZ()*(float)Math.PI/180.0f);		//-gz
 	                
 	                adjustedMag = new TimestampedData3f(Instruments.getMagnetometer()); //set timestamp and Z
+					float x = adjustedMag.getX();
 	                adjustedMag.setX(adjustedMag.getY()); 								//swap X and Y, Z stays the same
-	                adjustedMag.setY(-adjustedMag.getX());
+	                //adjustedMag.setY(-adjustedMag.getX());
+					adjustedMag.setY(-x);
 	
 	                SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),adjustedGyr,adjustedMag,deltaTSec); // #KW L921
 	                if(((float)nowNanoS-lastDisplayNanoS)/nanosPerSecf >= 1f/displayFrequencyHz)
@@ -149,7 +151,7 @@ public class Navigate implements Runnable, UpdateListener{
 	
 	/**
 	 * main			- For use in stand alone mode, currently not used the class is initiated from MPU9250Test
-	 * @param args
+	 * @param listener
 	 */
     public void registerInterest(UpdateListener listener)
     {
