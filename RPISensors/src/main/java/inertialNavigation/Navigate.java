@@ -134,7 +134,7 @@ public class Navigate implements Runnable, UpdateListener{
 	                }
                     for(UpdateListener listener:listeners) listener.dataUpdated();
                 }
-                TimeUnit.MICROSECONDS.sleep(900);// allow for 0.1ms calculation time in the loop to give 1ms interval	            
+                TimeUnit.MICROSECONDS.sleep(900);// allow for 0.1ms calculation time in the loop to give 1ms interval
             } catch (InterruptedException e)
             {
                 //close down signal

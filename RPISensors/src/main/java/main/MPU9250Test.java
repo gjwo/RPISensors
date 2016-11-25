@@ -45,10 +45,10 @@ class MPU9250Test implements UpdateListener{
 	 */
 	public MPU9250Test()
 	{
-		debugLevelTester = 1;
+		debugLevelTester = 0;
 		debugLevelSensors = 1;
-		debugLevelNavigate = 1;
-		debugLevelNavResponder = 1;
+		debugLevelNavigate = 0;
+		debugLevelNavResponder = 0;
 
 		 if (debugLevelTester >=3) System.out.println("Attempt to get Bus 1");
         try {
@@ -126,7 +126,7 @@ class MPU9250Test implements UpdateListener{
 	private void initialiseTester() throws InterruptedException
 	{
         this.mpu9250.registerInterest(this);
-        TimeUnit.SECONDS.sleep(3); //Give time to stop movement after mag calibration
+        //TimeUnit.SECONDS.sleep(3); //Give time to stop movement after mag calibration
         sensorPackage = new Thread(mpu9250);
         sensorPackage.setName("MCU9250 Thread");
         navigator = new Thread(nav);
