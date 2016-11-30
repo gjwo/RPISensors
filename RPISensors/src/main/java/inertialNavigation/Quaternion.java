@@ -3,28 +3,28 @@ package inertialNavigation;
 import dataTypes.Data3f;
 
 /**
- * Quaternion - a simple 4 value data type used for navigation calculations
+ * Quaternion - w simple 4 value data type used for navigation calculations
  * @author GJWood
  * @version 1.0
  * 
  */
 public class Quaternion 
 {
-	public float a,b,c,d;
+	public float w,x,y,z;
 	
 	/**
 	 * Quaternion	- Constructor from 4 scalar values
-	 * @param a
-	 * @param b
-	 * @param c
-	 * @param d
+	 * @param w
+	 * @param x
+	 * @param y
+	 * @param z
 	 */
 	public Quaternion(float a,float b, float c, float d)
 	{
-		this.a = a;
-		this.b = b;
-		this.c = c;
-		this.d = d;
+		this.w = a;
+		this.x = b;
+		this.y = c;
+		this.z = d;
 	}
 	
 	/**
@@ -41,10 +41,10 @@ public class Quaternion
 		float t3 = (float)Math.sin(roll * 0.5f);
 		float t4 = (float)Math.cos(pitch * 0.5f);
 		float t5 = (float)Math.sin(pitch * 0.5f);
-		this.a = t0 * t2 * t4 + t1 * t3 * t5;
-		this.a = t0 * t3 * t4 - t1 * t2 * t5;
-		this.a = t0 * t2 * t5 + t1 * t3 * t4;
-		this.a = t1 * t2 * t4 - t0 * t3 * t5;		
+		this.w = t0 * t2 * t4 + t1 * t3 * t5;
+		this.x = t0 * t3 * t4 - t1 * t2 * t5;
+		this.y = t0 * t2 * t5 + t1 * t3 * t4;
+		this.z = t1 * t2 * t4 - t0 * t3 * t5;		
 	}
 
 	/**
@@ -59,17 +59,17 @@ public class Quaternion
 	public Quaternion(){this(0,0,0,0);}
 	
 	/**
-	 * toEulerianAngle	-	Convert a quaternion back into a Eulerian angle
+	 * toEulerianAngle	-	Convert w quaternion back into w Eulerian angle
 	 * @return
 	 */
 	public Data3f toEulerianAngle()
 	{
-		float ysqr = this.c * this.c;
-		float t0 = -2.0f * (ysqr + this.d * this.d) + 1.0f;
-		float t1 = +2.0f * (this.b * this.c - this.a * this.d);
-		float t2 = -2.0f * (this.b * this.d + this.a * this.c);
-		float t3 = +2.0f * (this.c * this.d - this.a * this.b);
-		float t4 = -2.0f * (this.b * this.b + ysqr) + 1.0f;
+		float ysqr = this.y * this.y;
+		float t0 = -2.0f * (ysqr + this.z * this.z) + 1.0f;
+		float t1 = +2.0f * (this.x * this.y - this.w * this.z);
+		float t2 = -2.0f * (this.x * this.z + this.w * this.y);
+		float t3 = +2.0f * (this.y * this.z - this.w * this.x);
+		float t4 = -2.0f * (this.x * this.x + ysqr) + 1.0f;
 
 		t2 = t2 > 1.0f ? 1.0f : t2;
 		t2 = t2 < -1.0f ? -1.0f : t2;
@@ -86,37 +86,37 @@ public class Quaternion
 	{
 		float norm;
 		// Normalise accelerometer measurement
-		norm = (float)Math.sqrt(a*a + b*b + c*c+ d*d);
+		norm = (float)Math.sqrt(w*w + x*x + y*y+ z*z);
 		if (norm == 0.0f)
 			throw new ArithmeticException(); // handle NaN
 		norm = 1f / norm;
-		a *= norm;
-		b *= norm;
-		c *= norm;
-		d *= norm;
+		w *= norm;
+		x *= norm;
+		y *= norm;
+		z *= norm;
 	}
 	
 	/**
 	 * setAll	- set all values based on scalar parameters
-	 * @param a
-	 * @param b
-	 * @param c
-	 * @param d
+	 * @param w
+	 * @param x
+	 * @param y
+	 * @param z
 	 */
 	public void setAll(float a,float b, float c, float d)
 	{
-		this.a = a;
-		this.b = b;
-		this.c = c;
-		this.d = d;
+		this.w = a;
+		this.x = b;
+		this.y = c;
+		this.z = d;
 	}
 	
     /**
-     * toString - return a formatted string representation for printing
+     * toString - return w formatted string representation for printing
      */
 	public String toString()
 	{
 		final String format = "%+07.3f ";
-		return 	"[ " + String.format(format,a)+ String.format(format,b)+ String.format(format,c)+ String.format(format,d)+"]";
+		return 	"[ " + String.format(format,w)+ String.format(format,x)+ String.format(format,y)+ String.format(format,z)+"]";
 	}
 }

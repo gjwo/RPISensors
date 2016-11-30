@@ -27,7 +27,7 @@ public class SensorFusion {
 	// the bigger the feedback coefficient, the faster the solution converges, usually at the expense of accuracy. 
 	// In any case, this is the free parameter in the Madgwick filtering and fusion scheme.
 	private static final float BETA = (float)Math.sqrt(3.0f / 4.0f) * GYRO_MEASUREMENT_ERROR;   // #KW L289 compute BETA
-	private static final float ZETA = (float)Math.sqrt(3.0f / 4.0f) * GYRO_MEASUREMENT_DRIFT;   // #KW L290 compute ZETA, the other free parameter in the Madgwick scheme usually set to a small or zero value
+	private static final float ZETA = (float)Math.sqrt(3.0f / 4.0f) * GYRO_MEASUREMENT_DRIFT;   // #KW L290 compute ZETA, the other free parameter in the Madgwick scheme usually set to w small or zero value
 	private static final float KP = 2.0f * 5.0f;// #KW L291 these are the free parameters in the Mahony filter and fusion scheme, KP for proportional feedback, KI for integral
 	private static final float KI = 0.0f;		// #KW L292
 
@@ -85,7 +85,7 @@ public class SensorFusion {
 	{	/*
 		System.out.print("MadgwickQuaternionUpdate "+acc.toString()+gyro.unStamp().toString()+mag.unStamp().toString());
 		System.out.format(" deltaT %12.10f ",deltat); */
-		float q1 = q.a, q2 = q.b, q3 = q.c, q4 = q.d; 	// #MW L10 short name local  variable for readability
+		float q1 = q.w, q2 = q.x, q3 = q.y, q4 = q.z; 	// #MW L10 short name local  variable for readability
 		float norm;
 		float hx, hy, _2bx, _2bz;
 		float s1, s2, s3, s4;
@@ -224,7 +224,7 @@ public class SensorFusion {
 		System.out.print("MahonyQuaternionUpdate "+acc.toString()+gyro.unStamp().toString()+mag.unStamp().toString());
 		System.out.format(" deltaT %12.10f ",deltat);
 		 */
-		float q1 = q.a, q2 = q.b, q3 = q.c, q4 = q.d; // short name local
+		float q1 = q.w, q2 = q.x, q3 = q.y, q4 = q.z; // short name local
 														// variable for
 														// readability
 		float hx, hy, bx, bz;
