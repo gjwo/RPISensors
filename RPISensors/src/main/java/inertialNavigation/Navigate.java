@@ -118,7 +118,7 @@ public class Navigate implements Runnable, UpdateListener{
 	                //adjustedMag.setY(-adjustedMag.getX());
 					adjustedMag.setY(-x);
 	
-	                SensorFusion.MadgwickQuaternionUpdate(Instruments.getAccelerometer(),adjustedGyr,adjustedMag,deltaTSec); // #KW L921
+	                SensorFusion.MadgwickQuaternionUpdate(adjustedAcc,adjustedGyr,adjustedMag,deltaTSec); // #KW L921
 	                if(((float)nowNanoS-lastDisplayNanoS)/nanosPerSecf >= 1f/displayFrequencyHz)
 	                {
 	                	lastDisplayNanoS = nowNanoS;
