@@ -22,8 +22,9 @@ public class Instruments {
 	private static TimestampedData3f gyroscope = new TimestampedData3f(0,0,0);
 	
 	//Fused  data from several sensors
-	private static Quaternion quaternion;
-	private static Data3f TaitBryanAngles = new Data3f(0,0,0); //in radians
+	private static Quaternion quaternion = new Quaternion(); 
+	private static Data3f TaitBryanAnglesR = new Data3f(0,0,0); //in radians yaw not adjusted 360 or for location declination
+	private static Data3f TaitBryanAnglesD = new Data3f(0,0,0); //in degrees yaw adjusted 360 and for location declination
 	
 	//in degrees adjusted for location and yaw to read 0-360
 	private static float yaw = 0; 	//Yaw is the angle between SensorPackage x-axis and Earth magnetic North (or true North if corrected for local declination, looking down on the sensor positive yaw is counterclockwise.
@@ -42,12 +43,14 @@ public class Instruments {
 	public static float getHeading() {return getYaw();}	
 	public static float getAttitude() {return getPitch();}
 	public static float getBank() {return getRoll();}
-		
+	public static Instant getUpdatedTimestamp() {return updatedTimestamp;}
+	public static Quaternion getQuaternion() {return quaternion;}
+	public static Data3f getTaitBryanAnglesR() {return TaitBryanAnglesR;}
+	public static Data3f getTaitBryanAnglesD() {return TaitBryanAnglesD;}
 	public static TimestampedData3f getMagnetometer() {return magnetometer;}
 	public static TimestampedData3f getAccelerometer() {return accelerometer;}
 	public static TimestampedData3f getGyroscope() {return gyroscope;}
-	public static TimestampedData3f getAngles(){return new TimestampedData3f(yaw,pitch,roll);}
-	
+	public static TimestampedData3f getAngles(){return new TimestampedData3f(yaw,pitch,roll);}	
 	public static Data3f getLinearAcceleration() {return linearAcceleration;}
 
 	//Setters
@@ -88,15 +91,16 @@ public class Instruments {
 	{		
 		updatedTimestamp = Instant.now();
 		quaternion = q;
-		TaitBryanAngles = q.toTaitBryanAngles();
+		TaitBryanAnglesR = q.toTaitBryanAngles();
 	    
-	    yaw   = (float) Math.toDegrees(TaitBryanAngles.getX()); 	//radians to degrees		// #KW L634
-	    pitch = (float) Math.toDegrees(TaitBryanAngles.getY()); 	//radians to degrees		// #KW L633
-	    roll  = (float) Math.toDegrees(TaitBryanAngles.getZ()); 	//radians to degrees		// #KW L637
+	    yaw   = (float) Math.toDegrees(TaitBryanAnglesR.getX()); 	//radians to degrees		// #KW L634
+	    pitch = (float) Math.toDegrees(TaitBryanAnglesR.getY()); 	//radians to degrees		// #KW L633
+	    roll  = (float) Math.toDegrees(TaitBryanAnglesR.getZ()); 	//radians to degrees		// #KW L637
 
 	    // #KW L635 yaw   -= 13.8; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
 	    yaw   += -44.0f/60.0f; // Declination at Letchworth England is minus O degrees and 44 Seconds on 2016-07-11
 	    if(yaw < 0) yaw   += 360.0f; // Ensure heading stays between 0 and 360
+	    TaitBryanAnglesD = new Data3f(yaw, pitch, roll);
 	    updatelinearAcceleration(quaternion);
 	}
 	
