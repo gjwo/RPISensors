@@ -15,6 +15,7 @@ public class MotorTest
         DriveAssembly DA = new TankDriveAssembly(new DebugMotor("left"),new DebugMotor("right"));
         DA.setSpeed(1f);
         DA.setDirection(180);
+
         DA.setDirection(0);
         DA.setDirection(270);
         DA.setDirection(90);
