@@ -4,13 +4,11 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import inertialNavigation.Client.NavRequestType;
 public class NavResponder extends Thread
 {
-    public enum NavResponderMode {SINGLE,STREAM}
     private static final int serverPortNbr = 9876;
     private static final int bufferSize = 256;
     private ArrayList<Client> clients;
@@ -18,7 +16,7 @@ public class NavResponder extends Thread
     private int debugLevel;
     private Navigate nav;
 
-    public NavResponder(Navigate nav,String name,NavResponderMode mode, int debugLevel) throws IOException {
+    public NavResponder(Navigate nav,String name,int debugLevel) throws IOException {
         super(name);
         clients = new ArrayList<>();
         if (debugLevel >=3) System.out.println("NavResponder Constructor");

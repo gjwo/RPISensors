@@ -83,7 +83,6 @@ public class Client implements Runnable, UpdateListener
     @Override
     public void dataUpdated()
     {
-        newData = Instruments.getAngles();
         dataReady = true;
     }
 
