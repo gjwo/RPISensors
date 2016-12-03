@@ -37,6 +37,11 @@ public class Data3f extends Data2f{
 		final String format = "%+08.3f";
 		return 	super.toString() + " z: " + String.format(format,z);
 	}
+
+	public String toCSV()
+	{
+		return 	String.format("%f,%f,%f",this.getX(),this.getY(), this.getZ());
+	}
 	
     public Data3f clone(){return new Data3f(x,y,z);}
     public Data3f multiply(Data3f data){return new Data3f(this.getX()*data.getX(),this.getY()*data.getY(),this.getZ()*data.getZ());}

@@ -70,9 +70,10 @@ public class TimestampedData3f extends Data3f
         return 	"[" + String.format(format,((float)nanoTime)/NANOS_PER_SECF) +
                 "] " + super.toString();
     }
+
     public String toCSV()
     {
-        return 	String.format("%d,%f,%f,%f",this.getTime(),this.getX(),this.getY(), this.z);
+        return 	this.getTime() + "," + super.toCSV();
     }
     
     /**
