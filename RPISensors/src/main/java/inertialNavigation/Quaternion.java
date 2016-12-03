@@ -7,6 +7,9 @@ import dataTypes.Data3f;
  * @author GJWood
  * @version 1.0
  * 
+ * See https://en.wikipedia.org/wiki/Quaternion This class also contains constructors and translators
+ * from and to other coordinate schemes.
+ * 
  */
 public class Quaternion 
 {
@@ -65,12 +68,11 @@ public class Quaternion
 	 */
 	public Data3f toEulerianAngles()
 	{
-		float ysqr = y * y;
-		float t0 = -2.0f * (ysqr + z * z) + 1.0f;
+		float t0 = -2.0f * (y * y + z * z) + 1.0f;
 		float t1 = +2.0f * (x * y - w * z);
 		float t2 = -2.0f * (x * z + w * y);
 		float t3 = +2.0f * (y * z - w * x);
-		float t4 = -2.0f * (x * x + ysqr) + 1.0f;
+		float t4 = -2.0f * (x * x + y * y) + 1.0f;
 
 		t2 = t2 > 1.0f ? 1.0f : t2;		//Deal with singularity
 		t2 = t2 < -1.0f ? -1.0f : t2;	//Deal with singularity
@@ -128,12 +130,12 @@ public class Quaternion
 	 * @param y
 	 * @param z
 	 */
-	public void setAll(float a,float b, float c, float d)
+	public void setAll(float w,float x, float y, float z)
 	{
-		this.w = a;
-		this.x = b;
-		this.y = c;
-		this.z = d;
+		this.w = w;
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 	
     /**
