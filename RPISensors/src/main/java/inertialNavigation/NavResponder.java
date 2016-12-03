@@ -37,6 +37,7 @@ public class NavResponder extends Thread
                 e.printStackTrace();
             }
         }
+        for(Client client:clients) client.stop();
         socket.close();
         if (debugLevel >=2) System.out.println("End NavResponder run");
     }

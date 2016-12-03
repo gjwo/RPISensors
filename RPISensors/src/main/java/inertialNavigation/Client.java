@@ -23,6 +23,7 @@ public class Client implements Runnable, UpdateListener
     private NavRequestType reqType;
     private boolean dataReady;
     private TimestampedData3f newData;
+    private boolean stopped;
 
     Client(InetAddress address, int port, String name, DatagramSocket socket,NavRequestType reqType)
     {
@@ -31,13 +32,14 @@ public class Client implements Runnable, UpdateListener
         this.name = name;
         this.socket = socket;
         this.reqType = reqType;
-        dataReady = false;
+        this.dataReady = false;
+        this.stopped = false;
     }
 
     @Override
     public void run()
     {
-        while(!Thread.interrupted())
+        while(!Thread.interrupted() && !stopped)
         {
             if(dataReady) sendData(newData);
         }
@@ -83,6 +85,11 @@ public class Client implements Runnable, UpdateListener
     {
         newData = Instruments.getAngles();
         dataReady = true;
+    }
+
+    public void stop()
+    {
+        this.stopped = true;
     }
 
 }
