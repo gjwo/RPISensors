@@ -20,6 +20,7 @@ public class Client implements Runnable, UpdateListener
     private final DatagramSocket socket;
     private boolean dataReady;
     private TimestampedData3f newData;
+    private boolean stopped;
 
     Client(InetAddress address, int port, String name, DatagramSocket socket)
     {
@@ -28,12 +29,13 @@ public class Client implements Runnable, UpdateListener
         this.name = name;
         this.socket = socket;
         dataReady = false;
+        stopped = false;
     }
 
     @Override
     public void run()
     {
-        while(!Thread.interrupted())
+        while(!Thread.interrupted() && !stopped)
         {
             if(dataReady) sendData(newData);
         }
@@ -77,5 +79,10 @@ public class Client implements Runnable, UpdateListener
     {
         newData = Instruments.getAngles();
         dataReady = true;
+    }
+
+    void stop()
+    {
+        stopped = true;
     }
 }

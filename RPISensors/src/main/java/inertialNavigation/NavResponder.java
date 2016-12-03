@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-
-import sensors.interfaces.UpdateListener;
 
 public class NavResponder extends Thread
 {
@@ -14,15 +11,9 @@ public class NavResponder extends Thread
 	private static final int bufferSize = 256;
 	private ArrayList<Client> clients;
     private DatagramSocket socket = null;
-    private boolean stop;
     public enum NavResponderMode {SINGLE,STREAM}
     private int debugLevel;
     private Navigate nav;
- 
-    public NavResponder(Navigate nav) throws IOException {
-    this(nav,"NavResponder rpi3gjw",NavResponderMode.SINGLE,3);
-    }
-    
  
     public NavResponder(Navigate nav,String name,NavResponderMode mode, int debugLevel) throws IOException {
         super(name);
@@ -31,25 +22,21 @@ public class NavResponder extends Thread
         socket = new DatagramSocket(serverPortNbr);
         this.debugLevel = debugLevel;
         this.nav = nav;
-        this.stop = false;
     }
-
-    public void stopNavResponder(){stop = true;}
  
     public void run() {
     	if (debugLevel >=2) System.out.println("NavResponder run");
-    	String reading;
         byte[] buf = new byte[bufferSize];
     	DatagramPacket inPacket = new DatagramPacket(buf, buf.length);    	
-        while (!Thread.interrupted()&&!stop) {
+        while (!Thread.interrupted()) {
             try {
             	socket.receive(inPacket); //wait for a client request
                 registerClient(inPacket);
             } catch (IOException e) {
-            	stop = true;
                 e.printStackTrace();
             }
         }
+        for(Client client:clients) client.stop();
         socket.close();
     	if (debugLevel >=2) System.out.println("End NavResponder run");
     }
