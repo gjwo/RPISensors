@@ -11,7 +11,6 @@ import com.pi4j.io.i2c.I2CFactory;
 import devices.I2C.Pi4jI2CDevice;
 import inertialNavigation.NavResponder;
 import inertialNavigation.Navigate;
-import inertialNavigation.NavResponder.NavResponderMode;
 import sensors.Implementations.MPU9250.MPU9250;
 import sensors.interfaces.UpdateListener;
 
@@ -66,7 +65,7 @@ class MPU9250Test implements UpdateListener{
                     debugLevelSensors); 					// debug level
             if (debugLevelTester >=3) System.out.println("MPU9250 created");
             this.nav = new Navigate(mpu9250,debugLevelNavigate);           
-            this.navR = new NavResponder(this.nav,"NavResponder rpi3gjw",NavResponderMode.STREAM, debugLevelNavResponder);
+            this.navR = new NavResponder(this.nav,"NavResponder rpi3gjw",debugLevelNavResponder);
             
         } catch (I2CFactory.UnsupportedBusNumberException | InterruptedException | IOException e) {
             e.printStackTrace();
