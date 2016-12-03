@@ -11,8 +11,8 @@ public class TankDriveAssembly implements DriveAssembly
     private final Motor left;
     private final Motor right;
 
-    private float angle;
-    private float speed;
+    private float angle; // this is 0-360* with 0 being forward, 90 right spin, 270 left spin and 180 reverse
+    private float speed; // this is 0-1
 
     public TankDriveAssembly(Motor left, Motor right)
     {
@@ -71,9 +71,15 @@ public class TankDriveAssembly implements DriveAssembly
             float rightCoefficient;
             float adjustedDirection = this.getDirection();
 
+            // Adjusted direction is a transformation of direction where forwards and backwards are ignored and
+            // a -90 to 90 direction is formed for the amount of turning in whichever direction it is going
+            // this makes straight forwards and straight backwards 0
+
             if(this.getDirection() > 90 && this.getDirection() < 270)
                 adjustedDirection = (adjustedDirection * -1) + 540;
             if(adjustedDirection>=270) adjustedDirection -= 360;
+
+
 
             if(adjustedDirection > 0)
             {
