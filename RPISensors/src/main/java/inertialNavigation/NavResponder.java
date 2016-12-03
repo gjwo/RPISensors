@@ -3,6 +3,8 @@ package inertialNavigation;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import inertialNavigation.Client.NavRequestType;
@@ -28,6 +30,13 @@ public class NavResponder extends Thread
     public void run() {
         if (debugLevel >=2) System.out.println("NavResponder run");
         byte[] buf = new byte[bufferSize];
+        try
+        {
+            socket.setSoTimeout(10000);
+        } catch (SocketException e)
+        {
+            e.printStackTrace();
+        }
         DatagramPacket inPacket = new DatagramPacket(buf, buf.length);
         while (!Thread.interrupted()) {
             try {
