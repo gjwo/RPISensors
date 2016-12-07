@@ -25,7 +25,6 @@ public class Client implements Runnable, UpdateListener
     private final DatagramSocket socket;
     //private Message.NavRequestType reqType;
     private boolean dataReady;
-    private TimestampedData3f newData;
     private EnumSet<ParameterType> params = EnumSet.noneOf(ParameterType.class);
     private boolean stopped;
 
