@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import messages.Message;
 import messages.Message.ErrorMsgType;
 import messages.Message.MessageType;
-import messages.Message.NavRequestType;
-import messages.Message.ParameterType;
 public class NavResponder extends Thread
 {
     private static final int serverPortNbr = 9876;
