@@ -1,6 +1,7 @@
 package inertialNavigation;
 
 import dataTypes.TimestampedData3f;
+import messages.Message;
 import sensors.interfaces.UpdateListener;
 
 import java.io.IOException;
@@ -14,18 +15,16 @@ import java.net.InetAddress;
  */
 public class Client implements Runnable, UpdateListener
 {
-    public enum NavRequestType {TAIT_BRYAN,QUATERNION,RAW_9DOF,MAGNETOMETER,ACCELEROMETER,GYROSCOPE}
-
     private final InetAddress address;
     private final int port;
     private final String name;
     private final DatagramSocket socket;
-    private NavRequestType reqType;
+    private Message.NavRequestType reqType;
     private boolean dataReady;
     private TimestampedData3f newData;
     private boolean stopped;
 
-    Client(InetAddress address, int port, String name, DatagramSocket socket,NavRequestType reqType)
+    Client(InetAddress address, int port, String name, DatagramSocket socket,Message.NavRequestType reqType)
     {
         this.address = address;
         this.port = port;
@@ -71,7 +70,7 @@ public class Client implements Runnable, UpdateListener
 
     // getters use in package only
     InetAddress getAddress() {return address;}
-    NavRequestType getReqType() {return reqType;}
+    Message.NavRequestType getReqType() {return reqType;}
     int getPort() {return port;}
     String getName() {return name;}
 

@@ -6,7 +6,8 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
-import inertialNavigation.Client.NavRequestType;
+import messages.Message;
+import messages.Message.NavRequestType;
 public class NavResponder extends Thread
 {
     private static final int serverPortNbr = 9876;
@@ -55,10 +56,10 @@ public class NavResponder extends Thread
         String received = new String(packet.getData(), 0, packet.getLength());
 
         //registration packet may optionally contain the type of data required, default TAIT_BRYAN angles - yaw, pitch & roll
-        NavRequestType reqType = NavRequestType.TAIT_BRYAN;
+        Message.NavRequestType reqType = Message.NavRequestType.TAIT_BRYAN;
         if (received.length()!=0)
-            try {reqType = NavRequestType.valueOf(received);}
-            catch (IllegalArgumentException e){ reqType = NavRequestType.TAIT_BRYAN;}
+            try {reqType = Message.NavRequestType.valueOf(received);}
+            catch (IllegalArgumentException e){ reqType = Message.NavRequestType.TAIT_BRYAN;}
 
         Client client = new Client(packet.getAddress(),packet.getPort(),packet.getAddress().getHostName(), socket, reqType);
         for(Client existingClient:clients) if(client.toString().equals(existingClient.toString())) return;
