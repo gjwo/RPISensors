@@ -1,6 +1,5 @@
 package inertialNavigation;
 
-import dataTypes.TimestampedData3f;
 import messages.Message;
 import messages.Message.ErrorMsgType;
 import messages.Message.MessageType;
