@@ -1,28 +1,41 @@
 package dataTypes;
 
 public class YawPitchRoll extends YawPitch {
-	Float f3;
+	protected Float roll;
 
 	public YawPitchRoll() {
 		super();
-		f3=0f;
+		roll=0f;
 	}
 
 	public YawPitchRoll(Float yaw, Float pitch, Float roll) {
 		super(yaw,pitch);
-		f3=roll;
+		this.roll=roll;
 	}
+	public YawPitchRoll(YawPitch yp,Float roll){
+		super(yp);
+		this.roll = roll;
+	}
+	
+	public Float getRoll() {
+		return roll;
+	}
+
+	public void setRoll(Float roll) {
+		this.roll = roll;
+	}
+
 	@Override
 	public String toString() {
         final String format = "%+08.3f";
-        return 	"Yaw: " + String.format(format,f1)+"Pitch: " + String.format(format,f2)+"Roll: " + String.format(format,f3);
+        return 	super.toString()+" Roll: " + String.format(format,roll);
 	}
 
 	@Override
-	public YawPitchRoll clone() {return new YawPitchRoll(f1,f2,f3);}
+	public YawPitchRoll clone() {return new YawPitchRoll(yaw,pitch,roll);}
 
 	
 	public YawPitchRoll multiply(YawPitchRoll b) {
-		return new YawPitchRoll(f1*b.f1,f2*b.f2,f3*b.f3);
+		return new YawPitchRoll(yaw*b.getYaw(),	pitch*b.pitch, roll*b.roll);
 	}
 }

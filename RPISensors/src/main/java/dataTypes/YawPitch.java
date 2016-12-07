@@ -1,28 +1,41 @@
 package dataTypes;
 
 public class YawPitch extends Yaw {
-	Float f2;
+	protected Float pitch;
 
 	public YawPitch() {
 		super();
-		f2=0f;
+		pitch=0f;
 	}
 
 	public YawPitch(Float yaw, Float pitch) {
 		super(yaw);
-		f2=pitch;
+		this.pitch=pitch;
 	}
+	public YawPitch(YawPitch yp) {
+		super.setYaw(yp.getYaw());
+		this.pitch = yp.getPitch();
+	}
+
+	public Float getPitch() {
+		return pitch;
+	}
+
+	public void setPitch(Float pitch) {
+		this.pitch = pitch;
+	}
+
 	@Override
 	public String toString() {
         final String format = "%+08.3f";
-        return 	"Yaw: " + String.format(format,f1)+"Pitch: " + String.format(format,f2);
+        return 	super.toString() + " Pitch: " + String.format(format,pitch);
 	}
 
 	@Override
-	public YawPitch clone() {return new YawPitch(f1,f2);}
+	public YawPitch clone() {return new YawPitch(super.get(),pitch);}
 
 	
 	public YawPitch multiply(YawPitch b) {
-		return new YawPitch(f1*b.f1,f2*b.f2);
+		return new YawPitch(super.get()*b.get(),pitch*b.pitch);
 	}
 }

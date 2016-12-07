@@ -19,4 +19,15 @@ public class YawPitchRollTimestamped extends TimestampedData <YawPitchRoll> {
 	public Data<YawPitchRoll> multiply(Data<YawPitchRoll> b) {
 		return data.multiply(b);
 	}
+
+	@Override
+	public YawPitchRoll get() {
+		return data.get();
+	}
+
+	@Override
+	public void set(YawPitchRoll x) {
+		data.set(x);
+		
+	}
 }
