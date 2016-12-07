@@ -8,6 +8,9 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import dataTypes.TimestampedData3f;
+import inertialNavigation.Quaternion;
+
 public class Message implements Serializable
 {
 
@@ -17,12 +20,19 @@ public class Message implements Serializable
 	private static final long serialVersionUID = 8142925110403962930L;
 
 	public enum MessageType {PING,PING_RESP,CLIENT_REG_REQ,CLIENT_REG_RESP,NAV_DATA_REQ,NAV_DATA_RESP,CONTROL_COMMAND,CONTROL_RESP,MSG_ERROR}
-	public enum NavRequestType {TAIT_BRYAN,QUATERNION,RAW_9DOF,MAGNETOMETER,ACCELEROMETER,GYROSCOPE}
+	public enum NavRequestType {TAIT_BRYAN,		// timestamped yaw, pitch and roll
+								QUATERNION,		// timestamped Quaternion
+								RAW_9DOF,		// not sure this is needed
+								MAGNETOMETER,	// timestamped Magnetometer reading x,y,z
+								ACCELEROMETER,	// timestamped Accelerometer reading x,y,z
+								GYROSCOPE}		// timestamped Gyroscope reading x,y,z
 	public enum ErrorMsgType {UNKNOWN,UNSUPPORTED,INVALID_DATA,CANNOT_COMPLY}
 	
 	private MessageType msgType;
 	private NavRequestType navReqType;
 	private ErrorMsgType errorMsgType;
+	private TimestampedData3f navAngles; // holds the angles of the type specified by NavRequestType
+	private Quaternion quaternion;
 
 	public Message() {
 		msgType = MessageType.PING;
@@ -43,7 +53,7 @@ public class Message implements Serializable
 		return null;
 	}
 	
-	public Message deSerializeMsg(byte[] recBytes)
+	public static Message deSerializeMsg(byte[] recBytes)
 	{
 		ObjectInputStream iStream = null;
 		Message msg = null;
