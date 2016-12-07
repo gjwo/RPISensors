@@ -36,6 +36,10 @@ import inertialNavigation.Quaternion;
  * CONTROL_REQ		STOP			N/A				N/A				N/A			
  * CONTROL_RESP		as REQ			as REQ			as REQ			SUCCESS or any other			
  * MSG_ERROR		N/A				N/A				N/A				Any
+ * A ping request may be made by clients in any state including unregistered.
+ * A client must be registered before other requests are made
+ * A client may make multiple requests including stream requests
+ * Requests should always get the corresponding response or MSG_ERROR unless packets are dropped
  */
 public class Message implements Serializable
 {
@@ -68,6 +72,8 @@ public class Message implements Serializable
 	public enum CommandType {EXECUTE,STOP}
 	
 	private MessageType msgType;
+	private ParameterType parameterType;
+	private CommandType commandType;
 	private ErrorMsgType errorMsgType;
 	private TimestampedData3f navAngles; // holds the angles of the type specified by NavRequestType
 	private Quaternion quaternion;
@@ -118,6 +124,15 @@ public class Message implements Serializable
 	public Instant getTime() {return time;}
 
 	public void setTime(Instant time) {this.time = time;}
+	
+
+	public ParameterType getParameterType() {return parameterType;}
+
+	public void setParameterType(ParameterType parameterType) {this.parameterType = parameterType;}
+
+	public CommandType getCommandType() {return commandType;}
+
+	public void setCommandType(CommandType commandType) {this.commandType = commandType;}
 
 	public byte[] serializeMsg()
 	{

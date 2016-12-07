@@ -7,7 +7,10 @@ import java.net.SocketException;
 import java.util.ArrayList;
 
 import messages.Message;
+import messages.Message.ErrorMsgType;
+import messages.Message.MessageType;
 import messages.Message.NavRequestType;
+import messages.Message.ParameterType;
 public class NavResponder extends Thread
 {
     private static final int serverPortNbr = 9876;
@@ -40,7 +43,7 @@ public class NavResponder extends Thread
         while (!Thread.interrupted()) {
             try {
                 socket.receive(inPacket); //wait for a client request
-                registerClient(inPacket);
+                handleMessage(inPacket);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -50,22 +53,66 @@ public class NavResponder extends Thread
         if (debugLevel >=2) System.out.println("End NavResponder run");
     }
 
-    private void registerClient(DatagramPacket packet)
+    private void handleMessage(DatagramPacket packet)
     {
-        if (debugLevel >=3) System.out.println("registerClient");
-        String received = new String(packet.getData(), 0, packet.getLength());
-
-        //registration packet may optionally contain the type of data required, default TAIT_BRYAN angles - yaw, pitch & roll
-        Message.NavRequestType reqType = Message.NavRequestType.TAIT_BRYAN;
-        if (received.length()!=0)
-            try {reqType = Message.NavRequestType.valueOf(received);}
-            catch (IllegalArgumentException e){ reqType = Message.NavRequestType.TAIT_BRYAN;}
-
-        Client client = new Client(packet.getAddress(),packet.getPort(),packet.getAddress().getHostName(), socket, reqType);
-        for(Client existingClient:clients) if(client.toString().equals(existingClient.toString())) return;
-        new Thread(client).start();
-        nav.registerInterest(client);
-        clients.add(client);
-        System.out.println("Client registered: " + client.toString());
+    	Message reqMsg = Message.deSerializeMsg(packet.getData());
+    	Message respMsg = new Message();
+    	respMsg.setErrorMsgType(ErrorMsgType.CANNOT_COMPLY); 	
+    	boolean newClient = false;
+    	
+        Client client = new Client(packet.getAddress(),packet.getPort(),packet.getAddress().getHostName(), socket); //NB not recorded yet
+        
+        for(Client existingClient:clients) 
+        	if(client.matches(existingClient)) client = existingClient;  // may have earlier requests set
+        	else newClient = true;
+        
+        switch (reqMsg.getMsgType())
+        {
+        case PING: 
+            respMsg.setMsgType(MessageType.PING_RESP);
+            respMsg.setErrorMsgType(ErrorMsgType.SUCCESS);
+            //time has been set by creating the message
+            try
+            {
+            	byte[] ba = respMsg.serializeMsg();
+                socket.send(new DatagramPacket(ba, ba.length, client.getAddress(), client.getPort()));
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        	break;
+        case CLIENT_REG_REQ: 
+            if (newClient)	
+            { 	//register client and start thread
+                new Thread(client).start();
+                nav.registerInterest(client);
+            	clients.add(client);
+                System.out.println("Client registered: " + client.toString());
+            }
+            //send response, even if already registered
+            respMsg.setMsgType(MessageType.CLIENT_REG_RESP);
+            respMsg.setErrorMsgType(ErrorMsgType.SUCCESS);
+            client.sendMsg(respMsg);
+        	break;
+        case GET_PARAM_REQ: 
+        	respMsg.setMsgType(MessageType.STREAM_RESP);
+        	Client.buildParameterMsg(reqMsg.getParameterType(),respMsg);
+            client.sendMsg(respMsg);
+       	break;
+        case SET_PARAM_REQ:
+        	//TODO
+        	//send SET_PARAM__RESP
+        	break;
+        case STREAM_REQ:
+        	client.addParam(reqMsg.getParameterType()); //STREAM_RESP will be sent by client thread when data is available
+        	break;
+        case CONTROL_REQ: 
+        	//TODO
+        	//send CONTROL_RESP
+			break;
+        case MSG_ERROR:
+			break;//
+		default:	
+        }        
     }
 }
