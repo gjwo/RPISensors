@@ -30,7 +30,7 @@ import inertialNavigation.Quaternion;
  * CLIENT_REG_RESP	N/A				N/A				N/A				SUCCESS	or CANNOT_COMPLY
  * GET_PARAM_REQ	N/A				Any				N/A				N/A
  * GET_PARAM_RESP	N/A				Any				see below		SUCCESS or INVALID_DATA
- * STREAM_REQ		N/A				Any Streamable	N/A				N/A
+ * STREAM_REQ		EXECUTE/STOP	Any Streamable	N/A				N/A
  * STREAM_RESP		N/A				Any Streamable	see below		SUCCESS or CANNOT_COMPLY or INVALID_DATA
  * CONTROL_REQ		EXECUTE			Any Command		See below		N/A
  * CONTROL_REQ		STOP			N/A				N/A				N/A			
