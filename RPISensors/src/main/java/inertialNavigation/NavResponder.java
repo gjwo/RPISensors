@@ -73,6 +73,7 @@ public class NavResponder extends Thread
         	else newClient = true;
         }
         System.out.println("Message type: "+reqMsg.getMsgType()+ " from "+client.toString());
+        System.out.println(reqMsg.toString());
         switch (reqMsg.getMsgType())
         {
         case PING: 
@@ -122,7 +123,6 @@ public class NavResponder extends Thread
         case MSG_ERROR:
 		default:	
         	respMsg.setMsgType(MessageType.MSG_ERROR);
-        	Client.buildParameterMsg(reqMsg.getParameterType(),respMsg);
             client.sendMsg(respMsg);
         }        
     }

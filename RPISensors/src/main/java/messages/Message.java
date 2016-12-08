@@ -86,12 +86,24 @@ public class Message implements Serializable
 	public Message() {
 		msgType = MessageType.MSG_ERROR;
 		errorMsgType = ErrorMsgType.UNKNOWN;
+		commandType = CommandType.STOP;
 		navAngles = new TimestampedData3f(0,0,0);
 		quaternion = new Quaternion();
 		heading= 0f;
 		speed = 0f;
 		turnAngle = 0f;
 		time = Instant.now();
+	}
+	
+	public String toString()
+	{
+		return 	"Type: " + msgType.name() +
+				" ErrorMsgType:" + errorMsgType.name() +
+				" CommandType: " + commandType.name() +
+				" Time: " + time.toString() +
+				" Nav Angles: " + navAngles.toString() +
+				" Quaternion: "+ quaternion.toString() +
+				" H: "+ heading + " S: " +speed + " TA: "+ turnAngle;
 	}
 
 	public MessageType getMsgType() {return msgType;}
