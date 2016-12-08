@@ -61,6 +61,8 @@ public class NavResponder extends Thread
 			trimmedData[i] = packet.getData()[i];
 		}
     	Message reqMsg = Message.deSerializeMsg(trimmedData);
+    	System.out.println("Received msg: "+ reqMsg.toString());
+
     	Message respMsg = new Message();
     	respMsg.setErrorMsgType(ErrorMsgType.CANNOT_COMPLY); 	
     	boolean newClient = false;
