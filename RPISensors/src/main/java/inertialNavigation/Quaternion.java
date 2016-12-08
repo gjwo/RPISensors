@@ -1,5 +1,7 @@
 package inertialNavigation;
 
+import java.io.Serializable;
+
 import dataTypes.Data3f;
 
 /**
@@ -11,8 +13,15 @@ import dataTypes.Data3f;
  * from and to other coordinate schemes.
  * 
  */
-public class Quaternion 
+public class Quaternion implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1595546505762109406L;
+	/**
+	 * 
+	 */
 	public float w,x,y,z;
 	
 	/**

@@ -1,12 +1,18 @@
 package dataTypes;
 
+import java.io.Serializable;
+
 /**
  * TimestampedData3f - 3 dimensional time stamped floating point data structure
  * Created by MAWood on 18/07/2016, modified by G.J.Wood 10/11/2016
  */
-public class TimestampedData3f extends Data3f
+public class TimestampedData3f extends Data3f implements Serializable
 {
-    public static final long NANOS_PER_SEC = 1000000000;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6056118215941025501L;
+	public static final long NANOS_PER_SEC = 1000000000;
     public static final float NANOS_PER_SECF = 1000000000f;
     protected final long nanoTime;
 
