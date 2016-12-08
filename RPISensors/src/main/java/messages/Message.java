@@ -151,27 +151,13 @@ public class Message implements Serializable
 	
 	public static Message deSerializeMsg(byte[] recBytes)
 	{
-		ObjectInputStream iStream = null;
+		ObjectInputStream iStream;
 		Message msg = new Message();
 		try {
 			iStream = new ObjectInputStream(new ByteArrayInputStream(recBytes));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
 			msg = (Message) iStream.readObject();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
 			iStream.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
 		return msg;
