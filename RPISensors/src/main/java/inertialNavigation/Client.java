@@ -63,14 +63,7 @@ public class Client implements Runnable, UpdateListener
         	Message msg = new Message();
         	msg.setMsgType(MessageType.STREAM_RESP);
         	buildParameterMsg(param,msg);
-            try
-            {
-            	byte[] ba = msg.serializeMsg();
-                socket.send(new DatagramPacket(ba, ba.length, this.getAddress(), this.getPort()));
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-            }
+        	sendMsg(msg);
         }
     }
 

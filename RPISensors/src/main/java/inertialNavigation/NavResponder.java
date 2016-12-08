@@ -98,19 +98,23 @@ public class NavResponder extends Thread
             client.sendMsg(respMsg);
        	break;
         case SET_PARAM_REQ:
-        	//TODO
-        	//send SET_PARAM__RESP
+        	respMsg.setMsgType(MessageType.SET_PARAM__RESP);
+        	Client.buildParameterMsg(reqMsg.getParameterType(),respMsg);
+            client.sendMsg(respMsg);
         	break;
         case STREAM_REQ:
         	client.addParam(reqMsg.getParameterType()); //STREAM_RESP will be sent by client thread when data is available
         	break;
         case CONTROL_REQ: 
-        	//TODO
-        	//send CONTROL_RESP
+        	respMsg.setMsgType(MessageType.CONTROL_RESP);
+        	Client.buildParameterMsg(reqMsg.getParameterType(),respMsg);
+            client.sendMsg(respMsg);
 			break;
         case MSG_ERROR:
-			break;//
 		default:	
+        	respMsg.setMsgType(MessageType.MSG_ERROR);
+        	Client.buildParameterMsg(reqMsg.getParameterType(),respMsg);
+            client.sendMsg(respMsg);
         }        
     }
 }
