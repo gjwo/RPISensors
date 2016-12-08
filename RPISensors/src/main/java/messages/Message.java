@@ -152,7 +152,7 @@ public class Message implements Serializable
 	public static Message deSerializeMsg(byte[] recBytes)
 	{
 		ObjectInputStream iStream = null;
-		Message msg = null;
+		Message msg = new Message();
 		try {
 			iStream = new ObjectInputStream(new ByteArrayInputStream(recBytes));
 		} catch (IOException e) {
