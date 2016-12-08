@@ -53,17 +53,26 @@ public class NavResponder extends Thread
 
     private void handleMessage(DatagramPacket packet)
     {
-    	Message reqMsg = Message.deSerializeMsg(packet.getData());
+    	int receivedBytes = 0;
+		receivedBytes = packet.getLength(); //actual length of data
+		byte[] trimmedPacket = new byte[receivedBytes];
+		for(int i = 0; i < receivedBytes; i++)
+		{
+			trimmedPacket[i] = packet.getData()[i];
+		}
+    	Message reqMsg = Message.deSerializeMsg(trimmedPacket);
     	Message respMsg = new Message();
     	respMsg.setErrorMsgType(ErrorMsgType.CANNOT_COMPLY); 	
     	boolean newClient = false;
     	
         Client client = new Client(packet.getAddress(),packet.getPort(),packet.getAddress().getHostName(), socket); //NB not recorded yet
         
-        for(Client existingClient:clients) 
+        for(Client existingClient:clients)
+        {
         	if(client.matches(existingClient)) client = existingClient;  // may have earlier requests set
         	else newClient = true;
-        if (debugLevel >=0) System.out.println("Message type: "+reqMsg.getMsgType()+ " from "+client.toString());
+        }
+        System.out.println("Message type: "+reqMsg.getMsgType()+ " from "+client.toString());
         switch (reqMsg.getMsgType())
         {
         case PING: 
