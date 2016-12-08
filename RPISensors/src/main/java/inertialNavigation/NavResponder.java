@@ -55,12 +55,12 @@ public class NavResponder extends Thread
     {
     	int receivedBytes = 0;
 		receivedBytes = packet.getLength(); //actual length of data
-		byte[] trimmedPacket = new byte[receivedBytes];
+		byte[] trimmedData = new byte[receivedBytes];
 		for(int i = 0; i < receivedBytes; i++)
 		{
-			trimmedPacket[i] = packet.getData()[i];
+			trimmedData[i] = packet.getData()[i];
 		}
-    	Message reqMsg = Message.deSerializeMsg(trimmedPacket);
+    	Message reqMsg = Message.deSerializeMsg(trimmedData);
     	Message respMsg = new Message();
     	respMsg.setErrorMsgType(ErrorMsgType.CANNOT_COMPLY); 	
     	boolean newClient = false;
