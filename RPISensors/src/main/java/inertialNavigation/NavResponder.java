@@ -63,7 +63,7 @@ public class NavResponder extends Thread
         for(Client existingClient:clients) 
         	if(client.matches(existingClient)) client = existingClient;  // may have earlier requests set
         	else newClient = true;
-        
+        if (debugLevel >=0) System.out.println("Message type: "+reqMsg.getMsgType()+ " from "+client.toString());
         switch (reqMsg.getMsgType())
         {
         case PING: 
