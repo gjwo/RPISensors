@@ -27,7 +27,7 @@ import inertialNavigation.Quaternion;
  * PING_REQ			N/A				N/A				N/A				N/A
  * PING_RESP		N/A				N/A				time			SUCCESS
  * CLIENT_REG_REQ	N/A				N/A				N/A				N/A		Client address recorded elsewhere
- * CLIENT_REG_RESP	N/A				N/A				N/A				SUCCESS	or CANNOT_COMPLY
+ * CLIENT_REG_RESP	N/A				N/A				time			SUCCESS	or CANNOT_COMPLY
  * GET_PARAM_REQ	N/A				Any				N/A				N/A
  * GET_PARAM_RESP	N/A				Any				see below		SUCCESS or INVALID_DATA
  * STREAM_REQ		EXECUTE/STOP	Any Streamable	N/A				N/A
@@ -48,8 +48,8 @@ public class Message implements Serializable
 
 	public enum MessageType {	PING,PING_RESP,
 								CLIENT_REG_REQ,CLIENT_REG_RESP,
-								GET_PARAM_REQ,GET_PARAM__RESP,
-								SET_PARAM_REQ,SET_PARAM__RESP,
+								GET_PARAM_REQ,GET_PARAM_RESP,
+								SET_PARAM_REQ,SET_PARAM_RESP,
 								STREAM_REQ, STREAM_RESP,
 								CONTROL_REQ,CONTROL_RESP,
 								MSG_ERROR}

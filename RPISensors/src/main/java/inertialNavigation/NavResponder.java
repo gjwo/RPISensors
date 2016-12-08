@@ -98,7 +98,7 @@ public class NavResponder extends Thread
             client.sendMsg(respMsg);
        	break;
         case SET_PARAM_REQ:
-        	respMsg.setMsgType(MessageType.SET_PARAM__RESP);
+        	respMsg.setMsgType(MessageType.SET_PARAM_RESP);
         	Client.buildParameterMsg(reqMsg.getParameterType(),respMsg);
             client.sendMsg(respMsg);
         	break;
