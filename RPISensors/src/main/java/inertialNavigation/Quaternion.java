@@ -69,7 +69,11 @@ public class Quaternion implements Serializable
 	 * Quaternion	- blank Constructor
 	 */
 	public Quaternion(){this(0,0,0,0);}
-	
+
+	public Quaternion clone(){
+		return new Quaternion(this.w,this.x,this.y,this.z);
+	}
+
 	/**
 	 * toEulerianAngle	-	Convert a quaternion back into a set of Eulerian angles
 	 * 	
