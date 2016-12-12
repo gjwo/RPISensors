@@ -59,6 +59,7 @@ public class NavResponder extends Thread
 
     private void handleMessage(DatagramPacket packet)
     {
+        if (debugLevel >=3) System.out.println("handleMessage");
     	int receivedBytes = 0;
 		receivedBytes = packet.getLength(); //actual length of data
 		byte[] trimmedData = new byte[receivedBytes];
@@ -87,8 +88,8 @@ public class NavResponder extends Thread
         	if(client.matches(existingClient)) client = existingClient;  // may have earlier requests set
         	else newClient = true;
         }
-        System.out.println("Message type: "+reqMsg.getMsgType()+ " from "+client.toString());
-        System.out.println(reqMsg.toString());
+        if (debugLevel >=4) System.out.println("Message type: "+reqMsg.getMsgType()+ " from "+client.toString());
+        if (debugLevel >=4) System.out.println(reqMsg.toString());
         switch (reqMsg.getMsgType())
         {
         case PING: 
@@ -129,6 +130,7 @@ public class NavResponder extends Thread
         	break;
         case STREAM_REQ:
         	client.addParam(reqMsg.getParameterType()); //STREAM_RESP will be sent by client thread when data is available
+        	System.out.println("Added parameter "+ reqMsg.getParameterType().name() + " for: " + client.toString());
         	break;
         case CONTROL_REQ: 
         	respMsg.setMsgType(MessageType.CONTROL_RESP);
@@ -139,6 +141,7 @@ public class NavResponder extends Thread
 		default:	
         	respMsg.setMsgType(MessageType.MSG_ERROR);
             client.sendMsg(respMsg);
-        }        
+        }
+        if (debugLevel >=3) System.out.println("End handleMessage");
     }
 }

@@ -32,7 +32,7 @@ import inertialNavigation.Quaternion;
  * GET_PARAM_REQ	N/A				Any				N/A				N/A
  * GET_PARAM_RESP	N/A				Any				see below		SUCCESS or INVALID_DATA
  * STREAM_REQ		EXECUTE/STOP	Any Streamable	N/A				N/A
- * STREAM_RESP		N/A				Any Streamable	see below		SUCCESS or CANNOT_COMPLY or INVALID_DATA
+ * STREAM_RESP*n	N/A				Any Streamable	see below		SUCCESS or CANNOT_COMPLY or INVALID_DATA
  * CONTROL_REQ		EXECUTE			Any Command		See below		N/A
  * CONTROL_REQ		STOP			N/A				N/A				N/A			
  * CONTROL_RESP		as REQ			as REQ			as REQ			SUCCESS or any other			
@@ -157,7 +157,7 @@ public class Message implements Serializable
 			oo.close();
 			bStream.close();
 			byte[] ba = bStream.toByteArray();
-			System.out.println(ba.length+","+Arrays.toString(ba));
+			//System.out.println(ba.length+","+Arrays.toString(ba));
 			return ba;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -169,7 +169,7 @@ public class Message implements Serializable
 	{
 		ObjectInputStream iStream;
 		Message msg = null;
-		System.out.println(recBytes.length+","+Arrays.toString(recBytes));
+		//System.out.println(recBytes.length+","+Arrays.toString(recBytes));
 		try {
 			iStream = new ObjectInputStream(new ByteArrayInputStream(recBytes));
 			msg = (Message) iStream.readObject();
