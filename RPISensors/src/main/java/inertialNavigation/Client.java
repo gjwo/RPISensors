@@ -112,7 +112,7 @@ public class Client implements Runnable, UpdateListener
             e.printStackTrace();
         }
         msgsSent++;
-    	if (msgsSent <= 3) System.out.println(msg.toString()); else	System.out.print(".");
+    	if (msgsSent <= 5) {System.out.println(msg.toString());}else {System.out.print(".");}
     }
 
     // Getters & Setters
