@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import messages.Message;
 import messages.Message.ErrorMsgType;
@@ -13,7 +14,7 @@ import messages.Message.MessageType;
 public class NavResponder extends Thread
 {
     private static final int serverPortNbr = 9876;
-    private static final int bufferSize = 256;
+    private static final int bufferSize = 1024;
     private ArrayList<Client> clients;
     private DatagramSocket socket = null;
     private int debugLevel;
@@ -65,7 +66,14 @@ public class NavResponder extends Thread
 		{
 			trimmedData[i] = packet.getData()[i];
 		}
+		System.out.println(receivedBytes+","+ trimmedData.length+"," + Arrays.toString(trimmedData));
     	Message reqMsg = Message.deSerializeMsg(trimmedData);
+    	if(reqMsg == null)
+    	{
+    		System.out.println("null message recieved");
+    		System.exit(5);
+    	}
+
     	System.out.println("Received msg: "+ reqMsg.toString());
 
     	Message respMsg = new Message();

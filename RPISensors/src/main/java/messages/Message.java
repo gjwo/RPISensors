@@ -156,7 +156,9 @@ public class Message implements Serializable
 			oo.flush();
 			oo.close();
 			bStream.close();
-			return bStream.toByteArray();
+			byte[] ba = bStream.toByteArray();
+			System.out.println(ba.length+","+Arrays.toString(ba));
+			return ba;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -167,6 +169,7 @@ public class Message implements Serializable
 	{
 		ObjectInputStream iStream;
 		Message msg = null;
+		System.out.println(recBytes.length+","+Arrays.toString(recBytes));
 		try {
 			iStream = new ObjectInputStream(new ByteArrayInputStream(recBytes));
 			msg = (Message) iStream.readObject();

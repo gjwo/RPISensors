@@ -49,6 +49,11 @@ public class TimestampedData3f extends Data3f implements Serializable
         this(data.getX(),data.getY(),data.getZ());
     }
     
+    public TimestampedData3f()
+    {
+    	super();
+    	this.nanoTime = System.nanoTime();
+    }
     /**
      * getTime - get the timestamp
      * @return

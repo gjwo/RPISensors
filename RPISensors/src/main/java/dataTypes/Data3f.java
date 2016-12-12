@@ -13,7 +13,12 @@ public class Data3f extends Data2f{
         this.z = z;
     }
 
-    public float getZ() {
+    public Data3f() {
+		super();
+		z=0;
+	}
+
+	public float getZ() {
         return z;
     }
 

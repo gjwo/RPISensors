@@ -10,7 +10,11 @@ public class Data1f
 
     public Data1f(float x) {this.x = x;}
 
-    public float getX() {return x;}
+    public Data1f() {
+		x=0;
+	}
+
+	public float getX() {return x;}
     public void setX(float x){this.x =x;}
 
     public String toString()

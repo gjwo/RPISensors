@@ -14,7 +14,12 @@ public class Data2f extends Data1f
         this.y = y;
     }
 
-    public float getY(){return y;}
+    public Data2f() {
+		super();
+		y=0;
+	}
+
+	public float getY(){return y;}
     public void setY(float y){this.y = y;}
 
     public String toString()
