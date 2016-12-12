@@ -118,11 +118,11 @@ public class Message implements Serializable
 
 	public TimestampedData3f getNavAngles() {return navAngles;}
 
-	public void setNavAngles(TimestampedData3f navAngles) {this.navAngles = navAngles;}
+	public void setNavAngles(TimestampedData3f navAngles) {this.navAngles = navAngles.clone();}
 
 	public Quaternion getQuaternion() {return quaternion;}
 
-	public void setQuaternion(Quaternion quaternion) {this.quaternion = quaternion;}
+	public void setQuaternion(Quaternion quaternion) {this.quaternion = quaternion.clone();}
 
 	public float getHeading() {return heading;}
 
