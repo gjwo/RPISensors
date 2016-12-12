@@ -116,11 +116,11 @@ public class Message implements Serializable
 
 	public void setErrorMsgType(ErrorMsgType errorMsgType) {this.errorMsgType = errorMsgType;}
 
-	public TimestampedData3f getNavAngles() {return navAngles;}
+	public TimestampedData3f getNavAngles() {return navAngles.clone();}
 
 	public void setNavAngles(TimestampedData3f navAngles) {this.navAngles = navAngles.clone();}
 
-	public Quaternion getQuaternion() {return quaternion;}
+	public Quaternion getQuaternion() {return quaternion.clone();}
 
 	public void setQuaternion(Quaternion quaternion) {this.quaternion = quaternion.clone();}
 
