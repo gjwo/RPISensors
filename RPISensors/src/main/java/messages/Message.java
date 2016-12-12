@@ -155,9 +155,9 @@ public class Message implements Serializable
 			oo.writeObject(this);
 			oo.flush();
 			oo.close();
+			bStream.close();
 			return bStream.toByteArray();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -166,7 +166,7 @@ public class Message implements Serializable
 	public static Message deSerializeMsg(byte[] recBytes)
 	{
 		ObjectInputStream iStream;
-		Message msg = new Message();
+		Message msg = null;
 		try {
 			iStream = new ObjectInputStream(new ByteArrayInputStream(recBytes));
 			msg = (Message) iStream.readObject();

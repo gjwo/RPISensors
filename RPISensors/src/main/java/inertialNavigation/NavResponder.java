@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import messages.Message;
@@ -32,18 +33,22 @@ public class NavResponder extends Thread
         byte[] buf = new byte[bufferSize];
         try
         {
-            socket.setSoTimeout(10000);
+            socket.setSoTimeout(1000); //Milliseconds
         } catch (SocketException e)
         {
             e.printStackTrace();
         }
         DatagramPacket inPacket = new DatagramPacket(buf, buf.length);
         while (!Thread.interrupted()) {
-            try {
-                socket.receive(inPacket); //wait for a client request
-                handleMessage(inPacket);
-            } catch (IOException e) {
-                e.printStackTrace();
+        	try{
+	            try {
+	                socket.receive(inPacket); //wait for a client request
+	                handleMessage(inPacket);
+	            } catch (SocketTimeoutException  e)
+	            {//do nothing
+	            }
+            } catch (IOException e){
+            	e.printStackTrace();
             }
         }
         for(Client client:clients) client.stop();
