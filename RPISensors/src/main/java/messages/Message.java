@@ -87,6 +87,7 @@ public class Message implements Serializable
 		msgType = MessageType.MSG_ERROR;
 		errorMsgType = ErrorMsgType.UNKNOWN;
 		commandType = CommandType.STOP;
+		parameterType = ParameterType.TAIT_BRYAN;
 		navAngles = new TimestampedData3f(0,0,0);
 		quaternion = new Quaternion();
 		heading= 0f;
@@ -100,6 +101,7 @@ public class Message implements Serializable
 		return 	"Type: " + msgType.name() +
 				" ErrorMsgType:" + errorMsgType.name() +
 				" CommandType: " + commandType.name() +
+				" ParameterType: " + parameterType.name() +
 				" Time: " + time.toString() +
 				" Nav Angles: " + navAngles.toString() +
 				" Quaternion: "+ quaternion.toString() +

@@ -67,7 +67,7 @@ public class NavResponder extends Thread
 		{
 			trimmedData[i] = packet.getData()[i];
 		}
-		System.out.println(receivedBytes+","+ trimmedData.length+"," + Arrays.toString(trimmedData));
+		//System.out.println(receivedBytes+","+ trimmedData.length+"," + Arrays.toString(trimmedData));
     	Message reqMsg = Message.deSerializeMsg(trimmedData);
     	if(reqMsg == null)
     	{
@@ -83,10 +83,16 @@ public class NavResponder extends Thread
     	
         Client client = new Client(packet.getAddress(),packet.getPort(),packet.getAddress().getHostName(), socket); //NB not recorded yet
         
+        newClient = true;
         for(Client existingClient:clients)
         {
-        	if(client.matches(existingClient)) client = existingClient;  // may have earlier requests set
-        	else newClient = true;
+        	if(client.matches(existingClient))
+        	{	
+        		System.out.println("Client Matched "+ client.toString() + " = "+existingClient.toString());
+        		client = existingClient;  // may have earlier requests set
+        		newClient = false;
+        		break;
+        	}
         }
         if (debugLevel >=4) System.out.println("Message type: "+reqMsg.getMsgType()+ " from "+client.toString());
         if (debugLevel >=4) System.out.println(reqMsg.toString());
@@ -119,7 +125,7 @@ public class NavResponder extends Thread
             client.sendMsg(respMsg);
         	break;
         case GET_PARAM_REQ: 
-        	respMsg.setMsgType(MessageType.STREAM_RESP);
+        	respMsg.setMsgType(MessageType.GET_PARAM_RESP);
         	Client.buildParameterMsg(reqMsg.getParameterType(),respMsg);
             client.sendMsg(respMsg);
        	break;
