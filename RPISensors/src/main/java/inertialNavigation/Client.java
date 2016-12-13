@@ -25,16 +25,12 @@ public class Client implements Runnable, UpdateListener
     private final DatagramSocket socket;
     //private Message.NavRequestType reqType;
     private boolean dataReady;
-    private EnumSet<ParameterType> params = EnumSet.noneOf(ParameterType.class);
+    private EnumSet<ParameterType> params;
     private boolean stopped;
     private long msgsSent;
+    private int debugLevel;
 
-    Client(InetAddress address, int port, String name, DatagramSocket socket,ParameterType ParamType)
-    {
-        this(address,port,name,socket);
-        this.params.add(ParamType);
-    }
-    Client(InetAddress address, int port, String name, DatagramSocket socket)
+    Client(InetAddress address, int port, String name, DatagramSocket socket, int debugLevel)
     {
         this.address = address;
         this.port = port;
@@ -43,6 +39,8 @@ public class Client implements Runnable, UpdateListener
         this.dataReady = false;
         this.stopped = false;
         this.msgsSent = 0;
+        this.debugLevel = debugLevel;
+        params = EnumSet.noneOf(ParameterType.class);
     }
 
     @Override
@@ -66,7 +64,7 @@ public class Client implements Runnable, UpdateListener
         {
         	if(isSet(param))
         	{
-        		//System.out.print(param.name()+" ");
+        		if (debugLevel>=4) System.out.print(param.name()+" ");
         		Message msg = new Message();
         		msg.setMsgType(MessageType.STREAM_RESP);
         		buildParameterMsg(param,msg);
@@ -112,7 +110,7 @@ public class Client implements Runnable, UpdateListener
             e.printStackTrace();
         }
         msgsSent++;
-    	if (msgsSent <= 5) {System.out.println(msg.toString());}else {System.out.print(".");}
+        if (debugLevel>=4) if (msgsSent <= 5) System.out.println(msg.toString());
     }
 
     // Getters & Setters

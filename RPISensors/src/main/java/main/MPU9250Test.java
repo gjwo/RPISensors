@@ -47,7 +47,7 @@ class MPU9250Test implements UpdateListener{
 		debugLevelTester = 0;
 		debugLevelSensors = 1;
 		debugLevelNavigate = 0;
-		debugLevelNavResponder = 0;
+		debugLevelNavResponder = 1;
 
 		 if (debugLevelTester >=3) System.out.println("Attempt to get Bus 1");
         try {

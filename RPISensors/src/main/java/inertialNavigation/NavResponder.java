@@ -59,15 +59,15 @@ public class NavResponder extends Thread
     private void handleMessage(DatagramPacket packet)
     {
         if (debugLevel >=3) System.out.println("handleMessage");
-    	int receivedBytes = 0;
+    	/*int receivedBytes = 0;
 		receivedBytes = packet.getLength(); //actual length of data
 		byte[] trimmedData = new byte[receivedBytes];
 		for(int i = 0; i < receivedBytes; i++)
 		{
 			trimmedData[i] = packet.getData()[i];
-		}
+		}*/
 		//if (debugLevel >=4)System.out.println(receivedBytes+","+ trimmedData.length+"," + Arrays.toString(trimmedData));
-    	Message reqMsg = Message.deSerializeMsg(trimmedData);
+    	Message reqMsg = Message.deSerializeMsg(packet.getData());
     	if(reqMsg == null)
     	{
     		System.err.println("null message recieved");
@@ -80,7 +80,7 @@ public class NavResponder extends Thread
     	respMsg.setErrorMsgType(ErrorMsgType.CANNOT_COMPLY); 	
     	boolean newClient = false;
     	
-        Client client = new Client(packet.getAddress(),packet.getPort(),packet.getAddress().getHostName(), socket); //NB not recorded yet
+        Client client = new Client(packet.getAddress(),packet.getPort(),packet.getAddress().getHostName(), socket, debugLevel); //NB not recorded yet
         
         newClient = true;
         for(Client existingClient:clients)
