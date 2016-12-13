@@ -8,7 +8,6 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Arrays;
 
 import dataTypes.TimestampedData3f;
 import inertialNavigation.Quaternion;
