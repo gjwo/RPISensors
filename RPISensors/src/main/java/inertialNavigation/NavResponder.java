@@ -6,7 +6,6 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import messages.Message;
 import messages.Message.ErrorMsgType;
@@ -67,15 +66,15 @@ public class NavResponder extends Thread
 		{
 			trimmedData[i] = packet.getData()[i];
 		}
-		//System.out.println(receivedBytes+","+ trimmedData.length+"," + Arrays.toString(trimmedData));
+		//if (debugLevel >=4)System.out.println(receivedBytes+","+ trimmedData.length+"," + Arrays.toString(trimmedData));
     	Message reqMsg = Message.deSerializeMsg(trimmedData);
     	if(reqMsg == null)
     	{
-    		System.out.println("null message recieved");
+    		System.err.println("null message recieved");
     		System.exit(5);
     	}
 
-    	System.out.println("Received msg: "+ reqMsg.toString());
+    	if (debugLevel >=4)System.out.println("Received msg: "+ reqMsg.toString());
 
     	Message respMsg = new Message();
     	respMsg.setErrorMsgType(ErrorMsgType.CANNOT_COMPLY); 	
@@ -88,7 +87,7 @@ public class NavResponder extends Thread
         {
         	if(client.matches(existingClient))
         	{	
-        		System.out.println("Client Matched "+ client.toString() + " = "+existingClient.toString());
+        		if (debugLevel >=4)System.out.println("Client Matched "+ client.toString() + " = "+existingClient.toString());
         		client = existingClient;  // may have earlier requests set
         		newClient = false;
         		break;
@@ -117,7 +116,7 @@ public class NavResponder extends Thread
                 new Thread(client).start();
                 nav.registerInterest(client);
             	clients.add(client);
-                System.out.println("Client registered: " + client.toString());
+            	if (debugLevel >=1)System.out.println("Client registered: " + client.toString());
             }
             //send response, even if already registered
             respMsg.setMsgType(MessageType.CLIENT_REG_RESP);
@@ -136,7 +135,7 @@ public class NavResponder extends Thread
         	break;
         case STREAM_REQ:
         	client.addParam(reqMsg.getParameterType()); //STREAM_RESP will be sent by client thread when data is available
-        	System.out.println("Added parameter "+ reqMsg.getParameterType().name() + " for: " + client.toString());
+        	if (debugLevel >=4)System.out.println("Added parameter "+ reqMsg.getParameterType().name() + " for: " + client.toString());
         	break;
         case CONTROL_REQ: 
         	respMsg.setMsgType(MessageType.CONTROL_RESP);
