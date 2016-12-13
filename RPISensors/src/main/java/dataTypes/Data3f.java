@@ -1,12 +1,19 @@
 package dataTypes;
 
+import java.io.Serializable;
+
 /**
  * RPITank - sensors
  * Created by matthew on 10/07/16.
  */
-public class Data3f extends Data2f{
+public class Data3f extends Data2f implements Serializable
+{
 
-    protected float z;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -469689121407694462L;
+	protected float z;
 
     public Data3f(float x, float y, float z) {
     	super(x,y);

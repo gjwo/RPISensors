@@ -1,12 +1,18 @@
 package dataTypes;
 
+import java.io.Serializable;
+
 /**
  * RPITank - devices.sensors.dataTypes
  * Created by MAWood on 18/07/2016.
  */
-public class Data1f
+public class Data1f implements Serializable
 {
-    protected float x;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3533150776805377160L;
+	protected float x;
 
     public Data1f(float x) {this.x = x;}
 
