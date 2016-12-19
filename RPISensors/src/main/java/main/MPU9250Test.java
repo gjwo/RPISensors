@@ -1,6 +1,9 @@
 package main;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.concurrent.TimeUnit;
 
 //import com.pi4j.io.gpio.GpioController;
@@ -11,6 +14,7 @@ import com.pi4j.io.i2c.I2CFactory;
 import devices.I2C.Pi4jI2CDevice;
 import inertialNavigation.NavResponder;
 import inertialNavigation.Navigate;
+import inertialNavigation.RemoteInstrumentsImpl;
 import sensors.Implementations.MPU9250.MPU9250;
 import sensors.interfaces.UpdateListener;
 
@@ -79,7 +83,7 @@ class MPU9250Test implements UpdateListener{
 	 */
 	public static void main(String[] args)
     {
-    	MPU9250Test  tester;
+    	MPU9250Test tester;
     	int runSecs = 30;
     	int arg1 = 0;
     	
@@ -98,7 +102,17 @@ class MPU9250Test implements UpdateListener{
         	System.out.println("No run time specified, using default of "+ runSecs + " seconds ");
         }
 
-    	tester = new MPU9250Test();
+		tester = new MPU9250Test();
+
+        System.out.println("Starting RMI");
+		try {
+			tester.startRMI();
+		} catch (RemoteException e) {
+			System.out.println("Interupted whilst starting RMI");
+			e.printStackTrace();
+		}
+		System.out.println("RMI started");
+
     	try {
 			tester.initialiseTester();
 		} catch (InterruptedException e1) {
@@ -111,16 +125,28 @@ class MPU9250Test implements UpdateListener{
 			System.out.println("Interupted whilst running tests");
 			e.printStackTrace();
 		}
-    	
-    	try {
+
+		try {
 			tester.shutdownTester();
 		} catch (InterruptedException e) {
 			System.out.println("Interupted whilst shutting down");
 			e.printStackTrace();
 		}
+
+
         System.exit(0);
     }
-	
+
+	private void startRMI() throws RemoteException
+	{
+		String hostname = "192.168.1.127";
+		int port = Registry.REGISTRY_PORT;
+		System.setProperty("java.rmi.server.hostname", hostname) ;
+		Registry reg = LocateRegistry.createRegistry(port);
+
+		new RemoteInstrumentsImpl(hostname, port);
+	}
+
 	//Tester phases
 	private void initialiseTester() throws InterruptedException
 	{
