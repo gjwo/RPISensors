@@ -1,6 +1,9 @@
 package inertialNavigation;
 
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -12,7 +15,8 @@ import dataTypes.TimestampedData3f;
  * @author GJWood
  *
  */
-public class Instruments {
+public class Instruments implements RemoteInstruments
+{
 	
 	//Time of last instrument update
 	private  Instant updatedTimestamp = Instant.now();
@@ -33,8 +37,6 @@ public class Instruments {
 	private float roll; 	//Roll is angle between sensor y-axis and Earth ground plane, y-axis up is positive roll.
 							//Alternate names for the same things are heading, attitude and bank 
 	
-	private RemoteInstrumentsImpl remoteInstruments;
-	
 	private Data3f linearAcceleration;
 	
 	public Instruments()
@@ -49,11 +51,14 @@ public class Instruments {
 		pitch = 0;
 		roll = 0;
 		linearAcceleration = new Data3f(0,0,0);
-		try {
-			remoteInstruments = new RemoteInstrumentsImpl(this);
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
+        try
+        {
+            Registry reg = LocateRegistry.getRegistry();
+            reg.rebind("Instruments", UnicastRemoteObject.exportObject(this,0));
+        } catch (RemoteException e)
+        {
+            e.printStackTrace();
+        }
 	}
 	
 	// getters

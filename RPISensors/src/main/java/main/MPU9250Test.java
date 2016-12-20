@@ -6,18 +6,14 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.concurrent.TimeUnit;
 
-//import com.pi4j.io.gpio.GpioController;
-//import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 
 import devices.I2C.Pi4jI2CDevice;
 import inertialNavigation.NavResponder;
 import inertialNavigation.Navigate;
-import inertialNavigation.RemoteInstrumentsImpl;
 import sensors.Implementations.MPU9250.MPU9250;
 import sensors.interfaces.UpdateListener;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 class MPU9250Test implements UpdateListener{
