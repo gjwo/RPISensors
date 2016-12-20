@@ -10,7 +10,7 @@ import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 
 import devices.I2C.Pi4jI2CDevice;
-import inertialNavigation.NavResponder;
+//import inertialNavigation.NavResponder;
 import inertialNavigation.Navigate;
 import sensors.Implementations.MPU9250.MPU9250;
 import sensors.interfaces.UpdateListener;
@@ -37,9 +37,9 @@ class MPU9250Test implements UpdateListener{
 	private int debugLevelTester;
 	private int	debugLevelSensors;
 	private int debugLevelNavigate;
-	private int debugLevelNavResponder;
+	//private int debugLevelNavResponder;
 	private I2CBus bus = null;
-	private NavResponder navR;
+	//private NavResponder navR;
 
 	/**
 	 * MPU9250Test	-	Constructor
@@ -49,7 +49,7 @@ class MPU9250Test implements UpdateListener{
 		debugLevelTester = 0;
 		debugLevelSensors = 1;
 		debugLevelNavigate = 0;
-		debugLevelNavResponder = 1;
+		//debugLevelNavResponder = 1;
 
 		 if (debugLevelTester >=3) System.out.println("Attempt to get Bus 1");
         try {
@@ -66,18 +66,18 @@ class MPU9250Test implements UpdateListener{
                     250,									// sample size (SS)
                     debugLevelSensors); 					// debug level
             if (debugLevelTester >=3) System.out.println("MPU9250 created");
-            System.out.println("Starting RMI");
+            if (debugLevelTester >=3) System.out.println("Starting RMI");
     		try {
     			startRMI();
     		} catch (RemoteException e) {
-    			System.out.println("Interupted whilst starting RMI");
+    			System.err.println("Interupted whilst starting RMI");
     			e.printStackTrace();
     		}
-    		System.out.println("RMI started");
+    		if (debugLevelTester >=3) System.out.println("RMI started");
 
 
             this.nav = new Navigate(mpu9250,debugLevelNavigate);           
-            this.navR = new NavResponder(this.nav,"NavResponder rpi3gjw",debugLevelNavResponder);
+            //this.navR = new NavResponder(this.nav,"NavResponder rpi3gjw",debugLevelNavResponder);
             
         } catch (I2CFactory.UnsupportedBusNumberException | InterruptedException | IOException e) {
             e.printStackTrace();
@@ -116,20 +116,20 @@ class MPU9250Test implements UpdateListener{
     	try {
 			tester.initialiseTester();
 		} catch (InterruptedException e1) {
-			System.out.println("Interupted whilst initialising tests");
+			System.err.println("Interupted whilst initialising tests");
 			e1.printStackTrace();
 		}
     	try {
 			tester.runTests(runSecs);
 		} catch (InterruptedException e) {
-			System.out.println("Interupted whilst running tests");
+			System.err.println("Interupted whilst running tests");
 			e.printStackTrace();
 		}
 
 		try {
 			tester.shutdownTester();
 		} catch (InterruptedException e) {
-			System.out.println("Interupted whilst shutting down");
+			System.err.println("Interupted whilst shutting down");
 			e.printStackTrace();
 		}
 
@@ -163,14 +163,14 @@ class MPU9250Test implements UpdateListener{
         if (debugLevelTester >=2) System.out.println("SensorPackage started");
         sensorPackage.start();
         navigator.start();
-        navR.start();
+        //navR.start();
         TimeUnit.SECONDS.sleep(n); //Collect data for n seconds
 	}
 	
 	private void shutdownTester() throws InterruptedException
 	{
         if (debugLevelTester >=2) System.out.println("Shutdown NavResponder");
-        navR.interrupt();
+        //navR.interrupt();
         if (debugLevelTester >=2) System.out.println("Shutdown Navigator");
         navigator.interrupt();
         TimeUnit.SECONDS.sleep(1);
@@ -181,7 +181,7 @@ class MPU9250Test implements UpdateListener{
         try {
 			bus.close();
 		} catch (IOException e) {
-			System.out.println("IO exception whilst closing bus");
+			System.err.println("IO exception whilst closing bus");
 			// ignore has already been closed! 
 		}		
 	}
