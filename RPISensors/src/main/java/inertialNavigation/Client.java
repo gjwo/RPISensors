@@ -29,8 +29,9 @@ public class Client implements Runnable, UpdateListener
     private boolean stopped;
     private long msgsSent;
     private int debugLevel;
+    private Instruments instruments;
 
-    Client(InetAddress address, int port, String name, DatagramSocket socket, int debugLevel)
+    Client(InetAddress address, int port, String name, DatagramSocket socket, Instruments instruments, int debugLevel)
     {
         this.address = address;
         this.port = port;
@@ -41,6 +42,7 @@ public class Client implements Runnable, UpdateListener
         this.msgsSent = 0;
         this.debugLevel = debugLevel;
         params = EnumSet.noneOf(ParameterType.class);
+        this.instruments = instruments;
     }
 
     @Override
@@ -72,8 +74,7 @@ public class Client implements Runnable, UpdateListener
         	}
         }
     }
-
-    public static void buildParameterMsg(ParameterType param ,Message msg )
+    public void buildParameterMsg(ParameterType param ,Message msg )
     {
     	msg.setParameterType(param);
     	msg.setErrorMsgType(ErrorMsgType.SUCCESS);
@@ -81,24 +82,25 @@ public class Client implements Runnable, UpdateListener
     	switch (param)
         {
             case TAIT_BRYAN:
-                msg.setNavAngles(Instruments.getAngles());
+                msg.setNavAngles(instruments.getAngles());
                 break;
             case QUATERNION:
-            	msg.setQuaternion(Instruments.getQuaternion());
+            	msg.setQuaternion(instruments.getQuaternion());
             	break;
             case MAGNETOMETER:
-            	msg.setNavAngles(Instruments.getMagnetometer());
+            	msg.setNavAngles(instruments.getMagnetometer());
             	break;
             case ACCELEROMETER:
-                msg.setNavAngles(Instruments.getAccelerometer());
+                msg.setNavAngles(instruments.getAccelerometer());
                 break;
             case GYROSCOPE:
-                msg.setNavAngles(Instruments.getGyroscope());
+                msg.setNavAngles(instruments.getGyroscope());
                 break;
             default:
             	msg.setErrorMsgType(ErrorMsgType.UNSUPPORTED);
         }
     }
+
     public void sendMsg(Message msg)
     {
         try

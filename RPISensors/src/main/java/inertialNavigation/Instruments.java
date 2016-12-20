@@ -14,58 +14,72 @@ import dataTypes.TimestampedData3f;
 public class Instruments {
 	
 	//Time of last instrument update
-	private static Instant updatedTimestamp = Instant.now();
+	private  Instant updatedTimestamp = Instant.now();
 	
 	//data from individual sensors
-	private static TimestampedData3f magnetometer = new TimestampedData3f(0,0,0);
-	private static TimestampedData3f accelerometer = new TimestampedData3f(0,0,0);
-	private static TimestampedData3f gyroscope = new TimestampedData3f(0,0,0);
+	private  TimestampedData3f magnetometer;
+	private  TimestampedData3f accelerometer;
+	private  TimestampedData3f gyroscope;
 	
 	//Fused  data from several sensors
-	private static Quaternion quaternion = new Quaternion(); 
-	private static Data3f TaitBryanAnglesR = new Data3f(0,0,0); //in radians yaw not adjusted 360 or for location declination
-	private static Data3f TaitBryanAnglesD = new Data3f(0,0,0); //in degrees yaw adjusted 360 and for location declination
+	private  Quaternion quaternion; 
+	private  Data3f TaitBryanAnglesR; //in radians yaw not adjusted 360 or for location declination
+	private  Data3f TaitBryanAnglesD; //in degrees yaw adjusted 360 and for location declination
 	
 	//in degrees adjusted for location and yaw to read 0-360
-	private static float yaw = 0; 	//Yaw is the angle between SensorPackage x-axis and Earth magnetic North (or true North if corrected for local declination, looking down on the sensor positive yaw is counterclockwise.
-	private static float pitch = 0; //Pitch is angle between sensor x-axis and Earth ground plane, toward the Earth is positive, up toward the sky is negative.
-	private static float roll = 0; 	//Roll is angle between sensor y-axis and Earth ground plane, y-axis up is positive roll.
-									//Alternate names for the same things are heading, attitude and bank 
+	private float yaw; 		//Yaw is the angle between SensorPackage x-axis and Earth magnetic North (or true North if corrected for local declination, looking down on the sensor positive yaw is counterclockwise.
+	private float pitch; 	//Pitch is angle between sensor x-axis and Earth ground plane, toward the Earth is positive, up toward the sky is negative.
+	private float roll; 	//Roll is angle between sensor y-axis and Earth ground plane, y-axis up is positive roll.
+							//Alternate names for the same things are heading, attitude and bank 
 	
-	private static Data3f linearAcceleration = new Data3f(0,0,0);
+	private Data3f linearAcceleration;
+	
+	public Instruments()
+	{
+		magnetometer = new TimestampedData3f(0,0,0);
+		accelerometer = new TimestampedData3f(0,0,0);
+		gyroscope = new TimestampedData3f(0,0,0);
+		quaternion = new Quaternion(); 
+		TaitBryanAnglesR = new Data3f(0,0,0);
+		TaitBryanAnglesD = new Data3f(0,0,0);
+		yaw = 0;
+		pitch = 0;
+		roll = 0;
+		linearAcceleration = new Data3f(0,0,0);
+	}
 	
 	// getters
-	public static Instant getTimestamp(){return updatedTimestamp;}
-	public static ZonedDateTime getDateTime() {return updatedTimestamp.atZone(ZoneId.of("GB"));}
-	public static float getYaw() {return yaw;}
-	public static float getPitch() {return pitch;}
-	public static float getRoll() {return roll;}
-	public static float getHeading() {return getYaw();}	
-	public static float getAttitude() {return getPitch();}
-	public static float getBank() {return getRoll();}
-	public static Instant getUpdatedTimestamp() {return updatedTimestamp;}
-	public static Quaternion getQuaternion() {return quaternion;}
-	public static Data3f getTaitBryanAnglesR() {return TaitBryanAnglesR;}
-	public static Data3f getTaitBryanAnglesD() {return TaitBryanAnglesD;}
-	public static TimestampedData3f getMagnetometer() {return magnetometer;}
-	public static TimestampedData3f getAccelerometer() {return accelerometer;}
-	public static TimestampedData3f getGyroscope() {return gyroscope;}
-	public static TimestampedData3f getAngles(){return new TimestampedData3f(yaw,pitch,roll);}	
-	public static Data3f getLinearAcceleration() {return linearAcceleration;}
+	public Instant getTimestamp(){return updatedTimestamp;}
+	public ZonedDateTime getDateTime() {return updatedTimestamp.atZone(ZoneId.of("GB"));}
+	public float getYaw() {return yaw;}
+	public float getPitch() {return pitch;}
+	public float getRoll() {return roll;}
+	public float getHeading() {return getYaw();}	
+	public float getAttitude() {return getPitch();}
+	public float getBank() {return getRoll();}
+	public Instant getUpdatedTimestamp() {return updatedTimestamp;}
+	public Quaternion getQuaternion() {return quaternion;}
+	public Data3f getTaitBryanAnglesR() {return TaitBryanAnglesR;}
+	public Data3f getTaitBryanAnglesD() {return TaitBryanAnglesD;}
+	public TimestampedData3f getMagnetometer() {return magnetometer;}
+	public TimestampedData3f getAccelerometer() {return accelerometer;}
+	public TimestampedData3f getGyroscope() {return gyroscope;}
+	public TimestampedData3f getAngles(){return new TimestampedData3f(yaw,pitch,roll);}	
+	public Data3f getLinearAcceleration() {return linearAcceleration;}
 
 	//Setters
-	public static void setMagnetometer(TimestampedData3f magnetometer) {Instruments.magnetometer = magnetometer;}
-	public static void setAccelerometer(TimestampedData3f accelerometer) {Instruments.accelerometer = accelerometer;}
-	public static void setGyroscope(TimestampedData3f gyroscope) {Instruments.gyroscope = gyroscope;}
+	public void setMagnetometer(TimestampedData3f magnetometer) {this.magnetometer = magnetometer;}
+	public void setAccelerometer(TimestampedData3f accelerometer) {this.accelerometer = accelerometer;}
+	public void setGyroscope(TimestampedData3f gyroscope) {this.gyroscope = gyroscope;}
 
-	//public static void setYaw(float yaw) {Instruments.yaw = yaw;}
-	//public static void setHeading(float heading) {Instruments.yaw = heading;}
-	//public static void setAttitude(float attitude) {Instruments.pitch = attitude;}
-	//public static void setPitch(float pitch) {Instruments.pitch = pitch;}
-	//public static void setBank(float bank) {Instruments.roll = bank;}
-	//public static void setRoll(float roll) {Instruments.roll = roll;}
+	//public void setYaw(float yaw) {Instruments.yaw = yaw;}
+	//public void setHeading(float heading) {Instruments.yaw = heading;}
+	//public void setAttitude(float attitude) {Instruments.pitch = attitude;}
+	//public void setPitch(float pitch) {Instruments.pitch = pitch;}
+	//public void setBank(float bank) {Instruments.roll = bank;}
+	//public void setRoll(float roll) {Instruments.roll = roll;}
 	
-	public static void printInstruments()
+	public void printInstruments()
 	{
 		//TBD
 	}
@@ -87,8 +101,9 @@ public class Instruments {
 	 * 
 	 * @param q a quaternion containing the fused input data - see https://en.wikipedia.org/wiki/Quaternion
 	 */
-	public static void updateInstruments(Quaternion q)
+	public void updateInstruments(Quaternion q)
 	{		
+		if(q == null) return; // don't do anything
 		updatedTimestamp = Instant.now();
 		quaternion = q;
 		TaitBryanAnglesR = q.toTaitBryanAngles();
@@ -104,7 +119,7 @@ public class Instruments {
 	    updatelinearAcceleration(quaternion);
 	}
 	
-	private static void updatelinearAcceleration(Quaternion q)
+	private void updatelinearAcceleration(Quaternion q)
 	{
 	    float a31 =   2.0f * (q.w * q.x + q.y * q.z);
 	    float a32 =   2.0f * (q.x * q.z - q.w * q.y);

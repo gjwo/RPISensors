@@ -80,7 +80,7 @@ public class SensorFusion {
 	 * conventional Kalman-based filtering algorithms but is much less computationally intensive
 	 * it can be performed on a 3.3 V Pro Mini operating at 8 MHz!
 	 */
-	public static void MadgwickQuaternionUpdate(TimestampedData3f acc, TimestampedData3f gyro, TimestampedData3f mag, float deltat) //delta t in seconds
+	public static Quaternion MadgwickQuaternionUpdate(TimestampedData3f acc, TimestampedData3f gyro, TimestampedData3f mag, float deltat) //delta t in seconds
 
 	{	/*
 		System.out.print("MadgwickQuaternionUpdate "+acc.toString()+gyro.unStamp().toString()+mag.unStamp().toString());
@@ -190,7 +190,7 @@ public class SensorFusion {
 			q.normalize();				// #KW L 91-96 Normalise quaternion
 			//System.out.println(q.toString());
 			
-			Instruments.updateInstruments(q);
+			return q;
 			//if(debugLevel >=3) System.out.println("End MadgwickQuaternionUpdate");
 		} catch(ArithmeticException e)
 		{
@@ -198,6 +198,7 @@ public class SensorFusion {
 			System.err.println("ArithmeticException caught in MadgwickQuaternionUpdate - keep calm and carry on");
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	/**
@@ -218,7 +219,7 @@ public class SensorFusion {
 	 * conventional Kalman-based filtering algorithms but is much less computationally intensive
 	 * it can be performed on a 3.3 V Pro Mini operating at 8 MHz!
 	 */
-	public static void MahonyQuaternionUpdate(Data3f acc, Data3f gyro, Data3f mag, float deltat) //delta t in seconds
+	public static Quaternion MahonyQuaternionUpdate(Data3f acc, Data3f gyro, Data3f mag, float deltat) //delta t in seconds
 	{ // #KW L104 
 		/*
 		System.out.print("MahonyQuaternionUpdate "+acc.toString()+gyro.unStamp().toString()+mag.unStamp().toString());
@@ -295,7 +296,7 @@ public class SensorFusion {
 
 		q.setAll(q1, q2, q3, q4);
 		q.normalize();// Normalise quaternion
-		Instruments.updateInstruments(q);
+		return q;
 		//System.out.println("End MahonyQuaternionUpdate");
 	}
 }

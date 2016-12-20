@@ -34,6 +34,7 @@ public class Navigate implements Runnable, UpdateListener{
 	private long displayFrequencyHz;	//display frequency in Hertz
 	private boolean stop, dataValid;
     private volatile ArrayList<UpdateListener> listeners;
+    private Instruments instruments;
     
 	
 	public static int getSampleRate() {return SAMPLE_RATE;}
@@ -60,7 +61,10 @@ public class Navigate implements Runnable, UpdateListener{
 		this.lastDisplayNanoS = nowNanoS;
 		this.displayFrequencyHz = 2;		//refresh the display every 1/2 a second
 		this.listeners = new ArrayList<UpdateListener>();
+		this.instruments = new Instruments();
     }
+	
+	public Instruments getInstruments(){return this.instruments;}
 	
 	/**
 	 * run		- This is the thread run loop, it gets the data (if ready) and processes it
@@ -76,9 +80,9 @@ public class Navigate implements Runnable, UpdateListener{
                 if(dataReady) 
                 {	//Store the latest data
 	        		dataReady = false;
-	            	Instruments.setMagnetometer( mpu9250.getLatestGaussianData()); 		// #KW L492-501 done elsewhere, get the results
-	                Instruments.setAccelerometer(mpu9250.getLatestAcceleration());		// #KW L478-481 done elsewhere, get the results
-	                Instruments.setGyroscope(mpu9250.getLatestRotationalAcceleration());// #KW L485-488 done elsewhere, get the results
+	            	instruments.setMagnetometer( mpu9250.getLatestGaussianData()); 		// #KW L492-501 done elsewhere, get the results
+	                instruments.setAccelerometer(mpu9250.getLatestAcceleration());		// #KW L478-481 done elsewhere, get the results
+	                instruments.setGyroscope(mpu9250.getLatestRotationalAcceleration());// #KW L485-488 done elsewhere, get the results
 	                dataValid = true;
                 }
                 if (dataValid) // must have at least one value to start calculations
@@ -104,21 +108,21 @@ public class Navigate implements Runnable, UpdateListener{
 	            	// Pass gyro rate as rad/s
 	            	// MadgwickQuaternionUpdate(-ax, ay, az, gx*PI/180.0f, -gy*PI/180.0f, -gz*PI/180.0f,  my,  -mx, mz); #KW L521
 	
-	                adjustedAcc = new TimestampedData3f(Instruments.getAccelerometer());//preserve the timestamp set y & z
+	                adjustedAcc = new TimestampedData3f(instruments.getAccelerometer());//preserve the timestamp set y & z
 	                adjustedAcc.setX(-adjustedAcc.getX());								//-ax
 	                
-	                adjustedGyr = new TimestampedData3f(Instruments.getGyroscope()); 	//preserve the timestamp
+	                adjustedGyr = new TimestampedData3f(instruments.getGyroscope()); 	//preserve the timestamp
 	                adjustedGyr.setX(adjustedGyr.getX()*(float)Math.PI/180.0f); 		//Pass gyro rate as rad/s
 	                adjustedGyr.setY(-adjustedGyr.getY()*(float)Math.PI/180.0f);		//-gy
 	                adjustedGyr.setZ(-adjustedGyr.getZ()*(float)Math.PI/180.0f);		//-gz
 	                
-	                adjustedMag = new TimestampedData3f(Instruments.getMagnetometer()); //set timestamp and Z
+	                adjustedMag = new TimestampedData3f(instruments.getMagnetometer()); //set timestamp and Z
 					float x = adjustedMag.getX();
 	                adjustedMag.setX(adjustedMag.getY()); 								//swap X and Y, Z stays the same
 	                //adjustedMag.setY(-adjustedMag.getX());
 					adjustedMag.setY(-x);
 	
-	                SensorFusion.MadgwickQuaternionUpdate(adjustedAcc,adjustedGyr,adjustedMag,deltaTSec); // #KW L921
+	                instruments.updateInstruments(SensorFusion.MadgwickQuaternionUpdate(adjustedAcc,adjustedGyr,adjustedMag,deltaTSec)); // #KW L921
 	                if(((float)nowNanoS-lastDisplayNanoS)/nanosPerSecf >= 1f/displayFrequencyHz)
 	                {
 	                	lastDisplayNanoS = nowNanoS;
@@ -127,7 +131,7 @@ public class Navigate implements Runnable, UpdateListener{
 	                    	System.out.print(	"A " + mpu9250.getAvgAcceleration().toString()+
 	                    						" G " + mpu9250.getAvgRotationalAcceleration().unStamp().toString()+
 	                    						" M "  + mpu9250.getAvgGauss().unStamp().toString()+
-	                    						" | Y,P&R: " + Instruments.getAngles().toString());
+	                    						" | Y,P&R: " + instruments.getAngles().toString());
 	                    	System.out.format(	" Freq: %5.1fHz %dk calcs%n",calculationFrequency,countDeltas/1000);
 	                    }
 	
