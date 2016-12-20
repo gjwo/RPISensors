@@ -17,6 +17,8 @@ import inertialNavigation.Navigate;
 import inertialNavigation.RemoteInstrumentsImpl;
 import sensors.Implementations.MPU9250.MPU9250;
 import sensors.interfaces.UpdateListener;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 class MPU9250Test implements UpdateListener{
 	/*
@@ -80,13 +82,14 @@ class MPU9250Test implements UpdateListener{
 	/**
 	 * Main			-	entry point	
 	 * @param args	-	arg[0] the number of seconds to generate data for
+	 * @throws UnknownHostException 
 	 */
-	public static void main(String[] args)
+	public static void main(String[] args) throws UnknownHostException
     {
     	MPU9250Test tester;
     	int runSecs = 30;
     	int arg1 = 0;
-    	
+    	    	
         if (args.length > 0) {
             try {
                 arg1 = Integer.parseInt(args[0]);
@@ -143,8 +146,6 @@ class MPU9250Test implements UpdateListener{
 		int port = Registry.REGISTRY_PORT;
 		System.setProperty("java.rmi.server.hostname", hostname) ;
 		Registry reg = LocateRegistry.createRegistry(port);
-
-		new RemoteInstrumentsImpl(hostname, port);
 	}
 
 	//Tester phases

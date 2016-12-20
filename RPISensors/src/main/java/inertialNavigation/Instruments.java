@@ -1,5 +1,6 @@
 package inertialNavigation;
 
+import java.rmi.RemoteException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -32,6 +33,8 @@ public class Instruments {
 	private float roll; 	//Roll is angle between sensor y-axis and Earth ground plane, y-axis up is positive roll.
 							//Alternate names for the same things are heading, attitude and bank 
 	
+	private RemoteInstrumentsImpl remoteInstruments;
+	
 	private Data3f linearAcceleration;
 	
 	public Instruments()
@@ -46,6 +49,11 @@ public class Instruments {
 		pitch = 0;
 		roll = 0;
 		linearAcceleration = new Data3f(0,0,0);
+		try {
+			remoteInstruments = new RemoteInstrumentsImpl(this);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	// getters

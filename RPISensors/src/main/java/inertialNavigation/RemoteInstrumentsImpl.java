@@ -13,11 +13,14 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class RemoteInstrumentsImpl implements RemoteInstruments
 {
-    public RemoteInstrumentsImpl(String hostname, int port) throws RemoteException
+	private final Instruments instruments;
+	
+    public RemoteInstrumentsImpl(Instruments instruments) throws RemoteException
     {
+    	this.instruments = instruments;
         try
         {
-            Registry reg = LocateRegistry.getRegistry(hostname,port);
+            Registry reg = LocateRegistry.getRegistry("192.168.1.127",Registry.REGISTRY_PORT);
             reg.rebind("Instruments", UnicastRemoteObject.exportObject(this,0));
         } catch (RemoteException e)
         {
@@ -28,6 +31,6 @@ public class RemoteInstrumentsImpl implements RemoteInstruments
     @Override
     public Data3f getTaitBryanAnglesD() throws RemoteException
     {
-        return Instruments.getTaitBryanAnglesD();
+        return instruments.getTaitBryanAnglesD();
     }
 }
