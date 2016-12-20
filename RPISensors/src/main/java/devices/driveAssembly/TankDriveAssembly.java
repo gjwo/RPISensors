@@ -56,7 +56,7 @@ public class TankDriveAssembly implements DriveAssembly
     @Override
     public void stop()
     {
-        this.speed = 0;
+        this.setSpeed(0);
     }
 
     private void updateCourse()

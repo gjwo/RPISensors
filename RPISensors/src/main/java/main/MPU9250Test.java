@@ -6,10 +6,20 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.concurrent.TimeUnit;
 
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 
 import devices.I2C.Pi4jI2CDevice;
+import devices.driveAssembly.DriveAssembly;
+import devices.driveAssembly.RemoteDriveAssemblyImpl;
+import devices.driveAssembly.TankDriveAssembly;
+import devices.motors.DCMotor;
+import devices.motors.Motor;
 //import inertialNavigation.NavResponder;
 import inertialNavigation.Navigate;
 import sensors.Implementations.MPU9250.MPU9250;
@@ -119,13 +129,13 @@ class MPU9250Test implements UpdateListener{
 			System.err.println("Interupted whilst initialising tests");
 			e1.printStackTrace();
 		}
+    	tester.runMotors();
     	try {
 			tester.runTests(runSecs);
 		} catch (InterruptedException e) {
 			System.err.println("Interupted whilst running tests");
 			e.printStackTrace();
 		}
-
 		try {
 			tester.shutdownTester();
 		} catch (InterruptedException e) {
@@ -139,7 +149,7 @@ class MPU9250Test implements UpdateListener{
 
 	private void startRMI() throws RemoteException
 	{
-		String hostname = "192.168.1.127";
+		String hostname = "192.168.1.123";
 		int port = Registry.REGISTRY_PORT;
 		System.setProperty("java.rmi.server.hostname", hostname) ;
 		Registry reg = LocateRegistry.createRegistry(port);
@@ -165,6 +175,24 @@ class MPU9250Test implements UpdateListener{
         navigator.start();
         //navR.start();
         TimeUnit.SECONDS.sleep(n); //Collect data for n seconds
+	}
+	
+	private void runMotors() 
+	{
+        final GpioController gpio = GpioFactory.getInstance();
+
+        final GpioPinDigitalOutput RA =
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "Right motor A", PinState.LOW);
+        final GpioPinDigitalOutput RB =
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "Right motor B", PinState.LOW);
+        final GpioPinDigitalOutput LA =
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "Left motor A", PinState.LOW);
+        final GpioPinDigitalOutput LB =
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Left motor B", PinState.LOW);
+        Motor left = new DCMotor(LA,LB);
+        Motor right = new DCMotor(RA,RB);
+
+        new RemoteDriveAssemblyImpl(new TankDriveAssembly(left,right));
 	}
 	
 	private void shutdownTester() throws InterruptedException
