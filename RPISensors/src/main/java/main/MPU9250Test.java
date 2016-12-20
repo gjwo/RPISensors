@@ -70,6 +70,16 @@ class MPU9250Test implements UpdateListener{
                     250,									// sample size (SS)
                     debugLevelSensors); 					// debug level
             if (debugLevelTester >=3) System.out.println("MPU9250 created");
+            System.out.println("Starting RMI");
+    		try {
+    			startRMI();
+    		} catch (RemoteException e) {
+    			System.out.println("Interupted whilst starting RMI");
+    			e.printStackTrace();
+    		}
+    		System.out.println("RMI started");
+
+
             this.nav = new Navigate(mpu9250,debugLevelNavigate);           
             this.navR = new NavResponder(this.nav,"NavResponder rpi3gjw",debugLevelNavResponder);
             
@@ -106,15 +116,6 @@ class MPU9250Test implements UpdateListener{
         }
 
 		tester = new MPU9250Test();
-
-        System.out.println("Starting RMI");
-		try {
-			tester.startRMI();
-		} catch (RemoteException e) {
-			System.out.println("Interupted whilst starting RMI");
-			e.printStackTrace();
-		}
-		System.out.println("RMI started");
 
     	try {
 			tester.initialiseTester();
