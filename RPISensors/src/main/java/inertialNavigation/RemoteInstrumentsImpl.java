@@ -20,7 +20,7 @@ public class RemoteInstrumentsImpl implements RemoteInstruments
     	this.instruments = instruments;
         try
         {
-            Registry reg = LocateRegistry.getRegistry("192.168.1.127",Registry.REGISTRY_PORT);
+            Registry reg = LocateRegistry.getRegistry();
             reg.rebind("Instruments", UnicastRemoteObject.exportObject(this,0));
         } catch (RemoteException e)
         {
