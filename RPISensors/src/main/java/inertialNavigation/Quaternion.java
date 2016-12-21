@@ -109,8 +109,8 @@ public class Quaternion implements Serializable
 	    float a32 =   2.0f * (x * z - w * y);
 	    float a33 =   w * w - x * x - y * y + z * z;
 	    
-		a32 = a32 > 1.0f ? 1.0f : a32;		//Deal with singularity
-		a32 = a32 < -1.0f ? -1.0f : a32;	//Deal with singularity
+		//a32 = a32 > 1.0f ? 1.0f : a32;		//Deal with singularity
+		//a32 = a32 < -1.0f ? -1.0f : a32;	//Deal with singularity
 	    
 	    float pitch = (float) -Math.asin(a32);					// #KW L630
 	    float roll  = (float) Math.atan2(a31, a33);
