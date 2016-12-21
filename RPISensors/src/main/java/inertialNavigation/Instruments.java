@@ -29,8 +29,10 @@ public class Instruments implements RemoteInstruments
 	
 	//Fused  data from several sensors
 	private  Quaternion quaternion; 
-	private  Data3f TaitBryanAnglesR; //in radians yaw not adjusted 360 or for location declination
-	private  Data3f TaitBryanAnglesD; //in degrees yaw adjusted 360 and for location declination
+	private  Data3f taitBryanAnglesR; //in radians yaw not adjusted 360 or for location declination
+	private  Data3f taitBryanAnglesD; //in degrees yaw adjusted 360 and for location declination
+	private  Data3f eulerAnglesR;
+	private  Data3f eulerAnglesD;
 	
 	//in degrees adjusted for location and yaw to read 0-360
 	private float yaw; 		//Yaw is the angle between SensorPackage x-axis and Earth magnetic North (or true North if corrected for local declination, looking down on the sensor positive yaw is counterclockwise.
@@ -47,8 +49,11 @@ public class Instruments implements RemoteInstruments
 		accelerometer = new TimestampedData3f(0,0,0);
 		gyroscope = new TimestampedData3f(0,0,0);
 		quaternion = new Quaternion(); 
-		TaitBryanAnglesR = new Data3f(0,0,0);
-		TaitBryanAnglesD = new Data3f(0,0,0);
+		taitBryanAnglesR = new Data3f(0,0,0);
+		taitBryanAnglesD = new Data3f(0,0,0);
+		eulerAnglesR  = new Data3f(0,0,0);
+		eulerAnglesD  = new Data3f(0,0,0);
+		
 		yaw = 0;
 		pitch = 0;
 		roll = 0;
@@ -74,13 +79,18 @@ public class Instruments implements RemoteInstruments
 	public float getBank() {return getRoll();}
 	public Instant getUpdatedTimestamp() {return updatedTimestamp;}
 	public Quaternion getQuaternion() {return quaternion;}
-	public Data3f getTaitBryanAnglesR() {return TaitBryanAnglesR;}
-	public Data3f getTaitBryanAnglesD() {return TaitBryanAnglesD;}
+	public Data3f getTaitBryanAnglesR() {return taitBryanAnglesR;}
+	public Data3f getTaitBryanAnglesD() {return taitBryanAnglesD;}
 	public TimestampedData3f getMagnetometer() {return magnetometer;}
 	public TimestampedData3f getAccelerometer() {return accelerometer;}
 	public TimestampedData3f getGyroscope() {return gyroscope;}
 	public TimestampedData3f getAngles(){return new TimestampedData3f(yaw,pitch,roll);}	
 	public Data3f getLinearAcceleration() {return linearAcceleration;}
+	public Data3f getEulerAnglesR()	{return eulerAnglesR;}
+	public Data3f getEulerAnglesD()	{return eulerAnglesD;}
+
+	public static String getRemoteName() {return REMOTE_NAME;}
+
 
 	//Setters
 	public void setMagnetometer(TimestampedData3f magnetometer) {this.magnetometer = magnetometer;}
@@ -121,16 +131,20 @@ public class Instruments implements RemoteInstruments
 		if(q == null) return; // don't do anything
 		updatedTimestamp = Instant.now();
 		quaternion = q;
-		TaitBryanAnglesR = q.toTaitBryanAngles();
+		taitBryanAnglesR = q.toTaitBryanAngles();
+		eulerAnglesR = q.toEulerianAngles();
+		eulerAnglesD = new Data3f(	(float) Math.toDegrees(eulerAnglesR.getX()),
+									(float) Math.toDegrees(eulerAnglesR.getY()),
+									(float) Math.toDegrees(eulerAnglesR.getZ()));
 	    
-	    yaw   = (float) Math.toDegrees(TaitBryanAnglesR.getX()); 	//radians to degrees		// #KW L634
-	    pitch = (float) Math.toDegrees(TaitBryanAnglesR.getY()); 	//radians to degrees		// #KW L633
-	    roll  = (float) Math.toDegrees(TaitBryanAnglesR.getZ()); 	//radians to degrees		// #KW L637
+	    yaw   = (float) Math.toDegrees(taitBryanAnglesR.getX()); 	//radians to degrees		// #KW L634
+	    pitch = (float) Math.toDegrees(taitBryanAnglesR.getY()); 	//radians to degrees		// #KW L633
+	    roll  = (float) Math.toDegrees(taitBryanAnglesR.getZ()); 	//radians to degrees		// #KW L637
 
 	    // #KW L635 yaw   -= 13.8; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
 	    yaw   += -44.0f/60.0f; // Declination at Letchworth England is minus O degrees and 44 Seconds on 2016-07-11
 	    if(yaw < 0) yaw   += 360.0f; // Ensure heading stays between 0 and 360
-	    TaitBryanAnglesD = new Data3f(yaw, pitch, roll);
+	    taitBryanAnglesD = new Data3f(yaw, pitch, roll);
 	    updatelinearAcceleration(quaternion);
 	}
 	
