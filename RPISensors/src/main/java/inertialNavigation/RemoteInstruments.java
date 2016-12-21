@@ -31,4 +31,7 @@ public interface RemoteInstruments extends Remote
 	TimestampedData3f getGyroscope() throws RemoteException;
 	TimestampedData3f getAngles() throws RemoteException;
 	Data3f getLinearAcceleration() throws RemoteException;
+	Data3f getEulerAnglesR() throws RemoteException;
+	Data3f getEulerAnglesD() throws RemoteException;
+
 }
