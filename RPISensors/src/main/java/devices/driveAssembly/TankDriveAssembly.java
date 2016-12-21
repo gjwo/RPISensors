@@ -42,7 +42,7 @@ public class TankDriveAssembly implements DriveAssembly
     {
         if(angle<0) angle+=360;
         if(angle<0) angle = 0;
-        if(angle>360) angle = 0;
+        if(angle>=360) angle = 0;
         this.angle = angle;
         updateCourse();
     }
