@@ -20,7 +20,7 @@ public class Instruments implements RemoteInstruments
 {
 	private static final String REMOTE_NAME = "Instruments";
 	//Time of last instrument update
-	private  Instant updatedTimestamp = Instant.now();
+	private  Instant updatedTimestamp;
 	
 	//data from individual sensors
 	private  TimestampedData3f magnetometer;
@@ -42,6 +42,7 @@ public class Instruments implements RemoteInstruments
 	
 	public Instruments()
 	{
+		updatedTimestamp = Instant.now();
 		magnetometer = new TimestampedData3f(0,0,0);
 		accelerometer = new TimestampedData3f(0,0,0);
 		gyroscope = new TimestampedData3f(0,0,0);
