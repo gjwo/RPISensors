@@ -85,7 +85,7 @@ class MPU9250Test implements UpdateListener{
     		if (debugLevelTester >=3) System.out.println("RMI started");
 
 
-            this.nav = new Navigate(mpu9250,debugLevelNavigate);           
+            this.nav = new Navigate(mpu9250,debugLevelNavigate);
             //this.navR = new NavResponder(this.nav,"NavResponder rpi3gjw",debugLevelNavResponder);
             
         } catch (I2CFactory.UnsupportedBusNumberException | InterruptedException | IOException e) {
@@ -172,7 +172,7 @@ class MPU9250Test implements UpdateListener{
         if (debugLevelTester >=2) System.out.println("SensorPackage started");
         sensorPackage.start();
         navigator.start();
-        //navR.start();
+        //navR.startup();
         TimeUnit.SECONDS.sleep(n); //Collect data for n seconds
 	}
 	

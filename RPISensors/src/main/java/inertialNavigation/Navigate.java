@@ -61,7 +61,6 @@ public class Navigate implements Runnable, UpdateListener{
 		this.lastDisplayNanoS = nowNanoS;
 		this.displayFrequencyHz = 2;		//refresh the display every 1/2 a second
 		this.listeners = new ArrayList<>();
-		this.instruments = new Instruments();
     }
 	
 	public Instruments getInstruments(){return this.instruments;}
@@ -73,6 +72,7 @@ public class Navigate implements Runnable, UpdateListener{
     public void run()
     {	//#KW L471 - this maps to part of the loop, in this code getting the data is done in a different thread, which prompts this thread to fetch results
     	TimestampedData3f adjustedAcc, adjustedGyr, adjustedMag;
+		this.instruments = new Instruments();
     	while(!Thread.interrupted()&&!stop)
         {
             try
@@ -85,7 +85,7 @@ public class Navigate implements Runnable, UpdateListener{
 	                instruments.setGyroscope(mpu9250.getLatestRotationalAcceleration());// #KW L485-488 done elsewhere, get the results
 	                dataValid = true;
                 }
-                if (dataValid) // must have at least one value to start calculations
+                if (dataValid) // must have at least one value to startup calculations
                 {
 	                // new data or not recalulate the quaternion every 1 ms
 	                
@@ -199,4 +199,9 @@ public class Navigate implements Runnable, UpdateListener{
         }
         System.exit(0);
     }
+
+    public void shutdown()
+	{
+		instruments.unbind();
+	}
 }

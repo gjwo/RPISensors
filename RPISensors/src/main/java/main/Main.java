@@ -1,5 +1,7 @@
 package main;
 
+import subsystems.DriveAssemblySubSystem;
+import subsystems.InstrumentsSubSystem;
 import subsystems.SubSystem;
 
 import java.rmi.RemoteException;
@@ -26,13 +28,14 @@ public class Main implements RemoteMain
 
     private void prepareSubSystems()
     {
-        //TODO: construct and add all subSystems to the hashmap
+        subSystems.put(SubSystemType.DRIVE_ASSEMBLY, new DriveAssemblySubSystem());
+        subSystems.put(SubSystemType.INSTRUMENTS, new InstrumentsSubSystem());
     }
 
 	@Override
 	public void start(EnumSet<SubSystemType> systems) throws RemoteException
 	{
-        for(SubSystemType systemType:systems) subSystems.get(systemType).start();
+        for(SubSystemType systemType:systems) subSystems.get(systemType).startup();
 	}
 
 	@Override
@@ -63,7 +66,11 @@ public class Main implements RemoteMain
 
 	public static void main(String[] args) throws RemoteException
     {
-        String hostname = "192.168.1.123";
-		new Main(hostname);
+        if(args.length < 1)
+        {
+            System.out.println("No hostname specified");
+            return;
+        }
+		new Main(args[0]);
 	}
 }

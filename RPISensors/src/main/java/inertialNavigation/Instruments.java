@@ -1,5 +1,6 @@
 package inertialNavigation;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -17,7 +18,7 @@ import dataTypes.TimestampedData3f;
  */
 public class Instruments implements RemoteInstruments
 {
-	
+	private static final String REMOTE_NAME = "Instruments";
 	//Time of last instrument update
 	private  Instant updatedTimestamp = Instant.now();
 	
@@ -54,7 +55,7 @@ public class Instruments implements RemoteInstruments
         try
         {
             Registry reg = LocateRegistry.getRegistry();
-            reg.rebind("Instruments", UnicastRemoteObject.exportObject(this,0));
+            reg.rebind(REMOTE_NAME, UnicastRemoteObject.exportObject(this,0));
         } catch (RemoteException e)
         {
             e.printStackTrace();
@@ -141,5 +142,17 @@ public class Instruments implements RemoteInstruments
 	    linearAcceleration.setY(accelerometer.getY() + a32);
 	    linearAcceleration.setZ(accelerometer.getZ() - a33);
 
+	}
+
+	public void unbind()
+	{
+		try
+		{
+			Registry reg = LocateRegistry.getRegistry();
+			reg.unbind(REMOTE_NAME);
+		} catch (RemoteException | NotBoundException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

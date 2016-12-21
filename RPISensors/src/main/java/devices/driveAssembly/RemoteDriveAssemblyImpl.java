@@ -1,5 +1,6 @@
 package devices.driveAssembly;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -9,6 +10,7 @@ public class RemoteDriveAssemblyImpl implements RemoteDriveAssembly
 {
 
 	private final DriveAssembly da;
+	private static final String REMOTE_NAME = "DriveAssembly";
 	
 	public RemoteDriveAssemblyImpl(DriveAssembly da) 
 	{
@@ -16,7 +18,7 @@ public class RemoteDriveAssemblyImpl implements RemoteDriveAssembly
         try
         {
             Registry reg = LocateRegistry.getRegistry();
-            reg.rebind("DriveAssembly", UnicastRemoteObject.exportObject(this,0));
+            reg.rebind(REMOTE_NAME, UnicastRemoteObject.exportObject(this,0));
         } catch (RemoteException e)
         {
             e.printStackTrace();
@@ -48,5 +50,17 @@ public class RemoteDriveAssemblyImpl implements RemoteDriveAssembly
 	public void stop() throws RemoteException {
 		da.stop();
 	}
+
+	public void unbind()
+	{
+        try
+        {
+            Registry reg = LocateRegistry.getRegistry();
+            reg.unbind(REMOTE_NAME);
+        } catch (RemoteException | NotBoundException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
 }

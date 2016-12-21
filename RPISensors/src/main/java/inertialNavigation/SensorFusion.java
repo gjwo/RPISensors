@@ -16,8 +16,8 @@ public class SensorFusion {
 	
 
 	// global constants for 9 DoF fusion and AHRS (Attitude and Heading Reference System)
-	private static final float GYRO_MEASUREMENT_ERROR = (float)Math.PI * (40.0f / 180.0f);   	// #KW L279 gyroscope measurement error in rads/s (start at 40 deg/s)
-	private static final float GYRO_MEASUREMENT_DRIFT = (float)Math.PI  * (0.0f  / 180.0f);   	// #KW L280 gyroscope measurement drift in rad/s/s (start at 0.0 deg/s/s)
+	private static final float GYRO_MEASUREMENT_ERROR = (float)Math.PI * (40.0f / 180.0f);   	// #KW L279 gyroscope measurement error in rads/s (startup at 40 deg/s)
+	private static final float GYRO_MEASUREMENT_DRIFT = (float)Math.PI  * (0.0f  / 180.0f);   	// #KW L280 gyroscope measurement drift in rad/s/s (startup at 0.0 deg/s/s)
 	// There is a tradeoff in the BETA parameter between accuracy and response speed.
 	// In the original Madgwick study, BETA of 0.041 (corresponding to GYRO_MEASUREMENT_ERROR of 2.7 degrees/s) was found to give optimal accuracy.
 	// However, with this value, the LSM9SD0 response time is about 10 seconds to a stable initial quaternion.

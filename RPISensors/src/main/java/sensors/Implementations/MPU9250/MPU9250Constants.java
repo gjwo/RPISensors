@@ -124,7 +124,7 @@ enum Registers
     PWR_MGMT_1       (0x6B), // Device defaults to the SLEEP bits
     PWR_MGMT_2       (0x6C),
     DMP_BANK         (0x6D),  // Activates a specific bank in the DMP
-    DMP_RW_PNT       (0x6E),  // Set read/write pointer to a specific start address in specified DMP bank
+    DMP_RW_PNT       (0x6E),  // Set read/write pointer to a specific startup address in specified DMP bank
     DMP_REG          (0x6F),  // Register in DMP from which to read or to which to write
     DMP_REG_1        (0x70),
     DMP_REG_2        (0x71),

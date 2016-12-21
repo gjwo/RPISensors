@@ -13,11 +13,11 @@ public abstract class SubSystem extends Thread
         this.state = SubSystemState.IDLE;
     }
 
-    public abstract void start();
-    public abstract void shutdown();
+    public abstract SubSystemState startup();
+    public abstract SubSystemState shutdown();
 
     public final SubSystemState getCurrentState()
     {
-        return state;
+        return this.state;
     }
 }
