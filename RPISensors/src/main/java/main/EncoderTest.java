@@ -1,9 +1,9 @@
 package main;
 
 import com.pi4j.io.gpio.*;
-import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
-import java.time.Instant;
+import devices.encoder.Encoder;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -12,59 +12,18 @@ import java.util.concurrent.TimeUnit;
  */
 public class EncoderTest
 {
-
-    int one = 0;
-    int two = 0;
-
-    int lastOne = 0;
-    int lastTwo = 0;
-
-    Instant start;
-
-    Direction direction;
-
-    enum Direction
-    {
-        FORWARDS,
-        BACKWARDS
-    }
+	private final Encoder leftEncoder;
+	private final Encoder rightEncoder;
 
     public EncoderTest() throws InterruptedException
     {
-        final GpioController gpio = GpioFactory.getInstance();
-
-
-        final GpioPinDigitalInput RH1 =
-                gpio.provisionDigitalInputPin(RaspiPin.GPIO_13, "RH1", PinPullResistance.PULL_DOWN);
-        final GpioPinDigitalInput RH2 =
-                gpio.provisionDigitalInputPin(RaspiPin.GPIO_14, "RH2", PinPullResistance.PULL_DOWN);
-
-        RH1.setShutdownOptions(true);
-        RH2.setShutdownOptions(true);
-        direction = Direction.FORWARDS;
-
-        RH1.addListener((GpioPinListenerDigital) event ->
-        {
-            // display pin state on console
-            one++;
-            if(lastTwo == two) direction = Direction.FORWARDS;
-            lastTwo = two;
-            //System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
-        });
-        RH2.addListener((GpioPinListenerDigital) event ->
-        {
-            two++;
-            if(lastOne == one) direction = Direction.BACKWARDS;
-            lastOne = one;
-            // display pin state on console
-            //System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
-        });
+    	leftEncoder = new Encoder(RaspiPin.GPIO_13,RaspiPin.GPIO_14);
+    	rightEncoder = new Encoder(RaspiPin.GPIO_10,RaspiPin.GPIO_11);
         while(true)
         {
             TimeUnit.SECONDS.sleep(1);
-            System.out.println("Direction: " + direction.name() + " A: " + one + " B: " + two);
-            one = 0;
-            two = 0;
+            System.out.print("Direction: " + leftEncoder.getDirection().name() + " A: " + leftEncoder.getPin1Count() + " B: " + leftEncoder.getPin2Count());
+            System.out.println(" Direction: " + rightEncoder.getDirection().name() + " C: " + rightEncoder.getPin1Count() + " D: " + rightEncoder.getPin2Count());
         }
     }
 
