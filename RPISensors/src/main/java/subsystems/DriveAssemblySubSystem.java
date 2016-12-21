@@ -39,16 +39,22 @@ public class DriveAssemblySubSystem extends SubSystem
     }
 
     @Override
-    public void startup()
+    public SubSystemState startup()
     {
-        if(this.getCurrentState() != SubSystemState.IDLE) return;
+        if(this.getCurrentState() != SubSystemState.IDLE) return this.getCurrentState();
+        this.state = SubSystemState.STARTING;
         remoteDriveAssembly = new RemoteDriveAssemblyImpl(driveAssembly);
+        this.state = SubSystemState.RUNNING;
+        return this.getCurrentState();
     }
 
     @Override
-    public void shutdown()
+    public SubSystemState shutdown()
     {
-        if(this.getCurrentState() != SubSystemState.RUNNING) return;
+        if(this.getCurrentState() != SubSystemState.RUNNING) return this.getCurrentState();
+        this.state = SubSystemState.STOPPING;
         remoteDriveAssembly.unbind();
+        this.state = SubSystemState.IDLE;
+        return this.getCurrentState();
     }
 }
