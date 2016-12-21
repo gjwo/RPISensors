@@ -60,7 +60,7 @@ public class Navigate implements Runnable, UpdateListener{
 		this.lastUpdateNanoS =  nowNanoS;  	//stop the first iteration having a massive delta
 		this.lastDisplayNanoS = nowNanoS;
 		this.displayFrequencyHz = 2;		//refresh the display every 1/2 a second
-		this.listeners = new ArrayList<UpdateListener>();
+		this.listeners = new ArrayList<>();
 		this.instruments = new Instruments();
     }
 	

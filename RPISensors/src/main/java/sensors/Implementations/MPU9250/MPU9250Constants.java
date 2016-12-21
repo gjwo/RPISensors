@@ -272,7 +272,7 @@ enum AccSelfTest
 	final byte bits;
 	final static byte bitmask = (byte)0xE0;
 	
-	AccSelfTest(byte st){bits=st;};
+	AccSelfTest(byte st){bits=st;}
 }
 
 enum AccScale
@@ -341,7 +341,7 @@ enum GyrSelfTest
 	final byte bits;
 	final static byte bitmask = (byte)0xE0;
 	
-	GyrSelfTest(byte st){bits=st;};
+	GyrSelfTest(byte st){bits=st;}
 }
 enum GyrScale
 {	//Gyroscope Configuration register 1B 27 bits 4:3

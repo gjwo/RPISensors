@@ -15,20 +15,20 @@ import java.time.ZonedDateTime;
 public interface RemoteInstruments extends Remote
 {
     Data3f getTaitBryanAnglesD() throws RemoteException;
-	public Instant getTimestamp() throws RemoteException;
-	public ZonedDateTime getDateTime() throws RemoteException;
-	public float getYaw() throws RemoteException;
-	public float getPitch() throws RemoteException;
-	public float getRoll() throws RemoteException;
-	public float getHeading() throws RemoteException;
-	public float getAttitude() throws RemoteException;
-	public float getBank() throws RemoteException;
-	public Instant getUpdatedTimestamp() throws RemoteException;
-	public Quaternion getQuaternion() throws RemoteException;
-	public Data3f getTaitBryanAnglesR() throws RemoteException;
-	public TimestampedData3f getMagnetometer() throws RemoteException;
-	public TimestampedData3f getAccelerometer() throws RemoteException;
-	public TimestampedData3f getGyroscope() throws RemoteException;
-	public TimestampedData3f getAngles() throws RemoteException;
-	public Data3f getLinearAcceleration() throws RemoteException;
+	Instant getTimestamp() throws RemoteException;
+	ZonedDateTime getDateTime() throws RemoteException;
+	float getYaw() throws RemoteException;
+	float getPitch() throws RemoteException;
+	float getRoll() throws RemoteException;
+	float getHeading() throws RemoteException;
+	float getAttitude() throws RemoteException;
+	float getBank() throws RemoteException;
+	Instant getUpdatedTimestamp() throws RemoteException;
+	Quaternion getQuaternion() throws RemoteException;
+	Data3f getTaitBryanAnglesR() throws RemoteException;
+	TimestampedData3f getMagnetometer() throws RemoteException;
+	TimestampedData3f getAccelerometer() throws RemoteException;
+	TimestampedData3f getGyroscope() throws RemoteException;
+	TimestampedData3f getAngles() throws RemoteException;
+	Data3f getLinearAcceleration() throws RemoteException;
 }

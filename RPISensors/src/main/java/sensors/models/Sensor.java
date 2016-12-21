@@ -22,7 +22,7 @@ public abstract class Sensor <T,S>
      */
     public Sensor(int sampleRate, int sampleSize)
     {
-        readings = new CircularArrayRing<T>(sampleSize);
+        readings = new CircularArrayRing<>(sampleSize);
         this.sampleRate = sampleRate;
         this.sampleSize = sampleSize;
         this.debugLevel=0;
