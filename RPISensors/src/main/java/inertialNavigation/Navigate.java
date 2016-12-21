@@ -61,6 +61,7 @@ public class Navigate implements Runnable, UpdateListener{
 		this.lastDisplayNanoS = nowNanoS;
 		this.displayFrequencyHz = 2;		//refresh the display every 1/2 a second
 		this.listeners = new ArrayList<>();
+		this.instruments = new Instruments();
     }
 	
 	public Instruments getInstruments(){return this.instruments;}
@@ -72,7 +73,6 @@ public class Navigate implements Runnable, UpdateListener{
     public void run()
     {	//#KW L471 - this maps to part of the loop, in this code getting the data is done in a different thread, which prompts this thread to fetch results
     	TimestampedData3f adjustedAcc, adjustedGyr, adjustedMag;
-		this.instruments = new Instruments();
     	while(!Thread.interrupted()&&!stop)
         {
             try
