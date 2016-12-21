@@ -1,4 +1,4 @@
-package devices;
+package devices.controller;
 
 /**
  * RPISensors - devices
