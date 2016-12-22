@@ -17,8 +17,8 @@ public class EncoderTest
 
     public EncoderTest() throws InterruptedException
     {
-    	leftEncoder = new Encoder(RaspiPin.GPIO_13,RaspiPin.GPIO_14,"LH");
-    	rightEncoder = new Encoder(RaspiPin.GPIO_10,RaspiPin.GPIO_11,"RH");
+    	leftEncoder = new Encoder(RaspiPin.GPIO_13,RaspiPin.GPIO_14,"LH",100f);
+    	rightEncoder = new Encoder(RaspiPin.GPIO_10,RaspiPin.GPIO_11,"RH",100f);
         while(true)
         {
             TimeUnit.SECONDS.sleep(1);
