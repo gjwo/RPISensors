@@ -21,7 +21,7 @@ public class Encoder implements GpioPinListenerDigital
         BACKWARDS
     }
 
-    class TimedEncoderEvent
+    public class TimedEncoderEvent
     {
     	private final Instant eTime;
     	private final PinState state;
@@ -33,9 +33,9 @@ public class Encoder implements GpioPinListenerDigital
     		this.pin = p;
     	}
     	//Getters
-		Instant getTime() {return eTime;}
-		PinState getState() {return state;} 
-		GpioPin getPin() {return pin;}
+		public Instant getTime() {return eTime;}
+		public PinState getState() {return state;} 
+		public GpioPin getPin() {return pin;}
 		
 		public String toString()
 		{
@@ -45,7 +45,7 @@ public class Encoder implements GpioPinListenerDigital
 		
     }
     
-    class TimedDirectionEvent
+    public class TimedDirectionEvent
     {
     	private final Instant eTime;
     	private final Direction direction;
@@ -57,9 +57,9 @@ public class Encoder implements GpioPinListenerDigital
     		this.eCount = c;
     	}
     	//Getters
-		Instant getTime() {return eTime;}
-		Direction getDirection() {return direction;} 
-		long getCount() {return eCount;} 
+		public Instant getTime() {return eTime;}
+		public Direction getDirection() {return direction;} 
+		public long getCount() {return eCount;} 
 		
 		public String toString()
 		{
@@ -68,6 +68,12 @@ public class Encoder implements GpioPinListenerDigital
 		}
     }
     
+    class DirectionChange extends Exception
+    {
+		private static final long serialVersionUID = 1L;  	
+    }
+    
+    private final long DEFAULT_INTERVAL_MS = 100; 
     private final CircularArrayRing <TimedEncoderEvent> pinEvents;
     private CircularArrayRing <TimedDirectionEvent> directionEvents;
     private final Instant start;
@@ -81,6 +87,8 @@ public class Encoder implements GpioPinListenerDigital
     private float lastSpeed;
     private float distance;
     private float lastDistance;
+    private Instant time;
+    private Instant lastTime;
     private Duration speedCalcDuration;
     private Duration lastSpeedCalcDuration;
     private Duration distanceDuration;
@@ -136,68 +144,63 @@ public class Encoder implements GpioPinListenerDigital
 	public Duration getLastSpeedCalcDuration() {return lastSpeedCalcDuration;}
 	public Duration getDistanceDuration() {return distanceDuration;}
 	public Duration getLastDistanceDuration() {return lastDistanceDuration;}
+	public TimedDirectionEvent getLastDirectionChange() {return directionEvents.get(0);}
+	public TimedEncoderEvent getLastPinEvent() {return pinEvents.get(0);}
+
+	public float getMotorRotationsPerMetre()
+	{
+		return motorRotationsPerMetre;
+	}
+
+	public void setMotorRotationsPerMetre(float motorRotationsPerMetre)
+	{
+		this.motorRotationsPerMetre = motorRotationsPerMetre;
+	}
+
+	public float getMotorRotationsPerTrackWheelR()
+	{
+		return motorRotationsPerTrackWheelR;
+	}
+
+	public void setMotorRotationsPerTrackWheelR(float motorRotationsPerTrackWheelR)
+	{
+		this.motorRotationsPerTrackWheelR = motorRotationsPerTrackWheelR;
+	}
+
+	public long getDEFAULT_INTERVAL_MS()
+	{
+		return DEFAULT_INTERVAL_MS;
+	}
+
+	public Instant getTime()
+	{
+		return time;
+	}
+
+	public Instant getLastTime()
+	{
+		return lastTime;
+	}
+
+	public float getTrackWheelRotationsPerMetre()
+	{
+		return TrackWheelRotationsPerMetre;
+	}
+
+	public Clock getClock()
+	{
+		return clock;
+	}
 
 	//Calculations
-	public float calculateDistanceSince(Instant t1)
-	{
-		lastDistance = distance;
-		lastDistanceDuration = distanceDuration;
-		speedCalcDuration = Duration.between(t1,Instant.now(clock));
-		//TODO
-		return distance;
-	}
-	
-	public float calculateAverageSpeedSince(Instant t1)
-	{
-		if (Duration.between(t1,Instant.now(clock)).toMillis()<1) return -1;
-		calculateDistanceSince(t1);
-		lastSpeed = speed;
-		lastSpeedCalcDuration = speedCalcDuration;
-		speedCalcDuration = Duration.between(t1,Instant.now(clock));
-		speed = distance/ ((float)speedCalcDuration.toMillis()/1000);
-		return speed;
-	}
-
-	@Override
-	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
-	{
-		pinEvents.add(new TimedEncoderEvent(event.getState(), event.getPin()));
-	}
-	
-	public void printPinEvents()
-	{
-		Iterator<TimedEncoderEvent> it = pinEvents.iterator();
-		while (it.hasNext())
-		{
-			System.out.println(it.next().toString());
-		}
-	}
-	
-	public void printRecentPinEvents(long periodMilliSecs)
-	{
-		if (periodMilliSecs<=0) return;
-		Instant periodStart = Instant.now(clock).minusMillis(periodMilliSecs);
-		Iterator<TimedEncoderEvent> it = pinEvents.iterator();
-		TimedEncoderEvent event;
-		while (it.hasNext())
-		{
-			event = it.next();
-			if(event.eTime.isAfter(periodStart) )
-			{
-				System.out.println(event.toString());
-			}
-			else return;
-		}
-	}
-	
-	public void CalcDirectionChanges()
+	public void calcDirectionChanges()
 	{
 		Direction direction = Direction.FORWARDS;
 		Direction lastDirection = direction;
 		TimedEncoderEvent event, lastEvent;
 		Iterator<TimedEncoderEvent> it = pinEvents.iterator();
 		long eventCount = 0;
-		directionEvents.clear();
+		directionEvents = new CircularArrayRing<>(1000);
 		if (!it.hasNext()) return;
 		lastEvent = it.next();
 		while (it.hasNext())
@@ -215,6 +218,108 @@ public class Encoder implements GpioPinListenerDigital
 		}
 	}
 
+	public float calculateDistanceSince(Instant t1) throws DirectionChange
+	{
+		if ( directionEvents.get(0).eTime.isAfter(t1)) throw new DirectionChange();		
+		lastDistance = distance;
+		float rotations = (float)CountPinEventsSince(t1)/4f;
+		distance = rotations /  motorRotationsPerMetre;
+		return distance;
+	}
+	
+	public float calculateAverageSpeedSince(Instant t1) throws DirectionChange
+	{
+		if (Duration.between(t1,Instant.now(clock)).toMillis()<1) return -1f;
+		calculateDistanceSince(t1);
+		lastSpeed = speed;
+		lastSpeedCalcDuration = speedCalcDuration;
+		speedCalcDuration = Duration.between(t1,Instant.now(clock));
+		speed = distance/ ((float)speedCalcDuration.toMillis()/1000f);
+		lastTime = t1;
+		return speed;
+	}
+
+	public float calculateSpeed()
+	{
+		time = Instant.now(clock);
+		Instant startTime = time.minusMillis(DEFAULT_INTERVAL_MS);
+		if (directionEvents.get(0).getTime().isAfter(startTime)) startTime = directionEvents.get(0).getTime().plusMillis(1);
+		try
+		{
+			return calculateAverageSpeedSince(startTime);
+		} catch (DirectionChange e)
+		{
+			return -999f; //this shouldn't happen
+		}
+	}
+	
+	public void calculate()
+	{
+		calcDirectionChanges();
+		calculateSpeed();
+		//distance is calculated to work out speed
+	}
+	
+	public long CountPinEventsSince(Instant periodStart)
+	{
+		Iterator<TimedEncoderEvent> it = pinEvents.iterator();
+		TimedEncoderEvent event;
+		long count = 0;
+		while (it.hasNext())
+		{
+			event = it.next();
+			if(event.eTime.isAfter(periodStart) )
+			{
+				count++ ;
+			}
+			else return count;
+		}
+		return count;
+	}
+	
+	public float distanceSinceDirectionChange()
+	{
+		if (directionEvents.size()>0)
+		{
+			long count = directionEvents.get(0).getCount();
+			return (float)count / 4 / motorRotationsPerMetre;
+		} else return 0f;
+	}
+	
+	// Listener
+	@Override
+	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
+	{
+		pinEvents.add(new TimedEncoderEvent(event.getState(), event.getPin()));
+	}
+	
+	public void printPinEvents()
+	{
+		Iterator<TimedEncoderEvent> it = pinEvents.iterator();
+		while (it.hasNext())
+		{
+			System.out.println(it.next().toString());
+		}
+	}
+	
+	//print Methods
+	public void printRecentPinEvents(long periodMilliSecs)
+	{
+		if (periodMilliSecs<=0) return;
+		Instant periodStart = Instant.now(clock).minusMillis(periodMilliSecs);
+		Iterator<TimedEncoderEvent> it = pinEvents.iterator();
+		TimedEncoderEvent event;
+		while (it.hasNext())
+		{
+			event = it.next();
+			if(event.eTime.isAfter(periodStart) )
+			{
+				System.out.println(event.toString());
+			}
+			else return;
+		}
+	}
+	
 	public void printDirectionChanges(long periodMilliSecs)
 	{
 		if (periodMilliSecs<=0) return;
