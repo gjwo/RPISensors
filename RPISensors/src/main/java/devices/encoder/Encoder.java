@@ -32,13 +32,17 @@ public class Encoder implements GpioPinListenerDigital
     		this.state = s;
     		this.pin = p;
     	}
+    	//Getters
 		Instant geteTime() {return eTime;}
 		PinState getState() {return state;} 
+		GpioPin getPin() {return pin;}
+		
 		public String toString()
 		{
 			final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm:ss.nnnnnnnnn").withZone(ZoneId.systemDefault());
 			return "Event at " + formatter.format(eTime) + " on pin " + pin.getName() + " to state " + state.getName();
 		}
+		
     }
     
     private final CircularArrayRing <TimedEvent> pinEvents;
@@ -146,10 +150,50 @@ public class Encoder implements GpioPinListenerDigital
 	
 	public void printEvents()
 	{
-		Iterator it = pinEvents.iterator();
+		Iterator<TimedEvent> it = pinEvents.iterator();
 		while (it.hasNext())
 		{
 			System.out.println(it.next().toString());
+		}
+	}
+	
+	public void printRecentEvents(long periodSecs)
+	{
+		if (periodSecs<=0) return;
+		Instant periodStart = Instant.now(clock).minusSeconds(periodSecs);
+		Iterator<TimedEvent> it = pinEvents.iterator();
+		TimedEvent event;
+		while (it.hasNext())
+		{
+			event = it.next();
+			if(event.eTime.isAfter(periodStart) )
+			{
+				System.out.println(event.toString());
+			}
+			else return;
+		}
+	}
+	
+	public void printDirectionChanges(long periodSecs)
+	{
+		if (periodSecs<=0) return;
+		TimedEvent event, lastEvent;
+		Instant periodStart = Instant.now(clock).minusSeconds(periodSecs);
+		Iterator<TimedEvent> it = pinEvents.iterator();
+		if (!it.hasNext()) return;
+		lastEvent = it.next();
+		while (it.hasNext())
+		{
+			event = it.next();
+			if(event.eTime.isAfter(periodStart) )
+			{
+				if (event.pin.getName().equals(lastEvent.pin.getName()))
+				{
+					System.out.println(lastEvent.toString());
+				}
+				lastEvent = event;
+			}
+			else return;
 		}
 	}
 }
