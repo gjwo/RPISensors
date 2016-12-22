@@ -18,17 +18,20 @@ public class EncoderTest
     public EncoderTest() throws InterruptedException
     {
     	Long period = 10L;
-    	leftEncoder = new Encoder(RaspiPin.GPIO_13,RaspiPin.GPIO_14,"LH",100f);
-    	rightEncoder = new Encoder(RaspiPin.GPIO_10,RaspiPin.GPIO_11,"RH",100f);
+    	leftEncoder = new Encoder(RaspiPin.GPIO_13,RaspiPin.GPIO_14,"LH",427.5f);
+    	rightEncoder = new Encoder(RaspiPin.GPIO_10,RaspiPin.GPIO_11,"RH",427.5f);
         while(true)
         {
             TimeUnit.SECONDS.sleep(period);
             //System.out.print("Direction: " + leftEncoder.getDirection().name() + " A: " + leftEncoder.getPin1Count() + " B: " + leftEncoder.getPin2Count());
             //System.out.println(" Direction: " + rightEncoder.getDirection().name() + " C: " + rightEncoder.getPin1Count() + " D: " + rightEncoder.getPin2Count());
-            System.out.println("Changes in Direction");
-            leftEncoder.printDirectionChanges(period);
-            System.out.println("Events in Period");           
-            leftEncoder.printRecentEvents(period);
+            //System.out.println("Changes in Direction");
+            //leftEncoder.printDirectionChanges(period*1000);
+            //System.out.println("Events in Period");           
+            //leftEncoder.printRecentEvents(period);
+            leftEncoder.CalcDirectionChanges();
+            leftEncoder.printDirectionChanges(period*1000);
+            leftEncoder.printPinEventsSinceDirectionChange();
         }
     }
 

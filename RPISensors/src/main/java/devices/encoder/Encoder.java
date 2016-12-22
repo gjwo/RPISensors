@@ -21,19 +21,19 @@ public class Encoder implements GpioPinListenerDigital
         BACKWARDS
     }
 
-    class TimedEvent
+    class TimedEncoderEvent
     {
     	private final Instant eTime;
     	private final PinState state;
     	private final GpioPin pin;
-    	TimedEvent(PinState s, GpioPin p)
+    	TimedEncoderEvent(PinState s, GpioPin p)
     	{
     		this.eTime = Instant.now(clock);
     		this.state = s;
     		this.pin = p;
     	}
     	//Getters
-		Instant geteTime() {return eTime;}
+		Instant getTime() {return eTime;}
 		PinState getState() {return state;} 
 		GpioPin getPin() {return pin;}
 		
@@ -45,7 +45,31 @@ public class Encoder implements GpioPinListenerDigital
 		
     }
     
-    private final CircularArrayRing <TimedEvent> pinEvents;
+    class TimedDirectionEvent
+    {
+    	private final Instant eTime;
+    	private final Direction direction;
+    	private final long eCount;
+    	TimedDirectionEvent(Instant t, Direction d, long c)
+    	{
+    		this.eTime = t;
+    		this.direction = d;
+    		this.eCount = c;
+    	}
+    	//Getters
+		Instant getTime() {return eTime;}
+		Direction getDirection() {return direction;} 
+		long getCount() {return eCount;} 
+		
+		public String toString()
+		{
+			final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm:ss.nnnnnnnnn").withZone(ZoneId.systemDefault());
+			return "Direction change at " + formatter.format(eTime) + " after "+ eCount+" events to " + direction.name();
+		}
+    }
+    
+    private final CircularArrayRing <TimedEncoderEvent> pinEvents;
+    private CircularArrayRing <TimedDirectionEvent> directionEvents;
     private final Instant start;
     private final String name;
     private long pin1EventCount;
@@ -61,13 +85,17 @@ public class Encoder implements GpioPinListenerDigital
     private Duration lastSpeedCalcDuration;
     private Duration distanceDuration;
     private Duration lastDistanceDuration;
-    private float rotationsPerMeter;
+    private float motorRotationsPerMetre;
+    private float motorRotationsPerTrackWheelR;
+    private float TrackWheelRotationsPerMetre;
+    
     private final Clock clock;
 	
 	public Encoder(Pin p1, Pin p2, String n, float rpm)
 	{
 		this.clock = new NanoClock();
 		this.pinEvents = new CircularArrayRing<>(1000);
+		this.directionEvents = new CircularArrayRing<>(1000);
 		this.start =  Instant.now(clock);
 		this.name = n;
         this.direction = Direction.FORWARDS;
@@ -77,7 +105,9 @@ public class Encoder implements GpioPinListenerDigital
         this.lastSpeedCalcDuration = Duration.ofSeconds(1);
         this.distance = 0f;
         this.lastDistance = 0f;
-        this.rotationsPerMeter = rpm;
+        this.TrackWheelRotationsPerMetre = 5.7f;
+        this.motorRotationsPerTrackWheelR = 75f;
+        this.motorRotationsPerMetre = rpm;
         final GpioController gpio = GpioFactory.getInstance();
         final GpioPinDigitalInput pin1 =
                 gpio.provisionDigitalInputPin(p1, name+"1", PinPullResistance.PULL_DOWN);
@@ -86,20 +116,6 @@ public class Encoder implements GpioPinListenerDigital
 
         pin1.setShutdownOptions(true);
         pin2.setShutdownOptions(true);
-        /*pin1.addListener((GpioPinListenerDigital) event ->
-        {
-        	pin1EventCount++;
-            if(lastPin2EventCount == pin2EventCount) direction = Direction.FORWARDS;
-            lastPin2EventCount = pin2EventCount;
-            pin1Events.add(new timedEvent(event.getState()));
-        });
-        pin2.addListener((GpioPinListenerDigital) event ->
-        {
-        	pin2EventCount++;
-            if(lastPin1EventCount == pin1EventCount) direction = Direction.BACKWARDS;
-            lastPin1EventCount = pin1EventCount;
-            pin2Events.add(new timedEvent(event.getState()));
-        });*/
         pin1.addListener(this);
         pin2.addListener(this);
 	}
@@ -145,24 +161,24 @@ public class Encoder implements GpioPinListenerDigital
 	@Override
 	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
 	{
-		pinEvents.add(new TimedEvent(event.getState(), event.getPin()));
+		pinEvents.add(new TimedEncoderEvent(event.getState(), event.getPin()));
 	}
 	
-	public void printEvents()
+	public void printPinEvents()
 	{
-		Iterator<TimedEvent> it = pinEvents.iterator();
+		Iterator<TimedEncoderEvent> it = pinEvents.iterator();
 		while (it.hasNext())
 		{
 			System.out.println(it.next().toString());
 		}
 	}
 	
-	public void printRecentEvents(long periodSecs)
+	public void printRecentPinEvents(long periodMilliSecs)
 	{
-		if (periodSecs<=0) return;
-		Instant periodStart = Instant.now(clock).minusSeconds(periodSecs);
-		Iterator<TimedEvent> it = pinEvents.iterator();
-		TimedEvent event;
+		if (periodMilliSecs<=0) return;
+		Instant periodStart = Instant.now(clock).minusMillis(periodMilliSecs);
+		Iterator<TimedEncoderEvent> it = pinEvents.iterator();
+		TimedEncoderEvent event;
 		while (it.hasNext())
 		{
 			event = it.next();
@@ -174,26 +190,71 @@ public class Encoder implements GpioPinListenerDigital
 		}
 	}
 	
-	public void printDirectionChanges(long periodSecs)
+	public void CalcDirectionChanges()
 	{
-		if (periodSecs<=0) return;
-		TimedEvent event, lastEvent;
-		Instant periodStart = Instant.now(clock).minusSeconds(periodSecs);
-		Iterator<TimedEvent> it = pinEvents.iterator();
+		Direction direction = Direction.FORWARDS;
+		Direction lastDirection = direction;
+		TimedEncoderEvent event, lastEvent;
+		Iterator<TimedEncoderEvent> it = pinEvents.iterator();
+		long eventCount = 0;
+		directionEvents.clear();
 		if (!it.hasNext()) return;
 		lastEvent = it.next();
 		while (it.hasNext())
 		{
 			event = it.next();
+			eventCount++;
+			if (event.pin.getName().equals(lastEvent.pin.getName()))
+			{
+				direction = (lastDirection==Direction.FORWARDS?Direction.BACKWARDS:Direction.FORWARDS);
+				lastDirection = direction;
+				directionEvents.add(new TimedDirectionEvent(event.eTime,direction,eventCount));
+
+			}
+			lastEvent = event;
+		}
+	}
+
+	public void printDirectionChanges(long periodMilliSecs)
+	{
+		if (periodMilliSecs<=0) return;
+		TimedDirectionEvent event;
+		Instant periodStart = Instant.now(clock).minusMillis(periodMilliSecs);
+		Iterator<TimedDirectionEvent> it = directionEvents.iterator();
+		while (it.hasNext())
+		{
+			event = it.next();
 			if(event.eTime.isAfter(periodStart) )
 			{
-				if (event.pin.getName().equals(lastEvent.pin.getName()))
-				{
-					System.out.println(lastEvent.toString());
-				}
-				lastEvent = event;
+				System.out.println(event.toString());
 			}
 			else return;
+		}
+	}
+	
+	public void printPinEventsSinceDirectionChange()
+	{
+		long eventCount = 0;
+		Iterator<TimedEncoderEvent> it = pinEvents.iterator();
+		TimedEncoderEvent event, lastEvent, firstEvent;
+		if (!it.hasNext()) return;
+		lastEvent = it.next();
+		firstEvent = lastEvent;
+		eventCount++;
+		while (it.hasNext())
+		{
+			event = it.next();
+			eventCount++;
+			if (event.pin.getName().equals(lastEvent.pin.getName()))
+			{
+				Duration d = Duration.between(event.eTime,firstEvent.eTime);
+				System.out.println("Direction change at " + event.toString());
+				System.out.println("Duration: " + d.toMillis() + "ms Events: " + eventCount + " Motor Rotations: " + eventCount/4 
+						+ " Track Wheel Rotations: " + (float)eventCount/4f/75f);
+				printRecentPinEvents(d.toMillis());
+				return; //Turning point found
+			}
+			lastEvent = event;
 		}
 	}
 }
