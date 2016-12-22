@@ -21,9 +21,10 @@ public class EncoderTest
     	rightEncoder = new Encoder(RaspiPin.GPIO_10,RaspiPin.GPIO_11,"RH",100f);
         while(true)
         {
-            TimeUnit.SECONDS.sleep(1);
-            System.out.print("Direction: " + leftEncoder.getDirection().name() + " A: " + leftEncoder.getPin1Count() + " B: " + leftEncoder.getPin2Count());
-            System.out.println(" Direction: " + rightEncoder.getDirection().name() + " C: " + rightEncoder.getPin1Count() + " D: " + rightEncoder.getPin2Count());
+            TimeUnit.SECONDS.sleep(10);
+            //System.out.print("Direction: " + leftEncoder.getDirection().name() + " A: " + leftEncoder.getPin1Count() + " B: " + leftEncoder.getPin2Count());
+            //System.out.println(" Direction: " + rightEncoder.getDirection().name() + " C: " + rightEncoder.getPin1Count() + " D: " + rightEncoder.getPin2Count());
+            leftEncoder.printEvents();
         }
     }
 

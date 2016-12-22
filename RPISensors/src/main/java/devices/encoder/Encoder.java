@@ -1,13 +1,19 @@
 package devices.encoder;
 import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 import dataTypes.CircularArrayRing;
+import dataTypes.NanoClock;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
 
-public class Encoder
+public class Encoder implements GpioPinListenerDigital
 {
     public enum Direction
     {
@@ -15,21 +21,27 @@ public class Encoder
         BACKWARDS
     }
 
-    class timedEvent
+    class TimedEvent
     {
     	private final Instant eTime;
     	private final PinState state;
-    	timedEvent(PinState s)
+    	private final GpioPin pin;
+    	TimedEvent(PinState s, GpioPin p)
     	{
-    		this.eTime = Instant.now();
+    		this.eTime = Instant.now(clock);
     		this.state = s;
+    		this.pin = p;
     	}
 		Instant geteTime() {return eTime;}
-		PinState getState() {return state;} 	
+		PinState getState() {return state;} 
+		public String toString()
+		{
+			final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm:ss.nnnnnnnnn").withZone(ZoneId.systemDefault());
+			return "Event at " + formatter.format(eTime) + " on pin " + pin.getName() + " to state " + state.getName();
+		}
     }
     
-    private final CircularArrayRing <timedEvent> pin1Events;
-    private final CircularArrayRing <timedEvent> pin2Events;
+    private final CircularArrayRing <TimedEvent> pinEvents;
     private final Instant start;
     private final String name;
     private long pin1EventCount;
@@ -46,12 +58,13 @@ public class Encoder
     private Duration distanceDuration;
     private Duration lastDistanceDuration;
     private float rotationsPerMeter;
+    private final Clock clock;
 	
 	public Encoder(Pin p1, Pin p2, String n, float rpm)
 	{
-		this.pin1Events = new CircularArrayRing<>(500); 
-		this.pin2Events = new CircularArrayRing<>(500); 
-		this.start =  Instant.now();
+		this.clock = new NanoClock();
+		this.pinEvents = new CircularArrayRing<>(1000);
+		this.start =  Instant.now(clock);
 		this.name = n;
         this.direction = Direction.FORWARDS;
         this.speed = 0f;
@@ -62,27 +75,29 @@ public class Encoder
         this.lastDistance = 0f;
         this.rotationsPerMeter = rpm;
         final GpioController gpio = GpioFactory.getInstance();
-        final GpioPinDigitalInput RH1 =
+        final GpioPinDigitalInput pin1 =
                 gpio.provisionDigitalInputPin(p1, name+"1", PinPullResistance.PULL_DOWN);
-        final GpioPinDigitalInput RH2 =
+        final GpioPinDigitalInput pin2 =
                 gpio.provisionDigitalInputPin(p2, name+"2", PinPullResistance.PULL_DOWN);
 
-        RH1.setShutdownOptions(true);
-        RH2.setShutdownOptions(true);
-        RH1.addListener((GpioPinListenerDigital) event ->
+        pin1.setShutdownOptions(true);
+        pin2.setShutdownOptions(true);
+        /*pin1.addListener((GpioPinListenerDigital) event ->
         {
         	pin1EventCount++;
             if(lastPin2EventCount == pin2EventCount) direction = Direction.FORWARDS;
             lastPin2EventCount = pin2EventCount;
             pin1Events.add(new timedEvent(event.getState()));
         });
-        RH2.addListener((GpioPinListenerDigital) event ->
+        pin2.addListener((GpioPinListenerDigital) event ->
         {
         	pin2EventCount++;
             if(lastPin1EventCount == pin1EventCount) direction = Direction.BACKWARDS;
             lastPin1EventCount = pin1EventCount;
             pin2Events.add(new timedEvent(event.getState()));
-        });
+        });*/
+        pin1.addListener(this);
+        pin2.addListener(this);
 	}
 
 	//Getters
@@ -107,19 +122,34 @@ public class Encoder
 	{
 		lastDistance = distance;
 		lastDistanceDuration = distanceDuration;
-		speedCalcDuration = Duration.between(t1,Instant.now());
+		speedCalcDuration = Duration.between(t1,Instant.now(clock));
 		//TODO
 		return distance;
 	}
 	
 	public float calculateAverageSpeedSince(Instant t1)
 	{
-		if (Duration.between(t1,Instant.now()).toMillis()<1) return -1;
+		if (Duration.between(t1,Instant.now(clock)).toMillis()<1) return -1;
 		calculateDistanceSince(t1);
 		lastSpeed = speed;
 		lastSpeedCalcDuration = speedCalcDuration;
-		speedCalcDuration = Duration.between(t1,Instant.now());
+		speedCalcDuration = Duration.between(t1,Instant.now(clock));
 		speed = distance/ ((float)speedCalcDuration.toMillis()/1000);
 		return speed;
+	}
+
+	@Override
+	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
+	{
+		pinEvents.add(new TimedEvent(event.getState(), event.getPin()));
+	}
+	
+	public void printEvents()
+	{
+		Iterator it = pinEvents.iterator();
+		while (it.hasNext())
+		{
+			System.out.println(it.next().toString());
+		}
 	}
 }
