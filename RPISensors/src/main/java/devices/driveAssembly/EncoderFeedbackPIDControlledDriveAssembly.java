@@ -22,8 +22,8 @@ public class EncoderFeedbackPIDControlledDriveAssembly extends TankDriveAssembly
     private static final float SAMPLE_RATE = 20;
 
     private static final double KP = 0.1;
-    private static final double KI = 0.4;
-    private static final double KD = 0.1;
+    private static final double KI = 0.25;
+    private static final double KD = 0.3;
 
     public EncoderFeedbackPIDControlledDriveAssembly(Motor left, Motor right, Encoder leftEn, Encoder rightEn)
     {

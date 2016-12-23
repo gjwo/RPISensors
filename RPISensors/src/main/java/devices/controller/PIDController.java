@@ -95,10 +95,18 @@ public class PIDController extends Thread
         double dInput = error - lastInput;
 
    /*Compute PID output*/
-        output = kp * error + ITerm - kd * dInput;
-        //System.out.println("output calc: kp =" + kp + " error =" + error + " ITerm =" + ITerm + " kd =" + kd + " dInput =" + dInput);
-        if(output > outMax) output = outMax;
-        else if(output < outMin) output = outMin;
+
+        if(setpoint == 0 && output <0.05)
+        {
+            output = 0;
+        }
+        else
+        {
+            output = kp * error + ITerm - kd * dInput;
+            //System.out.println("output calc: kp =" + kp + " error =" + error + " ITerm =" + ITerm + " kd =" + kd + " dInput =" + dInput);
+            if(output > outMax) output = outMax;
+            else if(output < outMin) output = outMin;
+        }
 
    /*Remember some variables for next time*/
         lastInput = input;

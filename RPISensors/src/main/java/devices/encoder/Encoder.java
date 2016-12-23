@@ -163,7 +163,8 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 	public double getInput()
 	{
 		this.calculate();
-		return getDirection()==Direction.FORWARDS? getSpeed():-getSpeed();
+		//return getDirection()==Direction.FORWARDS? getSpeed():-getSpeed();
+		return getSpeed();
 	}
 
 	//Calculations
