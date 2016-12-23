@@ -3,6 +3,7 @@ package devices.driveAssembly;
 import devices.controller.PIDControlled;
 import devices.controller.PIDController;
 import devices.encoder.Encoder;
+import devices.encoder.NewEncoder;
 import devices.motors.Motor;
 
 import java.util.concurrent.TimeUnit;
@@ -13,8 +14,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class EncoderFeedbackPIDControlledDriveAssembly extends TankDriveAssembly implements DriveAssembly
 {
-    private final Encoder leftEn;
-    private final Encoder rightEn;
+    private final NewEncoder leftEn;
+    private final NewEncoder rightEn;
 
     private PIDController leftPID;
     private PIDController rightPID;
@@ -25,16 +26,16 @@ public class EncoderFeedbackPIDControlledDriveAssembly extends TankDriveAssembly
     private static final double KI = 0.25;
     private static final double KD = 0.3;
 
-    public EncoderFeedbackPIDControlledDriveAssembly(Motor left, Motor right, Encoder leftEn, Encoder rightEn)
+    public EncoderFeedbackPIDControlledDriveAssembly(Motor left, Motor right, NewEncoder leftEn, NewEncoder rightEn)
     {
         super(left,right);
         this.leftEn = leftEn;
         this.rightEn = rightEn;
 
-        leftPID = new PIDController(0d,SAMPLE_RATE,KP,KI,KD,-1,1, PIDController.OperatingMode.AUTOMATIC, true);
+        leftPID = new PIDController(true,0d,SAMPLE_RATE,KP,KI,KD,-1,1, PIDController.OperatingMode.AUTOMATIC);//, true);
         leftPID.setInputProvider(leftEn);
         leftPID.addOutputListener(left);
-        rightPID = new PIDController(0d,SAMPLE_RATE,KP,KI,KD,-1,1, PIDController.OperatingMode.AUTOMATIC);
+        rightPID = new PIDController(false,0d,SAMPLE_RATE,KP,KI,KD,-1,1, PIDController.OperatingMode.AUTOMATIC,true);
         rightPID.setInputProvider(rightEn);
         rightPID.addOutputListener(right);
 

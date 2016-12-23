@@ -33,13 +33,16 @@ public class NewEncoder implements GpioPinListenerDigital, PIDInputProvider
 	private double velocity;
 	private double displacement;
 	private double totalDisplacement;
-	
+
+	private final boolean reversed;
+
 	private volatile long rotations;
 	private Instant lastTime;
 	
-	public NewEncoder(Pin a,Pin b, String name, double metersPerRotation )
+	public NewEncoder(Pin a,Pin b, String name, double metersPerRotation, boolean reversed)
 	{
 		this.clock = new NanoClock();
+		this.reversed = reversed;
         this.direction = Direction.CLOCKWISE;
         this.metresPerRotation = metersPerRotation;
         this.rotations= 0;
@@ -60,7 +63,7 @@ public class NewEncoder implements GpioPinListenerDigital, PIDInputProvider
 
 	private void calculate()
 	{
-		displacement = rotations*metresPerRotation;
+		displacement = rotations*(reversed?-metresPerRotation:metresPerRotation);
 		totalDisplacement += displacement;
 		Instant t = Instant.now(clock);
 		velocity = displacement/((double)ChronoUnit.NANOS.between(lastTime, t)/1000000000d);

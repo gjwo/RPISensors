@@ -5,6 +5,7 @@ import devices.driveAssembly.DriveAssembly;
 import devices.driveAssembly.EncoderFeedbackPIDControlledDriveAssembly;
 import devices.driveAssembly.TankDriveAssembly;
 import devices.encoder.Encoder;
+import devices.encoder.NewEncoder;
 import devices.motors.DCMotor;
 import devices.motors.Motor;
 
@@ -16,15 +17,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class PIDTest
 {
-    private final Encoder leftEncoder;
-    private final Encoder rightEncoder;
+    private final NewEncoder leftEncoder;
+    private final NewEncoder rightEncoder;
 
     private final EncoderFeedbackPIDControlledDriveAssembly da;
 
     private PIDTest() throws InterruptedException
     {
-        leftEncoder = new Encoder(RaspiPin.GPIO_13,RaspiPin.GPIO_14,"LH",427.5f);
-        rightEncoder = new Encoder(RaspiPin.GPIO_10,RaspiPin.GPIO_11,"RH",427.5f);
+        leftEncoder = new NewEncoder(RaspiPin.GPIO_14,RaspiPin.GPIO_13,"LH",1d/427.5d, false);
+        rightEncoder = new NewEncoder(RaspiPin.GPIO_11,RaspiPin.GPIO_10,"RH",1d/427.5d, true);
 
         final GpioController gpio = GpioFactory.getInstance();
 
@@ -33,9 +34,9 @@ public class PIDTest
         final GpioPinDigitalOutput RB =
                 gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "Right motor B", PinState.LOW);
         final GpioPinDigitalOutput LA =
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "Left motor A", PinState.LOW);
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Left motor A", PinState.LOW);
         final GpioPinDigitalOutput LB =
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Left motor B", PinState.LOW);
+                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "Left motor B", PinState.LOW);
         Motor left = new DCMotor(LA,LB);
         Motor right = new DCMotor(RA,RB);
 
@@ -45,10 +46,17 @@ public class PIDTest
 
         da.setSpeed(0.4f);
         TimeUnit.SECONDS.sleep(5);
+        da.setSpeed(0.3f);
+        TimeUnit.SECONDS.sleep(5);
+        da.setSpeed(0.2f);
+        TimeUnit.SECONDS.sleep(5);
+        da.setSpeed(0.1f);
+        TimeUnit.SECONDS.sleep(5);
         da.setSpeed(0f);
         TimeUnit.SECONDS.sleep(5);
-        da.stop();
 
+
+        da.stop();
         da.shutdown();
     }
 

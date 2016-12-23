@@ -26,16 +26,18 @@ public class PIDController extends Thread
     private OperatingMode mode;
     private List<PIDControlled> controlledOutputs;
     private PIDInputProvider inputProvider;
+    private final boolean reversed;
     private final boolean debug;
 
-    public PIDController(double setPoint, double sampleRate, double kp, double ki, double kd, double outMin, double outMax, OperatingMode mode)
+    public PIDController(boolean reversed, double setPoint, double sampleRate, double kp, double ki, double kd, double outMin, double outMax, OperatingMode mode)
     {
-        this(setPoint,sampleRate,kp,ki,kd,outMin,outMax,mode,false);
+        this(reversed,setPoint,sampleRate,kp,ki,kd,outMin,outMax,mode,false);
     }
 
-    public PIDController(double setPoint, double sampleRate, double kp, double ki, double kd, double outMin, double outMax, OperatingMode mode, boolean debug)
+    public PIDController(boolean reversed, double setPoint, double sampleRate, double kp, double ki, double kd, double outMin, double outMax, OperatingMode mode, boolean debug)
     {
         controlledOutputs = new ArrayList<>();
+        this.reversed = reversed;
         this.setpoint = setPoint;
         this.sampleRate = sampleRate;
         this.kp = kp;
@@ -96,7 +98,7 @@ public class PIDController extends Thread
 
    /*Compute PID output*/
 
-        if(setpoint == 0 && output <0.05)
+        if(setpoint == 0 && Math.abs(output) <0.1)
         {
             output = 0;
         }
@@ -117,8 +119,8 @@ public class PIDController extends Thread
 
     private void alertOutputs()
     {
-        System.out.println(setpoint + "," + input + "," + output/2f);
-        for(PIDControlled controlledOutput: controlledOutputs) controlledOutput.setOutput((float)this.output);
+        if(debug)System.out.println(setpoint + "," + input + "," + output/2f);
+        for(PIDControlled controlledOutput: controlledOutputs) controlledOutput.setOutput(((float)this.output)*(reversed?-1f:1f));
     }
 
     void setTunings(double Kp, double Ki, double Kd)
