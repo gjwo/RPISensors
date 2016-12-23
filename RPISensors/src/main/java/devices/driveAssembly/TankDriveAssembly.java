@@ -8,11 +8,11 @@ import devices.motors.Motor;
  */
 public class TankDriveAssembly implements DriveAssembly
 {
-    private final Motor left;
-    private final Motor right;
+    protected final Motor left;
+    protected final Motor right;
 
-    private float angle; // this is 0-360* with 0 being forward, 90 right spin, 270 left spin and 180 reverse
-    private float speed; // this is 0-1
+    protected float angle; // this is 0-360* with 0 being forward, 90 right spin, 270 left spin and 180 reverse
+    protected float speed; // this is 0-1
 
     public TankDriveAssembly(Motor left, Motor right)
     {
@@ -59,7 +59,7 @@ public class TankDriveAssembly implements DriveAssembly
         this.setSpeed(0);
     }
 
-    private void updateCourse()
+    protected void updateCourse()
     {
         if(speed == 0)
         {
@@ -98,8 +98,8 @@ public class TankDriveAssembly implements DriveAssembly
                 rightCoefficient *= -1;
             }
 
-            left.setSpeed(leftCoefficient * this.getSpeed());
-            right.setSpeed(rightCoefficient * this.getSpeed());
+            left.setOutput(leftCoefficient * this.getSpeed());
+            right.setOutput(rightCoefficient * this.getSpeed());
         }
     }
 }

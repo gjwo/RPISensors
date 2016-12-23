@@ -27,7 +27,7 @@ public class DCMotor implements Motor
     }
 
     @Override
-    public void setSpeed(float speed)
+    public void setOutput(float speed)
     {
         if(speed > 1) speed = 1;
         if(speed < -1) speed = -1;
@@ -57,6 +57,6 @@ public class DCMotor implements Motor
     @Override
     public void stop()
     {
-        this.setSpeed(0);
+        this.setOutput(0);
     }
 }

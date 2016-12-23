@@ -17,7 +17,7 @@ public class DebugMotor implements Motor
     }
 
     @Override
-    public void setSpeed(float speed)
+    public void setOutput(float speed)
     {
         this.speed = speed;
         printState();
@@ -32,7 +32,7 @@ public class DebugMotor implements Motor
     @Override
     public void stop()
     {
-        setSpeed(0f);
+        setOutput(0f);
     }
 
     private void printState()

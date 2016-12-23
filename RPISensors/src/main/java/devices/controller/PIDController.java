@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class PIDController extends Thread
 {
-    enum OperatingMode
+    public enum OperatingMode
     {
         AUTOMATIC,
         MANUAL
@@ -26,8 +26,14 @@ public class PIDController extends Thread
     private OperatingMode mode;
     private List<PIDControlled> controlledOutputs;
     private PIDInputProvider inputProvider;
+    private final boolean debug;
 
     public PIDController(double setPoint, double sampleRate, double kp, double ki, double kd, double outMin, double outMax, OperatingMode mode)
+    {
+        this(setPoint,sampleRate,kp,ki,kd,outMin,outMax,mode,false);
+    }
+
+    public PIDController(double setPoint, double sampleRate, double kp, double ki, double kd, double outMin, double outMax, OperatingMode mode, boolean debug)
     {
         controlledOutputs = new ArrayList<>();
         this.setpoint = setPoint;
@@ -40,9 +46,10 @@ public class PIDController extends Thread
         this.mode = mode;
         this.input = 0;
         this.output = 0;
+        this.debug = debug;
     }
 
-    void initialise()
+    public void initialise()
     {
         lastInput = input;
         ITerm = output;
@@ -58,7 +65,8 @@ public class PIDController extends Thread
         super.run();
         while(!Thread.interrupted())
         {
-            if(ChronoUnit.MILLIS.between(Instant.now(), lastTime) > (1000*(1/sampleRate)))
+            //System.out.println("Thread running");
+            if(ChronoUnit.MILLIS.between(lastTime, Instant.now()) > (1000*(1/sampleRate)))
             {
                 compute();
             } else try
@@ -75,10 +83,9 @@ public class PIDController extends Thread
         if(controlledOutputs.isEmpty()) return;
 
         input = inputProvider.getInput();
+        //System.out.println("Fetched input: " + input);
 
         Instant now = Instant.now();
-        double timeChange = (ChronoUnit.MILLIS.between(now, lastTime));//now - lastTime);
-        if (timeChange<(1f/sampleRate)*1000) return; // escape if the sample is too quick
 
    /*Compute all the working error variables*/
         double error = setpoint - input;
@@ -89,6 +96,7 @@ public class PIDController extends Thread
 
    /*Compute PID output*/
         output = kp * error + ITerm - kd * dInput;
+        //System.out.println("output calc: kp =" + kp + " error =" + error + " ITerm =" + ITerm + " kd =" + kd + " dInput =" + dInput);
         if(output > outMax) output = outMax;
         else if(output < outMin) output = outMin;
 
@@ -101,7 +109,8 @@ public class PIDController extends Thread
 
     private void alertOutputs()
     {
-        for(PIDControlled controlledOutput: controlledOutputs) controlledOutput.setOutput(this.output);
+        System.out.println(setpoint + "," + input + "," + output/2f);
+        for(PIDControlled controlledOutput: controlledOutputs) controlledOutput.setOutput((float)this.output);
     }
 
     void setTunings(double Kp, double Ki, double Kd)
@@ -133,7 +142,7 @@ public class PIDController extends Thread
         else if(ITerm< outMin) ITerm= outMin;
     }
 
-    void setOperatingMode(OperatingMode mode)
+    public void setOperatingMode(OperatingMode mode)
     {
         if(mode == OperatingMode.AUTOMATIC && this.mode != OperatingMode.AUTOMATIC) initialise();
         if(mode == OperatingMode.MANUAL && this.mode != OperatingMode.MANUAL) Thread.interrupted();

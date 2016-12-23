@@ -5,6 +5,7 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 import dataTypes.CircularArrayRing;
 import dataTypes.NanoClock;
+import devices.controller.PIDInputProvider;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -13,9 +14,10 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 
-public class Encoder implements GpioPinListenerDigital
+public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 {
-    public enum Direction
+
+	public enum Direction
     {
         FORWARDS,
         BACKWARDS
@@ -73,7 +75,7 @@ public class Encoder implements GpioPinListenerDigital
 		private static final long serialVersionUID = 1L;  	
     }
     
-    private final long DEFAULT_INTERVAL_MS = 100; 
+    private final long DEFAULT_INTERVAL_MS = 50;
     private final CircularArrayRing <TimedEncoderEvent> pinEvents;
     private CircularArrayRing <TimedDirectionEvent> directionEvents;
     private final Instant start;
@@ -156,6 +158,13 @@ public class Encoder implements GpioPinListenerDigital
 	public Instant getLastTime() {return lastTime;}
 	public float getTrackWheelRotationsPerMetre() {return TrackWheelRotationsPerMetre;}
 	public Clock getClock()	{return clock;}
+
+	@Override
+	public double getInput()
+	{
+		this.calculate();
+		return getDirection()==Direction.FORWARDS? getSpeed():-getSpeed();
+	}
 
 	//Calculations
 	public void calcDirectionChanges()

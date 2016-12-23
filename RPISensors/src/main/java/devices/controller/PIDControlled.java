@@ -6,5 +6,5 @@ package devices.controller;
  */
 public interface PIDControlled
 {
-    void setOutput(double output);
+    void setOutput(float output);
 }
