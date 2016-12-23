@@ -2,7 +2,7 @@ package main;
 
 import com.pi4j.io.gpio.*;
 
-import devices.encoder.Encoder;
+import devices.encoder.OldEncoder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,14 +12,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class EncoderTest
 {
-	private final Encoder leftEncoder;
-	private final Encoder rightEncoder;
+	private final OldEncoder leftEncoder;
+	private final OldEncoder rightEncoder;
 
     public EncoderTest() throws InterruptedException
     {
     	Long period = 200L;
-    	leftEncoder = new Encoder(RaspiPin.GPIO_13,RaspiPin.GPIO_14,"LH",427.5f);
-    	rightEncoder = new Encoder(RaspiPin.GPIO_10,RaspiPin.GPIO_11,"RH",427.5f);
+    	leftEncoder = new OldEncoder(RaspiPin.GPIO_13,RaspiPin.GPIO_14,"LH",427.5f);
+    	rightEncoder = new OldEncoder(RaspiPin.GPIO_10,RaspiPin.GPIO_11,"RH",427.5f);
         while(true)
         {
             TimeUnit.MILLISECONDS.sleep(period);

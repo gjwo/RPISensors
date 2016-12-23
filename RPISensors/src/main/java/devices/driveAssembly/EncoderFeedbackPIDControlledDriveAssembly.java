@@ -1,9 +1,7 @@
 package devices.driveAssembly;
 
-import devices.controller.PIDControlled;
 import devices.controller.PIDController;
 import devices.encoder.Encoder;
-import devices.encoder.NewEncoder;
 import devices.motors.Motor;
 
 import java.util.concurrent.TimeUnit;
@@ -14,8 +12,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class EncoderFeedbackPIDControlledDriveAssembly extends TankDriveAssembly implements DriveAssembly
 {
-    private final NewEncoder leftEn;
-    private final NewEncoder rightEn;
+    private final Encoder leftEn;
+    private final Encoder rightEn;
 
     private PIDController leftPID;
     private PIDController rightPID;
@@ -26,7 +24,7 @@ public class EncoderFeedbackPIDControlledDriveAssembly extends TankDriveAssembly
     private static final double KI = 0.25;
     private static final double KD = 0.3;
 
-    public EncoderFeedbackPIDControlledDriveAssembly(Motor left, Motor right, NewEncoder leftEn, NewEncoder rightEn)
+    public EncoderFeedbackPIDControlledDriveAssembly(Motor left, Motor right, Encoder leftEn, Encoder rightEn)
     {
         super(left,right);
         this.leftEn = leftEn;

@@ -1,11 +1,8 @@
 package main;
 
 import com.pi4j.io.gpio.*;
-import devices.driveAssembly.DriveAssembly;
 import devices.driveAssembly.EncoderFeedbackPIDControlledDriveAssembly;
-import devices.driveAssembly.TankDriveAssembly;
 import devices.encoder.Encoder;
-import devices.encoder.NewEncoder;
 import devices.motors.DCMotor;
 import devices.motors.Motor;
 
@@ -17,15 +14,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class PIDTest
 {
-    private final NewEncoder leftEncoder;
-    private final NewEncoder rightEncoder;
+    private final Encoder leftEncoder;
+    private final Encoder rightEncoder;
 
     private final EncoderFeedbackPIDControlledDriveAssembly da;
 
     private PIDTest() throws InterruptedException
     {
-        leftEncoder = new NewEncoder(RaspiPin.GPIO_14,RaspiPin.GPIO_13,"LH",1d/427.5d, false);
-        rightEncoder = new NewEncoder(RaspiPin.GPIO_11,RaspiPin.GPIO_10,"RH",1d/427.5d, true);
+        leftEncoder = new Encoder(RaspiPin.GPIO_14,RaspiPin.GPIO_13,"LH",1d/427.5d, false);
+        rightEncoder = new Encoder(RaspiPin.GPIO_11,RaspiPin.GPIO_10,"RH",1d/427.5d, true);
 
         final GpioController gpio = GpioFactory.getInstance();
 
