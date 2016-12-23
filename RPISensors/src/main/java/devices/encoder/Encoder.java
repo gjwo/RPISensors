@@ -83,6 +83,7 @@ public class Encoder implements GpioPinListenerDigital
     private long lastPin1EventCount;
     private long lastPin2EventCount;
     private Direction direction;
+    private Direction lastDirection;
     private float speed;
     private float lastSpeed;
     private float distance;
@@ -195,8 +196,8 @@ public class Encoder implements GpioPinListenerDigital
 	//Calculations
 	public void calcDirectionChanges()
 	{
-		Direction direction = Direction.FORWARDS;
-		Direction lastDirection = direction;
+		direction = Direction.FORWARDS;
+		lastDirection = direction;
 		TimedEncoderEvent event, lastEvent;
 		Iterator<TimedEncoderEvent> it = pinEvents.iterator();
 		long eventCount = 0;
@@ -216,6 +217,9 @@ public class Encoder implements GpioPinListenerDigital
 			}
 			lastEvent = event;
 		}
+		direction = Direction.FORWARDS;
+		if (directionEvents.size()>0) direction = directionEvents.get(0).getDirection();
+		if (directionEvents.size()>1) lastDirection = directionEvents.get(1).getDirection(); else lastDirection = direction;
 	}
 
 	public float calculateDistanceSince(Instant t1) throws DirectionChange

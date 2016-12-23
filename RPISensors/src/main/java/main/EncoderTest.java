@@ -31,9 +31,9 @@ public class EncoderTest
             //leftEncoder.printRecentEvents(period);
             leftEncoder.calculate();
             rightEncoder.calculate();
-            String ts = leftEncoder.getTime().toString();
-            System.out.print("Time: " + ts + "L D:" + leftEncoder.getDistance() + " L S:"+leftEncoder.getSpeed());
-            System.out.println(" R D:" + rightEncoder.getDistance() + " R S:"+rightEncoder.getSpeed());
+            String ts = leftEncoder.getTime().toString().substring(17, 27);
+            System.out.print("Time: " + ts + " "+leftEncoder.getDirection().name()+ " L D:" + leftEncoder.getDistance() + " L S:"+leftEncoder.getSpeed());
+            System.out.println(" | " + rightEncoder.getDirection().name() + " R D:" + rightEncoder.getDistance() + " R S:"+rightEncoder.getSpeed());
             //leftEncoder.printDirectionChanges(period);
             //leftEncoder.printPinEventsSinceDirectionChange();
         }
