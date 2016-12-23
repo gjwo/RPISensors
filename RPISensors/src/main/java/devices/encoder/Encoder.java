@@ -19,8 +19,8 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 
 	public enum Direction
     {
-        FORWARDS,
-        BACKWARDS
+        CLOCKWISE,
+        ANTICLOCKWISE
     }
 
     public class TimedEncoderEvent
@@ -28,16 +28,20 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
     	private final Instant eTime;
     	private final PinState state;
     	private final GpioPin pin;
-    	TimedEncoderEvent(PinState s, GpioPin p)
+    	private Direction direction;
+    	TimedEncoderEvent(PinState s, GpioPin p, Direction d)
     	{
     		this.eTime = Instant.now(clock);
     		this.state = s;
     		this.pin = p;
+    		this.direction = d;
     	}
     	//Getters
 		public Instant getTime() {return eTime;}
 		public PinState getState() {return state;} 
 		public GpioPin getPin() {return pin;}
+		public Direction getDirection() {return direction;}
+		public void setDirection(Direction d) { direction = d;}
 		
 		public String toString()
 		{
@@ -109,7 +113,7 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 		this.directionEvents = new CircularArrayRing<>(1000);
 		this.start =  Instant.now(clock);
 		this.name = n;
-        this.direction = Direction.FORWARDS;
+        this.direction = Direction.CLOCKWISE;
         this.speed = 0f;
         this.lastSpeed = speed;
         this.speedCalcDuration = Duration.ofSeconds(1);
@@ -170,7 +174,7 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 	//Calculations
 	public void calcDirectionChanges()
 	{
-		direction = Direction.FORWARDS;
+		direction = Direction.CLOCKWISE;
 		lastDirection = direction;
 		TimedEncoderEvent event, lastEvent;
 		Iterator<TimedEncoderEvent> it = pinEvents.iterator();
@@ -184,14 +188,14 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 			eventCount++;
 			if (event.pin.getName().equals(lastEvent.pin.getName()))
 			{
-				direction = (lastDirection==Direction.FORWARDS?Direction.BACKWARDS:Direction.FORWARDS);
+				direction = (lastDirection==Direction.CLOCKWISE?Direction.ANTICLOCKWISE:Direction.CLOCKWISE);
 				lastDirection = direction;
 				directionEvents.add(new TimedDirectionEvent(event.eTime,direction,eventCount));
 
 			}
 			lastEvent = event;
 		}
-		direction = Direction.FORWARDS;
+		direction = Direction.CLOCKWISE;
 		if (directionEvents.size()>0) direction = directionEvents.get(0).getDirection();
 		if (directionEvents.size()>1) lastDirection = directionEvents.get(1).getDirection(); else lastDirection = direction;
 	}
@@ -268,7 +272,7 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 	@Override
 	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
 	{
-		pinEvents.add(new TimedEncoderEvent(event.getState(), event.getPin()));
+		pinEvents.add(new TimedEncoderEvent(event.getState(), event.getPin(),Direction.CLOCKWISE));
 	}
 	
 	public void printPinEvents()
