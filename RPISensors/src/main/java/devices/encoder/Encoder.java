@@ -220,7 +220,7 @@ public class Encoder implements GpioPinListenerDigital
 
 	public float calculateDistanceSince(Instant t1) throws DirectionChange
 	{
-		if ( directionEvents.get(0).eTime.isAfter(t1)) throw new DirectionChange();		
+		if (directionEvents.size()>0)if ( directionEvents.get(0).eTime.isAfter(t1)) throw new DirectionChange();		
 		lastDistance = distance;
 		float rotations = (float)CountPinEventsSince(t1)/4f;
 		distance = rotations /  motorRotationsPerMetre;
@@ -243,7 +243,7 @@ public class Encoder implements GpioPinListenerDigital
 	{
 		time = Instant.now(clock);
 		Instant startTime = time.minusMillis(DEFAULT_INTERVAL_MS);
-		if (directionEvents.get(0).getTime().isAfter(startTime)) startTime = directionEvents.get(0).getTime().plusMillis(1);
+		if (directionEvents.size()>0) if (directionEvents.get(0).getTime().isAfter(startTime)) startTime = directionEvents.get(0).getTime().plusMillis(1);
 		try
 		{
 			return calculateAverageSpeedSince(startTime);
