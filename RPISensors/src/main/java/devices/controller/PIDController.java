@@ -1,5 +1,10 @@
 package devices.controller;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * RPISensors - devices
  * Created by MAWood on 04/12/2016.
@@ -12,16 +17,19 @@ public class PIDController extends Thread
         MANUAL
     }
 
-    private long lastTime;
+    private Instant lastTime;
     private double input, output, setpoint;
     private double ITerm, lastInput;
     private double kp, ki, kd;
     private double sampleRate;
     private double outMin, outMax;
     private OperatingMode mode;
+    private List<PIDControlled> controlledOutputs;
+    private PIDInputProvider inputProvider;
 
     public PIDController(double setPoint, double sampleRate, double kp, double ki, double kd, double outMin, double outMax, OperatingMode mode)
     {
+        controlledOutputs = new ArrayList<>();
         this.setpoint = setPoint;
         this.sampleRate = sampleRate;
         this.kp = kp;
@@ -30,6 +38,8 @@ public class PIDController extends Thread
         this.outMin = outMin;
         this.outMax = outMax;
         this.mode = mode;
+        this.input = 0;
+        this.output = 0;
     }
 
     void initialise()
@@ -44,11 +54,11 @@ public class PIDController extends Thread
     @Override
     public void run()
     {
-        lastTime = System.currentTimeMillis();
+        lastTime = Instant.now();
         super.run();
         while(!Thread.interrupted())
         {
-            if(System.currentTimeMillis() - lastTime > (1000*(1/sampleRate)))
+            if(ChronoUnit.MILLIS.between(Instant.now(), lastTime) > (1000*(1/sampleRate)))
             {
                 compute();
             } else try
@@ -61,9 +71,13 @@ public class PIDController extends Thread
     void compute()
     {
         if(mode != OperatingMode.AUTOMATIC) return;
+        if(inputProvider == null) return;
+        if(controlledOutputs.isEmpty()) return;
 
-        long now = System.currentTimeMillis();
-        double timeChange = (now - lastTime);
+        input = inputProvider.getInput();
+
+        Instant now = Instant.now();
+        double timeChange = (ChronoUnit.MILLIS.between(now, lastTime));//now - lastTime);
         if (timeChange<(1f/sampleRate)*1000) return; // escape if the sample is too quick
 
    /*Compute all the working error variables*/
@@ -81,6 +95,13 @@ public class PIDController extends Thread
    /*Remember some variables for next time*/
         lastInput = input;
         lastTime = now;
+
+        alertOutputs();
+    }
+
+    private void alertOutputs()
+    {
+        for(PIDControlled controlledOutput: controlledOutputs) controlledOutput.setOutput(this.output);
     }
 
     void setTunings(double Kp, double Ki, double Kd)
@@ -119,9 +140,14 @@ public class PIDController extends Thread
         this.mode = mode;
     }
 
-    public void setInput(double input)
+    public void addOutputListener(PIDControlled controlledOutput)
     {
-        this.input = input;
+        this.controlledOutputs.add(controlledOutput);
+    }
+
+    public void setInputProvider(PIDInputProvider inputProvider)
+    {
+        this.inputProvider = inputProvider;
     }
 
     public double getOutput()
