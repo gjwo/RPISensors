@@ -114,7 +114,7 @@ public class Encoder implements GpioPinListenerDigital
         this.lastSpeedCalcDuration = Duration.ofSeconds(1);
         this.distance = 0f;
         this.lastDistance = 0f;
-        this.TrackWheelRotationsPerMetre = 5.7f;
+        this.TrackWheelRotationsPerMetre = 5.68f;
         this.motorRotationsPerTrackWheelR = 75f;
         this.motorRotationsPerMetre = rpm;
         final GpioController gpio = GpioFactory.getInstance();
@@ -147,51 +147,15 @@ public class Encoder implements GpioPinListenerDigital
 	public Duration getLastDistanceDuration() {return lastDistanceDuration;}
 	public TimedDirectionEvent getLastDirectionChange() {return directionEvents.get(0);}
 	public TimedEncoderEvent getLastPinEvent() {return pinEvents.get(0);}
-
-	public float getMotorRotationsPerMetre()
-	{
-		return motorRotationsPerMetre;
-	}
-
-	public void setMotorRotationsPerMetre(float motorRotationsPerMetre)
-	{
-		this.motorRotationsPerMetre = motorRotationsPerMetre;
-	}
-
-	public float getMotorRotationsPerTrackWheelR()
-	{
-		return motorRotationsPerTrackWheelR;
-	}
-
-	public void setMotorRotationsPerTrackWheelR(float motorRotationsPerTrackWheelR)
-	{
-		this.motorRotationsPerTrackWheelR = motorRotationsPerTrackWheelR;
-	}
-
-	public long getDEFAULT_INTERVAL_MS()
-	{
-		return DEFAULT_INTERVAL_MS;
-	}
-
-	public Instant getTime()
-	{
-		return time;
-	}
-
-	public Instant getLastTime()
-	{
-		return lastTime;
-	}
-
-	public float getTrackWheelRotationsPerMetre()
-	{
-		return TrackWheelRotationsPerMetre;
-	}
-
-	public Clock getClock()
-	{
-		return clock;
-	}
+	public float getMotorRotationsPerMetre() {return motorRotationsPerMetre;}
+	public void setMotorRotationsPerMetre(float motorRotationsPerMetre)	{this.motorRotationsPerMetre = motorRotationsPerMetre;}
+	public float getMotorRotationsPerTrackWheelR() {return motorRotationsPerTrackWheelR;}
+	public void setMotorRotationsPerTrackWheelR(float motorRotationsPerTrackWheelR)	{this.motorRotationsPerTrackWheelR = motorRotationsPerTrackWheelR;}
+	public long getDEFAULT_INTERVAL_MS() {return DEFAULT_INTERVAL_MS;}
+	public Instant getTime() {return time;}
+	public Instant getLastTime() {return lastTime;}
+	public float getTrackWheelRotationsPerMetre() {return TrackWheelRotationsPerMetre;}
+	public Clock getClock()	{return clock;}
 
 	//Calculations
 	public void calcDirectionChanges()
