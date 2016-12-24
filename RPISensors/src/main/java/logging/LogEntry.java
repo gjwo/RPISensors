@@ -1,6 +1,7 @@
 package logging;
 
 import logging.SystemLog;
+import subsystems.SubSystem;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -16,18 +17,21 @@ public class LogEntry implements Serializable
     public final String message;
     public final SystemLog.LogLevel level;
     public final Instant time;
+    public final SubSystem.SubSystemType type;
 
-    LogEntry(SystemLog.LogLevel level, String message)
+    LogEntry(SubSystem.SubSystemType type,SystemLog.LogLevel level, String message)
     {
         this.level = level;
         this.message = message;
+        this.type = type;
         time = Instant.now();
+        
     }
 
     public String toString()
     {
         final DateTimeFormatter formatter =
                 DateTimeFormatter.ofPattern("HH:mm:ss.SSS").withZone(ZoneId.systemDefault());
-        return formatter.format(time) + " -> "+ level.name() + " : " + message;
+        return formatter.format(time) + " -> "+ type.name() +" "+ level.name() +  " : " + message;
     }
 }

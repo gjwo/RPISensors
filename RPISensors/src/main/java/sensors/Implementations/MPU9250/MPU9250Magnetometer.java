@@ -7,8 +7,10 @@ import java.io.IOException;
 
 import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
+import logging.SystemLog;
 import sensors.models.NineDOF;
 import sensors.models.Sensor3D;
+import subsystems.SubSystem;
 
 /**
  * @author GJWood
@@ -167,6 +169,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
         		min[] = {(short)32767, (short)32767, (short)32767},
         		temp[] = {0, 0, 0};
 
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INSTRUCTION, "Magnetometer Calibration: Wave device in a figure eight until done!");
         if (debugLevel() >=1) System.out.println("Magnetometer Calibration: Wave device in a figure eight until done!");
         Thread.sleep(2000);
 
@@ -183,7 +186,6 @@ public class MPU9250Magnetometer extends Sensor3D  {
             if(magMode == MagMode.MM_8HZ) Thread.sleep(135);  // at 8 Hz ODR, new mag data is available every 125 ms
             if(magMode == MagMode.MM_100HZ) Thread.sleep(12);  // at 100 Hz ODR, new mag data is available every 10 ms
         }
-        if (debugLevel() >=1) System.out.println("Magnetometer Calibration: Finished");
         
         // #KW L1090 Get hard iron correction
         bias[0]  = (max[0] + min[0])/2;  // get average x mag bias in counts
@@ -208,5 +210,6 @@ public class MPU9250Magnetometer extends Sensor3D  {
         if (debugLevel() >=4) printState();
         if (debugLevel() >=4) printRegisters();
         if (debugLevel() >=3) System.out.println("End calibrate mag initAK8963");
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INSTRUCTION, "Magnetometer Calibration: Finished");
 	}
 }

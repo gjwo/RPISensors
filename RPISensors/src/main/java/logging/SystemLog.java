@@ -7,6 +7,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import subsystems.SubSystem;
+
 /**
  * RPISensors - subsystems
  * Created by MAWood on 24/12/2016.
@@ -63,14 +65,14 @@ public class SystemLog implements RemoteLog
         }
     }
 
-    public static void log(LogLevel level, String message)
+    public static void log(SubSystem.SubSystemType type,LogLevel level, String message)
     {
-        getLog().addEntry(level, message);
+        getLog().addEntry(type, level, message);
     }
 
-    public void addEntry(LogLevel level, String message)
+    public void addEntry(SubSystem.SubSystemType type,LogLevel level, String message)
     {
-        entries.add(new LogEntry(level,message));
+        entries.add(new LogEntry(type,level,message));
     }
 
     public void addEntry(LogEntry entry)

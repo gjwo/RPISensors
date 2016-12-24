@@ -27,12 +27,12 @@ public class Main implements RemoteMain
 
 		subSystems = new HashMap<>();
 		prepareSubSystems();
-		SystemLog.log(SystemLog.LogLevel.TRACE_MAJOR_STATES, "System started");
+		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "System started");
 	}
 
     private void prepareSubSystems()
     {
-		SystemLog.log(SystemLog.LogLevel.TRACE_MAJOR_STATES, "Preparing subSystems");
+		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Preparing subSystems");
         subSystems.put(SubSystemType.DRIVE_ASSEMBLY, new DriveAssemblySubSystem());
         subSystems.put(SubSystemType.INSTRUMENTS, new InstrumentsSubSystem());
     }
@@ -43,9 +43,9 @@ public class Main implements RemoteMain
 
         for(SubSystemType systemType:systems)
 		{
-			SystemLog.log(SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting " + systemType.name());
+			SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting " + systemType.name());
 			subSystems.get(systemType).startup();
-			SystemLog.log(SystemLog.LogLevel.TRACE_MAJOR_STATES, "Started " + systemType.name());
+			SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Started " + systemType.name());
 		}
 	}
 
@@ -79,7 +79,7 @@ public class Main implements RemoteMain
     {
         if(args.length < 1)
         {
-        	SystemLog.log(SystemLog.LogLevel.ERROR, "No hostname specified");
+        	SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.ERROR, "No hostname specified");
             System.err.println("No hostname specified");
             return;
         }

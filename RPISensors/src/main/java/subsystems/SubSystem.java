@@ -21,7 +21,7 @@ public abstract class SubSystem extends Thread
 
 	public void setSubSysState(SubSystemState state)
 	{
-		SystemLog.log(SystemLog.LogLevel.TRACE_MAJOR_STATES, type.name() + " SubSystem state change " + this.state.name() +  "->"+state.name());
+		SystemLog.log(type,SystemLog.LogLevel.TRACE_MAJOR_STATES, type.name()  + this.state.name() +  "->"+state.name());
 		this.state = state;
 	}
 
