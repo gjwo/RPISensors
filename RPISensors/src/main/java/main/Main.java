@@ -3,6 +3,7 @@ package main;
 import subsystems.DriveAssemblySubSystem;
 import subsystems.InstrumentsSubSystem;
 import subsystems.SubSystem;
+import subsystems.SystemLog;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -17,7 +18,7 @@ public class Main implements RemoteMain
 
 	public Main(String hostname) throws RemoteException
     {
-    	System.out.println("Main constructor");
+		SystemLog.log(SystemLog.LogLevel.INFO, "System starting");
         System.setProperty("java.rmi.server.hostname", hostname) ;
         Registry reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
 
@@ -25,10 +26,12 @@ public class Main implements RemoteMain
 
 		subSystems = new HashMap<>();
 		prepareSubSystems();
+		SystemLog.log(SystemLog.LogLevel.INFO, "System started");
 	}
 
     private void prepareSubSystems()
     {
+		SystemLog.log(SystemLog.LogLevel.INFO, "Preparing subSystems");
         subSystems.put(SubSystemType.DRIVE_ASSEMBLY, new DriveAssemblySubSystem());
         subSystems.put(SubSystemType.INSTRUMENTS, new InstrumentsSubSystem());
     }
@@ -36,7 +39,13 @@ public class Main implements RemoteMain
 	@Override
 	public void start(EnumSet<SubSystemType> systems) throws RemoteException
 	{
-        for(SubSystemType systemType:systems) subSystems.get(systemType).startup();
+
+        for(SubSystemType systemType:systems)
+		{
+			SystemLog.log(SystemLog.LogLevel.INFO, "Starting " + systemType.name());
+			subSystems.get(systemType).startup();
+			SystemLog.log(SystemLog.LogLevel.INFO, "Started " + systemType.name());
+		}
 	}
 
 	@Override
