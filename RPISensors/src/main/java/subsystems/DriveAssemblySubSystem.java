@@ -47,8 +47,6 @@ public class DriveAssemblySubSystem extends SubSystem
         Motor left = new DCMotor(LA,LB);
         Motor right = new DCMotor(RA,RB);
 
-        System.out.println("Set Point,Input,Output/2");
-
         Motor leftEncodedMotor = new EncoderFeedbackMotor(leftEncoder,left,KP,KI,KD,SAMPLE_RATE,true);
         Motor rightEncodedMotor = new EncoderFeedbackMotor(rightEncoder,right,KP,KI,KD,SAMPLE_RATE,false);
 
