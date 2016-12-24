@@ -36,6 +36,7 @@ public class PIDController extends Thread
 
     public PIDController(boolean reversed, double setPoint, double sampleRate, double kp, double ki, double kd, double outMin, double outMax, OperatingMode mode, boolean debug)
     {
+        super();
         controlledOutputs = new ArrayList<>();
         this.reversed = reversed;
         this.setpoint = setPoint;
@@ -49,6 +50,7 @@ public class PIDController extends Thread
         this.input = 0;
         this.output = 0;
         this.debug = debug;
+        this.start();
     }
 
     public void initialise()
@@ -57,7 +59,6 @@ public class PIDController extends Thread
         ITerm = output;
         if(ITerm> outMax) ITerm= outMax;
         else if(ITerm< outMin) ITerm= outMin;
-        this.start();
     }
 
     @Override
@@ -67,14 +68,21 @@ public class PIDController extends Thread
         super.run();
         while(!Thread.interrupted())
         {
-            //System.out.println("Thread running");
-            if(ChronoUnit.MILLIS.between(lastTime, Instant.now()) > (1000*(1/sampleRate)))
+            if(this.getOperatingMode() == OperatingMode.AUTOMATIC)
             {
-                compute();
-            } else try
+                //System.out.println("Thread running");
+                if(ChronoUnit.MILLIS.between(lastTime, Instant.now()) > (1000*(1/sampleRate)))
+                {
+                    compute();
+                } else try
                 {
                     Thread.sleep((long)Math.floor(100*(1/sampleRate)));
                 } catch (InterruptedException ignored) {}
+            }
+            else try
+            {
+                Thread.sleep(100);
+            } catch (InterruptedException ignored) {}
         }
     }
 
@@ -114,7 +122,7 @@ public class PIDController extends Thread
         lastInput = input;
         lastTime = now;
 
-        alertOutputs();
+        if(mode == OperatingMode.AUTOMATIC)alertOutputs();
     }
 
     private void alertOutputs()
@@ -155,7 +163,6 @@ public class PIDController extends Thread
     public void setOperatingMode(OperatingMode mode)
     {
         if(mode == OperatingMode.AUTOMATIC && this.mode != OperatingMode.AUTOMATIC) initialise();
-        if(mode == OperatingMode.MANUAL && this.mode != OperatingMode.MANUAL) Thread.interrupted();
         this.mode = mode;
     }
 
