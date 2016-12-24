@@ -18,7 +18,6 @@ public class Main implements RemoteMain
 
 	public Main(String hostname) throws RemoteException
     {
-		SystemLog.log(SystemLog.LogLevel.INFO, "System starting");
         System.setProperty("java.rmi.server.hostname", hostname) ;
         Registry reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
 

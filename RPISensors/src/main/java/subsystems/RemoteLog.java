@@ -10,5 +10,8 @@ import java.util.ArrayList;
  */
 public interface RemoteLog extends Remote
 {
-    ArrayList<SystemLog.LogEntry> getEntries() throws RemoteException;
+    ArrayList<LogEntry> getEntries() throws RemoteException;
+    LogEntry getEntry(int index) throws RemoteException;
+    int getEntryCount()throws RemoteException;
+    void registerInterest(LogDisplayer displayer) throws RemoteException;
 }

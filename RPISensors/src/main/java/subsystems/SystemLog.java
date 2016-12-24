@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * RPISensors - subsystems
@@ -26,35 +27,17 @@ public class SystemLog implements RemoteLog
         DEBUG_2
     }
 
-    class LogEntry implements Serializable
-    {
-        public final String message;
-        public final LogLevel level;
-        public final Instant time;
-
-        LogEntry(LogLevel level, String message)
-        {
-            this.level = level;
-            this.message = message;
-            time = Instant.now();
-        }
-
-        public String toString()
-        {
-            final DateTimeFormatter formatter =
-                    DateTimeFormatter.ofPattern("HH:mm:ss.SSS").withZone(ZoneId.systemDefault());
-            return formatter.format(time) + " -> "+ level.name() + " : " + message;
-        }
-    }
 
     private static SystemLog log = null;
     private static String REMOTE_NAME = "Log";
 
     private final ArrayList<LogEntry> entries;
+    private final ArrayList<LogDisplayer> trackers;
 
     private SystemLog()
     {
         entries = new ArrayList<>();
+        trackers = new ArrayList<>();
         Registry reg = null;
         try
         {
@@ -68,7 +51,7 @@ public class SystemLog implements RemoteLog
 
     public static void log(LogLevel level, String message)
     {
-        getLog().log(level, message);
+        getLog().addEntry(level, message);
     }
 
     public void addEntry(LogLevel level, String message)
@@ -79,6 +62,27 @@ public class SystemLog implements RemoteLog
     public void addEntry(LogEntry entry)
     {
         entries.add(entry);
+        Iterator<LogDisplayer> iterator =  trackers.iterator();
+        while(iterator.hasNext())
+        {
+            try
+            {
+                iterator.next().showEntry(entry.toString());
+            } catch (RemoteException e)
+            {
+                iterator.remove();
+            }
+        }
+        for(LogDisplayer tracker:trackers)
+        {
+            try
+            {
+                tracker.showEntry(entry.toString());
+            } catch (RemoteException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static SystemLog getLog()
@@ -91,5 +95,23 @@ public class SystemLog implements RemoteLog
     public ArrayList<LogEntry> getEntries() throws RemoteException
     {
         return entries;
+    }
+
+    @Override
+    public LogEntry getEntry(int index) throws RemoteException
+    {
+        return entries.get(index);
+    }
+
+    @Override
+    public int getEntryCount() throws RemoteException
+    {
+        return entries.size();
+    }
+
+    @Override
+    public void registerInterest(LogDisplayer displayer) throws RemoteException
+    {
+        trackers.add(displayer);
     }
 }
