@@ -63,7 +63,7 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 
 	private void calculate()
 	{
-		displacement = rotations*(reversed?-metresPerRotation:metresPerRotation);
+		displacement = rotations*metresPerRotation;
 		totalDisplacement += displacement;
 		Instant t = Instant.now(clock);
 		velocity = displacement/((double)ChronoUnit.NANOS.between(lastTime, t)/1000000000d);
@@ -76,7 +76,7 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 	{
 		if(event.getEdge() == PinEdge.RISING)
 		{
-			rotations+= direction==Direction.CLOCKWISE?1:-1;
+			rotations+= reversed?(direction==Direction.CLOCKWISE?-1:1):(direction==Direction.CLOCKWISE?1:-1);
 			Direction perceived = b.isHigh()? Direction.CLOCKWISE : Direction.ANTI_CLOCKWISE;
 			if(perceived == lastDirection) 
 			{
@@ -98,4 +98,5 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 	public void resetTotalDisplacement() {this.totalDisplacement = 0;}
 	public double getTotalDisplacement() {return totalDisplacement;}
 	public Instant getLastCalcTime(){return lastTime;}
+	public Direction getDirection() {return direction;}
 }

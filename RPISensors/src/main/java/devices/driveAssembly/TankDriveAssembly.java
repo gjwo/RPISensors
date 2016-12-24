@@ -25,8 +25,8 @@ public class TankDriveAssembly implements DriveAssembly
     @Override
     public void setSpeed(float speed)
     {
-        if(speed < 0) speed = 0;
-        if(speed > 1) speed = 1;
+        if (speed < 0) speed = 0;
+        if (speed > 1) speed = 1;
         this.speed = speed;
         updateCourse();
     }
@@ -40,9 +40,9 @@ public class TankDriveAssembly implements DriveAssembly
     @Override
     public void setDirection(float angle)
     {
-        if(angle<0) angle+=360;
-        if(angle<0) angle = 0;
-        if(angle>=360) angle = 0;
+        if (angle < 0) angle += 360;
+        if (angle < 0) angle = 0;
+        if (angle >= 360) angle = 0;
         this.angle = angle;
         updateCourse();
     }
@@ -56,50 +56,43 @@ public class TankDriveAssembly implements DriveAssembly
     @Override
     public void stop()
     {
-        this.setSpeed(0);
+        left.stop();
+        right.stop();
     }
 
     protected void updateCourse()
     {
-        if(speed == 0)
+        float leftCoefficient;
+        float rightCoefficient;
+        float adjustedDirection = this.getDirection();
+
+        // Adjusted direction is a transformation of direction where forwards and backwards are ignored and
+        // a -90 to 90 direction is formed for the amount of turning in whichever direction it is going
+        // this makes straight forwards and straight backwards 0
+
+        if (this.getDirection() > 90 && this.getDirection() < 270)
+            adjustedDirection = (adjustedDirection * -1) + 540;
+        if (adjustedDirection >= 270) adjustedDirection -= 360;
+
+
+        if (adjustedDirection > 0)
         {
-            left.stop();
-            right.stop();
+            leftCoefficient = 1;
+            rightCoefficient = 1 - ((Math.abs(adjustedDirection) / 90) * 2);
         } else
         {
-            float leftCoefficient;
-            float rightCoefficient;
-            float adjustedDirection = this.getDirection();
-
-            // Adjusted direction is a transformation of direction where forwards and backwards are ignored and
-            // a -90 to 90 direction is formed for the amount of turning in whichever direction it is going
-            // this makes straight forwards and straight backwards 0
-
-            if(this.getDirection() > 90 && this.getDirection() < 270)
-                adjustedDirection = (adjustedDirection * -1) + 540;
-            if(adjustedDirection>=270) adjustedDirection -= 360;
-
-
-
-            if(adjustedDirection > 0)
-            {
-                leftCoefficient = 1;
-                rightCoefficient = 1 - ((Math.abs(adjustedDirection) / 90) * 2);
-            } else
-            {
-                leftCoefficient = 1 - ((Math.abs(adjustedDirection) / 90) * 2);
-                rightCoefficient = 1;
-            }
-
-
-            if(this.getDirection() > 90 && this.getDirection() < 270)
-            {
-                leftCoefficient *= -1;
-                rightCoefficient *= -1;
-            }
-
-            left.setOutput(leftCoefficient * this.getSpeed());
-            right.setOutput(rightCoefficient * this.getSpeed());
+            leftCoefficient = 1 - ((Math.abs(adjustedDirection) / 90) * 2);
+            rightCoefficient = 1;
         }
+
+
+        if (this.getDirection() > 90 && this.getDirection() < 270)
+        {
+            leftCoefficient *= -1;
+            rightCoefficient *= -1;
+        }
+
+        left.setOutput(leftCoefficient * this.getSpeed());
+        right.setOutput(rightCoefficient * this.getSpeed());
     }
 }

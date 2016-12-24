@@ -159,6 +159,11 @@ public class PIDController extends Thread
         this.mode = mode;
     }
 
+    public OperatingMode getOperatingMode()
+    {
+        return mode;
+    }
+
     public void addOutputListener(PIDControlled controlledOutput)
     {
         this.controlledOutputs.add(controlledOutput);
