@@ -1,4 +1,6 @@
-package subsystems;
+package logging;
+
+import logging.SystemLog;
 
 import java.io.Serializable;
 import java.time.Instant;

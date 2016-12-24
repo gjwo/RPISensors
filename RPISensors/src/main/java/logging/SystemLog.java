@@ -1,13 +1,9 @@
-package subsystems;
+package logging;
 
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -32,12 +28,10 @@ public class SystemLog implements RemoteLog
     private static String REMOTE_NAME = "Log";
 
     private final ArrayList<LogEntry> entries;
-    private final ArrayList<LogDisplayer> trackers;
 
     private SystemLog()
     {
         entries = new ArrayList<>();
-        trackers = new ArrayList<>();
         Registry reg = null;
         try
         {
@@ -62,27 +56,6 @@ public class SystemLog implements RemoteLog
     public void addEntry(LogEntry entry)
     {
         entries.add(entry);
-        Iterator<LogDisplayer> iterator =  trackers.iterator();
-        while(iterator.hasNext())
-        {
-            try
-            {
-                iterator.next().showEntry(entry.toString());
-            } catch (RemoteException e)
-            {
-                iterator.remove();
-            }
-        }
-        for(LogDisplayer tracker:trackers)
-        {
-            try
-            {
-                tracker.showEntry(entry.toString());
-            } catch (RemoteException e)
-            {
-                e.printStackTrace();
-            }
-        }
     }
 
     private static SystemLog getLog()
@@ -107,11 +80,5 @@ public class SystemLog implements RemoteLog
     public int getEntryCount() throws RemoteException
     {
         return entries.size();
-    }
-
-    @Override
-    public void registerInterest(LogDisplayer displayer) throws RemoteException
-    {
-        trackers.add(displayer);
     }
 }

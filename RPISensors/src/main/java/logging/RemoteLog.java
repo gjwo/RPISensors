@@ -1,4 +1,4 @@
-package subsystems;
+package logging;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -13,5 +13,4 @@ public interface RemoteLog extends Remote
     ArrayList<LogEntry> getEntries() throws RemoteException;
     LogEntry getEntry(int index) throws RemoteException;
     int getEntryCount()throws RemoteException;
-    void registerInterest(LogDisplayer displayer) throws RemoteException;
 }

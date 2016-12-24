@@ -3,7 +3,7 @@ package main;
 import subsystems.DriveAssemblySubSystem;
 import subsystems.InstrumentsSubSystem;
 import subsystems.SubSystem;
-import subsystems.SystemLog;
+import logging.SystemLog;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
