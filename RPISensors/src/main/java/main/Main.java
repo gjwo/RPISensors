@@ -17,14 +17,6 @@ public class Main implements RemoteMain
 
 	public Main(String hostname) throws RemoteException
     {
-		try
-		{
-			new EncoderTest();
-		} catch (InterruptedException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
         System.setProperty("java.rmi.server.hostname", hostname) ;
         Registry reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
 

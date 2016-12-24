@@ -31,7 +31,7 @@ public class PIDTest
     private PIDTest() throws InterruptedException
     {
         leftEncoder = new Encoder(RaspiPin.GPIO_14,RaspiPin.GPIO_13,"LH",1d/427.5d, false);
-        rightEncoder = new Encoder(RaspiPin.GPIO_01,RaspiPin.GPIO_00,"RH",1d/427.5d, false);
+        rightEncoder = new Encoder(RaspiPin.GPIO_01,RaspiPin.GPIO_26,"RH",1d/427.5d, false);
 
         final GpioController gpio = GpioFactory.getInstance();
 
@@ -49,7 +49,47 @@ public class PIDTest
         System.out.println("Set Point,Input,Output/2");
 
         Motor leftEncodedMotor = new EncoderFeedbackMotor(leftEncoder,left,KP,KI,KD,SAMPLE_RATE,true);
-        Motor rightEncodedMotor = new EncoderFeedbackMotor(rightEncoder,right,KP,KI,KD,SAMPLE_RATE,false, true);
+        Motor rightEncodedMotor = new EncoderFeedbackMotor(rightEncoder,right,KP,KI,KD,SAMPLE_RATE,false);
+
+
+        /*Motor testMotor = rightEncodedMotor;
+        Encoder testEncoder = rightEncoder;
+
+
+        testMotor.setOutput(0.4f);
+        System.out.println("Setting speed " + testMotor.getSpeed());
+        TimeUnit.SECONDS.sleep(5);
+        testMotor.setOutput(0.2f);
+        testEncoder.printBStates();
+        System.out.println("Setting speed " + testMotor.getSpeed());
+        TimeUnit.SECONDS.sleep(5);
+        testMotor.setOutput(0.1f);
+        testEncoder.printBStates();
+        System.out.println("Setting speed " + testMotor.getSpeed());
+        TimeUnit.SECONDS.sleep(5);
+        testMotor.setOutput(0f);
+        testEncoder.printBStates();
+        System.out.println("Setting speed " + testMotor.getSpeed());
+        TimeUnit.SECONDS.sleep(5);
+        testMotor.setOutput(-0.1f);
+        testEncoder.printBStates();
+        System.out.println("Setting speed " + testMotor.getSpeed());
+        TimeUnit.SECONDS.sleep(5);
+        testMotor.setOutput(-0.2f);
+        testEncoder.printBStates();
+        System.out.println("Setting speed " + testMotor.getSpeed());
+        TimeUnit.SECONDS.sleep(5);
+        testMotor.setOutput(-0.4f);
+        testEncoder.printBStates();
+        System.out.println("Setting speed " + testMotor.getSpeed());
+        TimeUnit.SECONDS.sleep(5);
+        testMotor.setOutput(0f);
+        testEncoder.printBStates();
+        System.out.println("Setting speed " + testMotor.getSpeed());
+        TimeUnit.SECONDS.sleep(5);
+        testMotor.stop();
+        testEncoder.printBStates();
+        System.out.println("Killed motor");*/
 
         da = new TankDriveAssembly(leftEncodedMotor,rightEncodedMotor);
 
@@ -58,17 +98,15 @@ public class PIDTest
 
         da.setSpeed(0.4f);
         TimeUnit.SECONDS.sleep(5);
+        da.setSpeed(0.1f);
+        TimeUnit.SECONDS.sleep(5);
+        da.setSpeed(0.2f);
+        TimeUnit.SECONDS.sleep(5);
         System.out.println("Directions, left: " + leftEncoder.getDirection().name() + " right: " + rightEncoder.getDirection());
         da.setSpeed(0.1f);
         TimeUnit.SECONDS.sleep(5);
         System.out.println("Directions, left: " + leftEncoder.getDirection().name() + " right: " + rightEncoder.getDirection());
-        /*da.setSpeed(0.2f);
-        TimeUnit.SECONDS.sleep(5);
-        System.out.println("Directions, left: " + leftEncoder.getDirection().name() + " right: " + rightEncoder.getDirection());
-        da.setSpeed(0.1f);
-        TimeUnit.SECONDS.sleep(5);
-        System.out.println("Directions, left: " + leftEncoder.getDirection().name() + " right: " + rightEncoder.getDirection());
-        */da.setSpeed(0f);
+        da.setSpeed(0f);
 
         da.stop();
     }

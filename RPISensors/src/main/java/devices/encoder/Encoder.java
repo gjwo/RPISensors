@@ -3,13 +3,10 @@ package devices.encoder;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinEdge;
-import com.pi4j.io.gpio.PinPullResistance;
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
@@ -36,6 +33,11 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 
 	private final boolean reversed;
 
+	private volatile ArrayList<PinState> states;
+	private volatile boolean read;
+
+	private volatile PinState lastBState;
+
 	private volatile long rotations;
 	private Instant lastTime;
 	
@@ -50,6 +52,9 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
         this.displacement = 0;
         this.totalDisplacement = 0;
         lastTime = Instant.now(clock);
+		states = new ArrayList<>();
+		read = false;
+		lastBState = PinState.LOW;
         
         final GpioController gpio = GpioFactory.getInstance();
 		this.a = gpio.provisionDigitalInputPin(a, name+"1", PinPullResistance.PULL_DOWN);
@@ -59,6 +64,7 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
         
         // do this last so interrupts cannot be received before its ready
         this.a.addListener(this);
+        this.b.addListener(this);
 	}
 
 	private void calculate()
@@ -74,16 +80,31 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 	@Override
 	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
 	{
-		if(event.getEdge() == PinEdge.RISING)
+		if(event.getPin() == b)
 		{
-			rotations+= reversed?(direction==Direction.CLOCKWISE?-1:1):(direction==Direction.CLOCKWISE?1:-1);
-			Direction perceived = b.isHigh()? Direction.CLOCKWISE : Direction.ANTI_CLOCKWISE;
-			if(perceived == lastDirection) 
+			lastBState = event.getState();
+		}else
+		{
+			if(event.getEdge() == PinEdge.RISING)
+			{
+				states.add(lastBState);
+				direction = lastBState==PinState.HIGH? Direction.CLOCKWISE : Direction.ANTI_CLOCKWISE;
+				rotations+= reversed?(direction==Direction.CLOCKWISE?-1:1):(direction==Direction.CLOCKWISE?1:-1);
+			/*Direction perceived = b.isHigh()? Direction.CLOCKWISE : Direction.ANTI_CLOCKWISE;
+			if(perceived == lastDirection)
 			{
 				direction = perceived;
-			} 
-			else lastDirection = perceived;
+			}
+			else lastDirection = perceived;*/
+			}
 		}
+	}
+
+	public void printBStates()
+	{
+		ArrayList<PinState> copy = (ArrayList<PinState>) states.clone();
+		states.clear();
+		System.out.println(Arrays.toString(copy.toArray()));
 	}
 
 	@Override
