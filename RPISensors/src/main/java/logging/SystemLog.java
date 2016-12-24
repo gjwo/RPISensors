@@ -13,14 +13,34 @@ import java.util.Iterator;
  */
 public class SystemLog implements RemoteLog
 {
+	/*
+	 * debugLevelTester settings
+	 * 0	-	No diagnostic prints
+	 * 1	-	User instructions, substantive output
+	 * 2	-	Normal user output, progress etc
+	 * 3	-	Main class methods entry & exit
+	 * 4	-	Internal methods entry and exit
+	 * 5	-	variable changes
+	 * 6	-	Device/Sensor register summaries
+	 * 7	-
+	 * 8	-	Loop internal variables
+	 * 9	-	Hardware writes
+	 */
 
     public enum LogLevel
     {
+    	USER_INSTRUCTION,
+    	USER_INFORMATION,
+    	TRACE_MAJOR_STATES,
+    	TRACE_INTERFACE_METHODS,
+    	TRACE_INTERNAL_METHODS,
+    	TRACE_VARIABLES,
+    	TRACE_REGISTER_SUMMARIES,
+    	TRACE_LOOPS,
+    	TRACE_HW_WRITES,
+    	TRACE_HW_EVENTS,
         ERROR,
         WARNING,
-        INFO,
-        DEBUG_1,
-        DEBUG_2
     }
 
 

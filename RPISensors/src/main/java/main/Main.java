@@ -3,6 +3,7 @@ package main;
 import subsystems.DriveAssemblySubSystem;
 import subsystems.InstrumentsSubSystem;
 import subsystems.SubSystem;
+import subsystems.SubSystem.SubSystemType;
 import logging.SystemLog;
 
 import java.rmi.RemoteException;
@@ -11,6 +12,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.EnumSet;
 import java.util.HashMap;
+
 
 public class Main implements RemoteMain
 {
@@ -25,12 +27,12 @@ public class Main implements RemoteMain
 
 		subSystems = new HashMap<>();
 		prepareSubSystems();
-		SystemLog.log(SystemLog.LogLevel.INFO, "System started");
+		SystemLog.log(SystemLog.LogLevel.TRACE_MAJOR_STATES, "System started");
 	}
 
     private void prepareSubSystems()
     {
-		SystemLog.log(SystemLog.LogLevel.INFO, "Preparing subSystems");
+		SystemLog.log(SystemLog.LogLevel.TRACE_MAJOR_STATES, "Preparing subSystems");
         subSystems.put(SubSystemType.DRIVE_ASSEMBLY, new DriveAssemblySubSystem());
         subSystems.put(SubSystemType.INSTRUMENTS, new InstrumentsSubSystem());
     }
@@ -41,9 +43,9 @@ public class Main implements RemoteMain
 
         for(SubSystemType systemType:systems)
 		{
-			SystemLog.log(SystemLog.LogLevel.INFO, "Starting " + systemType.name());
+			SystemLog.log(SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting " + systemType.name());
 			subSystems.get(systemType).startup();
-			SystemLog.log(SystemLog.LogLevel.INFO, "Started " + systemType.name());
+			SystemLog.log(SystemLog.LogLevel.TRACE_MAJOR_STATES, "Started " + systemType.name());
 		}
 	}
 
@@ -77,7 +79,8 @@ public class Main implements RemoteMain
     {
         if(args.length < 1)
         {
-            System.out.println("No hostname specified");
+        	SystemLog.log(SystemLog.LogLevel.ERROR, "No hostname specified");
+            System.err.println("No hostname specified");
             return;
         }
 		new Main(args[0]);

@@ -28,7 +28,7 @@ public class DriveAssemblySubSystem extends SubSystem
 
     public DriveAssemblySubSystem()
     {
-        super();
+        super(SubSystem.SubSystemType.DRIVE_ASSEMBLY);
 
 
         Encoder leftEncoder = new Encoder(RaspiPin.GPIO_14,RaspiPin.GPIO_13,"LH",1d/427.5d, false);
@@ -56,20 +56,20 @@ public class DriveAssemblySubSystem extends SubSystem
     @Override
     public SubSystemState startup()
     {
-        if(this.getCurrentState() != SubSystemState.IDLE) return this.getCurrentState();
-        this.state = SubSystemState.STARTING;
+        if(this.getSubSysState() != SubSystemState.IDLE) return this.getSubSysState();
+        this.setSubSysState(SubSystemState.STARTING);
         remoteDriveAssembly = new RemoteDriveAssemblyImpl(driveAssembly);
-        this.state = SubSystemState.RUNNING;
-        return this.getCurrentState();
+        this.setSubSysState(SubSystemState.RUNNING);
+        return this.getSubSysState();
     }
 
     @Override
     public SubSystemState shutdown()
     {
-        if(this.getCurrentState() != SubSystemState.RUNNING) return this.getCurrentState();
-        this.state = SubSystemState.STOPPING;
+        if(this.getSubSysState() != SubSystemState.RUNNING) return this.getSubSysState();
+        this.setSubSysState(SubSystemState.STOPPING);
         remoteDriveAssembly.unbind();
-        this.state = SubSystemState.IDLE;
-        return this.getCurrentState();
+        this.setSubSysState(SubSystemState.IDLE);
+        return this.getSubSysState();
     }
 }

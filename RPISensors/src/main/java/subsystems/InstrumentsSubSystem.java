@@ -25,14 +25,14 @@ public class InstrumentsSubSystem extends SubSystem
 
     public InstrumentsSubSystem()
     {
-        super();
+        super(SubSystem.SubSystemType.INSTRUMENTS);
     }
 
     @Override
     public SubSystemState startup()
     {
-        if(this.getCurrentState() != SubSystemState.IDLE) return this.getCurrentState();
-        state = SubSystemState.STARTING;
+        if(this.getSubSysState() != SubSystemState.IDLE) return this.getSubSysState();
+        this.setSubSysState(SubSystemState.STARTING);
         try
         {
             bus = I2CFactory.getInstance(I2CBus.BUS_1);
@@ -50,13 +50,13 @@ public class InstrumentsSubSystem extends SubSystem
             mpuThread.start();
             navThread.start();
 
-            state = SubSystemState.RUNNING;
+            this.setSubSysState(SubSystemState.RUNNING);
         } catch (I2CFactory.UnsupportedBusNumberException | IOException | InterruptedException e)
         {
-            state = SubSystemState.ERROR;
+        	this.setSubSysState(SubSystemState.ERROR);
             e.printStackTrace();
         }
-        return this.getCurrentState();
+        return this.getSubSysState();
     }
 
     @Override
@@ -64,8 +64,8 @@ public class InstrumentsSubSystem extends SubSystem
     {
         try
         {
-            state = SubSystemState.STOPPING;
-            if(this.getCurrentState() != SubSystemState.RUNNING) return this.getCurrentState();
+        	this.setSubSysState(SubSystemState.STOPPING);
+            if(this.getSubSysState() != SubSystemState.RUNNING) return this.getSubSysState();
             navThread.interrupt();
             TimeUnit.SECONDS.sleep(1);
             nav.shutdown();
@@ -74,10 +74,10 @@ public class InstrumentsSubSystem extends SubSystem
             bus.close();
         } catch (InterruptedException | IOException e)
         {
-            state = SubSystemState.ERROR;
+        	this.setSubSysState(SubSystemState.ERROR);
             e.printStackTrace();
         }
-        state = SubSystemState.IDLE;
-        return this.getCurrentState();
+        this.setSubSysState(SubSystemState.IDLE);
+        return this.getSubSysState();
     }
 }
