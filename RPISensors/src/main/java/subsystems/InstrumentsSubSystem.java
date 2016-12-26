@@ -64,20 +64,20 @@ public class InstrumentsSubSystem extends SubSystem
     {
         try
         {
-        	this.setSubSysState(SubSystemState.STOPPING);
             if(this.getSubSysState() != SubSystemState.RUNNING) return this.getSubSysState();
+        	this.setSubSysState(SubSystemState.STOPPING);
             navThread.interrupt();
             TimeUnit.SECONDS.sleep(1);
             nav.shutdown();
             mpuThread.interrupt();
             TimeUnit.SECONDS.sleep(2);
             bus.close();
+            this.setSubSysState(SubSystemState.IDLE);
         } catch (InterruptedException | IOException e)
         {
         	this.setSubSysState(SubSystemState.ERROR);
             e.printStackTrace();
         }
-        this.setSubSysState(SubSystemState.IDLE);
         return this.getSubSysState();
     }
 }

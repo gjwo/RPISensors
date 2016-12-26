@@ -5,6 +5,7 @@ import subsystems.InstrumentsSubSystem;
 import subsystems.SubSystem;
 import subsystems.SubSystem.SubSystemType;
 import logging.SystemLog;
+import subsystems.SubSystemState;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -18,11 +19,9 @@ public class Main implements RemoteMain
 {
 	private final HashMap<SubSystemType, SubSystem> subSystems;
 
-	public Main(String hostname) throws RemoteException
+	public Main(Registry reg) throws RemoteException
     {
-        System.setProperty("java.rmi.server.hostname", hostname) ;
-        Registry reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
-
+        SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting SubSystem manager");
         reg.rebind("Main", UnicastRemoteObject.exportObject(this,0));
 
 		subSystems = new HashMap<>();
@@ -43,16 +42,28 @@ public class Main implements RemoteMain
 
         for(SubSystemType systemType:systems)
 		{
-			SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting " + systemType.name());
-			subSystems.get(systemType).startup();
-			SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Started " + systemType.name());
+                SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting " + systemType.name());
+                if(subSystems.get(systemType).getSubSysState() != SubSystemState.RUNNING)
+                {
+                    subSystems.get(systemType).startup();
+                    SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Started " + systemType.name());
+                } else SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, systemType.name() + " already running");
+
 		}
 	}
 
 	@Override
 	public void shutdown(EnumSet<SubSystemType> systems) throws RemoteException
 	{
-		for(SubSystemType systemType:systems) subSystems.get(systemType).shutdown();
+        for(SubSystemType systemType:systems)
+        {
+            SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Stopping " + systemType.name());
+            if(subSystems.get(systemType).getSubSysState() != SubSystemState.IDLE)
+            {
+                subSystems.get(systemType).shutdown();
+                SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Stopped " + systemType.name());
+            } else SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, systemType.name() + " not running");
+        }
 	}
 
 	@Override
@@ -69,6 +80,18 @@ public class Main implements RemoteMain
 	}
 
 	@Override
+	public EnumSet<SubSystemType> getSubSystems() throws RemoteException
+	{
+		return EnumSet.copyOf(subSystems.keySet());
+	}
+
+    @Override
+    public SubSystemState getSubSystemState(SubSystemType systemType) throws RemoteException
+    {
+        return subSystems.get(systemType).getSubSysState();
+    }
+
+    @Override
 	public void exit() throws RemoteException
 	{
 	    shutdownAll();
@@ -83,6 +106,8 @@ public class Main implements RemoteMain
             System.err.println("No hostname specified");
             return;
         }
-		new Main(args[0]);
+        System.setProperty("java.rmi.server.hostname", args[0]) ;
+        Registry reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+		new Main(reg);
 	}
 }

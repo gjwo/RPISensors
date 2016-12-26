@@ -192,12 +192,7 @@ public class SensorFusion {
 			
 			return q;
 			//if(debugLevel >=3) System.out.println("End MadgwickQuaternionUpdate");
-		} catch(ArithmeticException e)
-		{
-			//System.err.print(".");
-			System.err.println("ArithmeticException caught in MadgwickQuaternionUpdate - keep calm and carry on");
-			e.printStackTrace();
-		}
+		} catch(ArithmeticException ignored) {}
 		return null;
 	}
 
