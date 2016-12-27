@@ -13,7 +13,8 @@ public abstract class SubSystem extends Thread
 		INSTRUMENTS,
 		DRIVE_ASSEMBLY,
 		LOGGING,
-		SUBSYSTEM_MANAGER
+		SUBSYSTEM_MANAGER,
+		TESTING
 	}
 
 	protected final SubSystemType type;
