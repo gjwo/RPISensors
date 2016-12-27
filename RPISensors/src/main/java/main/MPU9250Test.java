@@ -151,7 +151,7 @@ class MPU9250Test implements UpdateListener{
 		String hostname = "192.168.1.123";
 		int port = Registry.REGISTRY_PORT;
 		System.setProperty("java.rmi.server.hostname", hostname) ;
-		Registry reg = LocateRegistry.createRegistry(port);
+		LocateRegistry.createRegistry(port);
 	}
 
 	//Tester phases
