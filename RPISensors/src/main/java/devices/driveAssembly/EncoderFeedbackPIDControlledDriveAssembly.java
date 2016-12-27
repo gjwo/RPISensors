@@ -33,10 +33,10 @@ public class EncoderFeedbackPIDControlledDriveAssembly extends TankDriveAssembly
         this.rightEn = rightEn;
 
         leftPID = new PIDController(true,0d,SAMPLE_RATE,KP,KI,KD,-1,1, PIDController.OperatingMode.AUTOMATIC);//, true);
-        leftPID.setInputProvider(leftEn);
+        leftPID.setInputProvider(this.leftEn);
         leftPID.addOutputListener(left);
         rightPID = new PIDController(false,0d,SAMPLE_RATE,KP,KI,KD,-1,1, PIDController.OperatingMode.AUTOMATIC);//, true);
-        rightPID.setInputProvider(rightEn);
+        rightPID.setInputProvider(this.rightEn);
         rightPID.addOutputListener(right);
 
         leftPID.initialise();
