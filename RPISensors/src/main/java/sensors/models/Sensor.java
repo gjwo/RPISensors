@@ -8,7 +8,7 @@ import dataTypes.CircularArrayRing;
  * RPISensor - devices.sensors
  * Created by GJWood on 18/07/2016.
  */
-public abstract class Sensor <T,S>
+public abstract class Sensor <T>
 {
     private final CircularArrayRing<T> readings;
     private int sampleRate;

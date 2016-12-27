@@ -6,7 +6,7 @@ import dataTypes.TimestampedData3f;
  * RPITank - devices.sensors
  * Created by GJWood on 18/07/2016.
  */
-public abstract class Sensor3D extends Sensor<TimestampedData3f,Data3f>
+public abstract class Sensor3D extends Sensor<TimestampedData3f>
 {	
     private Data3f deviceBias; 	//Hardware bias data calculated in calibration
     private Data3f deviceScaling;	//Hardware scale, depends on the scale set up when configuring the device

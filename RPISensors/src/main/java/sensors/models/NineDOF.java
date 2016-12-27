@@ -15,7 +15,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	protected Sensor3D mag;
 	protected Sensor3D accel;
 	protected Sensor3D gyro;
-	protected Sensor<TimestampedData1f,Data1f> therm;
+	protected Sensor<TimestampedData1f> therm;
 	protected int sampleSize;
 
 	protected NineDOF(int sampleRate, int sampleSize, int debugLevel) 

@@ -24,7 +24,7 @@ import sensors.models.Sensor;
  * TEMP_OUT is the actual output of the temperature sensor.
  */
 
-public class MPU9250Thermometer extends Sensor<TimestampedData1f,Data1f>  
+public class MPU9250Thermometer extends Sensor<TimestampedData1f>
 {
     protected MPU9250RegisterOperations ro;
     protected MPU9250 parent;
