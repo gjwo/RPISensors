@@ -3,8 +3,6 @@ package devices.encoder;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
@@ -31,7 +29,6 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 	private double totalDisplacement;
 	private final boolean reversed;
 
-	private volatile ArrayList<PinState> states;
 	private volatile PinState lastBState;
 
 	private volatile long rotations;
@@ -48,7 +45,6 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
         this.displacement = 0;
         this.totalDisplacement = 0;
         lastTime = Instant.now(clock);
-		states = new ArrayList<>();
 		lastBState = PinState.LOW;
         
         final GpioController gpio = GpioFactory.getInstance();
@@ -82,7 +78,6 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 		{
 			if(event.getEdge() == PinEdge.RISING)
 			{
-				states.add(lastBState);
 				direction = lastBState==PinState.HIGH? Direction.CLOCKWISE : Direction.ANTI_CLOCKWISE;
 				rotations+= reversed?(direction==Direction.CLOCKWISE?-1:1):(direction==Direction.CLOCKWISE?1:-1);
 			/*Direction perceived = b.isHigh()? Direction.CLOCKWISE : Direction.ANTI_CLOCKWISE;
@@ -93,13 +88,6 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 			else lastDirection = perceived;*/
 			}
 		}
-	}
-
-	public void printBStates()
-	{
-		ArrayList<PinState> copy = (ArrayList<PinState>) states.clone();
-		states.clear();
-		System.out.println(Arrays.toString(copy.toArray()));
 	}
 
 	@Override
