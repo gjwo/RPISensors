@@ -214,6 +214,7 @@ public class SensorFusion {
 	 * conventional Kalman-based filtering algorithms but is much less computationally intensive
 	 * it can be performed on a 3.3 V Pro Mini operating at 8 MHz!
 	 */
+	@SuppressWarnings("unused")
 	public static Quaternion MahonyQuaternionUpdate(Data3f acc, Data3f gyro, Data3f mag, float deltat) //delta t in seconds
 	{ // #KW L104 
 		/*
