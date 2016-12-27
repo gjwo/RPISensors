@@ -13,8 +13,8 @@ public abstract class Sensor1D extends Sensor<TimestampedData1f>
     private Data1f deviceScaling;	//Hardware scale, depends on the scale set up when configuring the device
     private float deviceScalingX;
 
-    public Sensor1D(int sampleRate, int sampleSize) {
-        super(sampleRate, sampleSize);
+    public Sensor1D(int sampleSize) {
+        super(sampleSize);
         deviceBias = new Data1f(0f); 		//declared generically in super class
         deviceScaling = new Data1f(1f); 	//declared generically in super class
     }

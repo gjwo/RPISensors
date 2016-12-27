@@ -50,13 +50,13 @@ public class MPU9250 extends NineDOF
         // get device
         this.roMPU = new MPU9250RegisterOperations(mpu9250,debugLevel);
         this.roAK = new MPU9250RegisterOperations(ak8963,debugLevel);
-        gyro = new MPU9250Gyroscope(sampleSize, sampleSize, roMPU,this);
+        gyro = new MPU9250Gyroscope(sampleSize, roMPU,this);
         gyro.setDebugLevel(debugLevel);
-        mag = new MPU9250Magnetometer(sampleSize, sampleSize, roAK,this);
+        mag = new MPU9250Magnetometer(sampleSize, roAK,this);
         mag.setDebugLevel(debugLevel);
-        accel = new MPU9250Accelerometer(sampleSize, sampleSize, roMPU,this);
+        accel = new MPU9250Accelerometer(sampleSize, roMPU,this);
         accel.setDebugLevel(debugLevel);
-        therm = new MPU9250Thermometer(sampleSize, sampleSize, roMPU,this);
+        therm = new MPU9250Thermometer(sampleSize, roMPU,this);
         therm.setDebugLevel(debugLevel);
         selfTest();
         calibrateGyroAcc();

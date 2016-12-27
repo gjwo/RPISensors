@@ -39,9 +39,9 @@ public class MPU9250Accelerometer extends Sensor3D  {
 	private final short accelSensitivity = 16384;  // = 16384 LSB/g
 	//private A_DLPF aDLFP;
 
-	MPU9250Accelerometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent)
+	MPU9250Accelerometer(int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent)
 	{
-		super(sampleSize, sampleSize);
+		super(sampleSize);
 		accelScale = AccScale.AFS_4G;
 		this.setDeviceScaling(new Data3f(	(float)accelScale.getRes(),
 											(float)accelScale.getRes(),

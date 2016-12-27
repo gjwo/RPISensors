@@ -55,8 +55,8 @@ public class MPU9250Magnetometer extends Sensor3D  {
     private TimestampedData3f lastCalibratedReading = new TimestampedData3f(0,0,0);
     private Data3f magCalibration = null; //#KW 271 Hardware factory calibration data from AK8963, sent up in init(* param), used in update()
 
-	public MPU9250Magnetometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, NineDOF parent ) {
-		super(sampleRate, sampleSize);
+	public MPU9250Magnetometer(int sampleSize, MPU9250RegisterOperations ro, NineDOF parent ) {
+		super(sampleSize);
 		this.ro = ro;
 		this.parent = parent;
 	}

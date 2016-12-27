@@ -27,9 +27,9 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1f>
 {
     protected MPU9250RegisterOperations ro;
     protected MPU9250 parent;
-	public MPU9250Thermometer(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent)
+	public MPU9250Thermometer(int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent)
 	{
-		super(sampleRate, sampleSize);
+		super(sampleSize);
 		this.ro = ro;
 		this.parent = parent;
 	}

@@ -19,7 +19,7 @@ public abstract class SensorPackage implements Runnable
      * SensorPackage		- Constructor
      * @param sampleRate
      */
-    SensorPackage(int sampleRate, int debugLevel)
+    protected SensorPackage(int sampleRate, int debugLevel)
     {
         this.sampleRate = sampleRate;
         this.paused = false;

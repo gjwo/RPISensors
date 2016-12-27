@@ -29,7 +29,7 @@ public class MPU9250RegisterOperations {
 	
 	/**
 	 * produces a binary representation of a byte
-	 * @param b		- the byte
+	 * @param r		- the byte
 	 * @return		- A string containing the binary representation
 	 */
     public String byteToBitString(byte r)
@@ -40,7 +40,7 @@ public class MPU9250RegisterOperations {
     
 	/**
 	 * produces a binary representation of a short
-	 * @param b		- the short
+	 * @param r		- the short
 	 * @return		- A string containing the binary representation
 	 */
     public String shortToBitString(short r)
@@ -111,7 +111,7 @@ public class MPU9250RegisterOperations {
 
    /**
     * Reads the specified number of 16 bit 3 dimensional data points from the device this class is associated with
-    * @param register 		- the register to be read (name of first byte)
+    * @param r 		- the register to be read (name of first byte)
     * @param pointCount 	- number of short3D data points to be read
     * @return 				- an array of Datashort3D holding the registers
     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the more significant part of the register
@@ -131,7 +131,7 @@ public class MPU9250RegisterOperations {
    }
    /**
     * Reads the specified number of 16 bit Registers from the device this class is associated with
-    * @param register 	- the register to be read (name of first byte)
+    * @param r 	- the register to be read (name of first byte)
     * @param regCount 	- number of 16 bit registers to be read
     * @return 			- an array of shorts (16 bit signed values) holding the registers
     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the more significant part of the register 
@@ -148,7 +148,7 @@ public class MPU9250RegisterOperations {
    }
    /**
     * Reads the specified number of 16 bit Registers from the device this class is associated with
-    * @param register 	- the register to be read (name of first byte)
+    * @param r 	- the register to be read (name of first byte)
     * @param regCount 	- number of 16 bit registers to be read
     * @return 			- an array of shorts (16 bit signed values) holding the registers
     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the least significant part of the register 

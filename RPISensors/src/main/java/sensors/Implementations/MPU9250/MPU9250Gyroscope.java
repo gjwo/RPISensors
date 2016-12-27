@@ -39,9 +39,9 @@ public class MPU9250Gyroscope extends Sensor3D
 	private GT_DLPF cfgDLPF;
 	private final short gyroSensitivity = 131;     // 2^16 LSB / 500dps = 131 LSB/degrees/sec
 
-	public MPU9250Gyroscope(int sampleRate, int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent) 
+	public MPU9250Gyroscope(int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent)
 	{
-		super(sampleRate, sampleSize);
+		super(sampleSize);
 		gyroScale = GyrScale.GFS_2000DPS;
 		this.setDeviceScaling( new Data3f(gyroScale.getRes(), gyroScale.getRes(),gyroScale.getRes())); //held in super class 
 		this.ro = ro;

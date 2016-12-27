@@ -14,8 +14,8 @@ public abstract class Sensor3D extends Sensor<TimestampedData3f>
     private float deviceScalingY;
     private float deviceScalingZ;
 
-    public Sensor3D(int sampleRate, int sampleSize) {
-		super(sampleRate, sampleSize);
+    public Sensor3D(int sampleSize) {
+		super(sampleSize);
 	    deviceBias = new Data3f(0f,0f,0f); 		//declared generically in super class
 	    deviceScaling = new Data3f(1f,1f,1f); 	//declared generically in super class
 	}

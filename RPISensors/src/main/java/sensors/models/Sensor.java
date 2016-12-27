@@ -17,10 +17,9 @@ public abstract class Sensor <T>
 
     /**
      * Sensor		- Constructor
-     * @param sampleRate	- The sample rate per second
      * @param sampleSize	- The number of samples that can be held before overwriting
      */
-    public Sensor(int sampleRate, int sampleSize)
+    public Sensor(int sampleSize)
     {
         readings = new CircularArrayRing<>(sampleSize);
         this.sampleRate = sampleRate;
