@@ -26,7 +26,7 @@ public class Main implements RemoteMain
 
 		subSystems = new HashMap<>();
 		prepareSubSystems();
-		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "System started");
+		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION, "System started");
 	}
 
     private void prepareSubSystems()
