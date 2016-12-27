@@ -2,7 +2,6 @@ package main;
 
 import com.pi4j.io.gpio.*;
 import devices.driveAssembly.DriveAssembly;
-import devices.driveAssembly.EncoderFeedbackPIDControlledDriveAssembly;
 import devices.driveAssembly.TankDriveAssembly;
 import devices.encoder.Encoder;
 import devices.motors.DCMotor;

@@ -2,7 +2,6 @@ package sensors.Implementations.MPU9250;
 
 import java.io.IOException;
 
-import dataTypes.Data1f;
 import dataTypes.TimestampedData1f;
 import sensors.models.Sensor;
 /**

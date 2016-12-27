@@ -3,8 +3,6 @@ package devices.motors;
 import devices.controller.PIDController;
 import devices.encoder.Encoder;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * RPISensors - devices.motors
  * Created by MAWood on 23/12/2016.

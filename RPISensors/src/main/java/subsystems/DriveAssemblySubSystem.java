@@ -2,7 +2,6 @@ package subsystems;
 
 import com.pi4j.io.gpio.*;
 import devices.driveAssembly.DriveAssembly;
-import devices.driveAssembly.RemoteDriveAssembly;
 import devices.driveAssembly.RemoteDriveAssemblyImpl;
 import devices.driveAssembly.TankDriveAssembly;
 import devices.encoder.Encoder;

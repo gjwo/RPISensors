@@ -25,17 +25,13 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 	private final GpioPinDigitalInput b;
 	
 	private Direction direction;
-	private Direction lastDirection;
 	private double metresPerRotation;
 	private double velocity;
 	private double displacement;
 	private double totalDisplacement;
-
 	private final boolean reversed;
 
 	private volatile ArrayList<PinState> states;
-	private volatile boolean read;
-
 	private volatile PinState lastBState;
 
 	private volatile long rotations;
@@ -53,7 +49,6 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
         this.totalDisplacement = 0;
         lastTime = Instant.now(clock);
 		states = new ArrayList<>();
-		read = false;
 		lastBState = PinState.LOW;
         
         final GpioController gpio = GpioFactory.getInstance();

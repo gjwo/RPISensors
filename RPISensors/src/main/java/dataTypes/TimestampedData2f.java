@@ -6,7 +6,8 @@ package dataTypes;
  */
 public class TimestampedData2f extends Data2f
 {
-    public static final long NANOS_PER_SEC = 1000000000;
+	private static final long serialVersionUID = 9128847141367511460L;
+	public static final long NANOS_PER_SEC = 1000000000;
     public static final float NANOS_PER_SECF = 1000000000f;
     protected final long nanoTime;
 

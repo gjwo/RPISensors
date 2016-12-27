@@ -2,7 +2,6 @@ package sensors.models;
 
 import java.io.IOException;
 
-import dataTypes.Data1f;
 import dataTypes.TimestampedData1f;
 import dataTypes.TimestampedData3f;
 import sensors.interfaces.Accelerometer;
