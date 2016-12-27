@@ -14,7 +14,8 @@ import java.time.format.DateTimeFormatter;
  */
 public class LogEntry implements Serializable
 {
-    public final String message;
+	private static final long serialVersionUID = -24348546989956649L;
+	public final String message;
     public final SystemLog.LogLevel level;
     public final Instant time;
     public final SubSystem.SubSystemType type;
@@ -32,6 +33,12 @@ public class LogEntry implements Serializable
     {
         final DateTimeFormatter formatter =
                 DateTimeFormatter.ofPattern("HH:mm:ss.SSS").withZone(ZoneId.systemDefault());
-        return formatter.format(time) + " -> "+ type.name() +" "+ level.name() +  " : " + message;
+        return formatter.format(time) + " -> "+ type.name() +" "+ level.getLevel() +  " : " + message;
+    }
+    public String toExtendedString()
+    {
+        final DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("HH:mm:ss.SSS").withZone(ZoneId.systemDefault());
+        return formatter.format(time) + " -> "+ type.name() +" " + level.name() + " "+ level.getLevel() +  " : " + message;
     }
 }

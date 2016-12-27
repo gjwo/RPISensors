@@ -31,18 +31,22 @@ public class SystemLog implements RemoteLog
 
     public enum LogLevel
     {
-    	USER_INSTRUCTION,
-    	USER_INFORMATION,
-    	TRACE_MAJOR_STATES,
-    	TRACE_INTERFACE_METHODS,
-    	TRACE_INTERNAL_METHODS,
-    	TRACE_VARIABLES,
-    	TRACE_REGISTER_SUMMARIES,
-    	TRACE_LOOPS,
-    	TRACE_HW_WRITES,
-    	TRACE_HW_EVENTS,
-        ERROR,
-        WARNING,
+    	USER_INSTRUCTION(1),
+    	USER_INFORMATION(2),
+    	TRACE_MAJOR_STATES(3),
+    	TRACE_INTERFACE_METHODS(4),
+    	TRACE_INTERNAL_METHODS(5),
+    	TRACE_VARIABLES(6),
+    	TRACE_REGISTER_SUMMARIES(7),
+    	TRACE_LOOPS(8),
+    	TRACE_HW_WRITES(9),
+    	TRACE_HW_EVENTS(10),
+        ERROR(0),
+        WARNING(2);
+        
+        private final int level;
+        LogLevel(int l){level = l;}
+        public int getLevel(){return level;}
     }
 
 
