@@ -33,7 +33,7 @@ public class LogEntry implements Serializable
     {
         final DateTimeFormatter formatter =
                 DateTimeFormatter.ofPattern("HH:mm:ss.SSS").withZone(ZoneId.systemDefault());
-        return formatter.format(time) + " -> "+ type.name() +" "+ level.getLevel() +  " : " + message;
+        return formatter.format(time) + " -> ["+ level.getLevel() +"] " + type.name() + " : " + message;
     }
     public String toExtendedString()
     {

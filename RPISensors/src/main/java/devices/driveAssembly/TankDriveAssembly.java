@@ -1,6 +1,8 @@
 package devices.driveAssembly;
 
 import devices.motors.Motor;
+import logging.SystemLog;
+import subsystems.SubSystem;
 
 /**
  * RPITank
@@ -25,10 +27,13 @@ public class TankDriveAssembly implements DriveAssembly
     @Override
     public void setSpeed(float speed)
     {
+        SystemLog.log(SubSystem.SubSystemType.DRIVE_ASSEMBLY,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"TDA setSpeed");
         if (speed < 0) speed = 0;
         if (speed > 1) speed = 1;
         this.speed = speed;
         updateCourse();
+        SystemLog.log(SubSystem.SubSystemType.DRIVE_ASSEMBLY,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End TDA setSpeed");
+
     }
 
     @Override
@@ -40,11 +45,13 @@ public class TankDriveAssembly implements DriveAssembly
     @Override
     public void setDirection(float angle)
     {
+        SystemLog.log(SubSystem.SubSystemType.DRIVE_ASSEMBLY,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"TDA setDirection");
         if (angle < 0) angle += 360;
         if (angle < 0) angle = 0;
         if (angle >= 360) angle = 0;
         this.angle = angle;
         updateCourse();
+        SystemLog.log(SubSystem.SubSystemType.DRIVE_ASSEMBLY,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End TDA setDirection");
     }
 
     @Override
@@ -63,6 +70,7 @@ public class TankDriveAssembly implements DriveAssembly
 
     protected void updateCourse()
     {
+        SystemLog.log(SubSystem.SubSystemType.DRIVE_ASSEMBLY,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"TDA updateCourse");
         float leftCoefficient;
         float rightCoefficient;
         float adjustedDirection = this.getDirection();
@@ -95,5 +103,6 @@ public class TankDriveAssembly implements DriveAssembly
 
         left.setOutput(leftCoefficient * this.getSpeed());
         right.setOutput(rightCoefficient * this.getSpeed());
+        SystemLog.log(SubSystem.SubSystemType.DRIVE_ASSEMBLY,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End TDA UpdateCourse");
     }
 }

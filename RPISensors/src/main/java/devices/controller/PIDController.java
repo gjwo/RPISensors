@@ -5,6 +5,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import logging.SystemLog;
+import subsystems.SubSystem;
+
 /**
  * RPISensors - devices
  * Created by MAWood on 04/12/2016.
@@ -64,6 +67,7 @@ public class PIDController extends Thread
     @Override
     public void run()
     {
+        SystemLog.log(SubSystem.SubSystemType.DRIVE_ASSEMBLY,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"PIDC run started");
         lastTime = Instant.now();
         super.run();
         while(!Thread.interrupted())
@@ -84,6 +88,7 @@ public class PIDController extends Thread
                 Thread.sleep(100);
             } catch (InterruptedException ignored) {}
         }
+        SystemLog.log(SubSystem.SubSystemType.DRIVE_ASSEMBLY,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End PIDC run");
     }
 
     void compute()

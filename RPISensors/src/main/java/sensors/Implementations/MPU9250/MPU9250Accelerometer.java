@@ -5,7 +5,9 @@ import java.util.Arrays;
 
 import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
+import logging.SystemLog;
 import sensors.models.Sensor3D;
+import subsystems.SubSystem;
 
 /**
  * MPU 9250 Accelerometer sensor
@@ -89,7 +91,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
 	@Override
 	public void configure() throws IOException, InterruptedException
 	{
-		if (debugLevel() >=3) System.out.println("acc.configure");
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"acc.configure");
         // Set accelerometer full-scale range configuration
 		byte c;
         c = ro.readByteRegister(Registers.ACCEL_CONFIG); // get current ACCEL_CONFIG register value
@@ -108,13 +110,13 @@ public class MPU9250Accelerometer extends Sensor3D  {
         ro.writeByteRegister(Registers.ACCEL_CONFIG2, c); // Write new ACCEL_CONFIG2 register value
 
         if (debugLevel() >=3) printState();
-        if (debugLevel() >=3)  {System.out.println("End acc.configure;");}
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End acc.configure");
 	}
 	
 	@Override
 	public void selfTest() throws InterruptedException 
 	{
-		if (debugLevel() >=3) System.out.println("acc.selfTest");        
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"acc.selfTest");        
 		byte FS = 0; 
         ro.writeByteRegister(Registers.ACCEL_CONFIG, (byte)(	AccSelfTest.NONE.bits |	// no self test
         														AccScale.AFS_2G.bits));	// Set full scale range for the accelerometer to 2 g 
@@ -202,14 +204,14 @@ public class MPU9250Accelerometer extends Sensor3D  {
         ro.writeByteRegister(Registers.ACCEL_CONFIG2, (byte)(	A_DLPF.F1BW0099_2.bits ));	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
         Thread.sleep(25); // Delay a while to let the device stabilise
         if (debugLevel() >=3) printState();
-        if (debugLevel() >=3) System.out.println("End acc.selfTest");
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End acc.selfTest");
 	}
 	
 	@Override
 	public void calibrate() throws InterruptedException
 	{
 		// part of accelgyrocalMPU9250 in Kris Winer code - this code is only the Accelerometer elements
-		if (debugLevel() >=3) System.out.println("accel.calibrate");
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"accel.calibrate");
 		if (debugLevel() >=5) System.out.println("Scaling: "+getDeviceScaling().toString());
 		if (debugLevel() >=5)  System.out.println("Bias: "+getDeviceBias().toString());
 
@@ -255,7 +257,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         								(float)accelBiasAvg[2]/2.0f/(float)accelSensitivity));
 							
         if (debugLevel() >=3) printState();
-        if (debugLevel() >=3) System.out.println("End accel.calibrate");
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End accel.calibrate");
 	}
     public void setHardwareBiases(short[] biasAvg)
     {
@@ -268,7 +270,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         // so having got it in a 16 bit short, and having preserved the bottom bit, the number must be shifted right by 1 or divide by 2
         // to give the correct value for calculations. After calculations it must be shifted left by 1 or multiplied by 2 to get
         // the bytes correct, then the preserved bit0 can be put back before the bytes are written to registers
-    	if (debugLevel() >=4) System.out.println("setAccelerometerBiases");
+    	SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"setAccelerometerBiases");
 
         
         if(biasAvg[2] > 0) {biasAvg[2] -= this.accelSensitivity;}  // Remove gravity from the z-axis accelerometer bias calculation
@@ -310,6 +312,6 @@ public class MPU9250Accelerometer extends Sensor3D  {
         ro.write16bitRegister(Registers.YA_OFFSET_H, accelBiasReg[1]);
         ro.write16bitRegister(Registers.ZA_OFFSET_H, accelBiasReg[2]);
         
-        if (debugLevel() >=5) System.out.println("End setAccelerometerBiases");
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End setAccelerometerBiases");
     }
 }

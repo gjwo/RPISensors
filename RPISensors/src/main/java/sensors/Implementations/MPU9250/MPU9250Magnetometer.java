@@ -135,7 +135,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	 */
 	@Override
 	public void configure() throws InterruptedException, IOException {
-		if (debugLevel() >=3) System.out.println("configure mag AK8963");
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"configure mag AK8963");
         // First extract the factory calibration for each magnetometer axis
 
         ro.writeByteRegister(Registers.AK8963_CNTL1,(byte) 0x00); // #KW 836 Power down magnetometer
@@ -156,13 +156,13 @@ public class MPU9250Magnetometer extends Sensor3D  {
         ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)(magScale.bits | magMode.bits)); // #KW 849 Set magnetometer data resolution and sample ODR ####16bit already shifted
         Thread.sleep(10);
         if (debugLevel() >=3) printState();
-        if (debugLevel() >=3) System.out.println("End configure mag initAK8963");
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End configure mag initAK8963");
 	}
 
 	@Override
 	public void calibrate() throws  InterruptedException{
 		// #KW L1064 magcalMPU9250
-		if (debugLevel() >=3) System.out.println("calibrate mag initAK8963");
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"calibrate mag initAK8963");
 
         int  bias[] = {0, 0, 0}, scale[] = {0, 0, 0};
         short max[] = {(short)-32767, (short)-32767, (short)-32767},
@@ -170,8 +170,6 @@ public class MPU9250Magnetometer extends Sensor3D  {
         		temp[] = {0, 0, 0};
 
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INSTRUCTION, "Magnetometer Calibration: Wave device in a figure eight until done!");
-        if (debugLevel() >=1) System.out.println("Magnetometer Calibration: Wave device in a figure eight until done!");
-        Thread.sleep(2000);
 
         // #KW L1073 shoot for ~fifteen seconds of mag data
         for(int i = 0; i < magMode.sampleCount; i++) {
@@ -209,7 +207,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 
         if (debugLevel() >=4) printState();
         if (debugLevel() >=4) printRegisters();
-        if (debugLevel() >=3) System.out.println("End calibrate mag initAK8963");
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INSTRUCTION, "Magnetometer Calibration: Finished");
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End calibrate mag initAK8963");
 	}
 }

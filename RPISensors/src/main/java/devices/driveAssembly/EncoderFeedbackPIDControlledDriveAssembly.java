@@ -3,6 +3,8 @@ package devices.driveAssembly;
 import devices.controller.PIDController;
 import devices.encoder.Encoder;
 import devices.motors.Motor;
+import logging.SystemLog;
+import subsystems.SubSystem;
 
 import java.util.concurrent.TimeUnit;
 
@@ -44,6 +46,7 @@ public class EncoderFeedbackPIDControlledDriveAssembly extends TankDriveAssembly
     @Override
     protected void updateCourse()
     {
+        SystemLog.log(SubSystem.SubSystemType.DRIVE_ASSEMBLY,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"EFPCDA update course");
         float leftCoefficient;
         float rightCoefficient;
         float adjustedDirection = this.getDirection();
@@ -77,11 +80,13 @@ public class EncoderFeedbackPIDControlledDriveAssembly extends TankDriveAssembly
 
         leftPID.setSetpoint(leftCoefficient * this.getSpeed());
         rightPID.setSetpoint(rightCoefficient * this.getSpeed());
+        SystemLog.log(SubSystem.SubSystemType.DRIVE_ASSEMBLY,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End EFPCDA update course");
     }
 
     @Override
     public void stop()
     {
+        SystemLog.log(SubSystem.SubSystemType.DRIVE_ASSEMBLY,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"EFPCDA stop");
         super.stop();
         leftPID.setOperatingMode(PIDController.OperatingMode.MANUAL);
         rightPID.setOperatingMode(PIDController.OperatingMode.MANUAL);
@@ -91,6 +96,7 @@ public class EncoderFeedbackPIDControlledDriveAssembly extends TankDriveAssembly
         } catch (InterruptedException ignored) {}
         left.stop();
         right.stop();
+        SystemLog.log(SubSystem.SubSystemType.DRIVE_ASSEMBLY,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End EFPCDA stop");
     }
 
     public void shutdown()
