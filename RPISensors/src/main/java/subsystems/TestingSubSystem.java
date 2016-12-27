@@ -4,7 +4,9 @@ import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 import devices.I2C.I2CImplementation;
 import devices.I2C.Pi4jI2CDevice;
+import sensors.Implementations.VL53L0X.VL53L0X;
 import sensors.Implementations.VL53L0X.VL53L0XRanger;
+import sensors.interfaces.UpdateListener;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -13,9 +15,9 @@ import java.util.concurrent.TimeUnit;
  * RPISensors - subsystems
  * Created by MAWood on 27/12/2016.
  */
-public class TestingSubSystem extends SubSystem
+public class TestingSubSystem extends SubSystem implements UpdateListener
 {
-    private VL53L0XRanger vl53L0X;
+    private VL53L0X vl53L0X;
     private Thread thread;
     public TestingSubSystem()
     {
@@ -24,7 +26,8 @@ public class TestingSubSystem extends SubSystem
         {
             I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
             I2CImplementation i2CImplementation = new Pi4jI2CDevice(bus.getDevice(0x29));
-            vl53L0X = new VL53L0XRanger(i2CImplementation,100);
+            vl53L0X = new VL53L0X(i2CImplementation,10,100);
+            vl53L0X.registerInterest(this);
         } catch (I2CFactory.UnsupportedBusNumberException | IOException e)
         {
             e.printStackTrace();
@@ -36,19 +39,7 @@ public class TestingSubSystem extends SubSystem
     {
         if(getSubSysState() != SubSystemState.IDLE) return getSubSysState();
         setSubSysState(SubSystemState.STARTING);
-        thread = new Thread(() ->
-        {
-            while(!Thread.interrupted())
-            try
-            {
-                vl53L0X.updateData();
-                TimeUnit.MILLISECONDS.sleep(500);
-                System.out.println("Distance: " + vl53L0X.getLatestValue());
-            } catch (IOException | InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-        });
+        thread = new Thread(vl53L0X);
         thread.start();
         setSubSysState(SubSystemState.RUNNING);
         return getSubSysState();
@@ -62,5 +53,11 @@ public class TestingSubSystem extends SubSystem
         thread.interrupt();
         setSubSysState(SubSystemState.IDLE);
         return getSubSysState();
+    }
+
+    @Override
+    public void dataUpdated()
+    {
+        System.out.println("Latest: " + vl53L0X.getLatestRange().getX());
     }
 }
