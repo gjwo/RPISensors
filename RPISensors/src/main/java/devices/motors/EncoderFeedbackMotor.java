@@ -10,9 +10,7 @@ import devices.encoder.Encoder;
 public class EncoderFeedbackMotor implements Motor
 {
     private final Encoder encoder;
-
     private final Motor motor;
-
     private final PIDController PID;
 
     private final double kp;
@@ -41,9 +39,9 @@ public class EncoderFeedbackMotor implements Motor
 
         this.debug = debug;
 
-        PID = new PIDController(reversed,0,sampleRate,kp,ki,kd,-1,1, PIDController.OperatingMode.AUTOMATIC, debug);//, true);
-        PID.setInputProvider(encoder);
-        PID.addOutputListener(motor);
+        PID = new PIDController(reversed,0,this.sampleRate,this.kp,this.ki,this.kd,-1,1, PIDController.OperatingMode.AUTOMATIC, debug);//, true);
+        PID.setInputProvider(this.encoder);
+        PID.addOutputListener(this.motor);
 
         PID.initialise();
     }
