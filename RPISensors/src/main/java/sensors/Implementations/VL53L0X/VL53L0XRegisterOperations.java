@@ -4,6 +4,9 @@ import devices.I2C.I2CImplementation;
 import sensors.Implementations.VL53L0X.VL53L0XConstants.Registers;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import utilities.ConversionUtilities;
 
 /**
  * RPISensors - sensors.Implementations.VL53L0XRanger
@@ -36,8 +39,8 @@ public class VL53L0XRegisterOperations
             e.printStackTrace();
         }
         try {
-            Thread.sleep(2); // delay to allow register to settle
-        } catch (InterruptedException ignored) {}
+        	TimeUnit.MILLISECONDS.sleep(2);// delay to allow register to settle
+       } catch (InterruptedException ignored) {}
     }
     void writeReg(int reg, int value)
     {
@@ -47,7 +50,7 @@ public class VL53L0XRegisterOperations
             e.printStackTrace();
         }
         try {
-            Thread.sleep(2); // delay to allow register to settle
+        	TimeUnit.MILLISECONDS.sleep(2);// delay to allow register to settle
         } catch (InterruptedException ignored) {}
     }
 
@@ -82,12 +85,10 @@ public class VL53L0XRegisterOperations
 
     short readReg16Bit(Registers r)
     {	//The lower byte must be masked or the sign bits extend to integer length
-        byte[] rawData;
         try
         {
-            rawData = busDevice.read(r.getAddress(),2);
-            return(short) (((short)rawData[0] << 8) | (rawData[1]&0xff)) ;  // Turn the MSB and LSB into a signed 16-bit value
-        } catch (IOException e)
+            return ConversionUtilities.bytes2MSBToShort(busDevice.read(r.getAddress(),2));
+         } catch (IOException e)
         {
             e.printStackTrace();
             return Short.parseShort(null);
@@ -96,14 +97,9 @@ public class VL53L0XRegisterOperations
 
     int readReg32Bit(Registers r)
     {
-        byte[] rawData;
         try
         {
-            rawData = busDevice.read(r.getAddress(),4);
-            return ((rawData[0] << 24)
-                  | (rawData[1]&0xff)<<16
-                  | (rawData[2]&0xff)<<8
-                  | (rawData[3]&0xff));
+             return ConversionUtilities.bytes4MSBToInt( busDevice.read(r.getAddress(),4));
         } catch (IOException e)
         {
             e.printStackTrace();
