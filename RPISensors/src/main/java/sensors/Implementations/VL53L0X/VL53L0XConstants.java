@@ -6,7 +6,7 @@ package sensors.Implementations.VL53L0X;
  */
 public class VL53L0XConstants
 {
-    enum Registers
+    enum VL53L0XRegisters
     {
         VL53L0X_ADDRESS                            (0x29),
         SYSRANGE_START                             (0x00),
@@ -94,7 +94,7 @@ public class VL53L0XConstants
         WHO_AM_I                                          (0x00C0);   // should be 0x40
 
         private final int address;
-        Registers(int addr)
+        VL53L0XRegisters(int addr)
         {
             this.address = addr;
         }

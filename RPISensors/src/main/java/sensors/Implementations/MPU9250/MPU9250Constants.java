@@ -4,7 +4,7 @@ package sensors.Implementations.MPU9250;
  * RPITank
  * Created by MAWood on 09/07/2016.
  */
-enum Registers
+enum MPU9250Registers
 {
     AK8963_ADDRESS   (0x0C), // i2c bus address
     
@@ -144,7 +144,7 @@ enum Registers
 
 
     private final int address;
-    Registers(int addr)
+    MPU9250Registers(int addr)
     {
         this.address = addr;
     }

@@ -40,7 +40,7 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1f>
 	@Override
 	public void printRegisters()
 	{
-	   	ro.print16BitRegister(Registers.TEMP_OUT_H);
+	   	ro.print16BitRegister(MPU9250Registers.TEMP_OUT_H);
 	}
 	@Override
 	public  TimestampedData1f getAvgValue()
@@ -60,7 +60,7 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1f>
 	public void updateData() throws IOException 
 	{
 		//TEMP_degC = ((TEMP_OUT – RoomTemp_Offset)/Temp_Sensitivity) + 21degC
-    	short[] temperature = ro.read16BitRegisters(Registers.TEMP_OUT_H,1);
+    	short[] temperature = ro.read16BitRegisters(MPU9250Registers.TEMP_OUT_H,1);
     	float AdjustedTemp = temperature[0] -969f -9.5f +21f;
     	addValue(new TimestampedData1f(AdjustedTemp));
 	}

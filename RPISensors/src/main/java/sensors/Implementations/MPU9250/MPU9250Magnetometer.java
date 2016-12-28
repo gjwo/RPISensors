@@ -77,20 +77,20 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	@Override
 	public void printRegisters()
 	{
-	   	ro.printByteRegister(Registers.AK8963_WHO_AM_I);
-	   	ro.printByteRegister(Registers.AK8963_INFO);
-	   	ro.printByteRegister(Registers.AK8963_CNTL1);
-	   	ro.printByteRegister(Registers.AK8963_CNTL2);
-	   	ro.printByteRegister(Registers.AK8963_ASTC);
-	   	ro.printByteRegister(Registers.AK8963_ASAX);
-	   	ro.printByteRegister(Registers.AK8963_ASAY);
-	   	ro.printByteRegister(Registers.AK8963_ASAZ);
+	   	ro.printByteRegister(MPU9250Registers.AK8963_WHO_AM_I);
+	   	ro.printByteRegister(MPU9250Registers.AK8963_INFO);
+	   	ro.printByteRegister(MPU9250Registers.AK8963_CNTL1);
+	   	ro.printByteRegister(MPU9250Registers.AK8963_CNTL2);
+	   	ro.printByteRegister(MPU9250Registers.AK8963_ASTC);
+	   	ro.printByteRegister(MPU9250Registers.AK8963_ASAX);
+	   	ro.printByteRegister(MPU9250Registers.AK8963_ASAY);
+	   	ro.printByteRegister(MPU9250Registers.AK8963_ASAZ);
 	   	//these registers must be read in this order to clear the read flag
-	   	ro.printByteRegister(Registers.AK8963_ST1);
-	   	ro.print16BitRegisterLittleEndian(Registers.AK8963_XOUT_L);
-	   	ro.print16BitRegisterLittleEndian(Registers.AK8963_YOUT_L);
-	   	ro.print16BitRegisterLittleEndian(Registers.AK8963_ZOUT_L);
-	   	ro.printByteRegister(Registers.AK8963_ST2);
+	   	ro.printByteRegister(MPU9250Registers.AK8963_ST1);
+	   	ro.print16BitRegisterLittleEndian(MPU9250Registers.AK8963_XOUT_L);
+	   	ro.print16BitRegisterLittleEndian(MPU9250Registers.AK8963_YOUT_L);
+	   	ro.print16BitRegisterLittleEndian(MPU9250Registers.AK8963_ZOUT_L);
+	   	ro.printByteRegister(MPU9250Registers.AK8963_ST2);
 	}
 	
 	/**
@@ -103,11 +103,11 @@ public class MPU9250Magnetometer extends Sensor3D  {
     @Override
 	public void updateData()
     { //#KW loop() L490 calls - readMagData L812
-        byte dataReady = (byte)(ro.readByteRegister(Registers.AK8963_ST1) & 0x01); //DRDY - Data ready bit0 1 = data is ready
+        byte dataReady = (byte)(ro.readByteRegister(MPU9250Registers.AK8963_ST1) & 0x01); //DRDY - Data ready bit0 1 = data is ready
         if (dataReady == 0) return; //no data ready
         
         // #KW 494 readMagData - data is ready, read it NB bug fix here read was starting from ST1 not XOUT_L
-        byte[] buffer = ro.readByteRegisters(Registers.AK8963_XOUT_L, 7); // #KW L815 6 data bytes x,y,z 16 bits stored as little Endian (L/H)
+        byte[] buffer = ro.readByteRegisters(MPU9250Registers.AK8963_XOUT_L, 7); // #KW L815 6 data bytes x,y,z 16 bits stored as little Endian (L/H)
         // Check if magnetic sensor overflow set, if not then report data	
         //roAK.readByteRegister(Registers.AK8963_ST2);// Data overflow bit 3 and data read error status bit 2
         byte status2 = buffer[6]; // Status2 register must be read as part of data read to show device data has been read
@@ -138,22 +138,22 @@ public class MPU9250Magnetometer extends Sensor3D  {
 		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"configure mag AK8963");
         // First extract the factory calibration for each magnetometer axis
 
-        ro.writeByteRegister(Registers.AK8963_CNTL1,(byte) 0x00); // #KW 836 Power down magnetometer
+        ro.writeByteRegister(MPU9250Registers.AK8963_CNTL1,(byte) 0x00); // #KW 836 Power down magnetometer
         Thread.sleep(10);
-        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)0x0F); // #KW 838 Enter Fuse ROM access bits
+        ro.writeByteRegister(MPU9250Registers.AK8963_CNTL1, (byte)0x0F); // #KW 838 Enter Fuse ROM access bits
         Thread.sleep(10);
-        byte rawData[] = ro.readByteRegisters(Registers.AK8963_ASAX, 3);  // Read the x-, y-, and z-axis calibration values
+        byte rawData[] = ro.readByteRegisters(MPU9250Registers.AK8963_ASAX, 3);  // Read the x-, y-, and z-axis calibration values
         this.magCalibration = new Data3f(	((float)(rawData[0] - 128))/256f + 1f,   // #KW 841-843 Return x-axis sensitivity adjustment values, etc.
         									((float)(rawData[1] - 128))/256f + 1f,
         									((float)(rawData[2] - 128))/256f + 1f);
         
-        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)0x00); // #KW 844 Power down magnetometer
+        ro.writeByteRegister(MPU9250Registers.AK8963_CNTL1, (byte)0x00); // #KW 844 Power down magnetometer
         Thread.sleep(10);
         // Configure the magnetometer for continuous read and highest resolution
         // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL1 register,
         // and enable continuous bits data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
         // set to MagScale.MFS_16BIT.bits and MagMode.MM_100HZ set as final lines 48 & 49. register write should be 0x16
-        ro.writeByteRegister(Registers.AK8963_CNTL1, (byte)(magScale.bits | magMode.bits)); // #KW 849 Set magnetometer data resolution and sample ODR ####16bit already shifted
+        ro.writeByteRegister(MPU9250Registers.AK8963_CNTL1, (byte)(magScale.bits | magMode.bits)); // #KW 849 Set magnetometer data resolution and sample ODR ####16bit already shifted
         Thread.sleep(10);
         if (debugLevel() >=3) printState();
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End configure mag initAK8963");

@@ -8,7 +8,7 @@ import sensors.models.Sensor1D;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import sensors.Implementations.VL53L0X.VL53L0XConstants.Registers;
+import sensors.Implementations.VL53L0X.VL53L0XConstants.VL53L0XRegisters;
 import subsystems.SubSystem;
 
 /**
@@ -35,29 +35,29 @@ public class VL53L0XRanger extends Sensor1D
 
     private void init() throws InterruptedException
     {
-        byte HVI2C = registerOperations.readReg(Registers.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV);
-        registerOperations.writeReg(Registers.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV, (HVI2C | (byte) 0x01)); // set I2C HIGH to 2.8 V
+        byte HVI2C = registerOperations.readReg(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV);
+        registerOperations.writeReg(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV, (HVI2C | (byte) 0x01)); // set I2C HIGH to 2.8 V
 
 
         SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
                 "VL53L0XRanger proximity sensor...");
-        byte c = registerOperations.readReg(Registers.WHO_AM_I);  // Read WHO_AM_I register for VL53L0XRanger
+        byte c = registerOperations.readReg(VL53L0XRegisters.WHO_AM_I);  // Read WHO_AM_I register for VL53L0XRanger
         SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
                 "I AM " + c + " I should be " + (byte) 0xEE);
 
         // Get info about the specific device
-        byte revID = registerOperations.readReg(Registers.IDENTIFICATION_REVISION_ID);  // Read Revision ID register for VL53L0XRanger
+        byte revID = registerOperations.readReg(VL53L0XRegisters.IDENTIFICATION_REVISION_ID);  // Read Revision ID register for VL53L0XRanger
         SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
                 "Revision ID: " + revID);
         TimeUnit.SECONDS.sleep(1);
 
 
-        registerOperations.writeReg(Registers.SOFT_RESET_GO2_SOFT_RESET_N, 0x01);  // reset device
+        registerOperations.writeReg(VL53L0XRegisters.SOFT_RESET_GO2_SOFT_RESET_N, 0x01);  // reset device
 
         TimeUnit.MILLISECONDS.sleep(100);
 
-        HVI2C = registerOperations.readReg(Registers.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV);
-        registerOperations.writeReg(Registers.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV, (HVI2C | (byte) 0x01)); // set I2C HIGH to 2.8 V
+        HVI2C = registerOperations.readReg(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV);
+        registerOperations.writeReg(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV, (HVI2C | (byte) 0x01)); // set I2C HIGH to 2.8 V
 
         // "Set I2C standard mode"
         registerOperations.writeReg(0x88, 0x00);
@@ -85,15 +85,15 @@ public class VL53L0XRanger extends Sensor1D
         // the API, but the same data seems to be more easily readable from
         // GLOBAL_CONFIG_SPAD_ENABLES_REF_0 through _6, so read it from there
         byte ref_spad_map[];
-        ref_spad_map = registerOperations.readRegs(Registers.GLOBAL_CONFIG_SPAD_ENABLES_REF_0, 6);
+        ref_spad_map = registerOperations.readRegs(VL53L0XRegisters.GLOBAL_CONFIG_SPAD_ENABLES_REF_0, 6);
 
         // -- VL53L0X_set_reference_spads() begin (assume NVM values are valid)
 
         registerOperations.writeReg(0xFF, 0x01);
-        registerOperations.writeReg(Registers.DYNAMIC_SPAD_REF_EN_START_OFFSET, 0x00);
-        registerOperations.writeReg(Registers.DYNAMIC_SPAD_NUM_REQUESTED_REF_SPAD, 0x2C);
+        registerOperations.writeReg(VL53L0XRegisters.DYNAMIC_SPAD_REF_EN_START_OFFSET, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.DYNAMIC_SPAD_NUM_REQUESTED_REF_SPAD, 0x2C);
         registerOperations.writeReg(0xFF, 0x00);
-        registerOperations.writeReg(Registers.GLOBAL_CONFIG_REF_EN_START_SELECT, 0xB4);
+        registerOperations.writeReg(VL53L0XRegisters.GLOBAL_CONFIG_REF_EN_START_SELECT, 0xB4);
 
         byte first_spad_to_enable = spad_type_is_aperture ? (byte) 12 : 0; // 12 is the first aperture spad
         byte spads_enabled = 0;
@@ -111,12 +111,12 @@ public class VL53L0XRanger extends Sensor1D
             }
         }
 
-        registerOperations.writeReg(Registers.GLOBAL_CONFIG_SPAD_ENABLES_REF_0, ref_spad_map[0]);
-        registerOperations.writeReg(Registers.GLOBAL_CONFIG_SPAD_ENABLES_REF_1, ref_spad_map[1]);
-        registerOperations.writeReg(Registers.GLOBAL_CONFIG_SPAD_ENABLES_REF_2, ref_spad_map[2]);
-        registerOperations.writeReg(Registers.GLOBAL_CONFIG_SPAD_ENABLES_REF_3, ref_spad_map[3]);
-        registerOperations.writeReg(Registers.GLOBAL_CONFIG_SPAD_ENABLES_REF_4, ref_spad_map[4]);
-        registerOperations.writeReg(Registers.GLOBAL_CONFIG_SPAD_ENABLES_REF_5, ref_spad_map[5]);
+        registerOperations.writeReg(VL53L0XRegisters.GLOBAL_CONFIG_SPAD_ENABLES_REF_0, ref_spad_map[0]);
+        registerOperations.writeReg(VL53L0XRegisters.GLOBAL_CONFIG_SPAD_ENABLES_REF_1, ref_spad_map[1]);
+        registerOperations.writeReg(VL53L0XRegisters.GLOBAL_CONFIG_SPAD_ENABLES_REF_2, ref_spad_map[2]);
+        registerOperations.writeReg(VL53L0XRegisters.GLOBAL_CONFIG_SPAD_ENABLES_REF_3, ref_spad_map[3]);
+        registerOperations.writeReg(VL53L0XRegisters.GLOBAL_CONFIG_SPAD_ENABLES_REF_4, ref_spad_map[4]);
+        registerOperations.writeReg(VL53L0XRegisters.GLOBAL_CONFIG_SPAD_ENABLES_REF_5, ref_spad_map[5]);
 
         // -- VL53L0X_set_reference_spads() end
         /*
@@ -206,26 +206,26 @@ public class VL53L0XRanger extends Sensor1D
         */
 
         // Configure GPIO1 for interrupt, active LOW
-        byte actHIGH = registerOperations.readReg(Registers.GPIO_HV_MUX_ACTIVE_HIGH);
-        registerOperations.writeReg(Registers.SYSTEM_INTERRUPT_CONFIG_GPIO, 0x04); // enable data ready interrupt
-        registerOperations.writeReg(Registers.GPIO_HV_MUX_ACTIVE_HIGH, (actHIGH & ~0x10)); // GPIO1 interrupt active LOW
-        registerOperations.writeReg(Registers.SYSTEM_INTERRUPT_CLEAR, 0x01); // clear interrupt
+        byte actHIGH = registerOperations.readReg(VL53L0XRegisters.GPIO_HV_MUX_ACTIVE_HIGH);
+        registerOperations.writeReg(VL53L0XRegisters.SYSTEM_INTERRUPT_CONFIG_GPIO, 0x04); // enable data ready interrupt
+        registerOperations.writeReg(VL53L0XRegisters.GPIO_HV_MUX_ACTIVE_HIGH, (actHIGH & ~0x10)); // GPIO1 interrupt active LOW
+        registerOperations.writeReg(VL53L0XRegisters.SYSTEM_INTERRUPT_CLEAR, 0x01); // clear interrupt
 
         // Get some basic information about the sensor
-        byte val1 = registerOperations.readReg(Registers.PRE_RANGE_CONFIG_VCSEL_PERIOD);
+        byte val1 = registerOperations.readReg(VL53L0XRegisters.PRE_RANGE_CONFIG_VCSEL_PERIOD);
         SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
                 "PRE_RANGE_CONFIG_VCSEL_PERIOD= " + val1 + " decoded: " + VL53L0X_decode_vcsel_period(val1));
 
-        val1 = registerOperations.readReg(Registers.FINAL_RANGE_CONFIG_VCSEL_PERIOD);
+        val1 = registerOperations.readReg(VL53L0XRegisters.FINAL_RANGE_CONFIG_VCSEL_PERIOD);
         SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
                 "PRE_RANGE_CONFIG_VCSEL_PERIOD= " + val1 + " decoded: " + VL53L0X_decode_vcsel_period(val1));
 
-        byte[] rawData = registerOperations.readRegs(Registers.SYSTEM_INTERMEASUREMENT_PERIOD, 4);
+        byte[] rawData = registerOperations.readRegs(VL53L0XRegisters.SYSTEM_INTERMEASUREMENT_PERIOD, 4);
         int IMPeriod = (((int) rawData[0]) << 24 | ((int) rawData[1]) << 16 | ((int) rawData[2]) << 8 | rawData[3]);
         SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
                 "System Inter-measurement period = " + IMPeriod + "ms");
 
-        registerOperations.writeReg(Registers.SYSRANGE_START, 0x02); // continuous mode and arm next shot
+        registerOperations.writeReg(VL53L0XRegisters.SYSRANGE_START, 0x02); // continuous mode and arm next shot
     }
 
     private short VL53L0X_decode_vcsel_period(short vcsel_period_reg)
@@ -282,11 +282,11 @@ public class VL53L0XRanger extends Sensor1D
 //  if(intStatus & 0x01) // poll for data ready
 //  {
 
-        if (!((registerOperations.readReg(Registers.RESULT_INTERRUPT_STATUS) & 0x07) == 0)) // wait for data ready interrupt
+        if (!((registerOperations.readReg(VL53L0XRegisters.RESULT_INTERRUPT_STATUS) & 0x07) == 0)) // wait for data ready interrupt
         {
-            registerOperations.writeReg(Registers.SYSTEM_INTERRUPT_CLEAR, 0x01); // clear interrupt
+            registerOperations.writeReg(VL53L0XRegisters.SYSTEM_INTERRUPT_CLEAR, 0x01); // clear interrupt
 
-            byte[] rangeData = registerOperations.readRegs(Registers.RESULT_RANGE_STATUS, 14); // continuous ranging
+            byte[] rangeData = registerOperations.readRegs(VL53L0XRegisters.RESULT_RANGE_STATUS, 14); // continuous ranging
 
 
             //for(int i = 1; i<= 14;i++) SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,

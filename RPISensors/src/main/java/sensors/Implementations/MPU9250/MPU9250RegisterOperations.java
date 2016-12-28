@@ -4,9 +4,11 @@
 package sensors.Implementations.MPU9250;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import dataTypes.Data3s;
 import devices.I2C.I2CImplementation;
+import utilities.ConversionUtilities;
 
 /**
  * Register Operations
@@ -53,7 +55,7 @@ public class MPU9250RegisterOperations {
      * Prints the name and contents of the register in binary and Hex
      * @param r		- the register to be printed
      */
-    public void printByteRegister(Registers r)
+    public void printByteRegister(MPU9250Registers r)
     {
     	byte rv = readByteRegister(r);
     	System.out.format("%20s  (8bits) : %8s 0x%02X %d%n",r.name(),byteToBitString(rv),rv&0xFF,rv);
@@ -62,7 +64,7 @@ public class MPU9250RegisterOperations {
      * Prints the name and contents of the  16 bit register in binary and Hex
      * @param r		- the register to be printed
      */
-    public void print16BitRegister(Registers r)
+    public void print16BitRegister(MPU9250Registers r)
     {
     	short[] rv = read16BitRegisters(r,1);
     	System.out.format("%20s (16bits) : %16s 0x%04X %d%n",r.name(),shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
@@ -72,7 +74,7 @@ public class MPU9250RegisterOperations {
      * Prints the name and contents of the little endian 16 bit register in binary and Hex
      * @param r		- the register to be printed
      */
-    public void print16BitRegisterLittleEndian(Registers r)
+    public void print16BitRegisterLittleEndian(MPU9250Registers r)
     {
     	short[] rv = read16BitRegistersLittleEndian(r,1);
     	System.out.format("%20s (16bits) : %16s 0x%04X %d%n",r.name(),shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
@@ -83,7 +85,7 @@ public class MPU9250RegisterOperations {
     * @param r		- the register to be read
     * @return		- the value of the register
     */
-   byte readByteRegister(Registers r)
+   byte readByteRegister(MPU9250Registers r)
    {
 	   try {
 		return busDevice.read(r.getAddress());
@@ -99,7 +101,7 @@ public class MPU9250RegisterOperations {
     * @param byteCount 	- number of bytes to be read
     * @return			- an array of the bytes read from the registers
     */
-   byte[] readByteRegisters(Registers r, int byteCount)
+   byte[] readByteRegisters(MPU9250Registers r, int byteCount)
    {
 	   try {
 		return busDevice.read(r.getAddress(),byteCount);
@@ -117,7 +119,7 @@ public class MPU9250RegisterOperations {
     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the more significant part of the register
     * The registers are then assigned to the x, y, z fields of the dataShort3D array element
     */
-   Data3s[] readShort3DsfromRegisters(Registers r, int pointCount)
+   Data3s[] readShort3DsfromRegisters(MPU9250Registers r, int pointCount)
    {	//The lower byte must be masked or the sign bits extend to integer length
        byte[] rawData = readByteRegisters(r, pointCount*6);
        Data3s[] datapoints = new Data3s[pointCount];
@@ -136,7 +138,7 @@ public class MPU9250RegisterOperations {
     * @return 			- an array of shorts (16 bit signed values) holding the registers
     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the more significant part of the register 
     */
-   short[] read16BitRegisters(Registers r, int regCount)
+   short[] read16BitRegisters(MPU9250Registers r, int regCount)
    {	//The lower byte must be masked or the sign bits extend to integer length
        byte[] rawData = readByteRegisters(r, regCount*2);
        short[] registers = new short[regCount];
@@ -153,7 +155,7 @@ public class MPU9250RegisterOperations {
     * @return 			- an array of shorts (16 bit signed values) holding the registers
     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the least significant part of the register 
     */
-   short[] read16BitRegistersLittleEndian(Registers r, int regCount)
+   short[] read16BitRegistersLittleEndian(MPU9250Registers r, int regCount)
    {
        byte[] rawData = readByteRegisters(r, regCount*2);
        short[] registers = new short[regCount];
@@ -169,7 +171,7 @@ public class MPU9250RegisterOperations {
     * @param r		- the register to be read
     * @param rv		- the value to be written to the register
     */
-   void writeByteRegister(Registers r, byte rv)
+   void writeByteRegister(MPU9250Registers r, byte rv)
    {
 	   byte oldRegVal = readByteRegister(r);
        try {
@@ -178,7 +180,7 @@ public class MPU9250RegisterOperations {
 		e.printStackTrace();
        }
        try {
-		Thread.sleep(2); // delay to allow register to settle
+		TimeUnit.MILLISECONDS.sleep(2); // delay to allow register to settle
        } catch (InterruptedException ignored) {}
        if (debugLevel >=9)
        {
@@ -199,7 +201,7 @@ public class MPU9250RegisterOperations {
     * @param bits	- a byte with the bits set in the correct position for the field to give the required setting 
     * 				  i.e in line with the mask. 
     */
-   void writeByteRegisterfield(Registers r, byte mask, byte bits)
+   void writeByteRegisterfield(MPU9250Registers r, byte mask, byte bits)
    {
 	   byte rv = 0;
 	   byte oldRegVal = readByteRegister(r);
@@ -210,7 +212,7 @@ public class MPU9250RegisterOperations {
 		e.printStackTrace();
        }
        try {
-		Thread.sleep(2); // delay to allow register to settle
+    	   TimeUnit.MILLISECONDS.sleep(2); // delay to allow register to settle
        } catch (InterruptedException ignored) {}
        if (debugLevel >=9)
        {
@@ -233,20 +235,20 @@ public class MPU9250RegisterOperations {
     * @param r		- the register to be read
     * @param rv		- the value to be written to the register
     */
-   void write16bitRegister(Registers r, short rv)
+   void write16bitRegister(MPU9250Registers r, short rv)
    {
 
        try {
     	   busDevice.write(r.getAddress(),(byte)(((rv)  >> 8) & 0xFF)); //extract and write most significant byte, mask after shift
     	   try {
-			Thread.sleep(2);// delay to allow register to settle
+			TimeUnit.MILLISECONDS.sleep(2);// delay to allow register to settle
     	   } catch (InterruptedException ignored) {}
     	   busDevice.write(r.getAddress()+1,(byte)((rv) & 0xFF)); //extract and write least significant byte mask without shift
        } catch (IOException e) {
 		e.printStackTrace();
        }
        try {
-		Thread.sleep(2); // delay to allow register to settle
+		TimeUnit.MILLISECONDS.sleep(2); // delay to allow register to settle
        } catch (InterruptedException ignored) {}
    }
 }

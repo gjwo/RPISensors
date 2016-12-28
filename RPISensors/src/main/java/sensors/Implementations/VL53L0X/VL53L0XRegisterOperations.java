@@ -1,7 +1,7 @@
 package sensors.Implementations.VL53L0X;
 
 import devices.I2C.I2CImplementation;
-import sensors.Implementations.VL53L0X.VL53L0XConstants.Registers;
+import sensors.Implementations.VL53L0X.VL53L0XConstants.VL53L0XRegisters;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -21,12 +21,12 @@ public class VL53L0XRegisterOperations
         this.busDevice = i2CImplementation;
     }
 
-    void writeReg(Registers reg, int value)
+    void writeReg(VL53L0XRegisters reg, int value)
     {
         writeReg(reg.getAddress(), value);
     }
 
-    void writeReg(Registers reg, byte value)
+    void writeReg(VL53L0XRegisters reg, byte value)
     {
         writeReg(reg.getAddress(), value);
     }
@@ -54,7 +54,7 @@ public class VL53L0XRegisterOperations
         } catch (InterruptedException ignored) {}
     }
 
-    byte readReg(Registers r)
+    byte readReg(VL53L0XRegisters r)
     {
         try {
             return busDevice.read(r.getAddress());
@@ -73,7 +73,7 @@ public class VL53L0XRegisterOperations
         }
     }
 
-    byte[] readRegs(Registers r, int count)
+    byte[] readRegs(VL53L0XRegisters r, int count)
     {
         byte[] output = new byte[count];
         for(int i = 0; i<count; i++)
@@ -83,7 +83,7 @@ public class VL53L0XRegisterOperations
         return output;
     }
 
-    short readReg16Bit(Registers r)
+    short readReg16Bit(VL53L0XRegisters r)
     {	//The lower byte must be masked or the sign bits extend to integer length
         try
         {
@@ -95,7 +95,7 @@ public class VL53L0XRegisterOperations
         }
     }
 
-    int readReg32Bit(Registers r)
+    int readReg32Bit(VL53L0XRegisters r)
     {
         try
         {
