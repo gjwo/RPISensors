@@ -6,7 +6,7 @@ import sensors.Implementations.VL53L0X.VL53L0XRegisters;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import utilities.ConversionUtilities;
+import utilities.Conversion;
 
 /**
  * RPISensors - sensors.Implementations.VL53L0XRanger
@@ -87,7 +87,7 @@ public class VL53L0XRegisterOperations
     {	//The lower byte must be masked or the sign bits extend to integer length
         try
         {
-            return ConversionUtilities.bytes2MSBToShort(busDevice.read(r.getAddress(),2));
+            return Conversion.bytes2MSBToShort(busDevice.read(r.getAddress(),2));
          } catch (IOException e)
         {
             e.printStackTrace();
@@ -99,7 +99,7 @@ public class VL53L0XRegisterOperations
     {
         try
         {
-             return ConversionUtilities.bytes4MSBToInt( busDevice.read(r.getAddress(),4));
+             return Conversion.bytes4MSBToInt( busDevice.read(r.getAddress(),4));
         } catch (IOException e)
         {
             e.printStackTrace();

@@ -1,6 +1,6 @@
 package utilities;
 
-public class ConversionUtilities
+public class Conversion
 {
 	// 4 bytes most significant byte first values to integer
 	public static int bytes4MSBToInt(byte[] rawData)
@@ -78,4 +78,27 @@ public class ConversionUtilities
 		b[1] = (byte) ((byte) val>>8);
         return b;
 	}
+	/**
+	 * produces a binary representation of a byte
+	 * @param r		- the byte
+	 * @return		- A string containing the binary representation
+	 */
+    public static String byteToBitString(byte r)
+    {
+    	String s = String.format("%8s", Integer.toBinaryString(r & 0xFF)).replace(' ', '0');
+    	return s;  	
+    }
+    
+	/**
+	 * produces a binary representation of a short
+	 * @param r		- the short
+	 * @return		- A string containing the binary representation
+	 */
+    public static String shortToBitString(short r)
+    {
+    	String s = String.format("%16s", Integer.toBinaryString(r & 0xFFFF)).replace(' ', '0');
+    	return s;  	
+    }
+    
+
 }

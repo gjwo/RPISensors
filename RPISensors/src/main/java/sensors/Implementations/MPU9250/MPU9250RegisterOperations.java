@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import dataTypes.Data3s;
 import devices.I2C.I2CImplementation;
-import utilities.ConversionUtilities;
+import utilities.Conversion;
 import utilities.Register;
 
 /**
@@ -30,28 +30,6 @@ public class MPU9250RegisterOperations {
 		this.debugLevel = debugLevel;
 	}
 	
-	/**
-	 * produces a binary representation of a byte
-	 * @param r		- the byte
-	 * @return		- A string containing the binary representation
-	 */
-    public String byteToBitString(byte r)
-    {
-    	String s = String.format("%8s", Integer.toBinaryString(r & 0xFF)).replace(' ', '0');
-    	return s;  	
-    }
-    
-	/**
-	 * produces a binary representation of a short
-	 * @param r		- the short
-	 * @return		- A string containing the binary representation
-	 */
-    public String shortToBitString(short r)
-    {
-    	String s = String.format("%16s", Integer.toBinaryString(r & 0xFFFF)).replace(' ', '0');
-    	return s;  	
-    }
-    
     /**
      * Prints the name and contents of the register in binary and Hex
      * @param r		- the register to be printed
@@ -59,7 +37,7 @@ public class MPU9250RegisterOperations {
     public void printByteRegister(Register r)
     {
     	byte rv = readByteRegister(r);
-    	System.out.format("%20s  (8bits) : %8s 0x%02X %d%n",r.getName(),byteToBitString(rv),rv&0xFF,rv);
+    	System.out.format("%20s  (8bits) : %8s 0x%02X %d%n",r.getName(),Conversion.byteToBitString(rv),rv&0xFF,rv);
     }
     /**
      * Prints the name and contents of the  16 bit register in binary and Hex
@@ -68,7 +46,7 @@ public class MPU9250RegisterOperations {
     public void print16BitRegister(Register r)
     {
     	short[] rv = read16BitRegisters(r,1);
-    	System.out.format("%20s (16bits) : %16s 0x%04X %d%n",r.getName(),shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
+    	System.out.format("%20s (16bits) : %16s 0x%04X %d%n",r.getName(),Conversion.shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
     }
    
     /**
@@ -78,7 +56,7 @@ public class MPU9250RegisterOperations {
     public void print16BitRegisterLittleEndian(Register r)
     {
     	short[] rv = read16BitRegistersLittleEndian(r,1);
-    	System.out.format("%20s (16bits) : %16s 0x%04X %d%n",r.getName(),shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
+    	System.out.format("%20s (16bits) : %16s 0x%04X %d%n",r.getName(),Conversion.shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
     }
    
   /**
@@ -188,10 +166,10 @@ public class MPU9250RegisterOperations {
     	   byte newRegVal = readByteRegister(r);
     	   if(newRegVal == rv)
 		   System.out.format("%20s : %8s 0x%X -> %8s 0x%X%n",
-				   	r.getName(),byteToBitString(oldRegVal),oldRegVal,byteToBitString(newRegVal),newRegVal);
+				   	r.getName(),Conversion.byteToBitString(oldRegVal),oldRegVal,Conversion.byteToBitString(newRegVal),newRegVal);
 
     	   else System.out.format("%20s : %8s 0x%X -> %8s 0x%X read as -> %8s 0x%X%n ",
-    			   r.getName(),byteToBitString(oldRegVal),oldRegVal,byteToBitString(rv),rv,byteToBitString(newRegVal),newRegVal);
+    			   r.getName(),Conversion.byteToBitString(oldRegVal),oldRegVal,Conversion.byteToBitString(rv),rv,Conversion.byteToBitString(newRegVal),newRegVal);
        }
    }
    
@@ -220,13 +198,13 @@ public class MPU9250RegisterOperations {
     	   byte newRegVal = readByteRegister(r);
     	   if(newRegVal == rv)
     		   System.out.format("%20s : %8s 0x%X -> %8s 0x%X%n",
-    				   				r.getName(),byteToBitString(oldRegVal),
-    				   				oldRegVal,byteToBitString(newRegVal),
+    				   				r.getName(),Conversion.byteToBitString(oldRegVal),
+    				   				oldRegVal,Conversion.byteToBitString(newRegVal),
     				   				newRegVal);
 
     	   else System.out.format("%20s : %8s 0x%X -> %8s 0x%X read as -> %8s 0x%X%n ",
-    			   					r.getName(),byteToBitString(oldRegVal),oldRegVal,
-    			   					byteToBitString(rv),rv,byteToBitString(newRegVal),
+    			   					r.getName(),Conversion.byteToBitString(oldRegVal),oldRegVal,
+    			   					Conversion.byteToBitString(rv),rv,Conversion.byteToBitString(newRegVal),
     			   					newRegVal);
        }	   
    }
