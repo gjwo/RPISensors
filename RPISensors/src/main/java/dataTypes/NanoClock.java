@@ -3,7 +3,7 @@ package dataTypes;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
-
+// See http://stackoverflow.com/questions/20689055/java-8-instant-now-with-nanosecond-resolution/38658066#38658066
 public class NanoClock extends Clock
 {
     private final Clock clock;
