@@ -1,6 +1,6 @@
 package utilities;
 
-import utilities.Register.HWDeviceType;
+import utilities.RegisterData.HWDeviceType;
 import sensors.Implementations.VL53L0X.*;
 
 public class RegisterInformation

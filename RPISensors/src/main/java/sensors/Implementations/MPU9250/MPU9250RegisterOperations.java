@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import dataTypes.Data3s;
 import devices.I2C.I2CImplementation;
 import utilities.ConversionUtilities;
+import utilities.Register;
 
 /**
  * Register Operations
@@ -55,29 +56,29 @@ public class MPU9250RegisterOperations {
      * Prints the name and contents of the register in binary and Hex
      * @param r		- the register to be printed
      */
-    public void printByteRegister(MPU9250Registers r)
+    public void printByteRegister(Register r)
     {
     	byte rv = readByteRegister(r);
-    	System.out.format("%20s  (8bits) : %8s 0x%02X %d%n",r.name(),byteToBitString(rv),rv&0xFF,rv);
+    	System.out.format("%20s  (8bits) : %8s 0x%02X %d%n",r.getName(),byteToBitString(rv),rv&0xFF,rv);
     }
     /**
      * Prints the name and contents of the  16 bit register in binary and Hex
      * @param r		- the register to be printed
      */
-    public void print16BitRegister(MPU9250Registers r)
+    public void print16BitRegister(Register r)
     {
     	short[] rv = read16BitRegisters(r,1);
-    	System.out.format("%20s (16bits) : %16s 0x%04X %d%n",r.name(),shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
+    	System.out.format("%20s (16bits) : %16s 0x%04X %d%n",r.getName(),shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
     }
    
     /**
      * Prints the name and contents of the little endian 16 bit register in binary and Hex
      * @param r		- the register to be printed
      */
-    public void print16BitRegisterLittleEndian(MPU9250Registers r)
+    public void print16BitRegisterLittleEndian(Register r)
     {
     	short[] rv = read16BitRegistersLittleEndian(r,1);
-    	System.out.format("%20s (16bits) : %16s 0x%04X %d%n",r.name(),shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
+    	System.out.format("%20s (16bits) : %16s 0x%04X %d%n",r.getName(),shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
     }
    
   /**
@@ -85,7 +86,7 @@ public class MPU9250RegisterOperations {
     * @param r		- the register to be read
     * @return		- the value of the register
     */
-   byte readByteRegister(MPU9250Registers r)
+   byte readByteRegister(Register r)
    {
 	   try {
 		return busDevice.read(r.getAddress());
@@ -101,7 +102,7 @@ public class MPU9250RegisterOperations {
     * @param byteCount 	- number of bytes to be read
     * @return			- an array of the bytes read from the registers
     */
-   byte[] readByteRegisters(MPU9250Registers r, int byteCount)
+   byte[] readByteRegisters(Register r, int byteCount)
    {
 	   try {
 		return busDevice.read(r.getAddress(),byteCount);
@@ -119,7 +120,7 @@ public class MPU9250RegisterOperations {
     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the more significant part of the register
     * The registers are then assigned to the x, y, z fields of the dataShort3D array element
     */
-   Data3s[] readShort3DsfromRegisters(MPU9250Registers r, int pointCount)
+   Data3s[] readShort3DsfromRegisters(Register r, int pointCount)
    {	//The lower byte must be masked or the sign bits extend to integer length
        byte[] rawData = readByteRegisters(r, pointCount*6);
        Data3s[] datapoints = new Data3s[pointCount];
@@ -138,7 +139,7 @@ public class MPU9250RegisterOperations {
     * @return 			- an array of shorts (16 bit signed values) holding the registers
     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the more significant part of the register 
     */
-   short[] read16BitRegisters(MPU9250Registers r, int regCount)
+   short[] read16BitRegisters(Register r, int regCount)
    {	//The lower byte must be masked or the sign bits extend to integer length
        byte[] rawData = readByteRegisters(r, regCount*2);
        short[] registers = new short[regCount];
@@ -155,7 +156,7 @@ public class MPU9250RegisterOperations {
     * @return 			- an array of shorts (16 bit signed values) holding the registers
     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the least significant part of the register 
     */
-   short[] read16BitRegistersLittleEndian(MPU9250Registers r, int regCount)
+   short[] read16BitRegistersLittleEndian(Register r, int regCount)
    {
        byte[] rawData = readByteRegisters(r, regCount*2);
        short[] registers = new short[regCount];
@@ -171,7 +172,7 @@ public class MPU9250RegisterOperations {
     * @param r		- the register to be read
     * @param rv		- the value to be written to the register
     */
-   void writeByteRegister(MPU9250Registers r, byte rv)
+   void writeByteRegister(Register r, byte rv)
    {
 	   byte oldRegVal = readByteRegister(r);
        try {
@@ -187,10 +188,10 @@ public class MPU9250RegisterOperations {
     	   byte newRegVal = readByteRegister(r);
     	   if(newRegVal == rv)
 		   System.out.format("%20s : %8s 0x%X -> %8s 0x%X%n",
-				   	r.name(),byteToBitString(oldRegVal),oldRegVal,byteToBitString(newRegVal),newRegVal);
+				   	r.getName(),byteToBitString(oldRegVal),oldRegVal,byteToBitString(newRegVal),newRegVal);
 
     	   else System.out.format("%20s : %8s 0x%X -> %8s 0x%X read as -> %8s 0x%X%n ",
-    			   r.name(),byteToBitString(oldRegVal),oldRegVal,byteToBitString(rv),rv,byteToBitString(newRegVal),newRegVal);
+    			   r.getName(),byteToBitString(oldRegVal),oldRegVal,byteToBitString(rv),rv,byteToBitString(newRegVal),newRegVal);
        }
    }
    
@@ -201,7 +202,7 @@ public class MPU9250RegisterOperations {
     * @param bits	- a byte with the bits set in the correct position for the field to give the required setting 
     * 				  i.e in line with the mask. 
     */
-   void writeByteRegisterfield(MPU9250Registers r, byte mask, byte bits)
+   void writeByteRegisterfield(Register r, byte mask, byte bits)
    {
 	   byte rv = 0;
 	   byte oldRegVal = readByteRegister(r);
@@ -219,12 +220,12 @@ public class MPU9250RegisterOperations {
     	   byte newRegVal = readByteRegister(r);
     	   if(newRegVal == rv)
     		   System.out.format("%20s : %8s 0x%X -> %8s 0x%X%n",
-    				   				r.name(),byteToBitString(oldRegVal),
+    				   				r.getName(),byteToBitString(oldRegVal),
     				   				oldRegVal,byteToBitString(newRegVal),
     				   				newRegVal);
 
     	   else System.out.format("%20s : %8s 0x%X -> %8s 0x%X read as -> %8s 0x%X%n ",
-    			   					r.name(),byteToBitString(oldRegVal),oldRegVal,
+    			   					r.getName(),byteToBitString(oldRegVal),oldRegVal,
     			   					byteToBitString(rv),rv,byteToBitString(newRegVal),
     			   					newRegVal);
        }	   
@@ -235,7 +236,7 @@ public class MPU9250RegisterOperations {
     * @param r		- the register to be read
     * @param rv		- the value to be written to the register
     */
-   void write16bitRegister(MPU9250Registers r, short rv)
+   void write16bitRegister(Register r, short rv)
    {
 
        try {

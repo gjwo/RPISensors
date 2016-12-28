@@ -1,10 +1,12 @@
 package sensors.Implementations.MPU9250;
 
+import utilities.Register;
+
 /**
  * RPITank
  * Created by MAWood on 09/07/2016.
  */
-public enum MPU9250Registers
+public enum MPU9250Registers implements Register
 {
     AK8963_ADDRESS   (0x0C), // i2c bus address
     
@@ -148,10 +150,11 @@ public enum MPU9250Registers
     {
         this.address = addr;
     }
-    public int getAddress()
-    {
-        return address;
-    }
+    @Override
+    public int getAddress() {return this.address;}
+    
+    @Override
+    public String getName() {return this.name();}
 }
 // Register setting values
 // Convention1 - the 'bits' field holds the required bit settings in the correct bit positions in the register
