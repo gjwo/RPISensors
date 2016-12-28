@@ -2,7 +2,11 @@ package utilities;
 
 public class Conversion
 {
-	// 4 bytes most significant byte first values to integer
+	/**
+	 * 4 bytes most significant byte first values to integer
+	 * @param rawData
+	 * @return int
+	 */
 	public static int bytes4MSBToInt(byte[] rawData)
 	{
         return (rawData[0] << 24)
@@ -11,7 +15,11 @@ public class Conversion
                 | (rawData[3]&0xff);
 	}
 	
-	// 2 bytes most significant byte first values to short
+	/**
+	 * 2 bytes most significant byte first values to short
+	 * @param rawData
+	 * @return shot
+	 */
 	public static short bytes2MSBToShort(byte[] rawData)
 	{
         return (short)((rawData[0]<<8)
@@ -19,7 +27,11 @@ public class Conversion
 
 	}
 	
-	// 4 bytes least significant byte first values to integer
+	/**
+	 * 4 bytes least significant byte first values to integer
+	 * @param rawData byte array
+	 * @return int
+	 */
 	public static int bytes4LSBToInt(byte[] rawData)
 	{
         return (rawData[3] << 24)
@@ -29,7 +41,11 @@ public class Conversion
 
 	}
 	
-	// 2 bytes least significant byte first values to integer
+	/**
+	 * 2 bytes least significant byte first values to integer
+	 * @param rawData byte array
+	 * @return short
+	 */
 	public static short bytes2LSBToShort(byte[] rawData)
 	{
         return (short)((rawData[1]<<8)
@@ -37,7 +53,11 @@ public class Conversion
 
 	}
 	
-	// integer to byte array most significant byte first
+	/**
+	 * integer to byte array most significant byte first
+	 * @param val
+	 * @return
+	 */
 	public static byte[] intTo4BytesMSB(int val)
 	{
 		byte[] b = new byte[4];
@@ -49,7 +69,11 @@ public class Conversion
         return b;
 	}
 	
-	// short to byte array most significant byte first
+	/**
+	 * short to byte array most significant byte first
+	 * @param val
+	 * @return
+	 */
 	public static byte[] shortTo2BytesMSB(short val)
 	{
 		byte[] b = new byte[2];	
@@ -58,7 +82,11 @@ public class Conversion
         return b;
 	}
 	
-	// integer to byte array least significant byte first
+	/**
+	 * integer to byte array least significant byte first
+	 * @param val
+	 * @return
+	 */
 	public static byte[] intTo4bytesLSB(int val)
 	{
 		byte[] b = new byte[4];
@@ -70,7 +98,11 @@ public class Conversion
         return b;
 	}
 	
-	//short to byte array least significant byte first
+	/**
+	 * short to byte array least significant byte first
+	 * @param 	val
+	 * @return	byte[]
+	 */
 	public static byte[] shortTo2BytesLSB(short val)
 	{
 		byte[] b = new byte[2];	
@@ -78,6 +110,7 @@ public class Conversion
 		b[1] = (byte) ((byte) val>>8);
         return b;
 	}
+	
 	/**
 	 * produces a binary representation of a byte
 	 * @param r		- the byte
@@ -100,5 +133,26 @@ public class Conversion
     	return s;  	
     }
     
-
+    /**
+     * Takes a byte & register and returns a string suitable for logging
+     * @param r	Register information
+     * @param rv Register Value
+     * @return formatted string
+     */
+    public static String byteToLogString(Register r, byte rv)
+    {
+    	return String.format("%20s  (8bits) : %8s 0x%02X %d%n",r.getName(),Conversion.byteToBitString(rv),rv&0xFF,rv);
+    }
+    
+    /**
+     * Takes 2 bytes & register and returns a string suitable for logging
+     * @param r	Register information
+     * @param rv Register Value
+     * @return formatted string
+     */
+    public static String shortToLogString(Register r, short rv)
+    {
+    	return String.format("%20s (16bits) : %16s 0x%04X %d%n",r.getName(),Conversion.shortToBitString(rv),rv&0xFFFF,rv);
+    }
+    
 }

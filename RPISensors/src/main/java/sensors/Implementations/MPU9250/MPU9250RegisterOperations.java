@@ -37,7 +37,8 @@ public class MPU9250RegisterOperations {
     public void printByteRegister(Register r)
     {
     	byte rv = readByteRegister(r);
-    	System.out.format("%20s  (8bits) : %8s 0x%02X %d%n",r.getName(),Conversion.byteToBitString(rv),rv&0xFF,rv);
+    	
+    	System.out.print(Conversion.byteToLogString(r,rv));
     }
     /**
      * Prints the name and contents of the  16 bit register in binary and Hex
@@ -46,7 +47,7 @@ public class MPU9250RegisterOperations {
     public void print16BitRegister(Register r)
     {
     	short[] rv = read16BitRegisters(r,1);
-    	System.out.format("%20s (16bits) : %16s 0x%04X %d%n",r.getName(),Conversion.shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
+    	System.out.print(Conversion.shortToLogString(r,rv[0]));
     }
    
     /**
@@ -56,7 +57,7 @@ public class MPU9250RegisterOperations {
     public void print16BitRegisterLittleEndian(Register r)
     {
     	short[] rv = read16BitRegistersLittleEndian(r,1);
-    	System.out.format("%20s (16bits) : %16s 0x%04X %d%n",r.getName(),Conversion.shortToBitString(rv[0]),rv[0]&0xFFFF,rv[0]);
+    	System.out.print(Conversion.shortToLogString(r,rv[0]));
     }
    
   /**
