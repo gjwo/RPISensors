@@ -102,12 +102,13 @@ public class MPU9250RegisterOperations {
    Data3s[] readShort3DsfromRegisters(Register r, int pointCount)
    {	//The lower byte must be masked or the sign bits extend to integer length
        byte[] rawData = readByteRegisters(r, pointCount*6);
+       short[] values = Conversion.bytesMSBToShorts(rawData);// Turn the MSB and LSB into a signed 16-bit value
        Data3s[] datapoints = new Data3s[pointCount];
        for (int i=0;i<pointCount;i++)		
        {
-    	   datapoints[i].setX( (short) (((short)rawData[i*2] << 8) | (rawData[(i*2)+1]&0xFF))) ;  // Turn the MSB and LSB into a signed 16-bit value
-    	   datapoints[i].setY( (short) (((short)rawData[(i+1)*2] << 8) | (rawData[((i+1)*2)+1]&0xFF))) ;  // Turn the MSB and LSB into a signed 16-bit value
-    	   datapoints[i].setZ( (short) (((short)rawData[(i+2)*2] << 8) | (rawData[((i+2)*2)+1]&0xFF))) ;  // Turn the MSB and LSB into a signed 16-bit value
+    	   datapoints[i].setX(values[i*3]);
+    	   datapoints[i].setY(values[i*3+1]);
+    	   datapoints[i].setZ(values[i*3+2]);
        }
        return datapoints;
    }
@@ -121,12 +122,7 @@ public class MPU9250RegisterOperations {
    short[] read16BitRegisters(Register r, int regCount)
    {	//The lower byte must be masked or the sign bits extend to integer length
        byte[] rawData = readByteRegisters(r, regCount*2);
-       short[] registers = new short[regCount];
-       for (int i=0;i<regCount;i++)		
-       {
-       	registers[i] = (short) (((short)rawData[i*2] << 8) | (rawData[(i*2)+1]&0xff)) ;  // Turn the MSB and LSB into a signed 16-bit value
-       }
-       return registers;
+       return Conversion.bytesMSBToShorts(rawData);
    }
    /**
     * Reads the specified number of 16 bit Registers from the device this class is associated with
@@ -138,12 +134,7 @@ public class MPU9250RegisterOperations {
    short[] read16BitRegistersLittleEndian(Register r, int regCount)
    {
        byte[] rawData = readByteRegisters(r, regCount*2);
-       short[] registers = new short[regCount];
-       for (int i=0;i<regCount;i++)		
-       {	//The lower byte must be masked or the sign bits extend to integer length
-       	registers[i] = (short) (((short)rawData[i*2+1] << 8) | (rawData[(i*2)]&0xFF)) ;  // Turn the MSB and LSB into a signed 16-bit value
-       }
-       return registers;
+       return Conversion.bytesLSBToShorts(rawData);
    }
    
    /**

@@ -155,4 +155,35 @@ public class Conversion
     	return String.format("%20s (16bits) : %16s 0x%04X %d%n",r.getName(),Conversion.shortToBitString(rv),rv&0xFFFF,rv);
     }
     
+    /**
+     * Converts a byte array in MSB order to an array of shorts
+     * @param rawData
+     * @return short array
+     */
+    public static short[] bytesMSBToShorts(byte[] rawData)
+    {
+    	int regCount = rawData.length;
+        short[] registers = new short[regCount];
+        for (int i=0;i<regCount;i++)		
+        {
+        	registers[i] = (short) (((short)rawData[i*2] << 8) | (rawData[(i*2)+1]&0xff)) ;  // Turn the MSB and LSB into a signed 16-bit value
+        }
+        return registers;
+    }
+    
+    /**
+     * Converts a byte array in LSB order to an array of shorts
+     * @param rawData
+     * @return short array
+     */
+    public static short[] bytesLSBToShorts(byte[] rawData)
+    {
+    	int regCount = rawData.length;
+        short[] registers = new short[regCount];
+        for (int i=0;i<regCount;i++)		
+        {
+           	registers[i] = (short) (((short)rawData[i*2+1] << 8) | (rawData[(i*2)]&0xFF)) ;  // Turn the MSB and LSB into a signed 16-bit value
+        }
+        return registers;
+    }
 }
