@@ -4,7 +4,7 @@ package sensors.Implementations.MPU9250;
  * RPITank
  * Created by MAWood on 09/07/2016.
  */
-enum MPU9250Registers
+public enum MPU9250Registers
 {
     AK8963_ADDRESS   (0x0C), // i2c bus address
     

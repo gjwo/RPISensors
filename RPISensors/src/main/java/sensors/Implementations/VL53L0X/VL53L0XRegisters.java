@@ -4,9 +4,7 @@ package sensors.Implementations.VL53L0X;
  * RPISensors - sensors.Implementations.VL53L0XRanger
  * Created by MAWood on 27/12/2016.
  */
-public class VL53L0XConstants
-{
-    enum VL53L0XRegisters
+    public enum VL53L0XRegisters
     {
         VL53L0X_ADDRESS                            (0x29),
         SYSRANGE_START                             (0x00),
@@ -102,5 +100,4 @@ public class VL53L0XConstants
         {
             return address;
         }
-    }
 }

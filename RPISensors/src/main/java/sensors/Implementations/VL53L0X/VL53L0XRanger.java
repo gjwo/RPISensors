@@ -8,7 +8,7 @@ import sensors.models.Sensor1D;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import sensors.Implementations.VL53L0X.VL53L0XConstants.VL53L0XRegisters;
+import sensors.Implementations.VL53L0X.VL53L0XRegisters;
 import subsystems.SubSystem;
 
 /**

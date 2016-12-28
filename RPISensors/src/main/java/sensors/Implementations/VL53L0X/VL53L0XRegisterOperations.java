@@ -1,7 +1,7 @@
 package sensors.Implementations.VL53L0X;
 
 import devices.I2C.I2CImplementation;
-import sensors.Implementations.VL53L0X.VL53L0XConstants.VL53L0XRegisters;
+import sensors.Implementations.VL53L0X.VL53L0XRegisters;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
