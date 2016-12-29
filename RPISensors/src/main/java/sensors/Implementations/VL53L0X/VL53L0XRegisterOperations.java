@@ -1,8 +1,8 @@
 package sensors.Implementations.VL53L0X;
 
 import devices.I2C.I2CImplementation;
+import devices.I2C.RegisterOperations;
 import utilities.Register;
-import utilities.RegisterOperations;
 
 /**
  * RPISensors - sensors.Implementations.VL53L0XRanger

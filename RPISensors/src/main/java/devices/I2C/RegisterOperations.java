@@ -1,8 +1,9 @@
-package utilities;
+package devices.I2C;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import devices.I2C.I2CImplementation;
+import utilities.Conversion;
+import utilities.Register;
 
 public class RegisterOperations
 {

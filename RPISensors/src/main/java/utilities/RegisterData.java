@@ -1,4 +1,4 @@
-package devices.I2C;
+package utilities;
 
 public class  RegisterData
 {
