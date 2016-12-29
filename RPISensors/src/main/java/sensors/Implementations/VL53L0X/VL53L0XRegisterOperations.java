@@ -32,7 +32,7 @@ public class VL53L0XRegisterOperations
         writeReg(reg.getAddress(), value);
     }
 
-    void writeReg(int reg, byte value)
+    private void writeReg(int reg, byte value)
     {
         try {
             busDevice.write(reg,value);
@@ -43,7 +43,7 @@ public class VL53L0XRegisterOperations
         	TimeUnit.MILLISECONDS.sleep(2);// delay to allow register to settle
        } catch (InterruptedException ignored) {}
     }
-    void writeReg(int reg, int value)
+    private void writeReg(int reg, int value)
     {
         try {
             busDevice.write(reg,(byte)value);

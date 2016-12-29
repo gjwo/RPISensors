@@ -120,11 +120,16 @@ import utilities.Register;
         UNKNOWN_ADDR_0x65						   (0x65), // val 0
         UNKNOWN_ADDR_0x66						   (0x66), // val 0xA0
         UNKNOWN_ADDR_0x75						   (0x75), // val 0
+        UNKNOWN_ADDR_0x76						   (0x76), // val 0
+        UNKNOWN_ADDR_0x77						   (0x77), // val 0
         UNKNOWN_ADDR_0x78						   (0x78), // val 0x21
         UNKNOWN_ADDR_0x7A						   (0x7A), // val 0xA0
         UNKNOWN_ADDR_0x7B						   (0x7B), // val 0
         UNKNOWN_ADDR_0x83						   (0x83), // mask of 4 used
+        UNKNOWN_ADDR_0x88						   (0x88), // val 0
         UNKNOWN_ADDR_0x8E						   (0x83), // val 0x01
+        UNKNOWN_ADDR_0x92						   (0x92), // val 0
+        UNKNOWN_ADDR_0x94						   (0x94), // val 0
     	UNKNOWN_ADDR_0xFF						   (0xFF); // possibly mode of access is toggled around setting some registers - bank switch?
     															// e.g. ALGO_PHASECAL_LIM, RANGE_TYPE_ADDR, SYSRANGE_START
     															// vals of 0,1,6,7

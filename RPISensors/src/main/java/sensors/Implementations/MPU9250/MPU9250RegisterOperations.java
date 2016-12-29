@@ -56,7 +56,7 @@ public class MPU9250RegisterOperations {
      */
     public void print16BitRegisterLittleEndian(Register r)
     {
-    	short[] rv = read16BitRegistersLittleEndian(r,1);
+    	short[] rv = read16BitRegistersLSB(r,1);
     	System.out.print(Conversion.shortToLogString(r,rv[0]));
     }
    
@@ -131,7 +131,7 @@ public class MPU9250RegisterOperations {
     * @return 			- an array of shorts (16 bit signed values) holding the registers
     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the least significant part of the register 
     */
-   short[] read16BitRegistersLittleEndian(Register r, int regCount)
+   short[] read16BitRegistersLSB(Register r, int regCount)
    {
        byte[] rawData = readByteRegisters(r, regCount*2);
        return Conversion.bytesLSBToShorts(rawData);

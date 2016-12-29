@@ -60,15 +60,15 @@ public class VL53L0XRanger extends Sensor1D
         registerOperations.writeReg(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV, (HVI2C | (byte) 0x01)); // set I2C HIGH to 2.8 V
 
         // "Set I2C standard mode"
-        registerOperations.writeReg(0x88, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x88, 0x00);
 
-        registerOperations.writeReg(0x80, 0x01);
-        registerOperations.writeReg(0xFF, 0x01);
-        registerOperations.writeReg(0x00, 0x00);
-        byte stop_variable = registerOperations.readReg(0x91);
-        registerOperations.writeReg(0x00, 0x01);
-        registerOperations.writeReg(0xFF, 0x00);
-        registerOperations.writeReg(0x80, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.POWER_MANAGEMENT_GO1_POWER_FORCE, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.SYSRANGE_START, 0x00);
+        byte stop_variable = registerOperations.readReg(VL53L0XRegisters.RANGE_TYPE_ADDR);
+        registerOperations.writeReg(VL53L0XRegisters.SYSRANGE_START, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.POWER_MANAGEMENT_GO1_POWER_FORCE, 0x00);
 
 
 // Taken from Pololu Arduino version of ST's API code
@@ -89,10 +89,10 @@ public class VL53L0XRanger extends Sensor1D
 
         // -- VL53L0X_set_reference_spads() begin (assume NVM values are valid)
 
-        registerOperations.writeReg(0xFF, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x01);
         registerOperations.writeReg(VL53L0XRegisters.DYNAMIC_SPAD_REF_EN_START_OFFSET, 0x00);
         registerOperations.writeReg(VL53L0XRegisters.DYNAMIC_SPAD_NUM_REQUESTED_REF_SPAD, 0x2C);
-        registerOperations.writeReg(0xFF, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x00);
         registerOperations.writeReg(VL53L0XRegisters.GLOBAL_CONFIG_REF_EN_START_SELECT, 0xB4);
 
         byte first_spad_to_enable = spad_type_is_aperture ? (byte) 12 : 0; // 12 is the first aperture spad
@@ -119,91 +119,90 @@ public class VL53L0XRanger extends Sensor1D
         registerOperations.writeReg(VL53L0XRegisters.GLOBAL_CONFIG_SPAD_ENABLES_REF_5, ref_spad_map[5]);
 
         // -- VL53L0X_set_reference_spads() end
-        /*
-        // -- VL53L0X_load_tuning_settings() begin
+         // -- VL53L0X_load_tuning_settings() begin
         // DefaultTuningSettings from vl53l0x_tuning.h
-        registerOperations.writeReg(0xFF, 0x01);
-        registerOperations.writeReg(0x00, 0x00);
-        registerOperations.writeReg(0xFF, 0x00);
-        registerOperations.writeReg(0x09, 0x00);
-        registerOperations.writeReg(0x10, 0x00);
-        registerOperations.writeReg(0x11, 0x00);
-        registerOperations.writeReg(0x24, 0x01);
-        registerOperations.writeReg(0x25, 0xFF);
-        registerOperations.writeReg(0x75, 0x00);
-        registerOperations.writeReg(0xFF, 0x01);
-        registerOperations.writeReg(0x4E, 0x2C);
-        registerOperations.writeReg(0x48, 0x00);
-        registerOperations.writeReg(0x30, 0x20);
-        registerOperations.writeReg(0xFF, 0x00);
-        registerOperations.writeReg(0x30, 0x09);
-        registerOperations.writeReg(0x54, 0x00);
-        registerOperations.writeReg(0x31, 0x04);
-        registerOperations.writeReg(0x32, 0x03);
-        registerOperations.writeReg(0x40, 0x83);
-        registerOperations.writeReg(0x46, 0x25);
-        registerOperations.writeReg(0x60, 0x00);
-        registerOperations.writeReg(0x27, 0x00);
-        registerOperations.writeReg(0x50, 0x06);
-        registerOperations.writeReg(0x51, 0x00);
-        registerOperations.writeReg(0x52, 0x96);
-        registerOperations.writeReg(0x56, 0x08);
-        registerOperations.writeReg(0x57, 0x30);
-        registerOperations.writeReg(0x61, 0x00);
-        registerOperations.writeReg(0x62, 0x00);
-        registerOperations.writeReg(0x64, 0x00);
-        registerOperations.writeReg(0x65, 0x00);
-        registerOperations.writeReg(0x66, 0xA0);
-        registerOperations.writeReg(0xFF, 0x01);
-        registerOperations.writeReg(0x22, 0x32);
-        registerOperations.writeReg(0x47, 0x14);
-        registerOperations.writeReg(0x49, 0xFF);
-        registerOperations.writeReg(0x4A, 0x00);
-        registerOperations.writeReg(0xFF, 0x00);
-        registerOperations.writeReg(0x7A, 0x0A);
-        registerOperations.writeReg(0x7B, 0x00);
-        registerOperations.writeReg(0x78, 0x21);
-        registerOperations.writeReg(0xFF, 0x01);
-        registerOperations.writeReg(0x23, 0x34);
-        registerOperations.writeReg(0x42, 0x00);
-        registerOperations.writeReg(0x44, 0xFF);
-        registerOperations.writeReg(0x45, 0x26);
-        registerOperations.writeReg(0x46, 0x05);
-        registerOperations.writeReg(0x40, 0x40);
-        registerOperations.writeReg(0x0E, 0x06);
-        registerOperations.writeReg(0x20, 0x1A);
-        registerOperations.writeReg(0x43, 0x40);
-        registerOperations.writeReg(0xFF, 0x00);
-        registerOperations.writeReg(0x34, 0x03);
-        registerOperations.writeReg(0x35, 0x44);
-        registerOperations.writeReg(0xFF, 0x01);
-        registerOperations.writeReg(0x31, 0x04);
-        registerOperations.writeReg(0x4B, 0x09);
-        registerOperations.writeReg(0x4C, 0x05);
-        registerOperations.writeReg(0x4D, 0x04);
-        registerOperations.writeReg(0xFF, 0x00);
-        registerOperations.writeReg(0x44, 0x00);
-        registerOperations.writeReg(0x45, 0x20);
-        registerOperations.writeReg(0x47, 0x08);
-        registerOperations.writeReg(0x48, 0x28);
-        registerOperations.writeReg(0x67, 0x00);
-        registerOperations.writeReg(0x70, 0x04);
-        registerOperations.writeReg(0x71, 0x01);
-        registerOperations.writeReg(0x72, 0xFE);
-        registerOperations.writeReg(0x76, 0x00);
-        registerOperations.writeReg(0x77, 0x00);
-        registerOperations.writeReg(0xFF, 0x01);
-        registerOperations.writeReg(0x0D, 0x01);
-        registerOperations.writeReg(0xFF, 0x00);
-        registerOperations.writeReg(0x80, 0x01);
-        registerOperations.writeReg(0x01, 0xF8);
-        registerOperations.writeReg(0xFF, 0x01);
-        registerOperations.writeReg(0x8E, 0x01);
-        registerOperations.writeReg(0x00, 0x01);
-        registerOperations.writeReg(0xFF, 0x00);
-        registerOperations.writeReg(0x80, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.SYSRANGE_START, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.SYSTEM_RANGE_CONFIG, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x10, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x11, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x24, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x25, 0xFF);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x75, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.DYNAMIC_SPAD_NUM_REQUESTED_REF_SPAD, 0x2C);
+        registerOperations.writeReg(VL53L0XRegisters.FINAL_RANGE_CONFIG_VALID_PHASE_HIGH, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.PRE_RANGE_CONFIG_VALID_PHASE_HIGH, 0x20);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.PRE_RANGE_CONFIG_VALID_PHASE_HIGH, 0x09);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x54, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x31, 0x04);
+        registerOperations.writeReg(VL53L0XRegisters.GLOBAL_CONFIG_VCSEL_WIDTH, 0x03);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x40, 0x83);
+        registerOperations.writeReg(VL53L0XRegisters.MSRC_CONFIG_TIMEOUT_MACROP, 0x25);
+        registerOperations.writeReg(VL53L0XRegisters.MSRC_CONFIG_CONTROL, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.PRE_RANGE_CONFIG_MIN_SNR, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.PRE_RANGE_CONFIG_VCSEL_PERIOD, 0x06);
+        registerOperations.writeReg(VL53L0XRegisters.PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.PRE_RANGE_CONFIG_TIMEOUT_MACROP_LO, 0x96);
+        registerOperations.writeReg(VL53L0XRegisters.PRE_RANGE_CONFIG_VALID_PHASE_LOW, 0x08);
+        registerOperations.writeReg(VL53L0XRegisters.PRE_RANGE_CONFIG_VALID_PHASE_HIGH, 0x30);
+        registerOperations.writeReg(VL53L0XRegisters.PRE_RANGE_CONFIG_SIGMA_THRESH_HI, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.PRE_RANGE_CONFIG_SIGMA_THRESH_LO, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.PRE_RANGE_MIN_COUNT_RATE_RTN_LIMIT, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x65, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x66, 0xA0);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x22, 0x32);
+        registerOperations.writeReg(VL53L0XRegisters.FINAL_RANGE_CONFIG_VALID_PHASE_LOW, 0x14);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x49, 0xFF);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x4A, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x7A, 0x0A);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x7B, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x78, 0x21);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x23, 0x34);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x42, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.FINAL_RANGE_CONFIG_MIN_COUNT_RATE_RTN_LIMIT, 0xFF);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x45, 0x26);
+        registerOperations.writeReg(VL53L0XRegisters.MSRC_CONFIG_TIMEOUT_MACROP, 0x05);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x40, 0x40);
+        registerOperations.writeReg(VL53L0XRegisters.SYSTEM_THRESH_LOW, 0x06);
+        registerOperations.writeReg(VL53L0XRegisters.CROSSTALK_COMPENSATION_PEAK_RATE_MCPS, 0x1A);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x43, 0x40);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x34, 0x03);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x35, 0x44);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x31, 0x04);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x4B, 0x09);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x4C, 0x05);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x4D, 0x04);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.FINAL_RANGE_CONFIG_MIN_COUNT_RATE_RTN_LIMIT, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x45, 0x20);
+        registerOperations.writeReg(VL53L0XRegisters.FINAL_RANGE_CONFIG_VALID_PHASE_LOW, 0x08);
+        registerOperations.writeReg(VL53L0XRegisters.FINAL_RANGE_CONFIG_VALID_PHASE_HIGH, 0x28);
+        registerOperations.writeReg(VL53L0XRegisters.FINAL_RANGE_CONFIG_MIN_SNR, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.FINAL_RANGE_CONFIG_VCSEL_PERIOD, 0x04);
+        registerOperations.writeReg(VL53L0XRegisters.FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.FINAL_RANGE_CONFIG_TIMEOUT_MACROP_LO, 0xFE);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x76, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x77, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x0D, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.POWER_MANAGEMENT_GO1_POWER_FORCE, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.SYSTEM_SEQUENCE_CONFIG, 0xF8);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x8E, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.SYSRANGE_START, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.POWER_MANAGEMENT_GO1_POWER_FORCE, 0x00);
         // -- VL53L0X_load_tuning_settings() end
-        */
+        
 
         // Configure GPIO1 for interrupt, active LOW
         byte actHIGH = registerOperations.readReg(VL53L0XRegisters.GPIO_HV_MUX_ACTIVE_HIGH);
@@ -239,36 +238,36 @@ public class VL53L0XRanger extends Sensor1D
     {
         byte tmp;
 
-        registerOperations.writeReg(0x80, 0x01);
-        registerOperations.writeReg(0xFF, 0x01);
-        registerOperations.writeReg(0x00, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.POWER_MANAGEMENT_GO1_POWER_FORCE, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.SYSRANGE_START, 0x00);
 
-        registerOperations.writeReg(0xFF, 0x06);
-        registerOperations.writeReg(0x83, (registerOperations.readReg(0x83) | 0x04));
-        registerOperations.writeReg(0xFF, 0x07);
-        registerOperations.writeReg(0x81, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x06);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x83, (registerOperations.readReg(0x83) | 0x04));
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x07);
+        registerOperations.writeReg(VL53L0XRegisters.SYSTEM_HISTOGRAM_BIN, 0x01);
 
-        registerOperations.writeReg(0x80, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.POWER_MANAGEMENT_GO1_POWER_FORCE, 0x01);
 
-        registerOperations.writeReg(0x94, 0x6b);
-        registerOperations.writeReg(0x83, 0x00);
-        while (registerOperations.readReg(0x83) == 0x00)
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x94, 0x6b);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x83, 0x00);
+        while (registerOperations.readReg(VL53L0XRegisters.UNKNOWN_ADDR_0x83) == 0x00)
         {
             TimeUnit.MILLISECONDS.sleep(10);
             //if (checkTimeoutExpired()) { return false; }
         }
-        registerOperations.writeReg(0x83, 0x01);
-        tmp = registerOperations.readReg(0x92);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x83, 0x01);
+        tmp = registerOperations.readReg(VL53L0XRegisters.UNKNOWN_ADDR_0x92);
 
 
-        registerOperations.writeReg(0x81, 0x00);
-        registerOperations.writeReg(0xFF, 0x06);
-        registerOperations.writeReg(0x83, registerOperations.readReg(0x83 & ~0x04));
-        registerOperations.writeReg(0xFF, 0x01);
-        registerOperations.writeReg(0x00, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.SYSTEM_HISTOGRAM_BIN, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x06);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x83, registerOperations.readReg(0x83 & ~0x04));
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x01);
+        registerOperations.writeReg(VL53L0XRegisters.SYSRANGE_START, 0x01);
 
-        registerOperations.writeReg(0xFF, 0x00);
-        registerOperations.writeReg(0x80, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x00);
+        registerOperations.writeReg(VL53L0XRegisters.POWER_MANAGEMENT_GO1_POWER_FORCE, 0x00);
 
         return tmp;
 
