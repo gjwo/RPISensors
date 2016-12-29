@@ -155,13 +155,7 @@ public class MPU9250RegisterOperations {
        } catch (InterruptedException ignored) {}
        if (debugLevel >=9)
        {
-    	   byte newRegVal = readByteRegister(r);
-    	   if(newRegVal == rv)
-		   System.out.format("%20s : %8s 0x%X -> %8s 0x%X%n",
-				   	r.getName(),Conversion.byteToBitString(oldRegVal),oldRegVal,Conversion.byteToBitString(newRegVal),newRegVal);
-
-    	   else System.out.format("%20s : %8s 0x%X -> %8s 0x%X read as -> %8s 0x%X%n ",
-    			   r.getName(),Conversion.byteToBitString(oldRegVal),oldRegVal,Conversion.byteToBitString(rv),rv,Conversion.byteToBitString(newRegVal),newRegVal);
+    	   System.out.print(Conversion.byteToLogString(r,oldRegVal,rv,readByteRegister(r)));
        }
    }
    
@@ -187,17 +181,7 @@ public class MPU9250RegisterOperations {
        } catch (InterruptedException ignored) {}
        if (debugLevel >=9)
        {
-    	   byte newRegVal = readByteRegister(r);
-    	   if(newRegVal == rv)
-    		   System.out.format("%20s : %8s 0x%X -> %8s 0x%X%n",
-    				   				r.getName(),Conversion.byteToBitString(oldRegVal),
-    				   				oldRegVal,Conversion.byteToBitString(newRegVal),
-    				   				newRegVal);
-
-    	   else System.out.format("%20s : %8s 0x%X -> %8s 0x%X read as -> %8s 0x%X%n ",
-    			   					r.getName(),Conversion.byteToBitString(oldRegVal),oldRegVal,
-    			   					Conversion.byteToBitString(rv),rv,Conversion.byteToBitString(newRegVal),
-    			   					newRegVal);
+    	   System.out.print(Conversion.byteToLogString(r,oldRegVal,rv,readByteRegister(r)));
        }	   
    }
    

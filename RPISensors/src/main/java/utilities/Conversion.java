@@ -144,6 +144,20 @@ public class Conversion
     	return String.format("%20s  (8bits) : %8s 0x%02X %d%n",r.getName(),Conversion.byteToBitString(rv),rv&0xFF,rv);
     }
     
+    public static String byteToLogString(Register r, byte oldRegVal, byte setVal, byte newRegVal )
+    {
+ 	   if(newRegVal == setVal)
+		   return String.format("%20s : %8s 0x%X -> %8s 0x%X%n",
+				   				r.getName(),Conversion.byteToBitString(oldRegVal),
+				   				oldRegVal,Conversion.byteToBitString(newRegVal),
+				   				newRegVal);
+
+	   else return String.format("%20s : %8s 0x%X -> %8s 0x%X read as -> %8s 0x%X%n ",
+			   					r.getName(),Conversion.byteToBitString(oldRegVal),oldRegVal,
+			   					Conversion.byteToBitString(setVal),setVal,Conversion.byteToBitString(newRegVal),
+			   					newRegVal);
+    }
+    
     /**
      * Takes 2 bytes & register and returns a string suitable for logging
      * @param r	Register information
