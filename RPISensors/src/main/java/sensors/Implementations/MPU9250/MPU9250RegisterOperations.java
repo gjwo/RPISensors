@@ -153,10 +153,7 @@ public class MPU9250RegisterOperations {
        try {
 		TimeUnit.MILLISECONDS.sleep(2); // delay to allow register to settle
        } catch (InterruptedException ignored) {}
-       if (debugLevel >=9)
-       {
-    	   System.out.print(Conversion.byteToLogString(r,oldRegVal,rv,readByteRegister(r)));
-       }
+       if (debugLevel >=9) System.out.print(Conversion.byteToLogString(r,oldRegVal,rv,readByteRegister(r)));
    }
    
    /**
@@ -179,10 +176,7 @@ public class MPU9250RegisterOperations {
        try {
     	   TimeUnit.MILLISECONDS.sleep(2); // delay to allow register to settle
        } catch (InterruptedException ignored) {}
-       if (debugLevel >=9)
-       {
-    	   System.out.print(Conversion.byteToLogString(r,oldRegVal,rv,readByteRegister(r)));
-       }	   
+       if (debugLevel >=9)System.out.print(Conversion.byteToLogString(r,oldRegVal,rv,readByteRegister(r))); 
    }
    
    /**
