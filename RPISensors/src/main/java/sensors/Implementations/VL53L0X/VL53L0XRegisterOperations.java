@@ -1,7 +1,8 @@
 package sensors.Implementations.VL53L0X;
 
 import devices.I2C.I2CImplementation;
-import sensors.Implementations.VL53L0X.VL53L0XRegisters;
+import utilities.Register;
+
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -21,12 +22,12 @@ public class VL53L0XRegisterOperations
         this.busDevice = i2CImplementation;
     }
 
-    void writeReg(VL53L0XRegisters reg, int value)
+    void writeReg(Register reg, int value)
     {
         writeReg(reg.getAddress(), value);
     }
 
-    void writeReg(VL53L0XRegisters reg, byte value)
+    void writeReg(Register reg, byte value)
     {
         writeReg(reg.getAddress(), value);
     }
@@ -54,7 +55,7 @@ public class VL53L0XRegisterOperations
         } catch (InterruptedException ignored) {}
     }
 
-    byte readReg(VL53L0XRegisters r)
+    byte readReg(Register r)
     {
         try {
             return busDevice.read(r.getAddress());
@@ -73,37 +74,25 @@ public class VL53L0XRegisterOperations
         }
     }
 
-    byte[] readRegs(VL53L0XRegisters r, int count)
+    byte[] readRegs(Register r, int count)
     {
-        byte[] output = new byte[count];
-        for(int i = 0; i<count; i++)
-        {
-            output[i] = readReg(r.getAddress()+i);
-        }
-        return output;
+        try
+		{
+			return   busDevice.read(r.getAddress(),count);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
     }
 
-    short readReg16Bit(VL53L0XRegisters r)
+    short readReg16Bit(Register r)
     {	//The lower byte must be masked or the sign bits extend to integer length
-        try
-        {
-            return Conversion.bytes2MSBToShort(busDevice.read(r.getAddress(),2));
-         } catch (IOException e)
-        {
-            e.printStackTrace();
-            return Short.parseShort(null);
-        }
+        return Conversion.bytes2MSBToShort(readRegs(r,2));
     }
 
-    int readReg32Bit(VL53L0XRegisters r)
+    int readReg32Bit(Register r)
     {
-        try
-        {
-             return Conversion.bytes4MSBToInt( busDevice.read(r.getAddress(),4));
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-            return Integer.parseInt(null);
-        }
+        return Conversion.bytes4MSBToInt( readRegs(r,4));
     }
 }

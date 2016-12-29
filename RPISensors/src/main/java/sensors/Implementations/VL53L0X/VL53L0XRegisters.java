@@ -1,10 +1,12 @@
 package sensors.Implementations.VL53L0X;
 
+import utilities.Register;
+
 /**
  * RPISensors - sensors.Implementations.VL53L0XRanger
  * Created by MAWood on 27/12/2016.
  */
-    public enum VL53L0XRegisters
+    public enum VL53L0XRegisters implements Register
     {
         VL53L0X_ADDRESS                            (0x29),
         SYSRANGE_START                             (0x00),
@@ -89,7 +91,7 @@ package sensors.Implementations.VL53L0X;
         ALGO_PHASECAL_LIM                          (0x30),
         ALGO_PHASECAL_CONFIG_TIMEOUT               (0x30),
 
-        WHO_AM_I                                          (0x00C0);   // should be 0x40
+        WHO_AM_I                                   (0xC0);   // should be 0x40
 
         private final int address;
         VL53L0XRegisters(int addr)
@@ -100,4 +102,9 @@ package sensors.Implementations.VL53L0X;
         {
             return address;
         }
+		@Override
+		public String getName()
+		{
+			return this.name();
+		}
 }
