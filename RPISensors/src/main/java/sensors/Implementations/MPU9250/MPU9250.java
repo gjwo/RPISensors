@@ -4,7 +4,6 @@ import devices.I2C.I2CImplementation;
 import logging.SystemLog;
 import sensors.models.NineDOF;
 import subsystems.SubSystem;
-
 import java.io.IOException;
 
 /**
