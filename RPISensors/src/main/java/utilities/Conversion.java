@@ -87,7 +87,7 @@ public class Conversion
 	 * @param val
 	 * @return
 	 */
-	public static byte[] intTo4bytesLSB(int val)
+	public static byte[] intTo4BytesLSB(int val)
 	{
 		byte[] b = new byte[4];
 		for(int i=0;i>=3;i++)
