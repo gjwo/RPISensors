@@ -243,7 +243,7 @@ public class VL53L0XRanger extends Sensor1D
         registerOperations.writeReg(VL53L0XRegisters.SYSRANGE_START, 0x00);
 
         registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x06);
-        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x83, (registerOperations.readReg(0x83) | 0x04));
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x83, registerOperations.readReg(VL53L0XRegisters.UNKNOWN_ADDR_0x83) | 0x04);
         registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x07);
         registerOperations.writeReg(VL53L0XRegisters.SYSTEM_HISTOGRAM_BIN, 0x01);
 
@@ -262,7 +262,7 @@ public class VL53L0XRanger extends Sensor1D
 
         registerOperations.writeReg(VL53L0XRegisters.SYSTEM_HISTOGRAM_BIN, 0x00);
         registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x06);
-        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x83, registerOperations.readReg(0x83 & ~0x04));
+        registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0x83, registerOperations.readReg(VL53L0XRegisters.UNKNOWN_ADDR_0x83) & ~0x04);
         registerOperations.writeReg(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, 0x01);
         registerOperations.writeReg(VL53L0XRegisters.SYSRANGE_START, 0x01);
 

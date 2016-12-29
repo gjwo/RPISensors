@@ -32,29 +32,6 @@ public class VL53L0XRegisterOperations
         writeReg(reg.getAddress(), value);
     }
 
-    private void writeReg(int reg, byte value)
-    {
-        try {
-            busDevice.write(reg,value);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-        	TimeUnit.MILLISECONDS.sleep(2);// delay to allow register to settle
-       } catch (InterruptedException ignored) {}
-    }
-    private void writeReg(int reg, int value)
-    {
-        try {
-            busDevice.write(reg,(byte)value);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-        	TimeUnit.MILLISECONDS.sleep(2);// delay to allow register to settle
-        } catch (InterruptedException ignored) {}
-    }
-
     byte readReg(Register r)
     {
         try {
@@ -64,7 +41,7 @@ public class VL53L0XRegisterOperations
             return Byte.parseByte(null);
         }
     }
-    byte readReg(int r)
+    private byte readReg(int r)
     {
         try {
             return busDevice.read(r);
@@ -95,4 +72,30 @@ public class VL53L0XRegisterOperations
     {
         return Conversion.bytes4MSBToInt( readRegs(r,4));
     }
+    
+    private void writeReg(int reg, byte value)
+    {
+        try {
+            busDevice.write(reg,value);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+        	TimeUnit.MILLISECONDS.sleep(2);// delay to allow register to settle
+       } catch (InterruptedException ignored) {}
+    }
+    
+    private void writeReg(int reg, int value)
+    {
+        try {
+            busDevice.write(reg,(byte)value);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+        	TimeUnit.MILLISECONDS.sleep(2);// delay to allow register to settle
+        } catch (InterruptedException ignored) {}
+    }
+
+
 }
