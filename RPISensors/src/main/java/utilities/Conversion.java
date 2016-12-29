@@ -184,7 +184,7 @@ public class Conversion
     {
     	int regCount = rawData.length;
         short[] registers = new short[regCount];
-        for (int i=0;i<regCount;i++)		
+        for (int i=0;i<regCount/2;i++)
         {
         	registers[i] = (short) (((short)rawData[i*2] << 8) | (rawData[(i*2)+1]&0xff)) ;  // Turn the MSB and LSB into a signed 16-bit value
         }
@@ -200,7 +200,7 @@ public class Conversion
     {
     	int regCount = rawData.length;
         short[] registers = new short[regCount];
-        for (int i=0;i<regCount;i++)		
+        for (int i=0;i<regCount/2;i++)
         {
            	registers[i] = (short) (((short)rawData[i*2+1] << 8) | (rawData[(i*2)]&0xFF)) ;  // Turn the MSB and LSB into a signed 16-bit value
         }
