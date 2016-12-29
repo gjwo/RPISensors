@@ -21,7 +21,6 @@ public class RegisterOperations
 	/**
 	 * readInt		-	Reads a single integer value from the designated device starting at the specified register
 	 * 					in Most Significant Byte First order
-	 * @param 		busDevice
 	 * @param 		reg
 	 * @return		the short that was read
 	 */
@@ -33,7 +32,6 @@ public class RegisterOperations
 	/**
 	 * readIntLSBfirst	-	Reads a single integer value from the designated device starting at the specified register
 	 * 						in Least Significant Byte First order
-	 * @param 		busDevice
 	 * @param 		reg
 	 * @return		the short that was read
 	 */
@@ -45,7 +43,6 @@ public class RegisterOperations
 	/**
 	 * readShort	-	Reads a single short value from the designated device starting at the specified register
 	 * 					in Most Significant Byte First order
-	 * @param 		busDevice
 	 * @param 		reg
 	 * @return		the short that was read
 	 */
@@ -57,7 +54,6 @@ public class RegisterOperations
 	/**
 	 * readShortLSBfirst-	Reads a single short value from the designated device starting at the specified register
 	 * 						in Least Significant Byte First order
-	 * @param 		busDevice
 	 * @param 		reg
 	 * @return		the short that was read
 	 */
@@ -68,7 +64,6 @@ public class RegisterOperations
 	
 	/**
 	 * readByte 	- Reads a single byte from the designated device and register 
-	 * @param 		busDevice
 	 * @param 		reg
 	 * @return 		the value read
 	 */
@@ -84,7 +79,6 @@ public class RegisterOperations
     
     /**
      * readBytes 	- Reads multiple bytes from the designated device and register
-     * @param 		busDevice
      * @param 		reg
      * @param 		count of bytes to be read
      * @return		a byte array of the values read
@@ -104,7 +98,6 @@ public class RegisterOperations
     /**
      * writeInt 	-	Writes a short to the designated device and register
      * 					in Most Significant Byte First order
-     * @param 		busDevice
      * @param 		reg
      * @param 		value to be written
      */
@@ -116,7 +109,6 @@ public class RegisterOperations
     /**
      * writeIntLSBfirst	-	Writes a short to the designated device and register
      * 						in Least Significant Byte First order
-     * @param 		busDevice
      * @param 		reg
      * @param 		value to be written
      */
@@ -128,7 +120,6 @@ public class RegisterOperations
     /**
      * writeByte 	-	Writes a short to the designated device and register
      * 					in Most Significant Byte First order
-     * @param 		busDevice
      * @param 		reg
      * @param 		value to be written
      */
@@ -140,7 +131,6 @@ public class RegisterOperations
     /**
      * writeByteLSBfirst-	Writes a short to the designated device and register
      * 						in Least Significant Byte First order
-     * @param 		busDevice
      * @param 		reg
      * @param 		value to be written
      */
@@ -152,7 +142,6 @@ public class RegisterOperations
 
     /**
      * writeByte 	-	Writes a single byte to the designated device and register
-     * @param 		busDevice
      * @param 		reg
      * @param 		value to be written
      */
@@ -170,7 +159,6 @@ public class RegisterOperations
 
     /**
      * writeBytes 	-	Writes multiple to the designated device and register
-     * @param 		busDevice
      * @param 		reg
      * @param 		bytes to be written
      */

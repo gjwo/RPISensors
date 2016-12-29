@@ -10,13 +10,11 @@ import utilities.Register;
  */
 public class VL53L0XRegisterOperations
 {
-    private I2CImplementation busDevice;
     private RegisterOperations ro; 
 
     VL53L0XRegisterOperations(I2CImplementation i2CImplementation)
     {
-        this.busDevice = i2CImplementation;
-        this.ro = new RegisterOperations(this.busDevice);
+        this.ro = new RegisterOperations(i2CImplementation);
     }
 
     void writeReg(Register reg, byte value)				{ro.writeByte(reg,value);}

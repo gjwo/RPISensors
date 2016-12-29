@@ -5,11 +5,9 @@ import com.pi4j.io.i2c.I2CFactory;
 import devices.I2C.I2CImplementation;
 import devices.I2C.Pi4jI2CDevice;
 import sensors.Implementations.VL53L0X.VL53L0X;
-import sensors.Implementations.VL53L0X.VL53L0XRanger;
 import sensors.interfaces.UpdateListener;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * RPISensors - subsystems

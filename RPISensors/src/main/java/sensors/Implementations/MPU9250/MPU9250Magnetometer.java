@@ -97,9 +97,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	 * updateData	-	Get a data sample from the device, store in Circular ring array
 	 * 
 	 * This method is time critical as it is part of the main real time processing loop for the sensor
-	 * @see devices.sensors.interfaces.Magnetometer#getLatestGaussianData()
-	 * @see devices.sensors.dataTypes.Sensor1D#updateData()
-	 */
+     */
     @Override
 	public void updateData()
     { //#KW loop() L490 calls - readMagData L812

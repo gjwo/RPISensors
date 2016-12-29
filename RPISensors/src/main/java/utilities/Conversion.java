@@ -90,7 +90,7 @@ public class Conversion
 	public static byte[] intTo4BytesLSB(int val)
 	{
 		byte[] b = new byte[4];
-		for(int i=0;i>=3;i++)
+		for(int i=0;i<=3;i++)
 		{
 			b[i] = (byte) val;
 			val = val >>8;
@@ -118,8 +118,7 @@ public class Conversion
 	 */
     public static String byteToBitString(byte r)
     {
-    	String s = String.format("%8s", Integer.toBinaryString(r & 0xFF)).replace(' ', '0');
-    	return s;  	
+		return String.format("%8s", Integer.toBinaryString(r & 0xFF)).replace(' ', '0');
     }
     
 	/**
@@ -129,8 +128,7 @@ public class Conversion
 	 */
     public static String shortToBitString(short r)
     {
-    	String s = String.format("%16s", Integer.toBinaryString(r & 0xFFFF)).replace(' ', '0');
-    	return s;  	
+		return String.format("%16s", Integer.toBinaryString(r & 0xFFFF)).replace(' ', '0');
     }
     
     /**

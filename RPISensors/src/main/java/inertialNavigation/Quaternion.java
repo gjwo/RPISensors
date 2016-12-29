@@ -26,11 +26,7 @@ public class Quaternion implements Serializable
 	
 	/**
 	 * Quaternion	- Constructor from 4 scalar values
-	 * @param w
-	 * @param x
-	 * @param y
-	 * @param z
-	 */
+     */
 	public Quaternion(float a,float b, float c, float d)
 	{
 		this.w = a;
