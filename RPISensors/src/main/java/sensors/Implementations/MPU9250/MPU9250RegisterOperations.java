@@ -18,7 +18,7 @@ import utilities.Register;
  * The module hides all details about manipulating the registers of a device and
  * provides a simple interface to access them, and display them for debugging.
  */
-public class MPU9250RegisterOperations {
+class MPU9250RegisterOperations {
 	private I2CImplementation busDevice;
 	private int debugLevel;
 	RegisterOperations ro;
@@ -28,7 +28,7 @@ public class MPU9250RegisterOperations {
 	 * @param device
 	 * @param debugLevel
 	 */
-	public MPU9250RegisterOperations(I2CImplementation device,int debugLevel)
+	MPU9250RegisterOperations(I2CImplementation device,int debugLevel)
 	{
 		this.busDevice = device; // the device on the IC2 bus that the registers belong to
 		this.debugLevel = debugLevel;
@@ -39,7 +39,7 @@ public class MPU9250RegisterOperations {
      * Prints the name and contents of the register in binary and Hex
      * @param r		- the register to be printed
      */
-    public void printByteRegister(Register r)
+    void printByteRegister(Register r)
     {
     	System.out.print(Conversion.byteToLogString(r,ro.readByte(r)));
     }
@@ -47,7 +47,7 @@ public class MPU9250RegisterOperations {
      * Prints the name and contents of the  16 bit register in binary and Hex
      * @param r		- the register to be printed
      */
-    public void print16BitRegister(Register r)
+    void print16BitRegister(Register r)
     {
     	System.out.print(Conversion.shortToLogString(r,ro.readShort(r)));
     }
@@ -56,7 +56,7 @@ public class MPU9250RegisterOperations {
      * Prints the name and contents of the little endian 16 bit register in binary and Hex
      * @param r		- the register to be printed
      */
-    public void print16BitRegisterLittleEndian(Register r)
+    void print16BitRegisterLittleEndian(Register r)
     {
     	System.out.print(Conversion.shortToLogString(r,ro.readShortLSBfirst(r)));
     }
@@ -150,7 +150,7 @@ public class MPU9250RegisterOperations {
    void writeByteRegisterfield(Register r, byte mask, byte bits)
    {
 	   byte rv = 0;
-	   byte oldRegVal = readByteRegister(r);
+	   byte oldRegVal = ro.readByte(r);
 	   rv = (byte) ((oldRegVal & ~mask)|bits);
 	   ro.writeByte(r, rv);
    }
