@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
+import devices.I2C.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.Sensor3D;
 import subsystems.SubSystem;
@@ -33,13 +34,13 @@ import subsystems.SubSystem;
 **/
 public class MPU9250Gyroscope extends Sensor3D 
 {
-    private MPU9250RegisterOperations ro;
+    private RegisterOperations ro;
     private MPU9250 parent;
 	private GyrScale gyroScale; 
 	private GT_DLPF cfgDLPF;
 	private final short gyroSensitivity = 131;     // 2^16 LSB / 500dps = 131 LSB/degrees/sec
 
-	public MPU9250Gyroscope(int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent)
+	public MPU9250Gyroscope(int sampleSize, RegisterOperations ro, MPU9250 parent)
 	{
 		super(sampleSize);
 		gyroScale = GyrScale.GFS_2000DPS;

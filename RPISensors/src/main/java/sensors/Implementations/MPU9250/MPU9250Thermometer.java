@@ -3,6 +3,7 @@ package sensors.Implementations.MPU9250;
 import java.io.IOException;
 
 import dataTypes.TimestampedData1f;
+import devices.I2C.RegisterOperations;
 import sensors.models.Sensor;
 /**
  * @author GJWood
@@ -25,9 +26,9 @@ import sensors.models.Sensor;
 
 public class MPU9250Thermometer extends Sensor<TimestampedData1f>
 {
-    protected MPU9250RegisterOperations ro;
+    protected RegisterOperations ro;
     protected MPU9250 parent;
-	public MPU9250Thermometer(int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent)
+	public MPU9250Thermometer(int sampleSize, RegisterOperations ro, MPU9250 parent)
 	{
 		super(sampleSize);
 		this.ro = ro;

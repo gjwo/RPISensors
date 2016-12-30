@@ -162,6 +162,29 @@ public class RegisterOperations
     	writeBytes(reg, Conversion.shortTo2BytesLSB(value));
     }
 
+    /**
+     * Reads the specified number of 16 bit Registers from the device this class is associated with
+     * @param r 	- the register to be read (name of first byte)
+     * @param regCount 	- number of 16 bit registers to be read
+     * @return 			- an array of shorts (16 bit signed values) holding the registers
+     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the more significant part of the register 
+     */
+    public short[] readShorts(Register r, int regCount)
+    {	
+        return Conversion.bytesMSBToShorts(readBytes(r, regCount*2));
+    }
+    /**
+     * Reads the specified number of 16 bit Registers from the device this class is associated with
+     * @param r 	- the register to be read (name of first byte)
+     * @param regCount 	- number of 16 bit registers to be read
+     * @return 			- an array of shorts (16 bit signed values) holding the registers
+     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the least significant part of the register 
+     */
+    public short[] readShortsLSBfirst(Register r, int regCount)
+    {
+        return Conversion.bytesLSBToShorts(readBytes(r, regCount*2));
+    }
+    
 
     /**
      * writeByte 	-	Writes a single byte to the designated device and register
@@ -212,6 +235,22 @@ public class RegisterOperations
         	TimeUnit.MILLISECONDS.sleep(2);// delay to allow registers to settle
         } catch (InterruptedException ignored) {}
     }
+    
+    /**
+     * Writes a byte to the specified byte register from the device this class is associated with
+     * @param r		- the register to be read
+     * @param mask	- a byte mask with bits set for the position of the field
+     * @param bits	- a byte with the bits set in the correct position for the field to give the required setting 
+     * 				  i.e in line with the mask. 
+     */
+    public void writeBytefield(Register r, byte mask, byte bits)
+    {
+ 	   byte rv = 0;
+ 	   byte oldRegVal = readByte(r);
+ 	   rv = (byte) ((oldRegVal & ~mask)|bits);
+ 	   writeByte(r, rv);
+    }
+    
     /**
      * Prints the name and contents of the register in binary and Hex
      * @param r		- the register to be printed

@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
+import devices.I2C.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.Sensor3D;
 import subsystems.SubSystem;
@@ -33,13 +34,13 @@ import subsystems.SubSystem;
  * 0x3F 63 ACCEL_ZOUT			- Accelerometer Z axis reading (16 bits big endian)
 **/
 public class MPU9250Accelerometer extends Sensor3D  {
-    protected MPU9250RegisterOperations ro;
+    protected RegisterOperations ro;
     protected MPU9250 parent;
 	private AccScale accelScale ;
 	private final short accelSensitivity = 16384;  // = 16384 LSB/g
 	//private A_DLPF aDLFP;
 
-	MPU9250Accelerometer(int sampleSize, MPU9250RegisterOperations ro, MPU9250 parent)
+	MPU9250Accelerometer(int sampleSize, RegisterOperations ro, MPU9250 parent)
 	{
 		super(sampleSize);
 		accelScale = AccScale.AFS_4G;

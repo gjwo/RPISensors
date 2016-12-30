@@ -111,7 +111,7 @@ class MPU9250RegisterOperations {
     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the more significant part of the register 
     */
    short[] readShorts(Register r, int regCount)
-   {	//The lower byte must be masked or the sign bits extend to integer length
+   {	
        return Conversion.bytesMSBToShorts(ro.readBytes(r, regCount*2));
    }
    /**
@@ -145,7 +145,7 @@ class MPU9250RegisterOperations {
     * @param bits	- a byte with the bits set in the correct position for the field to give the required setting 
     * 				  i.e in line with the mask. 
     */
-   void writeByteRegisterfield(Register r, byte mask, byte bits)
+   void writeBytefield(Register r, byte mask, byte bits)
    {
 	   byte rv = 0;
 	   byte oldRegVal = ro.readByte(r);

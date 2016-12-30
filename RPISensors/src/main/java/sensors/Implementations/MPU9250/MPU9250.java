@@ -32,7 +32,7 @@ import java.io.IOException;
  */
 public class MPU9250 extends NineDOF
 {
-    private final MPU9250RegisterOperations roMPU;
+    private final RegisterOperations roMPU;
     private final RegisterOperations roAK;
 
     /**
@@ -48,7 +48,7 @@ public class MPU9250 extends NineDOF
     {
         super(sampleRate,sampleSize,debugLevel);
         // get device
-        this.roMPU = new MPU9250RegisterOperations(mpu9250,debugLevel);
+        this.roMPU = new RegisterOperations(mpu9250);
         this.roAK = new RegisterOperations(ak8963);
         gyro = new MPU9250Gyroscope(sampleSize, roMPU,this);
         gyro.setDebugLevel(debugLevel);
@@ -104,7 +104,7 @@ public class MPU9250 extends NineDOF
         c = roMPU.readByteRegister(Registers.CONFIG); 
         c = (byte) (c &~GT_DLPF.bitMask|GT_DLPF.F01BW0092.bits);// Set gyro sample rate to 1 kHz and DLPF to 92 Hz
         roMPU.writeByteRegister(Registers.CONFIG,c ); */
-        roMPU.writeByteRegisterfield(MPU9250Registers.CONFIG, GT_DLPF.bitMask, GT_DLPF.F01BW0092.bits);
+        roMPU.writeBytefield(MPU9250Registers.CONFIG, GT_DLPF.bitMask, GT_DLPF.F01BW0092.bits);
         roMPU.writeByte(MPU9250Registers.SMPLRT_DIV,SampleRateDiv.NONE.bits); // Internal_Sample_Rate / (1 + SMPLRT_DIV) for all devices
         gyro.selfTest();
         accel.selfTest();
