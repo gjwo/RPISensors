@@ -104,7 +104,7 @@ public class MPU9250 extends NineDOF
         c = (byte) (c &~GT_DLPF.bitMask|GT_DLPF.F01BW0092.bits);// Set gyro sample rate to 1 kHz and DLPF to 92 Hz
         roMPU.writeByteRegister(Registers.CONFIG,c ); */
         roMPU.writeByteRegisterfield(MPU9250Registers.CONFIG, GT_DLPF.bitMask, GT_DLPF.F01BW0092.bits);
-        roMPU.writeByteRegister(MPU9250Registers.SMPLRT_DIV,SampleRateDiv.NONE.bits); // Internal_Sample_Rate / (1 + SMPLRT_DIV) for all devices
+        roMPU.writeByte(MPU9250Registers.SMPLRT_DIV,SampleRateDiv.NONE.bits); // Internal_Sample_Rate / (1 + SMPLRT_DIV) for all devices
         gyro.selfTest();
         accel.selfTest();
         
@@ -120,28 +120,28 @@ public class MPU9250 extends NineDOF
     {
     	SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"setCalibrationMode");
         // Write a one to bit 7 reset bit; toggle reset device
-        roMPU.writeByteRegister(MPU9250Registers.PWR_MGMT_1,H_Reset.RESET.bits);
+        roMPU.writeByte(MPU9250Registers.PWR_MGMT_1,H_Reset.RESET.bits);
         Thread.sleep(100);
 
         // get stable time source; Auto select clock source to be PLL gyroscope reference if ready
         // else use the internal oscillator, bits 2:0 = 001
-        roMPU.writeByteRegister(MPU9250Registers.PWR_MGMT_1,ClkSel.AUTO.bits);
-        roMPU.writeByteRegister(MPU9250Registers.PWR_MGMT_2,PwrDisable.ALL_ENABLED.bits); //
+        roMPU.writeByte(MPU9250Registers.PWR_MGMT_1,ClkSel.AUTO.bits);
+        roMPU.writeByte(MPU9250Registers.PWR_MGMT_2,PwrDisable.ALL_ENABLED.bits); //
         Thread.sleep(200);
 
         // Configure device for bias calculation
-        roMPU.writeByteRegister(MPU9250Registers.INT_ENABLE,(byte) 0x00);   // Disable all interrupts
-        roMPU.writeByteRegister(MPU9250Registers.FIFO_EN,FIFO_Mode.NONE.bits);      // Disable FIFO
-        roMPU.writeByteRegister(MPU9250Registers.PWR_MGMT_1,ClkSel.AUTO.bits);   // Turn on internal clock source
-        roMPU.writeByteRegister(MPU9250Registers.I2C_MST_CTRL,(byte) 0x00); // Disable I2C master
+        roMPU.writeByte(MPU9250Registers.INT_ENABLE,(byte) 0x00);   // Disable all interrupts
+        roMPU.writeByte(MPU9250Registers.FIFO_EN,FIFO_Mode.NONE.bits);      // Disable FIFO
+        roMPU.writeByte(MPU9250Registers.PWR_MGMT_1,ClkSel.AUTO.bits);   // Turn on internal clock source
+        roMPU.writeByte(MPU9250Registers.I2C_MST_CTRL,(byte) 0x00); // Disable I2C master
         //roMPU.writeByteRegister(Registers.USER_CTRL,(byte) 0x00);    // Disable FIFO and I2C master modes
         //Thread.sleep(20);
-        roMPU.writeByteRegister(MPU9250Registers.USER_CTRL,(byte) 0x0C);    // Reset FIFO and DMP NB the 0x08 bit is the DMP shown as reserved in docs
+        roMPU.writeByte(MPU9250Registers.USER_CTRL,(byte) 0x0C);    // Reset FIFO and DMP NB the 0x08 bit is the DMP shown as reserved in docs
         
         Thread.sleep(15);
         
-        roMPU.writeByteRegister(MPU9250Registers.CONFIG,(byte) GT_DLPF.F01BW0184.bits);       // Set low-pass filter to 188 Hz
-        roMPU.writeByteRegister(MPU9250Registers.SMPLRT_DIV,SampleRateDiv.NONE.bits);   // Set sample rate to 1 kHz = Internal_Sample_Rate / (1 + SMPLRT_DIV)
+        roMPU.writeByte(MPU9250Registers.CONFIG,(byte) GT_DLPF.F01BW0184.bits);       // Set low-pass filter to 188 Hz
+        roMPU.writeByte(MPU9250Registers.SMPLRT_DIV,SampleRateDiv.NONE.bits);   // Set sample rate to 1 kHz = Internal_Sample_Rate / (1 + SMPLRT_DIV)
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End setCalibtationMode");
     }
     
@@ -170,11 +170,11 @@ public class MPU9250 extends NineDOF
     {
     	SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"MPU-9250.configure");
         
-        roMPU.writeByteRegister(MPU9250Registers.PWR_MGMT_1, H_Reset.DEFAULT.bits); // wake up device, Clear sleep bits bit (6), enable all sensors
+        roMPU.writeByte(MPU9250Registers.PWR_MGMT_1, H_Reset.DEFAULT.bits); // wake up device, Clear sleep bits bit (6), enable all sensors
         Thread.sleep(100); // Wait for all registers to reset
 
         // get stable time source
-        roMPU.writeByteRegister(MPU9250Registers.PWR_MGMT_1, ClkSel.AUTO.bits);  // Auto select clock source to be PLL gyroscope reference if ready else
+        roMPU.writeByte(MPU9250Registers.PWR_MGMT_1, ClkSel.AUTO.bits);  // Auto select clock source to be PLL gyroscope reference if ready else
         Thread.sleep(200);
 
         // Configure Gyro and Thermometer
@@ -183,10 +183,10 @@ public class MPU9250 extends NineDOF
         // be higher than 1 / 0.0059 = 170 Hz
         // DLPF_CFG = bits 2:0 = 011; this limits the sample rate to 1000 Hz for both
         // With the MPU9250_Pi4j, it is possible to get gyro sample rates of 32 kHz (!), 8 kHz, or 1 kHz
-        roMPU.writeByteRegister(MPU9250Registers.CONFIG, GT_DLPF.F01BW0041.bits);//set thermometer and gyro bandwidth to 41 and 42 Hz, respectively;
+        roMPU.writeByte(MPU9250Registers.CONFIG, GT_DLPF.F01BW0041.bits);//set thermometer and gyro bandwidth to 41 and 42 Hz, respectively;
 
         // Set sample rate = gyroscope output rate/(1 + SMPLRT_DIV)
-        roMPU.writeByteRegister(MPU9250Registers.SMPLRT_DIV, SampleRateDiv.HZ200.bits);  // Use a 200 Hz rate; a rate consistent with the filter update rate
+        roMPU.writeByte(MPU9250Registers.SMPLRT_DIV, SampleRateDiv.HZ200.bits);  // Use a 200 Hz rate; a rate consistent with the filter update rate
         // determined inset in CONFIG above
         
         gyro.configure();
@@ -200,8 +200,8 @@ public class MPU9250 extends NineDOF
         // clear on read of INT_STATUS, and enable I2C_BYPASS_EN so additional chips
         // can join the I2C bus and all can be controlled by the Arduino as master
         //ro.writeByteRegister(Registers.INT_PIN_CFG.getValue(), (byte)0x12);  // INT is 50 microsecond pulse and any read to clear
-        roMPU.writeByteRegister(MPU9250Registers.INT_PIN_CFG, (byte)0x22);  // INT is 50 microsecond pulse and any read to clear - as per MPUBASICAHRS_T3
-        roMPU.writeByteRegister(MPU9250Registers.INT_ENABLE, (byte)0x01);  // Enable data ready (bit 0) interrupt
+        roMPU.writeByte(MPU9250Registers.INT_PIN_CFG, (byte)0x22);  // INT is 50 microsecond pulse and any read to clear - as per MPUBASICAHRS_T3
+        roMPU.writeByte(MPU9250Registers.INT_ENABLE, (byte)0x01);  // Enable data ready (bit 0) interrupt
         if (debugLevel() >=6) 
         {
         	printRegisters();
@@ -229,22 +229,22 @@ public class MPU9250 extends NineDOF
     public short[] operateFIFO(FIFO_Mode mode, int msPeriod) throws InterruptedException
     {
     	SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"MPU-9250.operateFIFO");
-        roMPU.writeByteRegister(MPU9250Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
-        roMPU.writeByteRegister(MPU9250Registers.FIFO_EN, mode.bits);     // Enable accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
+        roMPU.writeByte(MPU9250Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
+        roMPU.writeByte(MPU9250Registers.FIFO_EN, mode.bits);     // Enable accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
         Thread.sleep(msPeriod);
 
         // At end of sample accumulation, turn off FIFO sensor read
-        roMPU.writeByteRegister(MPU9250Registers.FIFO_EN,FIFO_Mode.NONE.bits);  // Disable all sensors for FIFO
+        roMPU.writeByte(MPU9250Registers.FIFO_EN,FIFO_Mode.NONE.bits);  // Disable all sensors for FIFO
 
-        int byteCount = roMPU.read16BitRegisters( MPU9250Registers.FIFO_COUNTH, 1)[0];
+        int byteCount = roMPU.readShorts( MPU9250Registers.FIFO_COUNTH, 1)[0];
         if (debugLevel() >=5) System.out.println("Read Fifo byte count: " + byteCount);
         int readingCount = byteCount/2;
         short[]readings = new short[readingCount];
         byte high,low;
         for (int i = 0; i<readingCount; i++)
         {	
-        	high = roMPU.readByteRegister(MPU9250Registers.FIFO_R_W);
-        	low = roMPU.readByteRegister(MPU9250Registers.FIFO_R_W);
+        	high = roMPU.readByte(MPU9250Registers.FIFO_R_W);
+        	low = roMPU.readByte(MPU9250Registers.FIFO_R_W);
            	readings[i] = (short) ((high << 8) | (low&0xFF)) ;  // Turn the MSB and LSB into a signed 16-bit value
         	//System.out.format("%d: [0x%X, 0x%X] 0x%X %d%n", i,high,low, readings[i],readings[i]);
         }

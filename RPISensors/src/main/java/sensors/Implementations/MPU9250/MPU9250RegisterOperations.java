@@ -47,7 +47,7 @@ class MPU9250RegisterOperations {
      * Prints the name and contents of the  16 bit register in binary and Hex
      * @param r		- the register to be printed
      */
-    void print16BitRegister(Register r)
+    void printShort(Register r)
     {
     	System.out.print(Conversion.shortToLogString(r,ro.readShort(r)));
     }
@@ -56,7 +56,7 @@ class MPU9250RegisterOperations {
      * Prints the name and contents of the little endian 16 bit register in binary and Hex
      * @param r		- the register to be printed
      */
-    void print16BitRegisterLittleEndian(Register r)
+    void printShortLSBfirst(Register r)
     {
     	System.out.print(Conversion.shortToLogString(r,ro.readShortLSBfirst(r)));
     }
@@ -66,7 +66,7 @@ class MPU9250RegisterOperations {
     * @param r		- the register to be read
     * @return		- the value of the register
     */
-   byte readByteRegister(Register r)
+   byte readByte(Register r)
    {
 	   return ro.readByte(r);
    }
@@ -77,7 +77,7 @@ class MPU9250RegisterOperations {
     * @param byteCount 	- number of bytes to be read
     * @return			- an array of the bytes read from the registers
     */
-   byte[] readByteRegisters(Register r, int byteCount)
+   byte[] readBytes(Register r, int byteCount)
    {
 	   return ro.readBytes(r,byteCount);
    }
@@ -110,7 +110,7 @@ class MPU9250RegisterOperations {
     * @return 			- an array of shorts (16 bit signed values) holding the registers
     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the more significant part of the register 
     */
-   short[] read16BitRegisters(Register r, int regCount)
+   short[] readShorts(Register r, int regCount)
    {	//The lower byte must be masked or the sign bits extend to integer length
        return Conversion.bytesMSBToShorts(ro.readBytes(r, regCount*2));
    }
@@ -121,7 +121,7 @@ class MPU9250RegisterOperations {
     * @return 			- an array of shorts (16 bit signed values) holding the registers
     * Each registers is constructed from reading and combining 2 bytes, the first byte forms the least significant part of the register 
     */
-   short[] read16BitRegistersLSB(Register r, int regCount)
+   short[] readShortsLSBfirst(Register r, int regCount)
    {
        return Conversion.bytesLSBToShorts(ro.readBytes(r, regCount*2));
    }
@@ -131,11 +131,11 @@ class MPU9250RegisterOperations {
     * @param r		- the register to be read
     * @param rv		- the value to be written to the register
     */
-   void writeByteRegister(Register r, byte rv)
+   void writeByte(Register r, byte rv)
    {
 	   byte oldRegVal = ro.readByte(r);
 	   ro.writeByte(r, rv);
-	   if (debugLevel >=9) System.out.print(Conversion.byteToLogString(r,oldRegVal,rv,readByteRegister(r)));
+	   if (debugLevel >=9) System.out.print(Conversion.byteToLogString(r,oldRegVal,rv,readByte(r)));
    }
    
    /**
@@ -158,7 +158,7 @@ class MPU9250RegisterOperations {
     * @param r		- the register to be read
     * @param rv		- the value to be written to the register
     */
-   void write16bitRegister(Register r, short rv)
+   void writeShort(Register r, short rv)
    {
 	   ro.writeShort(r, rv);
    }
