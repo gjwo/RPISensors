@@ -35,4 +35,9 @@ public class Pi4jI2CDevice implements I2CImplementation
     {
         device.write(address,data);
     }
+    @Override
+    public void write(int address, byte[] data) throws IOException
+    {
+        device.write(address,data);
+    }
 }

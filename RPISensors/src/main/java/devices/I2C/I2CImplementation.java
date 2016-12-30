@@ -7,9 +7,8 @@ import java.io.IOException;
  */
 public interface I2CImplementation
 {
-
     byte read(int address) throws IOException;
     byte[] read(int address, int count) throws IOException;
     void write(int address, byte data) throws IOException;
-
+    void write(int address, byte[] buffer) throws IOException;
 }
