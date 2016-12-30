@@ -14,7 +14,8 @@ public abstract class SubSystem extends Thread
 		DRIVE_ASSEMBLY,
 		LOGGING,
 		SUBSYSTEM_MANAGER,
-		TESTING
+		TESTING,
+		DEVICES
 	}
 
 	protected final SubSystemType type;
