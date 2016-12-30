@@ -56,7 +56,9 @@ public class RegisterOperations
 	 */
 	public short readShort(Register reg)
 	{
-		return Conversion.bytes2MSBToShort(readBytes(reg,2));
+		short s = Conversion.bytes2MSBToShort(readBytes(reg,2));
+		if (logReads) SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.shortToLogString(reg,s));
+		return s;
 	}
 	
 	/**
@@ -67,7 +69,9 @@ public class RegisterOperations
 	 */
 	public short readShortLSBfirst(Register reg)
 	{
-		return Conversion.bytes2LSBToShort(readBytes(reg,2));
+		short s = Conversion.bytes2LSBToShort(readBytes(reg,2));
+		if (logReads) SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.shortToLogString(reg,s));
+		return s;
 	}
 	
 	/**
@@ -78,7 +82,9 @@ public class RegisterOperations
     public byte readByte(Register reg)
     {
         try {
-            return busDevice.read(reg.getAddress());
+        	byte b = busDevice.read(reg.getAddress());
+        	 if (logReads) SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.byteToLogString(reg,b));
+            return b;
         } catch (IOException e) {
             e.printStackTrace();
             return (byte) 0;
@@ -94,9 +100,18 @@ public class RegisterOperations
     public byte[] readBytes(Register reg, int count)
     {
     	if (count <= 0) return null;
+    	byte[] bytes;
     	int startAddr = reg.getAddress();
         try {
-            return busDevice.read(startAddr,count);
+        	bytes = busDevice.read(startAddr,count);
+            if (logReads) 
+            {
+    	        for (int i = 0; i<bytes.length; i++)
+    	        {
+    	      	    SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.byteToLogString(reg,bytes[i]));
+    	        }
+            }
+            return bytes;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
