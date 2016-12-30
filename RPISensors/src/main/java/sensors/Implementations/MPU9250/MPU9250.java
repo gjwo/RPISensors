@@ -1,6 +1,7 @@
 package sensors.Implementations.MPU9250;
 
 import devices.I2C.I2CImplementation;
+import devices.I2C.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.NineDOF;
 import subsystems.SubSystem;
@@ -32,7 +33,7 @@ import java.io.IOException;
 public class MPU9250 extends NineDOF
 {
     private final MPU9250RegisterOperations roMPU;
-    private final MPU9250RegisterOperations roAK;
+    private final RegisterOperations roAK;
 
     /**
      * MPU9250 Constructor
@@ -48,7 +49,7 @@ public class MPU9250 extends NineDOF
         super(sampleRate,sampleSize,debugLevel);
         // get device
         this.roMPU = new MPU9250RegisterOperations(mpu9250,debugLevel);
-        this.roAK = new MPU9250RegisterOperations(ak8963,debugLevel);
+        this.roAK = new RegisterOperations(ak8963);
         gyro = new MPU9250Gyroscope(sampleSize, roMPU,this);
         gyro.setDebugLevel(debugLevel);
         mag = new MPU9250Magnetometer(sampleSize, roAK,this);

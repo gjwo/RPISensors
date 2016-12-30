@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
+import devices.I2C.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.NineDOF;
 import sensors.models.Sensor3D;
@@ -45,7 +46,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	 * @param sampleRate
 	 * @param sampleSize
 	 */
-    protected MPU9250RegisterOperations ro;
+    protected RegisterOperations ro;
     protected NineDOF parent;
     private final MagScale magScale = MagScale.MFS_16BIT;
     private final MagMode magMode = MagMode.MM_100HZ;
@@ -55,7 +56,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
     private TimestampedData3f lastCalibratedReading = new TimestampedData3f(0,0,0);
     private Data3f magCalibration = null; //#KW 271 Hardware factory calibration data from AK8963, sent up in init(* param), used in update()
 
-	public MPU9250Magnetometer(int sampleSize, MPU9250RegisterOperations ro, NineDOF parent ) {
+	public MPU9250Magnetometer(int sampleSize, RegisterOperations ro, NineDOF parent ) {
 		super(sampleSize);
 		this.ro = ro;
 		this.parent = parent;
