@@ -212,4 +212,30 @@ public class RegisterOperations
         	TimeUnit.MILLISECONDS.sleep(2);// delay to allow registers to settle
         } catch (InterruptedException ignored) {}
     }
+    /**
+     * Prints the name and contents of the register in binary and Hex
+     * @param r		- the register to be printed
+     */
+    void printByteRegister(Register r)
+    {
+    	System.out.print(Conversion.byteToLogString(r,readByte(r)));
+    }
+    /**
+     * Prints the name and contents of the  16 bit register in binary and Hex
+     * @param r		- the register to be printed
+     */
+    void printShort(Register r)
+    {
+    	System.out.print(Conversion.shortToLogString(r,readShort(r)));
+    }
+   
+    /**
+     * Prints the name and contents of the little endian 16 bit register in binary and Hex
+     * @param r		- the register to be printed
+     */
+    void printShortLSBfirst(Register r)
+    {
+    	System.out.print(Conversion.shortToLogString(r,readShortLSBfirst(r)));
+    }
+
 }
