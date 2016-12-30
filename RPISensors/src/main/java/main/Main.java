@@ -11,13 +11,18 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.EnumSet;
 import java.util.HashMap;
 
+import dataTypes.NanoClock;
+
 
 public class Main implements RemoteMain
 {
+	static Main main;
 	private final HashMap<SubSystemType, SubSystem> subSystems;
-
+	private NanoClock clock;
 	public Main(Registry reg) throws RemoteException
     {
+		main = this;
+		clock = new NanoClock();
         SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting SubSystem manager");
         reg.rebind("Main", UnicastRemoteObject.exportObject(this,0));
 
@@ -25,7 +30,8 @@ public class Main implements RemoteMain
 		prepareSubSystems();
 		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION, "System started");
 	}
-
+	public NanoClock getClock(){return clock;}
+	public static Main getMain() {return main;}
     private void prepareSubSystems()
     {
 		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Preparing subSystems");

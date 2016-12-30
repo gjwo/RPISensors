@@ -10,6 +10,7 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 import dataTypes.NanoClock;
 import devices.controller.PIDInputProvider;
+import main.Main;
 
 public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 {
@@ -36,7 +37,7 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 	
 	public Encoder(Pin a, Pin b, String name, double metersPerRotation, boolean reversed)
 	{
-		this.clock = new NanoClock();
+		this.clock = Main.getMain().getClock();
 		this.reversed = reversed;
         this.direction = Direction.CLOCKWISE;
         this.metresPerRotation = metersPerRotation;
