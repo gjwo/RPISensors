@@ -2,12 +2,16 @@ package devices.I2C;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import logging.SystemLog;
+import subsystems.SubSystem;
 import utilities.Conversion;
 import utilities.Register;
 
 public class RegisterOperations
 {
 	private final I2CImplementation busDevice;
+	private boolean logReads;
+	private boolean logWrites;
 	
 	/**
 	 * Constructor
@@ -16,8 +20,12 @@ public class RegisterOperations
 	public RegisterOperations(I2CImplementation busDevice)
 	{
 		this.busDevice = busDevice;
+		this.logReads = false;
+		this.logWrites = false;
 	}
 	
+	public void logWrites(boolean log) {this.logWrites = log;}
+	public void logReads(boolean log) {this.logReads = log;}
 	/**
 	 * readInt		-	Reads a single integer value from the designated device starting at the specified register
 	 * 					in Most Significant Byte First order
@@ -147,9 +155,13 @@ public class RegisterOperations
      */
     public void writeByte(Register reg, byte value)
     {
+
         try {
+        	byte oldRegVal = 0;
+        	if (logWrites) oldRegVal = busDevice.read(reg.getAddress());
             busDevice.write(reg.getAddress(),value);
-        } catch (IOException e) {
+      	    if (logWrites) SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_HW_WRITES, Conversion.byteToLogString(reg,oldRegVal,value,readByte(reg)));
+       } catch (IOException e) {
             e.printStackTrace();
         }
         try {
@@ -165,14 +177,22 @@ public class RegisterOperations
     public void writeBytes(Register reg, byte[] bytes)
     {
     	int startAddr = reg.getAddress();
-    	for (int i = 0; i<bytes.length; i++)
-    	{
-            try {
-                busDevice.write(startAddr+i,bytes[i]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-   		}
+    	byte[] oldRegVals = null;
+    	byte[] newRegVals = new byte[bytes.length];
+        try {
+          	if (logWrites) oldRegVals = busDevice.read(reg.getAddress(),bytes.length);
+            busDevice.write(startAddr,bytes);
+            newRegVals = busDevice.read(startAddr,bytes.length);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (logWrites) 
+        {
+	        for (int i = 0; i<bytes.length; i++)
+	        {
+	      	    SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_HW_WRITES, Conversion.byteToLogString(reg,oldRegVals[i],bytes[i],newRegVals[i]));
+	        }
+        }
         try {
         	TimeUnit.MILLISECONDS.sleep(2);// delay to allow registers to settle
         } catch (InterruptedException ignored) {}

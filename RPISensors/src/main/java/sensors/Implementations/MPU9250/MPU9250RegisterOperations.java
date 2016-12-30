@@ -112,8 +112,7 @@ class MPU9250RegisterOperations {
     */
    short[] read16BitRegisters(Register r, int regCount)
    {	//The lower byte must be masked or the sign bits extend to integer length
-       byte[] rawData = ro.readBytes(r, regCount*2);
-       return Conversion.bytesMSBToShorts(rawData);
+       return Conversion.bytesMSBToShorts(ro.readBytes(r, regCount*2));
    }
    /**
     * Reads the specified number of 16 bit Registers from the device this class is associated with
@@ -124,8 +123,7 @@ class MPU9250RegisterOperations {
     */
    short[] read16BitRegistersLSB(Register r, int regCount)
    {
-       byte[] rawData = ro.readBytes(r, regCount*2);
-       return Conversion.bytesLSBToShorts(rawData);
+       return Conversion.bytesLSBToShorts(ro.readBytes(r, regCount*2));
    }
    
    /**
