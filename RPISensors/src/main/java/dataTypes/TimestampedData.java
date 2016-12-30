@@ -1,5 +1,6 @@
 package dataTypes;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -12,9 +13,13 @@ import main.Main;
  * TimestampedData
  * Created by G.J Wood on 09/11/2016.
  */
-public abstract class TimestampedData <E> extends Data <E>
+public abstract class TimestampedData <E> extends Data <E> implements Serializable
 {
-    public static final long NANOS_PER_SEC = 1000000000;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3141678301674560641L;
+	public static final long NANOS_PER_SEC = 1000000000;
     protected final Instant instant;
     protected Data <E> data;
     
