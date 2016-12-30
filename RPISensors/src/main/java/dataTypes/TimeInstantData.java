@@ -13,32 +13,31 @@ import main.Main;
  * TimestampedData
  * Created by G.J Wood on 09/11/2016.
  */
-public abstract class TimestampedData <E> extends Data <E> implements Serializable
+public abstract class TimeInstantData <E> extends Data <E> implements Serializable
 {
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = -3141678301674560641L;
-	public static final long NANOS_PER_SEC = 1000000000;
     protected final Instant instant;
     protected Data <E> data;
     
     /**
-     * TimestampedData	-	Constructor
+     * TimeInstantData	-	Constructor
      * @param data		-	the data	
      * @param nanoTime	-	a timestamp	
      */    
-    public TimestampedData(Data <E> data, Instant instant)
+    public TimeInstantData(Data <E> data, Instant instant)
     {
         this.instant = instant;
         this.data = data;
     }
 
     /**
-     * TimestampedData	-	Constructor
+     * TimeInstantData	-	Constructor
      * @param data		-	the data	
      */    
-    public TimestampedData(Data <E> data){this(data, Main.getMain().getClock().instant());}
+    public TimeInstantData(Data <E> data){this(data, Main.getMain().getClock().instant());}
     
     public Data <E> unStamp(){return data;}
     public Instant time() {return instant;}
@@ -55,5 +54,5 @@ public abstract class TimestampedData <E> extends Data <E> implements Serializab
     }
     
     // methods that must be implemented when the type of data is known
-   public abstract TimestampedData <E> clone();    //clones the timestamp object, including cloning the data
+   public abstract TimeInstantData <E> clone();    //clones the timestamp object, including cloning the data
 }
