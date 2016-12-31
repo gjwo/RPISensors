@@ -15,6 +15,7 @@ public class TimeStampedData<E> implements TimeStamped, Serializable
 	public final E data;
 	public final Instant timestamp;
 	
+	//Constructors
 	TimeStampedData(E data)
 	{
 		this(data,Main.getMain().getClock().instant());
@@ -25,6 +26,10 @@ public class TimeStampedData<E> implements TimeStamped, Serializable
 		this.data = data;
 		this.timestamp = time;
 	}
+	
+	//getters
+	E getData() {return data;}
+	
     //TimeStamped implementation
     public Instant time() {return timestamp;}
     public long getNano() {return timestamp.getNano();}
@@ -35,7 +40,10 @@ public class TimeStampedData<E> implements TimeStamped, Serializable
 		                 .withLocale( Locale.UK )
 		                 .withZone( ZoneId.systemDefault() );
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss.nnnn");
-        String timeStr = formatter.format( timestamp );
-        return 	"[" +timeStr +"] " + data.toString();
+        return 	"[" +formatter.format( timestamp ) +"] " ;
+    }
+    
+    // general methods
+    public String toString() {return getTimeStr() + data.toString();   	
     }
 }
