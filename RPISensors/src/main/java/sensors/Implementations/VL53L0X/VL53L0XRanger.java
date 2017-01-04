@@ -14,13 +14,13 @@ import subsystems.SubSystem;
 /**
  * RPISensors - sensors.Implementations.VL53L0XRanger
  * Created by MAWood on 27/12/2016.
- * Based off of kriswiner's work with the senson in C++
+ * Based off of kriswiner's work with the sensor in C++
  */
 public class VL53L0XRanger extends Sensor1D
 {
     private final RegisterOperations registerOperations;
 
-    public VL53L0XRanger(I2CImplementation i2CImplementation, int sampleSize)
+    VL53L0XRanger(I2CImplementation i2CImplementation, int sampleSize)
     {
         super(sampleSize);
         registerOperations = new RegisterOperations(i2CImplementation);
