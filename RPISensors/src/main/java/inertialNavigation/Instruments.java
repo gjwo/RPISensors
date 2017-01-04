@@ -42,7 +42,7 @@ public class Instruments implements RemoteInstruments
 	
 	private Data3f linearAcceleration;
 	
-	public Instruments()
+	Instruments()
 	{
 		updatedTimestamp = Instant.now();
 		magnetometer = new TimestampedData3f(0,0,0);
@@ -93,9 +93,9 @@ public class Instruments implements RemoteInstruments
 
 
 	//Setters
-	public void setMagnetometer(TimestampedData3f magnetometer) {this.magnetometer = magnetometer;}
-	public void setAccelerometer(TimestampedData3f accelerometer) {this.accelerometer = accelerometer;}
-	public void setGyroscope(TimestampedData3f gyroscope) {this.gyroscope = gyroscope;}
+	void setMagnetometer(TimestampedData3f magnetometer) {this.magnetometer = magnetometer;}
+	void setAccelerometer(TimestampedData3f accelerometer) {this.accelerometer = accelerometer;}
+	void setGyroscope(TimestampedData3f gyroscope) {this.gyroscope = gyroscope;}
 
 	//public void setYaw(float yaw) {Instruments.yaw = yaw;}
 	//public void setHeading(float heading) {Instruments.yaw = heading;}
@@ -126,7 +126,7 @@ public class Instruments implements RemoteInstruments
 	 * 
 	 * @param q a quaternion containing the fused input data - see https://en.wikipedia.org/wiki/Quaternion
 	 */
-	public void updateInstruments(Quaternion q)
+	void updateInstruments(Quaternion q)
 	{		
 		if(q == null) return; // don't do anything
 		updatedTimestamp = Instant.now();
@@ -159,7 +159,7 @@ public class Instruments implements RemoteInstruments
 
 	}
 
-	public void unbind()
+	void unbind()
 	{
 		try
 		{
