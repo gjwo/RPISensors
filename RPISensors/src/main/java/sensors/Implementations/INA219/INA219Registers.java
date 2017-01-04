@@ -26,7 +26,7 @@ public enum INA219Registers implements Register
     public String getName() {return this.name();}
 }
 
-enum configuration
+enum Configuration
 {
 	RESET_DEFAULTS			((short)0x399F,(short) 0xCFFF),
 	
@@ -61,13 +61,13 @@ enum configuration
 	SADC_11BIT				((short)0x0010,(short) 0x0078), // Resolution 11 bit 276 μs
 	SADC_12BIT				((short)0x0018,(short) 0x0078), // Resolution 12 bit 532 μs (default)
 	SADC_12BITX				((short)0x0040,(short) 0x0078), // Resolution 12 bit 532 μs
-	SADC_2SAMP				((short)0x0048,(short) 0x0078), // Averaging 2 samples 1.06ms
-	SADC_4SAMP				((short)0x0050,(short) 0x0078), // Averaging 4 samples 2.13 ms
-	SADC_8SAMP				((short)0x0058,(short) 0x0078), // Averaging 8 samples 4.26 ms
-	SADC_16SAMP				((short)0x0060,(short) 0x0078), // Averaging 16 samples 8.51 ms
-	SADC_32SAMP				((short)0x0068,(short) 0x0078), // Averaging 32 samples 17.02 ms
-	SADC_64SAMP				((short)0x0070,(short) 0x0078), // Averaging 64 samples 34.05 ms
-	SADC_128SAMP			((short)0x0078,(short) 0x0078), // Averaging 128 samples 68.10 ms
+	SADC_2SAMPLES			((short)0x0048,(short) 0x0078), // Averaging 2 samples 1.06ms
+	SADC_4SAMPLES			((short)0x0050,(short) 0x0078), // Averaging 4 samples 2.13 ms
+	SADC_8SAMPLES			((short)0x0058,(short) 0x0078), // Averaging 8 samples 4.26 ms
+	SADC_16SAMPLES			((short)0x0060,(short) 0x0078), // Averaging 16 samples 8.51 ms
+	SADC_32SAMPLES			((short)0x0068,(short) 0x0078), // Averaging 32 samples 17.02 ms
+	SADC_64SAMPLES			((short)0x0070,(short) 0x0078), // Averaging 64 samples 34.05 ms
+	SADC_128SAMPLES			((short)0x0078,(short) 0x0078), // Averaging 128 samples 68.10 ms
 	
 	// Operating Mode bits 2-0
 	// Selects continuous, triggered, or power-down mode of operation.
@@ -84,7 +84,7 @@ enum configuration
 	final short value;
 	final short mask;
 	
-	configuration( short value,short mask)
+	Configuration( short value,short mask)
 	{
 		this.value = value;
 		this.mask = mask;
@@ -92,6 +92,40 @@ enum configuration
 	short getValue() {return this.value;}
 	short getMask()	{return this.mask;}
 }
+
+enum BusVoltage 
+{
+	//Read Only Register
+	//The Bus Voltage register stores the most recent bus voltage reading, VBUS.
+	//At full-scale range = 32 V (decimal = 8000, hex = 1F40), and LSB = 4 mV	
+	BUS_VOLTAGE			((short)0x0000,(short) 0xFFF8), //bits 15-3 At full-scale range = 16 V (decimal = 4000, hex = 0FA0), and LSB = 4 mV
+	
+	//Although the data from the last conversion can be read at any time, the INA219 Conversion Ready bit (CNVR)
+	//indicates when data from a conversion is available in the data output registers. The CNVR bit is set after all
+	//conversions, averaging, and multiplications are complete. CNVR will clear under the following conditions:
+	//1.) Writing a new mode into the Operating Mode bits in the Configuration Register (except for Power-Down or Disable)
+	//2.) Reading the Power Register	
+	CONVERSION_READY	((short)0x0002,(short) 0x0002), //bit 1
+	
+	// Math Overflow Flag
+	// The Math Overflow Flag (OVF) is set when the Power or Current calculations are out of range.
+	// It indicates that current and power data may be meaningless.
+	OVERFLOW_FLAG		((short)0x0001,(short) 0x0001); //bit 0
+
+	final short value;
+	final short mask;
+	
+	BusVoltage( short value,short mask)
+	{
+		this.value = value;
+		this.mask = mask;
+	}
+	short getValue() {return this.value;}
+	short getMask()	{return this.mask;}
+	static short calcBusVoltage(short rv){return (short)( (rv>>3) & 0x1FFF);} // Shift right and mask out any sign bits
+	static boolean isBusVoltageValid(short rv){return ((rv&2)==1) && ((rv&1)==0);} // ready and no overflow
+}
+
 /*
  * Calibration Register (address = 05h) [reset = 00h]
  * Current and power calibration are set by bits FS15 to FS1 of the Calibration register. Note that bit FS0 is not
