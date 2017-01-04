@@ -2,7 +2,6 @@ package sensors.Implementations.INA219;
 
 import dataTypes.TimestampedData1f;
 import devices.I2C.RegisterOperations;
-import sensors.interfaces.VoltageMeter;
 import sensors.models.Sensor1D;
 
 import java.io.IOException;

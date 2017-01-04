@@ -3,7 +3,6 @@ package sensors.models;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import logging.SystemLog;
 import sensors.interfaces.UpdateListener;
 
 /**
