@@ -1,7 +1,7 @@
 package sensors.Implementations.INA219;
 
 import dataTypes.TimestampedData1f;
-import devices.I2C.I2CImplementation;
+import devices.I2C.RegisterOperations;
 import sensors.interfaces.CurrentMeter;
 import sensors.models.Sensor1D;
 
@@ -13,12 +13,12 @@ import java.io.IOException;
  */
 public class INA219CurrentMeter extends Sensor1D implements CurrentMeter
 {
-    private final I2CImplementation i2cImpl;
+    private final RegisterOperations ro;
 
-    INA219CurrentMeter(I2CImplementation i2cImpl, int sampleSize)
+    INA219CurrentMeter(RegisterOperations ro, int sampleSize)
     {
         super(sampleSize);
-        this.i2cImpl = i2cImpl;
+        this.ro = ro;
     }
 
     @Override
@@ -48,6 +48,8 @@ public class INA219CurrentMeter extends Sensor1D implements CurrentMeter
     @Override
     public void updateData() throws IOException
     {
-
+        final int ina219_currentDivider_mA = 10;
+        int raw = ro.readShort(INA219Registers.CURRENT_MEASURE);
+        this.addValue(new TimestampedData1f((float)raw/(float)ina219_currentDivider_mA));
     }
 }

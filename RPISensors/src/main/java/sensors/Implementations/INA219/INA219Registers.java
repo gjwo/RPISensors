@@ -4,16 +4,12 @@ import utilities.Register;
 
 public enum INA219Registers implements Register
 {
-    CONFIGURATION_H     	(0x00), // Read Write 16 bit MSB First
-    CONFIGURATION_L     	(0x01), 
-    SHUNT_VOLTAGE_MEASURE_H	(0x02),	// Read Only 16 bit MSB First
-    SHUNT_VOLTAGE_MEASURE_L	(0x03),
-    BUS_VOLTAGE_MEASURE_H	(0x04), // Read Only 16 bit MSB First
-    BUS_VOLTAGE_MEASURE_L	(0x05),
-    POWER_MEASURE_H			(0x06), // Read Only 16 bit MSB First
-    POWER_MEASURE_L			(0x07),
-    CALIBRATION_H			(0X08), // Read Write 16 bit MSB First
-    CALIBRATION_L			(0X09);
+    CONFIGURATION     	    (0x00), // Read Write 16 bit MSB First
+    SHUNT_VOLTAGE_MEASURE	(0x01),	// Read Only 16 bit MSB First
+    BUS_VOLTAGE_MEASURE	    (0x02), // Read Only 16 bit MSB First
+    POWER_MEASURE			(0x03), // Read Only 16 bit MSB First
+    CURRENT_MEASURE			(0x04), // Read Only 16 bit MSB First
+    CALIBRATION			    (0X05); // Read Write 16 bit MSB First
 
     private final int address;
     

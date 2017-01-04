@@ -251,7 +251,22 @@ public class RegisterOperations
  	   rv = (byte) ((oldRegVal & ~mask)|bits);
  	   writeByte(r, rv);
     }
-    
+
+    /**
+     * Writes a byte to the specified byte register from the device this class is associated with
+     * @param r		- the register to be read
+     * @param mask	- a short mask with bits set for the position of the field
+     * @param bits	- a short with the bits set in the correct position for the field to give the required setting
+     * 				  i.e in line with the mask.
+     */
+    public void writeShortfield(Register r, short mask, short bits)
+    {
+        short rv;
+        short oldRegVal = readShort(r);
+        rv = (short) ((oldRegVal & ~mask)|bits);
+        writeShort(r, rv);
+    }
+
     /**
      * Prints the name and contents of the register in binary and Hex
      * @param r		- the register to be printed
