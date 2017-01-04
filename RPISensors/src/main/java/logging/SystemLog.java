@@ -57,7 +57,7 @@ public class SystemLog implements RemoteLog
     private SystemLog()
     {
         entries = new ArrayList<>();
-        Registry reg = null;
+        Registry reg;
         try
         {
             reg = LocateRegistry.getRegistry();

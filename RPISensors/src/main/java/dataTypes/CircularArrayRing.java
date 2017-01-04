@@ -51,12 +51,12 @@ public class CircularArrayRing<T> extends AbstractCollection<T>
         return true;
     }
 
-    private class CircularArrayRingIterator<T> implements Iterator<T> {
+    public class CircularArrayRingIterator<T> implements Iterator<T> {
 
         CircularArrayRing<T> ring;
         int current;
 
-        public CircularArrayRingIterator(CircularArrayRing<T> ring)
+        CircularArrayRingIterator(CircularArrayRing<T> ring)
         {
             this.ring = ring;
             current = 0;

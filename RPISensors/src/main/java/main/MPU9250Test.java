@@ -103,7 +103,7 @@ class MPU9250Test implements UpdateListener{
     {
     	MPU9250Test tester;
     	int runSecs = 30;
-    	int arg1 = 0;
+    	int arg1;
     	    	
         if (args.length > 0) {
             try {

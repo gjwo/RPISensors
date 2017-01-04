@@ -44,9 +44,9 @@ public class MPU9250Accelerometer extends Sensor3D  {
 	{
 		super(sampleSize);
 		accelScale = AccScale.AFS_4G;
-		this.setDeviceScaling(new Data3f(	(float)accelScale.getRes(),
-											(float)accelScale.getRes(),
-											(float)accelScale.getRes()));
+		this.setDeviceScaling(new Data3f(accelScale.getRes(),
+                accelScale.getRes(),
+                accelScale.getRes()));
 		this.ro = ro;
 		this.parent = parent;
 	}
@@ -121,7 +121,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
 		byte FS = 0; 
         ro.writeByte(MPU9250Registers.ACCEL_CONFIG, (byte)(	AccSelfTest.NONE.bits |	// no self test
         														AccScale.AFS_2G.bits));	// Set full scale range for the accelerometer to 2 g 
-        ro.writeByte(MPU9250Registers.ACCEL_CONFIG2, (byte)(	A_DLPF.F1BW0099_2.bits ));	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
+        ro.writeByte(MPU9250Registers.ACCEL_CONFIG2, A_DLPF.F1BW0099_2.bits);	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
         final int TEST_LENGTH = 200;
 
         int[] aSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
@@ -141,7 +141,8 @@ public class MPU9250Accelerometer extends Sensor3D  {
         short[] aAvg = new short[] {0,0,0};
         for(int i = 0; i<3; i++)
         {
-            aAvg[i] = (short) ((short)((aSum[i]/TEST_LENGTH) & (short)0xFFFF)); //average and mask off top bits
+            //TODO: investigate, IDEA says the & 0xFFFF does nothing.
+            aAvg[i] = (short)((aSum[i]/TEST_LENGTH) & (short)0xFFFF); //average and mask off top bits
         }
 
         if (debugLevel() >=5) System.out.print("aAvg average: "+Arrays.toString(aAvg));
@@ -150,7 +151,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         // Configure the accelerometer for self-test
         ro.writeByte(MPU9250Registers.ACCEL_CONFIG, (byte)(	AccSelfTest.XYZ.bits |	// Enable self test all axes
         														AccScale.AFS_2G.bits)); // Set accelerometer range to +/- 2 g
-        ro.writeByte(MPU9250Registers.ACCEL_CONFIG2, (byte)(	A_DLPF.F1BW0099_2.bits ));	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
+        ro.writeByte(MPU9250Registers.ACCEL_CONFIG2, A_DLPF.F1BW0099_2.bits);	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
         Thread.sleep(25); // Delay a while to let the device stabilise
         //outputConfigRegisters();
         int[] aSelfTestSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
@@ -168,6 +169,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
 
         for(int i = 0; i<3; i++)
         {
+            //TODO: investigate, IDEA says the & 0xFFFF does nothing.
             aSTAvg[i] = (short) ((short)(aSelfTestSum[i]/TEST_LENGTH) & (short)0xFFFF); //average and mask off top bits
         }
         if (debugLevel() >=5)  System.out.print("aSTAvg average: "+Arrays.toString(aSTAvg));
@@ -202,7 +204,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         }
         ro.writeByte(MPU9250Registers.ACCEL_CONFIG, (byte)(	AccSelfTest.NONE.bits |	// no self test
 																AccScale.AFS_2G.bits));	// Set scale range for the accelerometer to 2 g 
-        ro.writeByte(MPU9250Registers.ACCEL_CONFIG2, (byte)(	A_DLPF.F1BW0099_2.bits ));	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
+        ro.writeByte(MPU9250Registers.ACCEL_CONFIG2, A_DLPF.F1BW0099_2.bits);	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
         Thread.sleep(25); // Delay a while to let the device stabilise
         if (debugLevel() >=3) printState();
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End acc.selfTest");
@@ -219,7 +221,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
     	// Assumes we are in calibration bits via setCalibrationMode9250();
 
         // Configure MPU6050 accelerometer for bias calculation
-        ro.writeByte(MPU9250Registers.ACCEL_CONFIG,(byte) AccScale.AFS_16G.bits); 		// Set accelerometer full-scale to 16 g, maximum sensitivity
+        ro.writeByte(MPU9250Registers.ACCEL_CONFIG, AccScale.AFS_16G.bits); 		// Set accelerometer full-scale to 16 g, maximum sensitivity
         short[] readings = parent.operateFIFO(FIFO_Mode.ACC,40); //get a set of readings via the FIFO (MCU9250 function)
         int readingCount = readings.length;
         if (debugLevel() >=5) System.out.println("Readings length: " + readingCount);

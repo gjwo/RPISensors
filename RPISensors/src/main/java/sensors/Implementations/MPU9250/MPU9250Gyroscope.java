@@ -125,6 +125,7 @@ public class MPU9250Gyroscope extends Sensor3D
         short[] gAvg = new short[] {0,0,0};
         for(int i = 0; i<3; i++)
         {
+            //TODO: investigate, IDEA says the & 0xFFFF does nothing.
             gAvg[i] = (short) ((short)(gSum[i]/TEST_LENGTH) & (short)0xFFFF); //average and mask off top bits
         }
         if (debugLevel() >=5) System.out.print("gAvg average: "+Arrays.toString(gAvg));
@@ -151,6 +152,7 @@ public class MPU9250Gyroscope extends Sensor3D
 
         for(int i = 0; i<3; i++)
         {
+            //TODO: investigate, IDEA says the & 0xFFFF does nothing.
             gSTAvg[i] = (short) ((short)(gSelfTestSum[i]/TEST_LENGTH) & (short)0xFFFF); //average and mask off top bits
         }
         if (debugLevel() >=5) System.out.print("gSTAvg average: "+Arrays.toString(gSTAvg));
@@ -202,7 +204,7 @@ public class MPU9250Gyroscope extends Sensor3D
     	// Assumes we are in calibration bits via setCalibrationMode9250();
 
         // Configure MPU6050 gyro for bias calculation
-        ro.writeByte(MPU9250Registers.GYRO_CONFIG,(byte) GyrScale.GFS_250DPS.bits);  	// Set gyro full-scale to 250 degrees per second, maximum sensitivity
+        ro.writeByte(MPU9250Registers.GYRO_CONFIG, GyrScale.GFS_250DPS.bits);  	// Set gyro full-scale to 250 degrees per second, maximum sensitivity
 
         short[] readings = parent.operateFIFO(FIFO_Mode.GYRO,40); //get a set of readings via the FIFO (MCU9250 function)
         int readingCount = readings.length;

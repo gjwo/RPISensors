@@ -165,7 +165,7 @@ public class Navigate implements Runnable, UpdateListener{
 	public static void main(String[] args)
     {
 		MPU9250 mpu9250;
-        I2CBus bus = null;
+        I2CBus bus;
         int debugLevel = 2;
 
     	try

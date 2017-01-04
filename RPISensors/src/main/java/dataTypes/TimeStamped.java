@@ -4,7 +4,7 @@ import java.time.Instant;
 
 public interface TimeStamped
 {
-	public long getNano();
-	public Instant time();
-	public String getTimeStr();
+	long getNano();
+	Instant time();
+	String getTimeStr();
 }

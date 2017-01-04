@@ -1,6 +1,3 @@
-/**
- * 
- */
 package sensors.Implementations.MPU9250;
 
 import java.io.IOException;
@@ -173,9 +170,9 @@ public class MPU9250Magnetometer extends Sensor3D  {
         // #KW L1073 shoot for ~fifteen seconds of mag data
         for(int i = 0; i < magMode.sampleCount; i++) {
             updateData();  // Read the mag data
-            temp[0] = (short) lastRawMagX;
-            temp[1] = (short) lastRawMagY;
-            temp[2] = (short) lastRawMagZ;
+            temp[0] = lastRawMagX;
+            temp[1] = lastRawMagY;
+            temp[2] = lastRawMagZ;
             for (int j = 0; j < 3; j++) {
                 if(temp[j] > max[j]) max[j] = temp[j];
                 if(temp[j] < min[j]) min[j] = temp[j];

@@ -106,10 +106,10 @@ public class RegisterOperations
         	bytes = busDevice.read(startAddr,count);
             if (logReads) 
             {
-    	        for (int i = 0; i<bytes.length; i++)
-    	        {
-    	      	    SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.byteToLogString(reg,bytes[i]));
-    	        }
+				for (byte aByte : bytes)
+				{
+					SystemLog.log(SubSystem.SubSystemType.DEVICES, SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.byteToLogString(reg, aByte));
+				}
             }
             return bytes;
         } catch (IOException e) {
@@ -245,7 +245,7 @@ public class RegisterOperations
      */
     public void writeBytefield(Register r, byte mask, byte bits)
     {
- 	   byte rv = 0;
+ 	   byte rv;
  	   byte oldRegVal = readByte(r);
  	   rv = (byte) ((oldRegVal & ~mask)|bits);
  	   writeByte(r, rv);
