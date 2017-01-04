@@ -141,8 +141,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         short[] aAvg = new short[] {0,0,0};
         for(int i = 0; i<3; i++)
         {
-            //TODO: investigate, IDEA says the & 0xFFFF does nothing.
-            aAvg[i] = (short)((aSum[i]/TEST_LENGTH) & (short)0xFFFF); //average and mask off top bits
+            aAvg[i] = (short)((aSum[i]/TEST_LENGTH) & 0xFFFF); //average and mask off top bits
         }
 
         if (debugLevel() >=5) System.out.print("aAvg average: "+Arrays.toString(aAvg));
@@ -169,8 +168,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
 
         for(int i = 0; i<3; i++)
         {
-            //TODO: investigate, IDEA says the & 0xFFFF does nothing.
-            aSTAvg[i] = (short) ((short)(aSelfTestSum[i]/TEST_LENGTH) & (short)0xFFFF); //average and mask off top bits
+            aSTAvg[i] = (short) ((short)(aSelfTestSum[i]/TEST_LENGTH) & 0xFFFF); //average and mask off top bits
         }
         if (debugLevel() >=5)  System.out.print("aSTAvg average: "+Arrays.toString(aSTAvg));
         if (debugLevel() >=5) System.out.format(" [0x%X, 0x%X, 0x%X]%n", aSTAvg[0], aSTAvg[1], aSTAvg[2]);

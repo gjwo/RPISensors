@@ -125,8 +125,7 @@ public class MPU9250Gyroscope extends Sensor3D
         short[] gAvg = new short[] {0,0,0};
         for(int i = 0; i<3; i++)
         {
-            //TODO: investigate, IDEA says the & 0xFFFF does nothing.
-            gAvg[i] = (short) ((short)(gSum[i]/TEST_LENGTH) & (short)0xFFFF); //average and mask off top bits
+            gAvg[i] = (short) ((short)(gSum[i]/TEST_LENGTH) & 0xFFFF); //average and mask off top bits
         }
         if (debugLevel() >=5) System.out.print("gAvg average: "+Arrays.toString(gAvg));
         if (debugLevel() >=5) System.out.format(" [0x%X, 0x%X, 0x%X]%n", gAvg[0], gAvg[1], gAvg[2]);
@@ -152,8 +151,7 @@ public class MPU9250Gyroscope extends Sensor3D
 
         for(int i = 0; i<3; i++)
         {
-            //TODO: investigate, IDEA says the & 0xFFFF does nothing.
-            gSTAvg[i] = (short) ((short)(gSelfTestSum[i]/TEST_LENGTH) & (short)0xFFFF); //average and mask off top bits
+            gSTAvg[i] = (short) ((short)(gSelfTestSum[i]/TEST_LENGTH) & 0xFFFF); //average and mask off top bits
         }
         if (debugLevel() >=5) System.out.print("gSTAvg average: "+Arrays.toString(gSTAvg));
         if (debugLevel() >=5) System.out.format(" [0x%X, 0x%X, 0x%X]%n", gSTAvg[0], gSTAvg[1], gSTAvg[2]);
