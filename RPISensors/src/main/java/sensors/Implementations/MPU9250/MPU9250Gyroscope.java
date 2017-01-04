@@ -165,6 +165,7 @@ public class MPU9250Gyroscope extends Sensor3D
         if (debugLevel() >=5) System.out.format(" [0x%X, 0x%X, 0x%X]%n", selfTestGyro[0], selfTestGyro[1], selfTestGyro[2]);
 
         float[] factoryTrimGyro = new float[3];
+        //TODO: investigate this 1<<FS business
         factoryTrimGyro[0] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestGyro[0] - 1f);
         factoryTrimGyro[1] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestGyro[1] - 1f);
         factoryTrimGyro[2] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestGyro[2] - 1f);
