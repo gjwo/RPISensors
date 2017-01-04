@@ -26,6 +26,15 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter
     {
         super(sampleRate,4);
         this.ro = new RegisterOperations(i2cImpl);
+        ro.logWrites(true);
+
+        try
+        {
+            writeConfig();
+        } catch (IOException e)
+        {
+            SystemLog.log(SubSystem.SubSystemType.DEVICES, SystemLog.LogLevel.ERROR,e.getMessage());
+        }
 
         // modules that will gather each piece of data
         currentMeter = new INA219CurrentMeter(this.ro, sampleSize);
@@ -38,12 +47,14 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter
 
         configs.add(Configuration.BASDC4_12BIT);            // accuracy
         configs.add(Configuration.BUS_VOLTAGE_RANGE_16V);   // voltage range
-        configs.add(Configuration.PGA_GAIN_DIV_1);          // voltage precision
+        configs.add(Configuration.PGA_GAIN_DIV_8);          // voltage precision
         configs.add(Configuration.SADC_128SAMPLES);         // sample rate
-        configs.add(Configuration.MODE_BUS_V_CONTINUOUS);   // mode
+        configs.add(Configuration.MODE_SH_BUS_V_CONTINUOUS);   // mode
 
         short config = 0;
         for(Configuration setting:configs) config |= setting.getValue();
+        short ina219_calValue = 4096;
+        ro.writeShort(INA219Registers.CALIBRATION,ina219_calValue);
         ro.writeShort(INA219Registers.CONFIGURATION,config);
     }
 
@@ -52,7 +63,6 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter
     {
         try
         {
-            writeConfig();
             busVoltageMeter.updateData();
             currentMeter.updateData();
         } catch (IOException e)
@@ -62,26 +72,26 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter
     }
 
     @Override
-    public TimestampedData1f getLatestCurrent() {return currentMeter.getLatestCurrent();}
+    public TimestampedData1f getLatestCurrent() {return currentMeter.getLatestValue();}
 
     @Override
-    public TimestampedData1f getAvgCurrent() {return currentMeter.getAvgCurrent();}
+    public TimestampedData1f getAvgCurrent() {return currentMeter.getAvgValue();}
 
     @Override
-    public TimestampedData1f getCurrentData(int i) {return currentMeter.getCurrentData(i);}
+    public TimestampedData1f getCurrentData(int i) {return currentMeter.getValue(i);}
 
     @Override
-    public int getCurrentDataCount() {return currentMeter.getCurrentDataCount();}
+    public int getCurrentDataCount() {return currentMeter.getReadingCount();}
 
     @Override
-    public TimestampedData1f getLatestVoltage() {return busVoltageMeter.getLatestVoltage();}
+    public TimestampedData1f getLatestVoltage() {return busVoltageMeter.getLatestValue();}
 
     @Override
-    public TimestampedData1f getAvgVoltage() {return busVoltageMeter.getAvgVoltage();}
+    public TimestampedData1f getAvgVoltage() {return busVoltageMeter.getAvgValue();}
 
     @Override
-    public TimestampedData1f getVoltageData(int i) {return busVoltageMeter.getVoltageData(i);}
+    public TimestampedData1f getVoltageData(int i) {return busVoltageMeter.getValue(i);}
 
     @Override
-    public int getVoltageDataCount() {return busVoltageMeter.getVoltageDataCount();}
+    public int getVoltageDataCount() {return busVoltageMeter.getReadingCount();}
 }

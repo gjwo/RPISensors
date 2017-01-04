@@ -28,7 +28,7 @@ enum Configuration
 	
 	// Bit 15 Setting this bit to '1' generates a system reset that is the same as power-on reset
 	// Resets all registers to default values; this bit self-clears.
-	RESET_BIT				((short)0xF000,(short) 0x8000), 
+	RESET_BIT				((short)0x8000,(short) 0x8000),
 															
 	BUS_VOLTAGE_RANGE_16V	((short)0x0000,(short) 0x2000), // Bit 13 BRNG 16 Volt Full Scale Reading
 	BUS_VOLTAGE_RANGE_32V	((short)0x2000,(short) 0x2000), // Bit 13  BRNG 32 Volt Full Scale Reading (default)

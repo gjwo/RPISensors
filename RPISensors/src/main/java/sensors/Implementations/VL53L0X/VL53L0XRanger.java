@@ -121,6 +121,7 @@ public class VL53L0XRanger extends Sensor1D
         // -- VL53L0X_set_reference_spads() end
          // -- VL53L0X_load_tuning_settings() begin
         // DefaultTuningSettings from vl53l0x_tuning.h
+        /*
         registerOperations.writeByte(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, (byte) 0x01);
         registerOperations.writeByte(VL53L0XRegisters.SYSRANGE_START, (byte) 0x00);
         registerOperations.writeByte(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, (byte) 0x00);
@@ -202,7 +203,7 @@ public class VL53L0XRanger extends Sensor1D
         registerOperations.writeByte(VL53L0XRegisters.UNKNOWN_ADDR_0xFF, (byte) 0x00);
         registerOperations.writeByte(VL53L0XRegisters.POWER_MANAGEMENT_GO1_POWER_FORCE, (byte) 0x00);
         // -- VL53L0X_load_tuning_settings() end
-        
+        */
 
         // Configure GPIO1 for interrupt, active LOW
         byte actHIGH = registerOperations.readByte(VL53L0XRegisters.GPIO_HV_MUX_ACTIVE_HIGH);

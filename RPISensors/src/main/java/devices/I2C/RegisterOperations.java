@@ -1,5 +1,6 @@
 package devices.I2C;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import logging.SystemLog;

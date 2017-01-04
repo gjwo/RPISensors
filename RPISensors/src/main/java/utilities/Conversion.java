@@ -78,7 +78,7 @@ public class Conversion
 	{
 		byte[] b = new byte[2];	
 		b[1] = (byte) val;
-		b[0] = (byte) ((byte) val>>8);
+		b[0] = (byte) (val>>8);
         return b;
 	}
 	
@@ -107,7 +107,7 @@ public class Conversion
 	{
 		byte[] b = new byte[2];	
 		b[0] = (byte) val;
-		b[1] = (byte) ((byte) val>>8);
+		b[1] = (byte) ( val>>8);
         return b;
 	}
 	
