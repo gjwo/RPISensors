@@ -191,13 +191,13 @@ public class PIDController extends Thread
         return output;
     }
 
-    public double getSetpoint()
+    public double getSetPoint()
     {
         return setpoint;
     }
 
-    public void setSetpoint(double setpoint)
+    public void setSetPoint(double setPoint)
     {
-        this.setpoint = setpoint;
+        this.setpoint = setPoint;
     }
 }

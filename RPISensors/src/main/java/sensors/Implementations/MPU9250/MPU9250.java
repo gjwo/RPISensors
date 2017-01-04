@@ -143,7 +143,7 @@ public class MPU9250 extends NineDOF
         
         roMPU.writeByte(MPU9250Registers.CONFIG, GT_DLPF.F01BW0184.bits);       // Set low-pass filter to 188 Hz
         roMPU.writeByte(MPU9250Registers.SMPLRT_DIV,SampleRateDiv.NONE.bits);   // Set sample rate to 1 kHz = Internal_Sample_Rate / (1 + SMPLRT_DIV)
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End setCalibtationMode");
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End setCalibrationMode");
     }
     
     /**

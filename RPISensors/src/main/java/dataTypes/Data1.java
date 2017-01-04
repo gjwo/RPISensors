@@ -1,5 +1,6 @@
 package dataTypes;
 
+@SuppressWarnings("MalformedFormatString")
 public abstract class Data1<E> {
     protected E x;
 

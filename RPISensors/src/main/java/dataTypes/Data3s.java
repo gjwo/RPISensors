@@ -4,6 +4,7 @@ package dataTypes;
  * RPISensors.dataTypes
  * Created by G.J.Wood on 06/11/16.
  */
+@SuppressWarnings("MalformedFormatString")
 public class Data3s extends Data2s{
 
     protected short z;

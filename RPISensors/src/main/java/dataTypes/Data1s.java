@@ -4,6 +4,7 @@ package dataTypes;
  * dataTypes
  * Created by G.J.Wood 06/11/16
  */
+@SuppressWarnings("MalformedFormatString")
 public class Data1s
 {
     protected short x;

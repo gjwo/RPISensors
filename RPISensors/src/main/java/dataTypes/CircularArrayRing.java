@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
  * RPITank
  * Created by MAWood on 11/07/2016.
  */
+@SuppressWarnings("unchecked")
 public class CircularArrayRing<T> extends AbstractCollection<T>
 {
 
@@ -51,6 +52,7 @@ public class CircularArrayRing<T> extends AbstractCollection<T>
         return true;
     }
 
+    @SuppressWarnings("TypeParameterHidesVisibleType")
     public class CircularArrayRingIterator<T> implements Iterator<T> {
 
         CircularArrayRing<T> ring;

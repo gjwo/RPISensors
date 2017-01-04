@@ -106,7 +106,7 @@ public class Instruments implements RemoteInstruments
 	
 	public void printInstruments()
 	{
-		//TBD
+		//TODO: make
 	}
 	
 	/**
@@ -145,10 +145,10 @@ public class Instruments implements RemoteInstruments
 	    yaw   += -44.0f/60.0f; // Declination at Letchworth England is minus O degrees and 44 Seconds on 2016-07-11
 	    if(yaw < 0) yaw   += 360.0f; // Ensure heading stays between 0 and 360
 	    taitBryanAnglesD = new Data3f(yaw, pitch, roll);
-	    updatelinearAcceleration(quaternion);
+	    updateLinearAcceleration(quaternion);
 	}
 	
-	private void updatelinearAcceleration(Quaternion q)
+	private void updateLinearAcceleration(Quaternion q)
 	{
 	    float a31 =   2.0f * (q.w * q.x + q.y * q.z);
 	    float a32 =   2.0f * (q.x * q.z - q.w * q.y);

@@ -215,21 +215,22 @@ public class RegisterOperations
     public void writeBytes(Register reg, byte[] bytes)
     {
     	int startAddr = reg.getAddress();
-    	byte[] oldRegVals = null;
-    	byte[] newRegVals = new byte[bytes.length];
         try {
-          	if (logWrites) oldRegVals = busDevice.read(reg.getAddress(),bytes.length);
-            busDevice.write(startAddr,bytes);
-            newRegVals = busDevice.read(startAddr,bytes.length);
+        	if(logWrites)
+			{
+                byte[] oldRegVals = busDevice.read(reg.getAddress(),bytes.length);
+				busDevice.write(startAddr,bytes);
+                byte[]newRegVals = busDevice.read(startAddr,bytes.length);
+				for (int i = 0; i<bytes.length; i++)
+				{
+					SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_HW_WRITES, Conversion.byteToLogString(reg,oldRegVals[i],bytes[i],newRegVals[i]));
+				}
+			} else
+			{
+				busDevice.write(startAddr,bytes);
+			}
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        if (logWrites) 
-        {
-	        for (int i = 0; i<bytes.length; i++)
-	        {
-	      	    SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_HW_WRITES, Conversion.byteToLogString(reg,oldRegVals[i],bytes[i],newRegVals[i]));
-	        }
         }
         try {
         	TimeUnit.MILLISECONDS.sleep(2);// delay to allow registers to settle

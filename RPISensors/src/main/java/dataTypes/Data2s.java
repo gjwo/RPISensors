@@ -1,9 +1,10 @@
 package dataTypes;
 
 /**
- * RPIsensors.dataTypes
+ * RPISensors.dataTypes
  * Created by G.J.Wood 6/11/2016.
  */
+@SuppressWarnings("MalformedFormatString")
 public class Data2s extends Data1s
 {
     protected short y;

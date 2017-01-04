@@ -266,6 +266,7 @@ public class SensorFusion {
 		ex = (acc.getY() * vz - acc.getZ() * vy) + (mag.getY() * wz -mag.getZ() * wy);
 		ey = (acc.getZ() * vx - acc.getX() * vz) + (mag.getZ() * wx -mag.getX() * wz);
 		ez = (acc.getX() * vy - acc.getY() * vx) + (mag.getX() * wy -mag.getY() * wx);
+		//noinspection ConstantConditions
 		if (KI > 0.0f) {  //warning because KI is a final = 0.0f
 			eInt[0] += ex; // accumulate integral error
 			eInt[1] += ey;

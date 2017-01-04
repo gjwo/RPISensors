@@ -17,7 +17,7 @@ public enum INA219Registers implements Register
 
     private final int address;
     
-    INA219Registers(int addr) {this.address = addr;}
+    INA219Registers(int address) {this.address = address;}
     
     @Override
     public int getAddress() {return this.address;}
@@ -123,13 +123,13 @@ enum BusVoltage
 	short getValue() {return this.value;}
 	short getMask()	{return this.mask;}
 	static short calcBusVoltage(short rv){return (short)( (rv>>3) & 0x1FFF);} // Shift right and mask out any sign bits
-	static boolean isBusVoltageValid(short rv){return ((rv&2)==1) && ((rv&1)==0);} // ready and no overflow
+	static boolean isBusVoltageValid(short rv){return ((rv&2)==2) && ((rv&1)==0);} // ready and no overflow
 }
 
 /*
  * Calibration Register (address = 05h) [reset = 00h]
  * Current and power calibration are set by bits FS15 to FS1 of the Calibration register. Note that bit FS0 is not
- * used in the calculation. This register sets the current that corresponds to a full-scale drop across the shunt. Fullscale
+ * used in the calculation. This register sets the current that corresponds to a full-scale drop across the shunt. FullScale
  * range and the LSB of the current and power measurement depend on the value entered in this register.
  * See the Programming the Calibration Register. This register is suitable for use in overall system calibration. Note
  * that the 0 POR values are all default.

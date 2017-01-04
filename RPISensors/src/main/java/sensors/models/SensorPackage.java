@@ -28,14 +28,14 @@ public abstract class SensorPackage implements Runnable
     }
 
     /**
-     * pause		- Thread will stop processing data until unpaused
+     * pause		- Thread will stop processing data until resumed
      */
     public void pause() {paused = true;}
 
     /**
-     * unpause		- Thread will resume processing data
+     * resume		- Thread will resume processing data
      */
-    public void unpause() {paused = false;}
+    public void resume() {paused = false;}
 
     /**
      * run		- The main execution loop of the thread

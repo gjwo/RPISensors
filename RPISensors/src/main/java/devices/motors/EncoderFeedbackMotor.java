@@ -51,19 +51,19 @@ public class EncoderFeedbackMotor implements Motor
     {
         if(debug) System.out.println("new setpoint: " + speed);
         PID.setOperatingMode(PIDController.OperatingMode.AUTOMATIC);
-        PID.setSetpoint(speed);
+        PID.setSetPoint(speed);
     }
 
     @Override
     public float getSpeed()
     {
-        return (float)PID.getSetpoint();
+        return (float)PID.getSetPoint();
     }
 
     @Override
     public void stop()
     {
-        PID.setSetpoint(0);
+        PID.setSetPoint(0);
         PID.setOperatingMode(PIDController.OperatingMode.MANUAL);
         motor.stop();
     }

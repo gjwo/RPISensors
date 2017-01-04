@@ -50,6 +50,8 @@ public class StepperMotor
             System.out.println(phase);
             pins[i].setState(states[(stepSequence[phase] >> 3-i) & 1]);
             long start = System.nanoTime();
+            //TODO: make dynamic
+            //noinspection StatementWithEmptyBody
             while(System.nanoTime() - start < STEP_DELAY_NANOS);
         }
 
