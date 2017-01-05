@@ -6,6 +6,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.Instant;
+import java.util.HashMap;
 
 import dataTypes.Data1f;
 import main.Main;
@@ -17,9 +18,11 @@ public class Telemetry implements RemoteTelemetry
 	private double voltage;
 	private double power;
 	private Instant lastUpdateTime;
+	private final HashMap<String, DataProvider> providers;
 
 	Telemetry()
 	{
+		this.providers = new HashMap<>();
 		voltage = 0;
 		current = 0;
 		power = 0;
@@ -72,5 +75,12 @@ public class Telemetry implements RemoteTelemetry
 		{
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public double getValue(String name) throws RemoteException
+	{
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

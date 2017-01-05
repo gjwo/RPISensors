@@ -12,4 +12,5 @@ public interface RemoteTelemetry extends Remote
 	double getPower() throws RemoteException;
 	double getVelocity() throws RemoteException;
 	double getDisplacement() throws RemoteException;
+	double getValue(String name) throws RemoteException;
 }
