@@ -23,7 +23,11 @@ public class INA219BusVoltageMeter extends Sensor1D
     @Override
     public void updateData() throws IOException
     {
-        int raw = ((ro.readShort(INA219Registers.BUS_VOLTAGE_MEASURE))>>3)*4;
-        this.addValue(new TimestampedData1f((float)raw*0.001f));
+        int raw = ro.readShort(INA219Registers.BUS_VOLTAGE_MEASURE);
+        if (((raw&2)==2) && ((raw&1)==0))
+        {	
+        	// data is ready and hasn't overflowed
+            this.addValue(new TimestampedData1f((float)((raw>>3)*4)*0.001f));
+        }
     }
 }
