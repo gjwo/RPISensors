@@ -2,6 +2,7 @@ package main;
 
 import subsystems.*;
 import subsystems.SubSystem.SubSystemType;
+import telemetry.TelemetrySubSystem;
 import logging.SystemLog;
 
 import java.net.Inet4Address;
@@ -42,6 +43,7 @@ public class Main implements RemoteMain
 		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Preparing subSystems");
         subSystems.put(SubSystemType.DRIVE_ASSEMBLY, new DriveAssemblySubSystem());
         subSystems.put(SubSystemType.INSTRUMENTS, new InstrumentsSubSystem());
+        subSystems.put(SubSystemType.TELEMETRY, new TelemetrySubSystem());        
         subSystems.put(SubSystemType.TESTING, new TestINA219SubSystem());
     }
 
