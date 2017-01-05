@@ -10,7 +10,6 @@ import sensors.models.SensorPackage;
 import subsystems.SubSystem;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * RPISensors - sensors.Implementations
@@ -21,6 +20,7 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter
     private final RegisterOperations ro;
     private final INA219CurrentMeter currentMeter;
     private final INA219BusVoltageMeter busVoltageMeter;
+    private final INA219PowerMeter powerMeter;
 
     private final INA219Configuration config;
 
@@ -48,6 +48,7 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter
         // modules that will gather each piece of data
         currentMeter = new INA219CurrentMeter(this.ro, sampleSize,config);
         busVoltageMeter = new INA219BusVoltageMeter(this.ro, sampleSize);
+        powerMeter = new INA219PowerMeter(this.ro,sampleSize,config);
     }
 
     private void writeConfig() throws IOException
@@ -63,6 +64,7 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter
         {
             busVoltageMeter.updateData();
             currentMeter.updateData();
+            powerMeter.updateData();
         } catch (IOException e)
         {
             SystemLog.log(SubSystem.SubSystemType.DEVICES, SystemLog.LogLevel.ERROR,e.getMessage());

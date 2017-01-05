@@ -61,6 +61,15 @@ public class INA219Configuration
         currentLSB *= 1000000;
         return (int)Math.round(1000f/currentLSB);
     }
+    
+    public int getPowerDivider()
+    {
+        double minLSB = maxExpectedCurrent/32767f;
+        double maxLSB = maxExpectedCurrent/4096f;
+        double currentLSB = (minLSB + maxLSB)/3f;
+    	double powerLSB = 20*currentLSB;
+    	return (int) Math.round(1000/powerLSB);
+    }
 
     public float getMaxExpectedCurrent()
     {
