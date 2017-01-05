@@ -4,11 +4,16 @@ import subsystems.*;
 import subsystems.SubSystem.SubSystemType;
 import logging.SystemLog;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.EnumSet;
+import java.util.Enumeration;
 import java.util.HashMap;
 
 import dataTypes.NanoClock;
@@ -104,14 +109,29 @@ public class Main implements RemoteMain
 
 	public static void main(String[] args) throws RemoteException
     {
-        if(args.length < 1)
-        {
-        	SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.ERROR, "No hostname specified");
-            System.err.println("No hostname specified");
-            return;
-        }
-        System.setProperty("java.rmi.server.hostname", args[0]) ;
+        System.setProperty("java.rmi.server.hostname", getLocalAddress().getHostAddress()) ;
         Registry reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
 		new Main(reg);
+	}
+
+	private static InetAddress getLocalAddress()
+	{
+		try
+		{
+			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+			// go through all network interfaces
+			while(interfaces.hasMoreElements())
+			{
+				Enumeration<InetAddress> addresses = interfaces.nextElement().getInetAddresses();
+				// go through all associated addresses
+				while(addresses.hasMoreElements())
+				{
+					InetAddress address = addresses.nextElement();
+					// if the address is not the loopback address and it is IPV4, return it
+					if(address instanceof Inet4Address && !address.isLoopbackAddress()) return address;
+				}
+			}
+		} catch (SocketException ignored) {}
+		return null;
 	}
 }
