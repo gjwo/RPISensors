@@ -62,6 +62,16 @@ public class INA219Configuration
         return (int)Math.round(1000f/currentLSB);
     }
 
+    public float getMaxExpectedCurrent()
+    {
+        return maxExpectedCurrent;
+    }
+
+    public void setMaxExpectedCurrent(float maxExpectedCurrent)
+    {
+        this.maxExpectedCurrent = maxExpectedCurrent;
+    }
+
     public void setBusVoltageRange(BusVoltageRange busVoltageRange)
     {
         this.busVoltageRange = busVoltageRange;
