@@ -14,6 +14,7 @@ public abstract class SubSystem extends Thread
 		DRIVE_ASSEMBLY,
 		LOGGING,
 		SUBSYSTEM_MANAGER,
+		TELEMETRY,
 		TESTING,
 		DEVICES
 	}
