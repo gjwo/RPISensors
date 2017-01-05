@@ -6,6 +6,6 @@ package devices.I2C;
  */
 public interface RegisterSetting<T extends Number>
 {
-    T getValue();
+    T getBits();
     T getMask();
 }

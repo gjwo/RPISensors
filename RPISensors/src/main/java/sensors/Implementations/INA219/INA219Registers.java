@@ -86,7 +86,7 @@ enum Configuration implements RegisterSetting<Short>
 		this.value = value;
 		this.mask = mask;
 	}
-	public Short getValue() {return this.value;}
+	public Short getBits() {return this.value;}
 	public Short getMask()	{return this.mask;}
 }
 

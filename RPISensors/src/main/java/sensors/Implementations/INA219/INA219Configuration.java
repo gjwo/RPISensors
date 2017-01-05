@@ -36,11 +36,11 @@ public class INA219Configuration
     public short getValue()
     {
         short value = 0;
-        value |= operatingMode.getValue();
-        value |= busVoltageRange.getValue();
-        value |= currentGain.getValue();
-        value |= adcResolution.getValue();
-        value |= averagingSetting.getValue();
+        value |= operatingMode.getBits();
+        value |= busVoltageRange.getBits();
+        value |= currentGain.getBits();
+        value |= adcResolution.getBits();
+        value |= averagingSetting.getBits();
         return value;
     }
 
@@ -144,7 +144,7 @@ public class INA219Configuration
             this.value = value;
             this.mask = mask;
         }
-        public Short getValue() {return this.value;}
+        public Short getBits() {return this.value;}
         public Short getMask()	{return this.mask;}
     }
 
@@ -167,7 +167,7 @@ public class INA219Configuration
             this.mask = mask;
             this.maxShunt = gain;
         }
-        public Short getValue() {return this.value;}
+        public Short getBits() {return this.value;}
         public Short getMask()	{return this.mask;}
         float getMaxShunt()           {return this.maxShunt;}
     }
@@ -190,7 +190,7 @@ public class INA219Configuration
             this.value = value;
             this.mask = mask;
         }
-        public Short getValue() {return this.value;}
+        public Short getBits() {return this.value;}
         public Short getMask()	{return this.mask;}
     }
 
@@ -221,7 +221,7 @@ public class INA219Configuration
             this.value = value;
             this.mask = mask;
         }
-        public Short getValue() {return this.value;}
+        public Short getBits() {return this.value;}
         public Short getMask()	{return this.mask;}
     }
 
@@ -247,7 +247,7 @@ public class INA219Configuration
             this.value = value;
             this.mask = mask;
         }
-        public Short getValue() {return this.value;}
+        public Short getBits() {return this.value;}
         public Short getMask()	{return this.mask;}
     }
 }
