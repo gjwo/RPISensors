@@ -26,6 +26,9 @@ public class Telemetry implements RemoteTelemetry
 		voltage = 0;
 		current = 0;
 		power = 0;
+        providers.put("Volt Meter", () -> voltage);
+        providers.put("Current Meter", () -> current);
+        providers.put("Power Meter", () -> power);
 		lastUpdateTime = Instant.now(Main.getMain().getClock());
 		
         try
@@ -47,15 +50,6 @@ public class Telemetry implements RemoteTelemetry
 	}
 	@Override
 	public Instant getLastUpdateTime() throws RemoteException {return lastUpdateTime;}
-
-	@Override
-	public double getVoltage() throws RemoteException {return voltage;}
-
-	@Override
-	public double getCurrent() throws RemoteException {	return current;}
-
-	@Override
-	public double getPower() throws RemoteException {return power;}
 
 	@Override
 	public double getVelocity() throws RemoteException 	{return 0;}
