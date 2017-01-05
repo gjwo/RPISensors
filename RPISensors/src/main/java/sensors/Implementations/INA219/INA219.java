@@ -5,6 +5,7 @@ import devices.I2C.I2CImplementation;
 import devices.I2C.RegisterOperations;
 import logging.SystemLog;
 import sensors.interfaces.CurrentMeter;
+import sensors.interfaces.PowerMeter;
 import sensors.interfaces.VoltageMeter;
 import sensors.models.SensorPackage;
 import subsystems.SubSystem;
@@ -15,7 +16,7 @@ import java.io.IOException;
  * RPISensors - sensors.Implementations
  * Created by MAWood on 04/01/2017.
  */
-public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter
+public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter, PowerMeter
 {
     private final RegisterOperations ro;
     private final INA219CurrentMeter currentMeter;
@@ -94,4 +95,28 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter
 
     @Override
     public int getVoltageDataCount() {return busVoltageMeter.getReadingCount();}
+
+    @Override
+    public TimestampedData1f getLatestPower()
+    {
+        return powerMeter.getLatestValue();
+    }
+
+    @Override
+    public TimestampedData1f getAvgPower()
+    {
+        return powerMeter.getAvgValue();
+    }
+
+    @Override
+    public TimestampedData1f getPowerData(int i)
+    {
+        return powerMeter.getValue(i);
+    }
+
+    @Override
+    public int getPowerDataCount()
+    {
+        return powerMeter.getReadingCount();
+    }
 }

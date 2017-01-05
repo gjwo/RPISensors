@@ -38,5 +38,6 @@ public class TestINA219SubSystem extends TestHarnessSubSystem implements UpdateL
     {
         System.out.println("Bus voltage: " + ina219.getLatestVoltage().getX() + "V");
         System.out.println("Current: " + ina219.getLatestCurrent().getX() + "mA");
+        System.out.println("Power: " + ina219.getLatestPower().getX() + "mW");
     }
 }
