@@ -4,8 +4,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.time.Instant;
 
-import dataTypes.Data1f;
-
 public interface RemoteTelemetry extends Remote
 {
 	Instant getLastUpdateTime() throws RemoteException;
