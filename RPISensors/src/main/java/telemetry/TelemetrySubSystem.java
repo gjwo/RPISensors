@@ -44,20 +44,12 @@ public class TelemetrySubSystem extends SubSystem implements UpdateListener
     {
         if(this.getSubSysState() != SubSystemState.IDLE) return this.getSubSysState();
         this.setSubSysState(SubSystemState.STARTING);
-        try
-        {
-            bus = I2CFactory.getInstance(I2CBus.BUS_1);
 
-            telemetryThread = new Thread(ina219);
+        telemetryThread = new Thread(ina219);
 
-            telemetryThread.start();
+        telemetryThread.start();
 
-            this.setSubSysState(SubSystemState.RUNNING);
-        } catch (I2CFactory.UnsupportedBusNumberException | IOException e)
-        {
-        	this.setSubSysState(SubSystemState.ERROR);
-            e.printStackTrace();
-        }
+        this.setSubSysState(SubSystemState.RUNNING);
         return this.getSubSysState();
     }
 
@@ -86,7 +78,6 @@ public class TelemetrySubSystem extends SubSystem implements UpdateListener
     public void dataUpdated()
     {
     	telemetry.updateBatteryData(ina219.getLatestVoltage(), ina219.getLatestCurrent(), ina219.getLatestPower());
-    	
         //System.out.println("Bus voltage: " + ina219.getLatestVoltage().getX() + "V");
         //System.out.println("Current: " + ina219.getLatestCurrent().getX() + "mA");
         //System.out.println("Power: " + ina219.getLatestPower().getX() + "mW");

@@ -75,6 +75,6 @@ public class Telemetry implements RemoteTelemetry
 	public double getValue(String name) throws RemoteException
 	{
 		// TODO Auto-generated method stub
-		return 0;
+		return providers.get(name).getValue();
 	}
 }
