@@ -22,12 +22,21 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter
     private final INA219CurrentMeter currentMeter;
     private final INA219BusVoltageMeter busVoltageMeter;
 
+    private final INA219Configuration config;
+
     public INA219(I2CImplementation i2cImpl, int sampleRate, int sampleSize)
     {
         super(sampleRate,4);
         this.ro = new RegisterOperations(i2cImpl);
         ro.logWrites(true);
 
+
+        config = new INA219Configuration(
+                INA219Configuration.BusVoltageRange.BUS_VOLTAGE_RANGE_16V,
+                INA219Configuration.CurrentGain.PGA_GAIN_DIV_8,
+                INA219Configuration.AdcResolution.BASDC4_12BIT,
+                INA219Configuration.AveragingSetting.SADC_128SAMPLES,
+                INA219Configuration.OperatingMode.MODE_SH_BUS_V_CONTINUOUS);
         try
         {
             writeConfig();
@@ -37,25 +46,14 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter
         }
 
         // modules that will gather each piece of data
-        currentMeter = new INA219CurrentMeter(this.ro, sampleSize);
+        currentMeter = new INA219CurrentMeter(this.ro, sampleSize,config);
         busVoltageMeter = new INA219BusVoltageMeter(this.ro, sampleSize);
     }
 
     private void writeConfig() throws IOException
     {
-        ArrayList<Configuration> configs = new ArrayList<>();
-
-        configs.add(Configuration.BASDC4_12BIT);            // accuracy
-        configs.add(Configuration.BUS_VOLTAGE_RANGE_16V);   // voltage range
-        configs.add(Configuration.PGA_GAIN_DIV_8);          // voltage precision
-        configs.add(Configuration.SADC_128SAMPLES);         // sample rate
-        configs.add(Configuration.MODE_SH_BUS_V_CONTINUOUS);   // mode
-
-        short config = 0;
-        for(Configuration setting:configs) config |= setting.getValue();
-        short ina219_calValue = 4096;
-        ro.writeShort(INA219Registers.CALIBRATION,ina219_calValue);
-        ro.writeShort(INA219Registers.CONFIGURATION,config);
+        ro.writeShort(INA219Registers.CALIBRATION,config.getCalibrationValue());
+        ro.writeShort(INA219Registers.CONFIGURATION,config.getValue());
     }
 
     @Override

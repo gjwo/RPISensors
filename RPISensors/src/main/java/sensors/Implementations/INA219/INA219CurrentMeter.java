@@ -13,20 +13,20 @@ import java.io.IOException;
 public class INA219CurrentMeter extends Sensor1D
 {
     private final RegisterOperations ro;
+    private final INA219Configuration config;
 
-    INA219CurrentMeter(RegisterOperations ro, int sampleSize)
+    INA219CurrentMeter(RegisterOperations ro, int sampleSize, INA219Configuration config)
     {
         super(sampleSize);
         this.ro = ro;
+        this.config = config;
     }
 
     @Override
     public void updateData() throws IOException
     {
-        final int ina219_currentDivider_mA = 10;
 
         int raw = ro.readShort(INA219Registers.CURRENT_MEASURE);
-        System.out.println("Raw current: " + raw);
-        this.addValue(new TimestampedData1f((float)raw/(float)ina219_currentDivider_mA));
+        this.addValue(new TimestampedData1f((float)raw/(float)config.getCurrentDivider()));
     }
 }

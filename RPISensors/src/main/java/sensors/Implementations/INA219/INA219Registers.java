@@ -1,5 +1,6 @@
 package sensors.Implementations.INA219;
 
+import devices.I2C.RegisterSetting;
 import utilities.Register;
 
 public enum INA219Registers implements Register
@@ -22,7 +23,7 @@ public enum INA219Registers implements Register
     public String getName() {return this.name();}
 }
 
-enum Configuration
+enum Configuration implements RegisterSetting<Short>
 {
 	RESET_DEFAULTS			((short)0x399F,(short) 0xCFFF),
 	
@@ -35,10 +36,10 @@ enum Configuration
 	
 	//bits 12-11 Sets PGA gain and range. Note that the PGA defaults to ÷8 (320mV range). 
 	//Table below shows the gain and range for the various product gain settings.
-	PGA_GAIN_DIV_1			((short)0x0000,(short) 0x1800), // bits 12&11 PGA (Shunt Voltage Only) 0 = /1 gain Range +/- 40mV
-	PGA_GAIN_DIV_2			((short)0x0800,(short) 0x1800), // bits 12&11 PGA (Shunt Voltage Only) 0 = /2 gain Range +/- 80mV
-	PGA_GAIN_DIV_4			((short)0x1000,(short) 0x1800), // bits 12&11 PGA (Shunt Voltage Only) 0 = /4 gain Range +/- 160mV
-	PGA_GAIN_DIV_8			((short)0x1800,(short) 0x1800), // bits 12&11 PGA (Shunt Voltage Only) 0 = /8 gain Range +/- 320mV Default value
+	PGA_GAIN_DIV_1			((short)0x0000,(short) 0x1800), // bits 12&11 PGA (Shunt Voltage Only) 0 = /1 gain OperatingMode +/- 40mV
+	PGA_GAIN_DIV_2			((short)0x0800,(short) 0x1800), // bits 12&11 PGA (Shunt Voltage Only) 0 = /2 gain OperatingMode +/- 80mV
+	PGA_GAIN_DIV_4			((short)0x1000,(short) 0x1800), // bits 12&11 PGA (Shunt Voltage Only) 0 = /4 gain OperatingMode +/- 160mV
+	PGA_GAIN_DIV_8			((short)0x1800,(short) 0x1800), // bits 12&11 PGA (Shunt Voltage Only) 0 = /8 gain OperatingMode +/- 320mV Default value
 	
 	// bits 10-07  BADC Bus ADC Resolution/Averaging
 	// These bits adjust the Bus ADC resolution (9-, 10-, 11-, or 12-bit) or set the number of samples used when
@@ -85,8 +86,8 @@ enum Configuration
 		this.value = value;
 		this.mask = mask;
 	}
-	short getValue() {return this.value;}
-	short getMask()	{return this.mask;}
+	public Short getValue() {return this.value;}
+	public Short getMask()	{return this.mask;}
 }
 
 enum BusVoltage 
