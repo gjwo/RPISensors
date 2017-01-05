@@ -11,6 +11,8 @@ import java.time.ZonedDateTime;
 
 import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
+import logging.SystemLog;
+import subsystems.SubSystem;
 
 /**
  * @author GJWood
@@ -91,7 +93,6 @@ public class Instruments implements RemoteInstruments
 
 	public static String getRemoteName() {return REMOTE_NAME;}
 
-
 	//Setters
 	void setMagnetometer(TimestampedData3f magnetometer) {this.magnetometer = magnetometer;}
 	void setAccelerometer(TimestampedData3f accelerometer) {this.accelerometer = accelerometer;}
@@ -104,9 +105,16 @@ public class Instruments implements RemoteInstruments
 	//public void setBank(float bank) {Instruments.roll = bank;}
 	//public void setRoll(float roll) {Instruments.roll = roll;}
 	
-	public void printInstruments()
+	public void logInstruments()
 	{
-		//TODO: make
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Last Updated: " + this.updatedTimestamp.toString());
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Tait Bryan Angles (Degrees): " + this.taitBryanAnglesD.toString());
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Euler Angles (Degrees): " + this.eulerAnglesD.toString());
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Linear Acceleration: " + this.linearAcceleration.toString());
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Quaternion: " + this.quaternion.toString());
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Magnetometer: " + this.magnetometer.toString());
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Accelerometer: " + this.accelerometer.toString());
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Gyroscope: " + this.gyroscope.toString());
 	}
 	
 	/**
@@ -156,7 +164,6 @@ public class Instruments implements RemoteInstruments
 	    linearAcceleration.setX( accelerometer.getX() + a31);
 	    linearAcceleration.setY(accelerometer.getY() + a32);
 	    linearAcceleration.setZ(accelerometer.getZ() - a33);
-
 	}
 
 	void unbind()
