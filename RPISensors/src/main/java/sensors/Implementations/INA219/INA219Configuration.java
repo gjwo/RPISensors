@@ -13,6 +13,8 @@ public class INA219Configuration
     private AdcResolution adcResolution;
     private AveragingSetting averagingSetting;
     private OperatingMode operatingMode;
+    private float maxExpectedCurrent;
+    private static final float RSHUNT = 0.1f;
 
     INA219Configuration()
     {
@@ -28,6 +30,7 @@ public class INA219Configuration
         this.adcResolution = adcResolution;
         this.averagingSetting = averagingSetting;
         this.operatingMode = operatingMode;
+        this.maxExpectedCurrent = 3.2f;
     }
 
     public short getValue()
@@ -43,12 +46,20 @@ public class INA219Configuration
 
     public short getCalibrationValue()
     {
-        return 4096;
+        float minLSB = maxExpectedCurrent/32767f;
+        float maxLSB = maxExpectedCurrent/4096f;
+        float currentLSB = (minLSB + maxLSB)/3f;
+        float cal = 0.04096f/(currentLSB*RSHUNT);
+        return (short) Math.round(cal);
     }
 
     public int getCurrentDivider()
     {
-        return 10;
+        double minLSB = maxExpectedCurrent/32767f;
+        double maxLSB = maxExpectedCurrent/4096f;
+        double currentLSB = (minLSB + maxLSB)/3f;
+        currentLSB *= 1000000;
+        return (int)Math.round(1000f/currentLSB);
     }
 
     public void setBusVoltageRange(BusVoltageRange busVoltageRange)
@@ -120,23 +131,26 @@ public class INA219Configuration
 
     enum CurrentGain implements RegisterSetting<Short>
     {
-        //bits 12-11 Sets PGA gain and range. Note that the PGA defaults to ÷8 (320mV range).
-        //Table below shows the gain and range for the various product gain settings.
-        PGA_GAIN_DIV_1			((short)0x0000,(short) 0x1800), // bits 12&11 PGA (Shunt Voltage Only) 0 = /1 gain BusVoltageRange +/- 40mV
-        PGA_GAIN_DIV_2			((short)0x0800,(short) 0x1800), // bits 12&11 PGA (Shunt Voltage Only) 0 = /2 gain BusVoltageRange +/- 80mV
-        PGA_GAIN_DIV_4			((short)0x1000,(short) 0x1800), // bits 12&11 PGA (Shunt Voltage Only) 0 = /4 gain BusVoltageRange +/- 160mV
-        PGA_GAIN_DIV_8			((short)0x1800,(short) 0x1800); // bits 12&11 PGA (Shunt Voltage Only) 0 = /8 gain BusVoltageRange +/- 320mV Default value
+        //bits 12-11 Sets PGA maxShunt and range. Note that the PGA defaults to ÷8 (320mV range).
+        //Table below shows the maxShunt and range for the various product maxShunt settings.
+        PGA_GAIN_DIV_1			((short)0x0000,(short) 0x1800, 0.040f), // bits 12&11 PGA (Shunt Voltage Only) 0 = /1 maxShunt BusVoltageRange +/- 40mV
+        PGA_GAIN_DIV_2			((short)0x0800,(short) 0x1800, 0.080f), // bits 12&11 PGA (Shunt Voltage Only) 0 = /2 maxShunt BusVoltageRange +/- 80mV
+        PGA_GAIN_DIV_4			((short)0x1000,(short) 0x1800, 0.160f), // bits 12&11 PGA (Shunt Voltage Only) 0 = /4 maxShunt BusVoltageRange +/- 160mV
+        PGA_GAIN_DIV_8			((short)0x1800,(short) 0x1800, 0.320f); // bits 12&11 PGA (Shunt Voltage Only) 0 = /8 maxShunt BusVoltageRange +/- 320mV Default value
 
         final short value;
         final short mask;
+        final float maxShunt;
 
-        CurrentGain(short value, short mask)
+        CurrentGain(short value, short mask, float gain)
         {
             this.value = value;
             this.mask = mask;
+            this.maxShunt = gain;
         }
         public Short getValue() {return this.value;}
         public Short getMask()	{return this.mask;}
+        float getMaxShunt()           {return this.maxShunt;}
     }
 
     enum AdcResolution implements RegisterSetting<Short>
