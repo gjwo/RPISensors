@@ -10,17 +10,34 @@ import java.util.HashMap;
 
 import dataTypes.Data1f;
 import main.Main;
+import subsystems.SubSystem.SubSystemType;
 
 public class Telemetry implements RemoteTelemetry
 {
+	private class MapValuesReal
+	{
+		final DataProviderReal 	dp;
+		final int 				dataIndex;
+		final SubSystemType 	sst;
+		MapValuesReal(DataProviderReal dp,int dataIndex,	SubSystemType sst)
+		{
+			this.dp = dp;
+			this.dataIndex = dataIndex;
+			this.sst = sst;
+		}
+	}
+	
 	private static final String REMOTE_NAME = "Telemetry";
 	private double batteryCurrent;
 	private double batteryVoltage;
 	private double batteryPower;
 	private Instant lastUpdateTime;
-	private final HashMap<String, DataProviderReal> realProviders;
+	private final HashMap<String, MapValuesReal> realProviders;
 	private final HashMap<String, DataProviderInt> intProviders;
 	private final HashMap<String, DataProviderInstant> instantProviders;
+	private final double[] reals;
+	private final int[] ints;
+	private final Instant[] instants;
 
 	Telemetry()
 	{
@@ -29,6 +46,7 @@ public class Telemetry implements RemoteTelemetry
 		// create storage arrays for each class of data
 		// size the arrays based on the number of bound providers
 		// populate the arrays with the current values in the appropriate indexed element
+		// generalise the update routines using an index parameter instead of variable group name
 		// remove all specific class variables apart form lasUpdateTime
 		
 		// TODO generalise to deal with multiple subsystems see method below
@@ -44,16 +62,22 @@ public class Telemetry implements RemoteTelemetry
 		batteryPower = 0;
 		lastUpdateTime = Instant.now(Main.getMain().getClock());
 		bindProviders();
+		reals = new double[realProviders.size()];
+		ints = new int[intProviders.size()];
+		instants = new Instant[intProviders.size()];
         bindRegistry();
 	}
 	
 	private void bindProviders()
 	{
 		// Initialise real providers
-        realProviders.put("Volt Meter", () -> batteryVoltage);
-        realProviders.put("Current Meter", () -> batteryCurrent);
-        realProviders.put("Power Meter", () -> batteryPower);
-        
+        realProviders.put("Volt Meter", 	new MapValuesReal(() -> reals[0],0,SubSystemType.TELEMETRY));
+        realProviders.put("Current Meter", 	new MapValuesReal(() -> reals[1],1,SubSystemType.TELEMETRY));
+        realProviders.put("Power Meter",	new MapValuesReal(() -> reals[2],2,SubSystemType.TELEMETRY));
+        //realProviders.put("Volt Meter", () -> batteryVoltage);
+        //realProviders.put("Current Meter", () -> batteryCurrent);
+        //realProviders.put("Power Meter", () -> batteryPower);
+       
 		// Initialise int providers
         
 		// Initialise Instant providers
@@ -61,9 +85,9 @@ public class Telemetry implements RemoteTelemetry
 	}
 	public void updateBatteryData(Data1f v,Data1f i, Data1f p)
 	{
-		batteryVoltage = v.getX();
-		batteryCurrent = i.getX();
-		batteryPower = p.getX();
+		reals[0] = v.getX();
+		reals[1] = i.getX();
+		reals[2] = p.getX();
 		lastUpdateTime = Instant.now(Main.getMain().getClock());
 	}
 	@Override
@@ -98,7 +122,7 @@ public class Telemetry implements RemoteTelemetry
 	public double getRealValue(String name) throws RemoteException
 	{
 		// return will be null if key not found
-		return realProviders.get(name).getRealValue();
+		return reals[realProviders.get(name).dataIndex];
 	}
 	
 	@Override
