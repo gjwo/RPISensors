@@ -2,7 +2,7 @@ package subsystems;
 
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
-import devices.I2C.Pi4jI2CDevice;
+import devices.device.Pi4jI2CDevice;
 import inertialNavigation.Navigate;
 import sensors.Implementations.MPU9250.MPU9250;
 
@@ -38,8 +38,8 @@ public class InstrumentsSubSystem extends SubSystem
             bus = I2CFactory.getInstance(I2CBus.BUS_1);
 
             mpu9250 = new MPU9250(
-                    new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 I2C device
-                    new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C
+                    new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 device device
+                    new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 device
                     200,                                    // sample rate (SR) per second
                     250,									// sample size (SS)
                     SENSOR_DEBUG_LEVEL); 					// debug level

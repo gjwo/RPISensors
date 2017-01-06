@@ -23,7 +23,7 @@ public enum MPU9250Registers implements Register
     AK8963_CNTL1     (0x0A),  // Power down (0000), single-measurement (0001), self-test (1000) and Fuse ROM (1111) modes on bits 3:0
     AK8963_CNTL2     (0x0B),  // Reset bit 0
     AK8963_ASTC      (0x0C),  // Self test control
-    AK8963_I2CDIS    (0x0F),  // I2C disable
+    AK8963_I2CDIS    (0x0F),  // device disable
     AK8963_ASAX      (0x10),  // Fuse ROM x-axis sensitivity adjustment address
     AK8963_ASAY      (0x11),  // Fuse ROM y-axis sensitivity adjustment address
     AK8963_ASAZ      (0x12),  // Fuse ROM z-axis sensitivity adjustment address

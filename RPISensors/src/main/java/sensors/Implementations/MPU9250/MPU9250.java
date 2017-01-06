@@ -1,7 +1,7 @@
 package sensors.Implementations.MPU9250;
 
-import devices.I2C.I2CImplementation;
-import devices.I2C.RegisterOperations;
+import devices.device.Device;
+import devices.device.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.NineDOF;
 import subsystems.SubSystem;
@@ -44,7 +44,7 @@ public class MPU9250 extends NineDOF
      * @throws IOException	- IC2 bus failures
      * @throws InterruptedException - Wake up call
      */
-	public MPU9250(I2CImplementation mpu9250,I2CImplementation ak8963,int sampleRate, int sampleSize, int debugLevel) throws IOException, InterruptedException
+	public MPU9250(Device mpu9250, Device ak8963, int sampleRate, int sampleSize, int debugLevel) throws IOException, InterruptedException
     {
         super(sampleRate,sampleSize,debugLevel);
         // get device
@@ -134,8 +134,8 @@ public class MPU9250 extends NineDOF
         roMPU.writeByte(MPU9250Registers.INT_ENABLE,(byte) 0x00);   // Disable all interrupts
         roMPU.writeByte(MPU9250Registers.FIFO_EN,FIFO_Mode.NONE.bits);      // Disable FIFO
         roMPU.writeByte(MPU9250Registers.PWR_MGMT_1,ClkSel.AUTO.bits);   // Turn on internal clock source
-        roMPU.writeByte(MPU9250Registers.I2C_MST_CTRL,(byte) 0x00); // Disable I2C master
-        //roMPU.writeByteRegister(Registers.USER_CTRL,(byte) 0x00);    // Disable FIFO and I2C master modes
+        roMPU.writeByte(MPU9250Registers.I2C_MST_CTRL,(byte) 0x00); // Disable device master
+        //roMPU.writeByteRegister(Registers.USER_CTRL,(byte) 0x00);    // Disable FIFO and device master modes
         //Thread.sleep(20);
         roMPU.writeByte(MPU9250Registers.USER_CTRL,(byte) 0x0C);    // Reset FIFO and DMP NB the 0x08 bit is the DMP shown as reserved in docs
         
@@ -199,7 +199,7 @@ public class MPU9250 extends NineDOF
         // Configure Interrupts and Bypass Enable
         // Set interrupt pin active high, push-pull, hold interrupt pin level HIGH until interrupt cleared,
         // clear on read of INT_STATUS, and enable I2C_BYPASS_EN so additional chips
-        // can join the I2C bus and all can be controlled by the Arduino as master
+        // can join the device bus and all can be controlled by the Arduino as master
         //ro.writeByteRegister(Registers.INT_PIN_CFG.getValue(), (byte)0x12);  // INT is 50 microsecond pulse and any read to clear
         roMPU.writeByte(MPU9250Registers.INT_PIN_CFG, (byte)0x22);  // INT is 50 microsecond pulse and any read to clear - as per MPUBASICAHRS_T3
         roMPU.writeByte(MPU9250Registers.INT_ENABLE, (byte)0x01);  // Enable data ready (bit 0) interrupt

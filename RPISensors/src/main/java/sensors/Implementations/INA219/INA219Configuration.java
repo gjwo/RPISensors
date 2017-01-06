@@ -1,6 +1,6 @@
 package sensors.Implementations.INA219;
 
-import devices.I2C.RegisterSetting;
+import devices.device.RegisterSetting;
 
 /**
  * RPISensors - sensors.Implementations.INA219

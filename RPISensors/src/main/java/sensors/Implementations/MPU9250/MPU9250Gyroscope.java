@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
-import devices.I2C.RegisterOperations;
+import devices.device.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.Sensor3D;
 import subsystems.SubSystem;

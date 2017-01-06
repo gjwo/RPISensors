@@ -1,8 +1,8 @@
 package sensors.Implementations.VL53L0X;
 
 import dataTypes.TimestampedData1f;
-import devices.I2C.I2CImplementation;
-import devices.I2C.RegisterOperations;
+import devices.device.Device;
+import devices.device.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.Sensor1D;
 
@@ -20,10 +20,10 @@ public class VL53L0XRanger extends Sensor1D
 {
     private final RegisterOperations registerOperations;
 
-    VL53L0XRanger(I2CImplementation i2CImplementation, int sampleSize)
+    VL53L0XRanger(Device device, int sampleSize)
     {
         super(sampleSize);
-        registerOperations = new RegisterOperations(i2CImplementation);
+        registerOperations = new RegisterOperations(device);
         try
         {
             init();
@@ -36,7 +36,7 @@ public class VL53L0XRanger extends Sensor1D
     private void init() throws InterruptedException
     {
         byte HVI2C = registerOperations.readByte(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV);
-        registerOperations.writeByte(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV, (byte)(HVI2C | 0x01)); // set I2C HIGH to 2.8 V
+        registerOperations.writeByte(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV, (byte)(HVI2C | 0x01)); // set device HIGH to 2.8 V
 
 
         SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
@@ -57,9 +57,9 @@ public class VL53L0XRanger extends Sensor1D
         TimeUnit.MILLISECONDS.sleep(100);
 
         HVI2C = registerOperations.readByte(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV);
-        registerOperations.writeByte(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV, (byte)(HVI2C |  0x01)); // set I2C HIGH to 2.8 V
+        registerOperations.writeByte(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV, (byte)(HVI2C |  0x01)); // set device HIGH to 2.8 V
 
-        // "Set I2C standard mode"
+        // "Set device standard mode"
         registerOperations.writeByte(VL53L0XRegisters.UNKNOWN_ADDR_0x88, (byte) 0x00);
 
         registerOperations.writeByte(VL53L0XRegisters.POWER_MANAGEMENT_GO1_POWER_FORCE, (byte) 0x01);

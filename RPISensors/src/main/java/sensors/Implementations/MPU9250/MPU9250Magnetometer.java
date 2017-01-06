@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
-import devices.I2C.RegisterOperations;
+import devices.device.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.NineDOF;
 import sensors.models.Sensor3D;

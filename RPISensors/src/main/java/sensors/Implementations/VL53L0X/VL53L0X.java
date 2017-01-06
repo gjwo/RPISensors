@@ -1,7 +1,7 @@
 package sensors.Implementations.VL53L0X;
 
 import dataTypes.TimestampedData1f;
-import devices.I2C.I2CImplementation;
+import devices.device.Device;
 import sensors.interfaces.Ranger;
 import sensors.models.SensorPackage;
 
@@ -20,7 +20,7 @@ public class VL53L0X extends SensorPackage implements Ranger
      *
      * @param sampleRate
      */
-    public VL53L0X(I2CImplementation i2cImpl, int sampleRate, int sampleSize)
+    public VL53L0X(Device i2cImpl, int sampleRate, int sampleSize)
     {
         super(sampleRate, 4);
         sensor = new VL53L0XRanger(i2cImpl, sampleSize);

@@ -29,7 +29,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <interface id="4" language="java" name="devices.I2C.I2CImplementation" project="RPISensors" 
+  <interface id="4" language="java" name="devices.device.Device" project="RPISensors"
     file="/RPISensors/src/main/java/devices/I2C/I2CImplementation.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="91" y="-329"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -38,7 +38,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <class id="5" language="java" name="devices.I2C.Pi4jI2CDevice" project="RPISensors" 
+  <class id="5" language="java" name="devices.device.Pi4jI2CDevice" project="RPISensors"
     file="/RPISensors/src/main/java/devices/I2C/Pi4jI2CDevice.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="273" y="-316"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 

@@ -14,7 +14,7 @@ import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 
-import devices.I2C.Pi4jI2CDevice;
+import devices.device.Pi4jI2CDevice;
 import devices.driveAssembly.RemoteDriveAssemblyImpl;
 import devices.driveAssembly.TankDriveAssembly;
 import devices.motors.DCMotor;
@@ -69,8 +69,8 @@ class MPU9250Test implements UpdateListener{
             // sample size (SS) needs to be >= SF/SR or readings will be missed
             // overlap gives smoothing as average is over the sample
             this.mpu9250 = new MPU9250(
-                    new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 I2C device
-                    new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 I2C 
+                    new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 device device
+                    new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 device
                     200,                                    // sample rate (SR) per second 
                     250,									// sample size (SS)
                     debugLevelSensors); 					// debug level

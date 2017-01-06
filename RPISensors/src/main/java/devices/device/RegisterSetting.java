@@ -1,4 +1,4 @@
-package devices.I2C;
+package devices.device;
 
 /**
  * RPISensors - sensors.Implementations.INA219

@@ -1,4 +1,4 @@
-package devices.I2C;
+package devices.device;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -9,7 +9,7 @@ import utilities.Register;
 
 public class RegisterOperations
 {
-	private final I2CImplementation busDevice;
+	private final Device busDevice;
 	private boolean logReads;
 	private boolean logWrites;
 	
@@ -17,7 +17,7 @@ public class RegisterOperations
 	 * Constructor
 	 * @param busDevice
 	 */
-	public RegisterOperations(I2CImplementation busDevice)
+	public RegisterOperations(Device busDevice)
 	{
 		this.busDevice = busDevice;
 		this.logReads = false;

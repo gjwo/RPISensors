@@ -2,8 +2,8 @@ package telemetry;
 
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
-import devices.I2C.I2CImplementation;
-import devices.I2C.Pi4jI2CDevice;
+import devices.device.Device;
+import devices.device.Pi4jI2CDevice;
 import sensors.Implementations.INA219.INA219;
 import sensors.interfaces.UpdateListener;
 import subsystems.SubSystem;
@@ -28,8 +28,8 @@ public class TelemetrySubSystem extends SubSystem implements UpdateListener
         try
         {
             I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
-            I2CImplementation i2CImplementation = new Pi4jI2CDevice(bus.getDevice(0x40));
-            ina219 = new INA219(i2CImplementation, 10, 100);
+            Device device = new Pi4jI2CDevice(bus.getDevice(0x40));
+            ina219 = new INA219(device, 10, 100);
             ina219.registerInterest(this);
             telemetry = new Telemetry();
         } catch (I2CFactory.UnsupportedBusNumberException | IOException e)

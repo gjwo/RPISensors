@@ -1,8 +1,8 @@
 package sensors.Implementations.INA219;
 
 import dataTypes.TimestampedData1f;
-import devices.I2C.I2CImplementation;
-import devices.I2C.RegisterOperations;
+import devices.device.Device;
+import devices.device.RegisterOperations;
 import logging.SystemLog;
 import sensors.interfaces.CurrentMeter;
 import sensors.interfaces.PowerMeter;
@@ -25,7 +25,7 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter,
 
     private final INA219Configuration config;
 
-    public INA219(I2CImplementation i2cImpl, int sampleRate, int sampleSize)
+    public INA219(Device i2cImpl, int sampleRate, int sampleSize)
     {
         super(sampleRate,4);
         this.ro = new RegisterOperations(i2cImpl);
