@@ -64,11 +64,11 @@ public class SensorFusion {
 	public static float getKi() {return KI;}
 
 	/**
-	 * Update Madgewick Quaternion
+	 * Update Madgwick Quaternion
 	 * @param acc - accelerometer reading
-	 * @param gyro - gyrometer reading 
-	 * @param mag -  magenetometer reading
-	 * @param deltat - time interval between readings in seconds
+	 * @param gyro - gyroscope reading
+	 * @param mag -  magnetometer reading
+	 * @param deltaT - time interval between readings in seconds
 	 * 
 	 * #MW quaternionFilters.ino L2
 	 * Implementation of Sebastian Madgwick's efficient orientation filter for inertial/magnetic sensor arrays
@@ -80,11 +80,11 @@ public class SensorFusion {
 	 * conventional Kalman-based filtering algorithms but is much less computationally intensive
 	 * it can be performed on a 3.3 V Pro Mini operating at 8 MHz!
 	 */
-	public static Quaternion MadgwickQuaternionUpdate(TimestampedData3f acc, TimestampedData3f gyro, TimestampedData3f mag, float deltat) //delta t in seconds
+	static Quaternion MadgwickQuaternionUpdate(TimestampedData3f acc, TimestampedData3f gyro, TimestampedData3f mag, float deltaT) //delta t in seconds
 
 	{	/*
 		System.out.print("MadgwickQuaternionUpdate "+acc.toString()+gyro.unStamp().toString()+mag.unStamp().toString());
-		System.out.format(" deltaT %12.10f ",deltat); */
+		System.out.format(" deltaT %12.10f ",deltaT); */
 		float q1 = q.w, q2 = q.x, q3 = q.y, q4 = q.z; 	// #MW L10 short name local  variable for readability
 		float norm;
 		float hx, hy, _2bx, _2bz;
@@ -181,10 +181,10 @@ public class SensorFusion {
 			qDot4 = 0.5f * (q1 * gyro.getZ() + q2 * gyro.getY() - q3 * gyro.getX()) - BETA * s4;
 	
 			// #KW L86 Integrate to yield quaternion
-			q1 += qDot1 * deltat;
-			q2 += qDot2 * deltat;
-			q3 += qDot3 * deltat;
-			q4 += qDot4 * deltat;
+			q1 += qDot1 * deltaT;
+			q2 += qDot2 * deltaT;
+			q3 += qDot3 * deltaT;
+			q4 += qDot4 * deltaT;
 			
 			q.setAll(q1, q2, q3, q4);
 			q.normalize();				// #KW L 91-96 Normalise quaternion
@@ -199,9 +199,9 @@ public class SensorFusion {
 	/**
 	 * Update Mahoney Quaternion
 	 * @param acc - accelerometer reading
-	 * @param gyro - gyrometer reading 
-	 * @param mag -  magenetometer reading
-	 * @param deltat - time interval between readings in seconds
+	 * @param gyro - gyroscope reading
+	 * @param mag -  magnetometer reading
+	 * @param deltaT - time interval between readings in seconds
 	 * 
 	 * Implementation of Mahoney's efficient orientation filter for inertial/magnetic sensor arrays
 	 * (see http://www.x-io.co.uk/category/open-source/ for examples and more details)
@@ -215,11 +215,11 @@ public class SensorFusion {
 	 * it can be performed on a 3.3 V Pro Mini operating at 8 MHz!
 	 */
 	@SuppressWarnings("unused")
-	public static Quaternion MahonyQuaternionUpdate(Data3f acc, Data3f gyro, Data3f mag, float deltat) //delta t in seconds
+	public static Quaternion MahonyQuaternionUpdate(Data3f acc, Data3f gyro, Data3f mag, float deltaT) //delta t in seconds
 	{ // #KW L104 
 		/*
 		System.out.print("MahonyQuaternionUpdate "+acc.toString()+gyro.unStamp().toString()+mag.unStamp().toString());
-		System.out.format(" deltaT %12.10f ",deltat);
+		System.out.format(" deltaT %12.10f ",deltaT);
 		 */
 		float q1 = q.w, q2 = q.x, q3 = q.y, q4 = q.z; // short name local
 														// variable for
@@ -286,10 +286,10 @@ public class SensorFusion {
 		pa = q2;
 		pb = q3;
 		pc = q4;
-		q1 = q1 + (-q2 * gyro.getX() - q3 * gyro.getY() - q4 * gyro.getZ()) * (0.5f * deltat);
-		q2 = pa + (q1 * gyro.getX() + pb * gyro.getZ() - pc * gyro.getY()) * (0.5f * deltat);
-		q3 = pb + (q1 * gyro.getY() - pa * gyro.getZ() + pc * gyro.getX()) * (0.5f * deltat);
-		q4 = pc + (q1 * gyro.getZ() + pa * gyro.getY() - pb * gyro.getX()) * (0.5f * deltat);
+		q1 = q1 + (-q2 * gyro.getX() - q3 * gyro.getY() - q4 * gyro.getZ()) * (0.5f * deltaT);
+		q2 = pa + (q1 * gyro.getX() + pb * gyro.getZ() - pc * gyro.getY()) * (0.5f * deltaT);
+		q3 = pb + (q1 * gyro.getY() - pa * gyro.getZ() + pc * gyro.getX()) * (0.5f * deltaT);
+		q4 = pc + (q1 * gyro.getZ() + pa * gyro.getY() - pb * gyro.getX()) * (0.5f * deltaT);
 
 		q.setAll(q1, q2, q3, q4);
 		q.normalize();// Normalise quaternion
