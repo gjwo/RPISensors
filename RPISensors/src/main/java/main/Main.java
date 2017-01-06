@@ -22,7 +22,7 @@ import dataTypes.NanoClock;
 
 public class Main implements RemoteMain
 {
-	static Main main;
+	private static Main main;
 	private final HashMap<SubSystemType, SubSystem> subSystems;
 	private NanoClock clock;
 	public Main(Registry reg) throws RemoteException
