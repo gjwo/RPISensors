@@ -24,6 +24,18 @@ public class Telemetry implements RemoteTelemetry
 
 	Telemetry()
 	{
+		// TODO generalise storage of values see method below
+		// add an int array index to each DataProvider map/hashtable,
+		// create storage arrays for each class of data
+		// size the arrays based on the number of bound providers
+		// populate the arrays with the current values in the appropriate indexed element
+		// remove all specific class variables apart form lasUpdateTime
+		
+		// TODO generalise to deal with multiple subsystems see method below
+		// Add a subsystem type to the hashtable.
+		
+		// TODO (stretch!) allow subystems to dynamically bind and unbind new data providers
+		
 		this.realProviders = new HashMap<>();
 		this.intProviders = new HashMap<>();
 		this.instantProviders = new HashMap<>();
@@ -85,21 +97,21 @@ public class Telemetry implements RemoteTelemetry
 	@Override
 	public double getRealValue(String name) throws RemoteException
 	{
-		// TODO Auto-generated method stub
+		// return will be null if key not found
 		return realProviders.get(name).getRealValue();
 	}
 	
 	@Override
 	public int getIntValue(String name) throws RemoteException
 	{
-		// TODO Auto-generated method stub
+		// return will be null if key not found
 		return intProviders.get(name).getIntValue();
 	}
 	
 	@Override
 	public Instant getInstantValue(String name) throws RemoteException
 	{
-		// TODO Auto-generated method stub
+		// return will be null if key not found
 		return instantProviders.get(name).getInstantValue();
 	}
 }
