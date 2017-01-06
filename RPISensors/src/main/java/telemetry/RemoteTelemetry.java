@@ -7,7 +7,7 @@ import java.time.Instant;
 public interface RemoteTelemetry extends Remote
 {
 	Instant getLastUpdateTime() throws RemoteException;
-	double getVelocity() throws RemoteException;
-	double getDisplacement() throws RemoteException;
-	double getValue(String name) throws RemoteException;
+	double getRealValue(String name) throws RemoteException;
+	int getIntValue(String name) throws RemoteException;
+	Instant getInstantValue(String name) throws RemoteException;
 }
