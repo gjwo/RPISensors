@@ -28,9 +28,6 @@ public class Telemetry implements RemoteTelemetry
 	}
 	
 	private static final String REMOTE_NAME = "Telemetry";
-	private double batteryCurrent;
-	private double batteryVoltage;
-	private double batteryPower;
 	private Instant lastUpdateTime;
 	private final HashMap<String, MapValuesReal> realProviders;
 	private final HashMap<String, DataProviderInt> intProviders;
@@ -57,9 +54,6 @@ public class Telemetry implements RemoteTelemetry
 		this.realProviders = new HashMap<>();
 		this.intProviders = new HashMap<>();
 		this.instantProviders = new HashMap<>();
-		batteryVoltage = 0;
-		batteryCurrent = 0;
-		batteryPower = 0;
 		lastUpdateTime = Instant.now(Main.getMain().getClock());
 		bindProviders();
 		reals = new double[realProviders.size()];

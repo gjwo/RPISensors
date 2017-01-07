@@ -238,7 +238,7 @@ public class MPU9250 extends NineDOF
         roMPU.writeByte(MPU9250Registers.FIFO_EN,FIFO_Mode.NONE.bits);  // Disable all sensors for FIFO
 
         int byteCount = roMPU.readShorts( MPU9250Registers.FIFO_COUNTH, 1)[0];
-        if (debugLevel() >=5) System.out.println("Read Fifo byte count: " + byteCount);
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, "Read Fifo byte count: " + byteCount);
         int readingCount = byteCount/2;
         short[]readings = new short[readingCount];
         byte high,low;
