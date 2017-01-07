@@ -1,7 +1,6 @@
 package devices.motors;
 
 import devices.controller.PIDController;
-import devices.encoder.Encoder;
 
 /**
  * RPISensors - devices.motors

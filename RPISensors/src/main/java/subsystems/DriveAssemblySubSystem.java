@@ -4,7 +4,7 @@ import com.pi4j.io.gpio.*;
 import devices.driveAssembly.DriveAssembly;
 import devices.driveAssembly.RemoteDriveAssemblyImpl;
 import devices.driveAssembly.TankDriveAssembly;
-import devices.encoder.Encoder;
+import devices.motors.Encoder;
 import devices.motors.DCMotor;
 import devices.motors.EncoderFeedbackMotor;
 import devices.motors.Motor;

@@ -1,4 +1,4 @@
-package devices.encoder;
+package devices.motors;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -11,6 +11,11 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import devices.controller.PIDInputProvider;
 import main.Main;
 
+/**
+ * Encoder	Class handling the device encoding rotation in a motor including calculating
+ * 			displacement and speed
+ * Written by M.A.Wood
+ */
 public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 {
 	public enum Direction
@@ -33,7 +38,15 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 
 	private volatile long rotations;
 	private Instant lastTime;
-	
+
+	/**
+	 * Encoder	- 	Constructor
+	 * @param a						GPIO pin for hall detector A
+	 * @param b						GPIO pin for hall detector A
+	 * @param name					Name root for pin names
+	 * @param metersPerRotation		How far each rotation of th emoter move the vehicle
+	 * @param reversed				True if forward rotation moves the vehicle backwards
+	 */
 	public Encoder(Pin a, Pin b, String name, double metersPerRotation, boolean reversed)
 	{
 		this.clock = Main.getMain().getClock();
@@ -58,6 +71,10 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
         this.b.addListener(this);
 	}
 
+	/**
+	 * Calculate -	calculate displacement, total displacement and velocity based on rotations,
+	 * 				reset rotation count.
+	 */
 	private void calculate()
 	{
 		displacement = rotations*metresPerRotation;
@@ -67,7 +84,8 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 		rotations = 0;
 		lastTime = t;
 	}
-	
+
+	// GpioPinListenerDigital
 	@Override
 	public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event)
 	{
@@ -89,7 +107,7 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 			}
 		}
 	}
-
+	// PIDInputProvider
 	@Override
 	public double getInput()
 	{
@@ -97,6 +115,7 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 		return velocity;
 	}
 
+	// getters
 	public double getVelocity() {return velocity;}
 	public double getDisplacement() {return displacement;}
 	public void resetTotalDisplacement() {this.totalDisplacement = 0;}
