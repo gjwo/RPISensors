@@ -3,7 +3,7 @@ package sensors.Implementations.INA219;
 import java.io.IOException;
 
 import dataTypes.TimestampedData1f;
-import devices.device.RegisterOperations;
+import deviceHardwareAbstractionLayer.RegisterOperations;
 import sensors.models.Sensor1D;
 
 public class INA219PowerMeter extends Sensor1D

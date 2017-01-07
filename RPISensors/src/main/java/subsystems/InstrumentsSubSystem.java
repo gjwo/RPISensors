@@ -2,7 +2,7 @@ package subsystems;
 
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
-import devices.device.Pi4jI2CDevice;
+import deviceHardwareAbstractionLayer.Pi4jI2CDevice;
 import inertialNavigation.Navigate;
 import sensors.Implementations.MPU9250.MPU9250;
 

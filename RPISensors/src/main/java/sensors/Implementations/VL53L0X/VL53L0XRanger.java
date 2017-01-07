@@ -1,8 +1,8 @@
 package sensors.Implementations.VL53L0X;
 
 import dataTypes.TimestampedData1f;
-import devices.device.Device;
-import devices.device.RegisterOperations;
+import deviceHardwareAbstractionLayer.Device;
+import deviceHardwareAbstractionLayer.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.Sensor1D;
 

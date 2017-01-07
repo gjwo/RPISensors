@@ -1,4 +1,4 @@
-package devices.device;
+package deviceHardwareAbstractionLayer;
 
 /**
  * RPISensors - devices.Device.RegisterSetting

@@ -1,6 +1,6 @@
 package sensors.Implementations.INA219;
 
-import devices.device.RegisterSetting;
+import deviceHardwareAbstractionLayer.RegisterSetting;
 
 /**
  * RPISensors - sensors.Implementations.INA219

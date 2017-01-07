@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
-import devices.device.RegisterOperations;
+import deviceHardwareAbstractionLayer.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.Sensor3D;
 import subsystems.SubSystem;

@@ -2,8 +2,8 @@ package subsystems;
 
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
-import devices.device.Device;
-import devices.device.Pi4jI2CDevice;
+import deviceHardwareAbstractionLayer.Device;
+import deviceHardwareAbstractionLayer.Pi4jI2CDevice;
 import sensors.Implementations.INA219.INA219;
 import sensors.interfaces.UpdateListener;
 

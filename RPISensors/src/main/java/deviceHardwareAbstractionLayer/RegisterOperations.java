@@ -1,4 +1,4 @@
-package devices.device;
+package deviceHardwareAbstractionLayer;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -15,7 +15,7 @@ public class RegisterOperations
 	
 	/**
 	 * Constructor
-	 * @param busDevice
+	 * @param busDevice The device whose registers are accessed by this object
 	 */
 	public RegisterOperations(Device busDevice)
 	{
@@ -29,7 +29,7 @@ public class RegisterOperations
 	/**
 	 * readInt		-	Reads a single integer value from the designated device starting at the specified register
 	 * 					in Most Significant Byte First order
-	 * @param 		reg
+	 * @param 		reg The register (address, name etc)
 	 * @return		the short that was read
 	 */
 	public int readInt(Register reg)
@@ -40,7 +40,7 @@ public class RegisterOperations
 	/**
 	 * readIntLSBfirst	-	Reads a single integer value from the designated device starting at the specified register
 	 * 						in Least Significant Byte First order
-	 * @param 		reg
+	 * @param 		reg The register (address, name etc)
 	 * @return		the short that was read
 	 */
 	public int readIntLSBfirst(Register reg)
@@ -51,7 +51,7 @@ public class RegisterOperations
 	/**
 	 * readShort	-	Reads a single short value from the designated device starting at the specified register
 	 * 					in Most Significant Byte First order
-	 * @param 		reg
+	 * @param 		reg The register (address, name etc)
 	 * @return		the short that was read
 	 */
 	public short readShort(Register reg)
@@ -64,7 +64,7 @@ public class RegisterOperations
 	/**
 	 * readShortLSBfirst-	Reads a single short value from the designated device starting at the specified register
 	 * 						in Least Significant Byte First order
-	 * @param 		reg
+	 * @param 		reg The register (address, name etc)
 	 * @return		the short that was read
 	 */
 	public short readShortLSBfirst(Register reg)
@@ -76,7 +76,7 @@ public class RegisterOperations
 	
 	/**
 	 * readByte 	- Reads a single byte from the designated device and register 
-	 * @param 		reg
+	 * @param 		reg The register (address, name etc)
 	 * @return 		the value read
 	 */
     public byte readByte(Register reg)
@@ -93,7 +93,7 @@ public class RegisterOperations
     
     /**
      * readBytes 	- Reads multiple bytes from the designated device and register
-     * @param 		reg
+     * @param 		reg The register (address, name etc)
      * @param 		count of bytes to be read
      * @return		a byte array of the values read
      */
@@ -121,7 +121,7 @@ public class RegisterOperations
     /**
      * writeInt 	-	Writes a short to the designated device and register
      * 					in Most Significant Byte First order
-     * @param 		reg
+     * @param 		reg The register (address, name etc)
      * @param 		value to be written
      */
     public void writeInt(Register reg, int value)
@@ -132,7 +132,7 @@ public class RegisterOperations
     /**
      * writeIntLSBfirst	-	Writes a short to the designated device and register
      * 						in Least Significant Byte First order
-     * @param 		reg
+     * @param 		reg The register (address, name etc)
      * @param 		value to be written
      */
     public void writeIntLSBfirst(Register reg, int value)
@@ -143,7 +143,7 @@ public class RegisterOperations
     /**
      * writeByte 	-	Writes a short to the designated device and register
      * 					in Most Significant Byte First order
-     * @param 		reg
+     * @param 		reg The register (address, name etc)
      * @param 		value to be written
      */
     public void writeShort(Register reg, short value)
@@ -154,7 +154,7 @@ public class RegisterOperations
     /**
      * writeByteLSBfirst-	Writes a short to the designated device and register
      * 						in Least Significant Byte First order
-     * @param 		reg
+     * @param 		reg The register (address, name etc)
      * @param 		value to be written
      */
     public void writeShortLSBfirst(Register reg, short value)
@@ -175,7 +175,7 @@ public class RegisterOperations
     }
     /**
      * Reads the specified number of 16 bit Registers from the device this class is associated with
-     * @param r 	- the register to be read (name of first byte)
+     * @param r 		- the register to be read (name of first byte)
      * @param regCount 	- number of 16 bit registers to be read
      * @return 			- an array of shorts (16 bit signed values) holding the registers
      * Each registers is constructed from reading and combining 2 bytes, the first byte forms the least significant part of the register 
@@ -188,7 +188,7 @@ public class RegisterOperations
 
     /**
      * writeByte 	-	Writes a single byte to the designated device and register
-     * @param 		reg
+     * @param 		reg The register (address, name etc)
      * @param 		value to be written
      */
     public void writeByte(Register reg, byte value)
@@ -209,7 +209,7 @@ public class RegisterOperations
 
     /**
      * writeBytes 	-	Writes multiple to the designated device and register
-     * @param 		reg
+     * @param 		reg The register (address, name etc)
      * @param 		bytes to be written
      */
     public void writeBytes(Register reg, byte[] bytes)
@@ -292,5 +292,4 @@ public class RegisterOperations
     {
     	System.out.print(Conversion.shortToLogString(r,readShortLSBfirst(r)));
     }
-
 }

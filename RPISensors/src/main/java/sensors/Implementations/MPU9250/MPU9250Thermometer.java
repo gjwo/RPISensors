@@ -3,7 +3,7 @@ package sensors.Implementations.MPU9250;
 import java.io.IOException;
 
 import dataTypes.TimestampedData1f;
-import devices.device.RegisterOperations;
+import deviceHardwareAbstractionLayer.RegisterOperations;
 import sensors.models.Sensor;
 /**
  * @author GJWood

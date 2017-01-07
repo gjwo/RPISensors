@@ -1,7 +1,7 @@
 package sensors.Implementations.INA219;
 
 import dataTypes.TimestampedData1f;
-import devices.device.RegisterOperations;
+import deviceHardwareAbstractionLayer.RegisterOperations;
 import sensors.models.Sensor1D;
 
 import java.io.IOException;

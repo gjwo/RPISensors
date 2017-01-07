@@ -1,6 +1,6 @@
 package sensors.Implementations.INA219;
 
-import devices.device.RegisterSetting;
+import deviceHardwareAbstractionLayer.RegisterSetting;
 import utilities.Register;
 
 public enum INA219Registers implements Register

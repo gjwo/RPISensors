@@ -14,7 +14,7 @@ import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 
-import devices.device.Pi4jI2CDevice;
+import deviceHardwareAbstractionLayer.Pi4jI2CDevice;
 import devices.driveAssembly.RemoteDriveAssemblyImpl;
 import devices.driveAssembly.TankDriveAssembly;
 import devices.motors.DCMotor;
