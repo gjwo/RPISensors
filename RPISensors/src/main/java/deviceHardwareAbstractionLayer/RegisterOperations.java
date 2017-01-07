@@ -266,30 +266,59 @@ public class RegisterOperations
         rv = (short) ((oldRegVal & ~mask)|bits);
         writeShort(r, rv);
     }
-
-    /**
-     * Prints the name and contents of the register in binary and Hex
-     * @param r		- the register to be printed
-     */
-    public void printByteRegister(Register r)
-    {
-    	System.out.print(Conversion.byteToLogString(r,readByte(r)));
-    }
-    /**
-     * Prints the name and contents of the  16 bit register in binary and Hex
-     * @param r		- the register to be printed
-     */
-    public void printShort(Register r)
-    {
-    	System.out.print(Conversion.shortToLogString(r,readShort(r)));
-    }
-   
     /**
      * Prints the name and contents of the little endian 16 bit register in binary and Hex
      * @param r		- the register to be printed
+	 * @return 	  	- the log String
      */
-    public void printShortLSBfirst(Register r)
+    public String logStringShortLSBfirst(Register r)
     {
-    	System.out.print(Conversion.shortToLogString(r,readShortLSBfirst(r)));
+    	return (Conversion.shortToLogString(r,readShortLSBfirst(r)));
     }
+
+	/**
+	 * Prints the name and contents of the register in binary and Hex
+	 * @param r		- the register to be printed
+	 * @return 	  	- the log String
+	 */
+	public String logStringByteRegister(Register r)
+	{
+		return (Conversion.byteToLogString(r,readByte(r)));
+	}
+	/**
+	 * Prints the name and contents of the  16 bit register in binary and Hex
+	 * @param r		- the register to be printed
+	 * @return 	  	- the log String
+	 */
+	public String logStringShort(Register r)
+	{
+		return (Conversion.shortToLogString(r,readShort(r)));
+	}
+
+
+	/**
+	 * Prints the name and contents of the register in binary and Hex
+	 * @param r		- the register to be printed
+	 */
+	public void printByteRegister(Register r)
+	{
+		System.out.print(Conversion.byteToLogString(r,readByte(r)));
+	}
+	/**
+	 * Prints the name and contents of the  16 bit register in binary and Hex
+	 * @param r		- the register to be printed
+	 */
+	public void printShort(Register r)
+	{
+		System.out.print(Conversion.shortToLogString(r,readShort(r)));
+	}
+
+	/**
+	 * Prints the name and contents of the little endian 16 bit register in binary and Hex
+	 * @param r		- the register to be printed
+	 */
+	public void printShortLSBfirst(Register r)
+	{
+		System.out.print(Conversion.shortToLogString(r,readShortLSBfirst(r)));
+	}
 }

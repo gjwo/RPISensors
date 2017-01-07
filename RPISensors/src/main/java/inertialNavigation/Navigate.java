@@ -10,8 +10,10 @@ import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 import dataTypes.TimestampedData3f;
 import com.pi4j.io.i2c.I2CBus;
 import deviceHardwareAbstractionLayer.Pi4jI2CDevice;
+import logging.SystemLog;
 import sensors.Implementations.MPU9250.MPU9250;
 import sensors.interfaces.UpdateListener;
+import subsystems.SubSystem;
 
 
 public class Navigate implements Runnable, UpdateListener{
@@ -171,29 +173,29 @@ public class Navigate implements Runnable, UpdateListener{
 
     	try
     	{
-    		if (debugLevel>=2) System.out.println("Start Navigate main()");
+			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Start Navigate main()");
         	//final GpioController gpio = GpioFactory.getInstance();
-            bus = I2CFactory.getInstance(I2CBus.BUS_1); 
-            if (debugLevel>=2) System.out.println("Bus acquired");
+            bus = I2CFactory.getInstance(I2CBus.BUS_1);
+			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Bus acquired");
             mpu9250 = new MPU9250(
                     new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 device device
                     new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 device
                     SAMPLE_RATE,                                     // sample rate per second
                     SAMPLE_SIZE,  									// sample size
                     debugLevel);
-            if (debugLevel>=2) System.out.println("MPU9250 created");
+			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"MPU9250 created");
     		nav = new Navigate(mpu9250,debugLevel);
             nav.mpu9250.registerInterest(nav);
             Thread sensor = new Thread(nav.mpu9250);
             sensor.start();
             final int n = 15;
             Thread.sleep(1000*n); //Collect data for n seconds
-            if (debugLevel>=2) System.out.println("Shutdown Sensor");
+			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Shutdown Sensor");
             sensor.interrupt();
             Thread.sleep(1000);
-            if (debugLevel>=2) System.out.println("Shutdown Bus");
+			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Shutdown Bus");
             nav.bus.close();
-            if (debugLevel>=2) System.out.println("Stop Navigate main()");   
+			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Stop Navigate main()");
         } catch (InterruptedException | IOException | UnsupportedBusNumberException e) {
             e.printStackTrace();
             System.exit(1);
