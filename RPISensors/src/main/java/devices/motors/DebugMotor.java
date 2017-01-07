@@ -6,7 +6,7 @@ package devices.motors;
  */
 public class DebugMotor implements Motor
 {
-    private String name;
+    private final String name;
     private float speed;
 
     public DebugMotor(String name)

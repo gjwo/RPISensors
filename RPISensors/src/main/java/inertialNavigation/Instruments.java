@@ -42,6 +42,7 @@ public class Instruments implements RemoteInstruments
 	private float roll; 	//Roll is angle between sensor y-axis and Earth ground plane, y-axis up is positive roll.
 							//Alternate names for the same things are heading, attitude and bank 
 	
+	@SuppressWarnings("CanBeFinal")
 	private Data3f linearAcceleration;
 	
 	Instruments()

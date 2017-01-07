@@ -34,9 +34,10 @@ import subsystems.SubSystem;
 **/
 public class MPU9250Gyroscope extends Sensor3D 
 {
-    private RegisterOperations ro;
-    private MPU9250 parent;
-	private GyrScale gyroScale; 
+    private final RegisterOperations ro;
+    private final MPU9250 parent;
+	@SuppressWarnings("CanBeFinal")
+    private GyrScale gyroScale;
 	private GT_DLPF cfgDLPF;
 	private final short gyroSensitivity = 131;     // 2^16 LSB / 500dps = 131 LSB/degrees/sec
 

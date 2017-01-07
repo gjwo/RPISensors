@@ -43,7 +43,7 @@ public class InstrumentsSubSystem extends SubSystem
                     200,                                    // sample rate (SR) per second
                     250                                    // sample size (SS)
             ); 					// debug level
-            nav = new Navigate(mpu9250, NAVIGATE_DEBUG_LEVEL);
+            nav = new Navigate(mpu9250);
             mpuThread = new Thread(mpu9250);
             navThread = new Thread(nav);
 

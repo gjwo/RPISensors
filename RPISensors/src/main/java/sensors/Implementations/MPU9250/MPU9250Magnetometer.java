@@ -39,8 +39,8 @@ import subsystems.SubSystem;
  */
 public class MPU9250Magnetometer extends Sensor3D  {
 
-    private RegisterOperations ro;
-    private NineDOF parent;
+    private final RegisterOperations ro;
+    private final MPU9250 parent;
     private final MagScale magScale = MagScale.MFS_16BIT;
     private final MagMode magMode = MagMode.MM_100HZ;
     private short lastRawMagX;  //updated by updateData() needed during calibration 
@@ -55,7 +55,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	 * @param ro			-	Register Operations abstraction for this device
 	 * @param parent		- 	encapsulating object usually a sensor package
 	 */
-	public MPU9250Magnetometer(int sampleSize, RegisterOperations ro, NineDOF parent ) {
+	public MPU9250Magnetometer(int sampleSize, RegisterOperations ro, MPU9250 parent ) {
 		super(sampleSize);
 		this.ro = ro;
 		this.parent = parent;

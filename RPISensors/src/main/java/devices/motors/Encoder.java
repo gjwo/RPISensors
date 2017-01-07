@@ -28,7 +28,7 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 	private final GpioPinDigitalInput b;
 	
 	private Direction direction;
-	private double metresPerRotation;
+	private final double metresPerRotation;
 	private double velocity;
 	private double displacement;
 	private double totalDisplacement;

@@ -25,7 +25,6 @@ public class Navigate implements Runnable, UpdateListener{
 	private static final int SAMPLE_SIZE = 100; 
 	private static final long DELTA_T = 1000000000L/SAMPLE_RATE; // average time difference in between readings in nano seconds
 	private volatile Boolean dataReady;
-	private int debugLevel;
 	private float deltaTSec;			// integration interval for both filter schemes time difference fractions of a second
 	private long lastUpdateNanoS; 		// used to calculate integration interval using nanotime
 	private long nowNanoS;              // used to calculate integration interval using nanotime
@@ -41,21 +40,18 @@ public class Navigate implements Runnable, UpdateListener{
 	
 	public static int getSampleRate() {return SAMPLE_RATE;}
 	public static long getDeltaT() {return DELTA_T;}
-	public int debugLevel() {return debugLevel;}
-	
+
 	/**
 	 * Navigate - Constructor to use from another class's main program that sets up the and starts the MPU-9250
 	 * @param mpu9250		-	9Dof Sensor object
-	 * @param debugLevel	-	controls debug printing > 0-10 bigger is more prints
 	 */
-	public Navigate(MPU9250 mpu9250, int debugLevel)
+	public Navigate(MPU9250 mpu9250)
 	{
 		this.stop = false;
 		this.dataReady  = false;
 		this.dataValid = false;
         this.mpu9250 = mpu9250;
 		this.mpu9250.registerInterest(this);
-		this.debugLevel = debugLevel;
 		this.deltaTSec = 0.0f;
 		this.sumDeltas = 0.0f;
 		this.countDeltas = 0;
@@ -124,22 +120,18 @@ public class Navigate implements Runnable, UpdateListener{
 	                adjustedMag.setX(adjustedMag.getY()); 								//swap X and Y, Z stays the same
 	                //adjustedMag.setY(-adjustedMag.getX());
 					adjustedMag.setY(-x);
-	
-	                instruments.updateInstruments(SensorFusion.MadgwickQuaternionUpdate(adjustedAcc,adjustedGyr,adjustedMag,deltaTSec)); // #KW L921
-	                if(((float)nowNanoS-lastDisplayNanoS)/nanosPerSecf >= 1f/displayFrequencyHz)
-	                {
-	                	lastDisplayNanoS = nowNanoS;
-	                    if (debugLevel >=1)
-	                    {
-	                    	System.out.print(	"A " + mpu9250.getAvgAcceleration().toString()+
-	                    						" G " + mpu9250.getAvgRotationalAcceleration().unStamp().toString()+
-	                    						" M "  + mpu9250.getAvgGauss().unStamp().toString()+
-	                    						" | Y,P&R: " + instruments.getAngles().toString());
-	                    	System.out.format(	" Freq: %5.1fHz %dk calcs%n",calculationFrequency,countDeltas/1000);
-	                    }
-	
-	                }
-                    for(UpdateListener listener:listeners) listener.dataUpdated();
+
+					instruments.updateInstruments(SensorFusion.MadgwickQuaternionUpdate(adjustedAcc,adjustedGyr,adjustedMag,deltaTSec)); // #KW L921
+					if(((float)nowNanoS-lastDisplayNanoS)/nanosPerSecf >= 1f/displayFrequencyHz)
+					{
+						lastDisplayNanoS = nowNanoS;
+						SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION,"A " + mpu9250.getAvgAcceleration().toString()+
+								" G " + mpu9250.getAvgRotationalAcceleration().unStamp().toString()+
+								" M "  + mpu9250.getAvgGauss().unStamp().toString()+
+								" | Y,P&R: " + instruments.getAngles().toString());
+						SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION, String.format(	" Freq: %5.1fHz %dk calcs%n",calculationFrequency,countDeltas/1000));
+					}
+					for(UpdateListener listener:listeners) listener.dataUpdated();
                 }
                 TimeUnit.MICROSECONDS.sleep(900);// allow for 0.1ms calculation time in the loop to give 1ms interval
             } catch (InterruptedException e)
@@ -169,7 +161,6 @@ public class Navigate implements Runnable, UpdateListener{
     {
 		MPU9250 mpu9250;
         I2CBus bus;
-        int debugLevel = 2;
 
     	try
     	{
@@ -184,7 +175,7 @@ public class Navigate implements Runnable, UpdateListener{
                     SAMPLE_SIZE                                    // sample size
 			);
 			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"MPU9250 created");
-    		nav = new Navigate(mpu9250,debugLevel);
+    		nav = new Navigate(mpu9250);
             nav.mpu9250.registerInterest(nav);
             Thread sensor = new Thread(nav.mpu9250);
             sensor.start();

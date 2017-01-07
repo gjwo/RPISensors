@@ -55,7 +55,7 @@ public class CircularArrayRing<T> extends AbstractCollection<T>
     @SuppressWarnings("TypeParameterHidesVisibleType")
     public class CircularArrayRingIterator<T> implements Iterator<T> {
 
-        CircularArrayRing<T> ring;
+        final CircularArrayRing<T> ring;
         int current;
 
         CircularArrayRingIterator(CircularArrayRing<T> ring)

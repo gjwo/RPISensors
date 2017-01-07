@@ -315,8 +315,9 @@ enum A_DLPF
 	F1BW0021_4((byte)0x04,  21.2f, 1,  8.87f, 300),
 	F1BW0010_5((byte)0x05,  10.2f, 1, 16.83f, 300),
 	F1BW0005_6((byte)0x06,   5.05f,1, 32.48f, 300),	
-	F1BW0420_7((byte)0x07, 420f,   1,  1.38f, 300);	byte bits; 
-	
+	F1BW0420_7((byte)0x07, 420f,   1,  1.38f, 300);
+
+	final byte bits;
 	final float accelBandWidthHz;
 	final int rateKHz;
 	final float  delayMs;
