@@ -36,6 +36,7 @@ public class Data2f extends Data1f implements Serializable
         return 	super.toString() + " y: " + String.format(format,y);
     }
     
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Data2f clone(){return new Data2f(x,y);}
     public Data2f multiply(Data2f data){return new Data2f(this.getX()*data.getX(),this.getY()*data.getY());}
     public Data2f add(Data2f data){return new Data2f(this.getX()+data.getX(),this.getY()+data.getY());}

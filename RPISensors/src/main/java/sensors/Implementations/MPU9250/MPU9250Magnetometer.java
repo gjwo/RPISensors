@@ -1,12 +1,9 @@
 package sensors.Implementations.MPU9250;
 
-import java.io.IOException;
-
 import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
 import deviceHardwareAbstractionLayer.RegisterOperations;
 import logging.SystemLog;
-import sensors.models.NineDOF;
 import sensors.models.Sensor3D;
 import subsystems.SubSystem;
 
@@ -132,7 +129,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	 * The method is equivalent to #KW initAK8963 L832
 	 */
 	@Override
-	public void configure() throws InterruptedException, IOException {
+	public void configure() throws InterruptedException {
 		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"configure mag AK8963");
         // First extract the factory calibration for each magnetometer axis
 

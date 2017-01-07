@@ -5,7 +5,6 @@ import deviceHardwareAbstractionLayer.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.NineDOF;
 import subsystems.SubSystem;
-import java.io.IOException;
 
 /**
  * MPU-9250 9 degrees of freedom motion sensor implementation
@@ -41,10 +40,9 @@ public class MPU9250 extends NineDOF
      * @param ak8963		- The IC2 bus for the Magnetometer 
      * @param sampleRate	- sample rate in samples per second
      * @param sampleSize	- The number of samples to be captured
-     * @throws IOException	- IC2 bus failures
      * @throws InterruptedException - Wake up call
      */
-    public MPU9250(Device mpu9250, Device ak8963, int sampleRate, int sampleSize) throws IOException, InterruptedException
+    public MPU9250(Device mpu9250, Device ak8963, int sampleRate, int sampleSize) throws InterruptedException
     {
         super(sampleRate,sampleSize);
         // get device
@@ -88,10 +86,9 @@ public class MPU9250 extends NineDOF
 
     /**
      * selfTest - Triggers self test for all the sensors which support it on this device
-     * @throws IOException          - If there is a problem accessign the device
      * @throws InterruptedException - If sleep was interrupted
      */
-    private void selfTest() throws IOException, InterruptedException
+    private void selfTest() throws InterruptedException
     {
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"MPU-9250.selfTest");
         //NB gyro config controlled by general register
@@ -110,10 +107,9 @@ public class MPU9250 extends NineDOF
 
     /**
      * setCalibrationMode9250 - puts the device into calibrate mode
-     * @throws IOException          - If there is a problem accessign the device
      * @throws InterruptedException - If sleep was interrupted
      */
-    private void setCalibrationMode() throws IOException, InterruptedException
+    private void setCalibrationMode() throws InterruptedException
     {
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"setCalibrationMode");
         // Write a one to bit 7 reset bit; toggle reset device
@@ -144,10 +140,9 @@ public class MPU9250 extends NineDOF
 
     /**
      * calibrateGyroAcc - puts the device into calibrate mode then calibrates the Gyroscope and Accelerometer
-     * @throws IOException          - If there is a problem accessign the device
      * @throws InterruptedException - If sleep was interrupted
      */
-    private void calibrateGyroAcc() throws IOException, InterruptedException
+    private void calibrateGyroAcc() throws InterruptedException
     {
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"calibrateGyroAcc");
 
@@ -160,10 +155,9 @@ public class MPU9250 extends NineDOF
 
     /**
      * configure - Configures the MPU9250 device for normal use and also any sensors that support the configure method
-     * @throws IOException          - If there is a problem accessign the device
      * @throws InterruptedException - If sleep was interrupted
      */
-    private void configure() throws IOException, InterruptedException
+    private void configure() throws InterruptedException
     {
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"MPU-9250.configure");
 
@@ -245,11 +239,10 @@ public class MPU9250 extends NineDOF
 
     /**
      * configMagnetometer           - configure the sensor
-     * @throws IOException          - If there is a problem accessign the device
      * @throws InterruptedException - If sleep was interrupted
      */
     @Override
-    public void configMagnetometer() throws InterruptedException, IOException {
+    public void configMagnetometer() throws InterruptedException {
         mag.configure();
     }
 }

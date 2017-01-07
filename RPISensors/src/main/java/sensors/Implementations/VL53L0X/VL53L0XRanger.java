@@ -6,7 +6,6 @@ import deviceHardwareAbstractionLayer.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.Sensor1D;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import subsystems.SubSystem;
@@ -275,8 +274,7 @@ public class VL53L0XRanger extends Sensor1D
     }
 
     @Override
-    public void updateData() throws IOException
-    {
+    public void updateData() {
 
 //  byte intStatus = readByte(VL53L0X_ADDRESS, VL53L0X_REG_RESULT_RANGE_STATUS);// Poll for data ready
 //  if(intStatus & 0x01) // poll for data ready

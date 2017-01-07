@@ -1,7 +1,5 @@
 package sensors.Implementations.INA219;
 
-import java.io.IOException;
-
 import dataTypes.TimestampedData1f;
 import deviceHardwareAbstractionLayer.RegisterOperations;
 import sensors.models.Sensor1D;
@@ -19,8 +17,7 @@ public class INA219PowerMeter extends Sensor1D
 	}
 
 	@Override
-	public void updateData() throws IOException
-	{
+	public void updateData() {
 		int raw = ro.readShort(INA219Registers.POWER_MEASURE);
 		this.addValue(new TimestampedData1f((float)raw/(float)config.getPowerDivider()));
 	}

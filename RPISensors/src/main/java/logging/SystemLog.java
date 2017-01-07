@@ -50,7 +50,7 @@ public class SystemLog implements RemoteLog
 
 
     private static SystemLog log = null;
-    private static String REMOTE_NAME = "Log";
+    private static final String REMOTE_NAME = "Log";
 
     private final ArrayList<LogEntry> entries;
 

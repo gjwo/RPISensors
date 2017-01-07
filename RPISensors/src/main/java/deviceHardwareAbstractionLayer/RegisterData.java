@@ -1,4 +1,4 @@
-package utilities;
+package deviceHardwareAbstractionLayer;
 
 public class  RegisterData
 {
@@ -27,5 +27,6 @@ public class  RegisterData
 	public String getName(){return name;}
 	public RegisterSize getSize(){return size;}
 	
+	@SuppressWarnings("SameReturnValue")
 	public String toString(int val){return null;}
 }

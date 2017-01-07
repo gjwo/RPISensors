@@ -1,7 +1,5 @@
 package sensors.models;
 
-import java.io.IOException;
-
 import dataTypes.TimestampedData1f;
 import dataTypes.TimestampedData3f;
 import sensors.interfaces.Accelerometer;
@@ -15,7 +13,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	protected Sensor3D accel;
 	protected Sensor3D gyro;
 	protected Sensor<TimestampedData1f> therm;
-	protected int sampleSize;
+	protected final int sampleSize;
 
 	protected NineDOF(int sampleRate, int sampleSize)
 	{
@@ -49,7 +47,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
     {
 		try {
 			accel.calibrate();
-		} catch (IOException | InterruptedException e) {
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -58,7 +56,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
     {
 		try {
 			gyro.calibrate();
-		} catch (IOException | InterruptedException e) {
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -67,7 +65,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
     {
     	try {
 			mag.calibrate();
-		} catch (IOException | InterruptedException e) {
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
     }
@@ -75,7 +73,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
     public void calibrateThermometer() {
 		try {
 			therm.calibrate();
-		} catch( InterruptedException|IOException e) {
+		} catch(InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -84,7 +82,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	public void selfTestAccelerometer() {
 		try {
 			accel.selfTest();
-		} catch (IOException | InterruptedException e) {
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -92,7 +90,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	public void selfTestGyroscope() {
 		try {
 			gyro.selfTest();
-		} catch (IOException | InterruptedException e) {
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -100,7 +98,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	public void selfTestMagnetometer() {
 		try {
 			mag.selfTest();
-		} catch (IOException | InterruptedException e) {
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -108,7 +106,7 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	public void selfTestThermometer() {
 		try {
 			therm.selfTest();
-		} catch (IOException | InterruptedException e) {
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -117,49 +115,29 @@ public abstract class NineDOF extends SensorPackage implements Accelerometer, Gy
 	
 	//Update all sensors
 	public void updateData() {
-		try {
-			gyro.updateData();
-			mag.updateData();
-			accel.updateData();
-			//therm.updateData(); not using this currently so comment out to save time in critical path
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		gyro.updateData();
+		mag.updateData();
+		accel.updateData();
+		//therm.updateData(); not using this currently so comment out to save time in critical path
 	}
 	
 	public void updateAccelerometerData()
     {
-    	try {
-			accel.updateData();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
+		accel.updateData();
+	}
 
 	public void updateGyroscopeData()
     {
-    	try {
-			gyro.updateData();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
+		gyro.updateData();
+	}
 	
 	public void updateMagnetometerData()
     {
-    	try {
-			mag.updateData();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
+		mag.updateData();
+	}
 
 	public void updateThermometerData()
     {
-    	try {
-			therm.updateData();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
+		therm.updateData();
+	}
 }

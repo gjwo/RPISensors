@@ -34,7 +34,9 @@ public abstract class SubSystem extends Thread
         this.state = SubSystemState.IDLE;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public abstract SubSystemState startup();
+    @SuppressWarnings("UnusedReturnValue")
     public abstract SubSystemState shutdown();
 
     public final SubSystemState getSubSysState()

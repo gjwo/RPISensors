@@ -20,7 +20,7 @@ public class Navigate implements Runnable, UpdateListener{
 	private static Navigate nav ;
 	static private final float nanosPerSecf = ((float)TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS));
 	private I2CBus bus;
-	private MPU9250 mpu9250;
+	private final MPU9250 mpu9250;
 	private static final int SAMPLE_RATE = 10; //sample at 10 Hertz
 	private static final int SAMPLE_SIZE = 100; 
 	private static final long DELTA_T = 1000000000L/SAMPLE_RATE; // average time difference in between readings in nano seconds
@@ -32,10 +32,11 @@ public class Navigate implements Runnable, UpdateListener{
 	private int countDeltas;			//number of calculations
 	private float calculationFrequency;	//calculation frequency in Hz
 	private long lastDisplayNanoS;		//used to calculate when to display
+	@SuppressWarnings("CanBeFinal")
 	private long displayFrequencyHz;	//display frequency in Hertz
 	private boolean stop, dataValid;
-    private volatile ArrayList<UpdateListener> listeners;
-    private Instruments instruments;
+    private final ArrayList<UpdateListener> listeners;
+    private final Instruments instruments;
     
 	
 	public static int getSampleRate() {return SAMPLE_RATE;}

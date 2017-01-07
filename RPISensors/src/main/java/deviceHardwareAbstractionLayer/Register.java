@@ -1,4 +1,4 @@
-package utilities;
+package deviceHardwareAbstractionLayer;
 
 public interface Register
 {

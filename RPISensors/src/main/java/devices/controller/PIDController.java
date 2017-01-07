@@ -27,7 +27,7 @@ public class PIDController extends Thread
     private double sampleRate;
     private double outMin, outMax;
     private OperatingMode mode;
-    private List<PIDControlled> controlledOutputs;
+    private final List<PIDControlled> controlledOutputs;
     private PIDInputProvider inputProvider;
     private final boolean reversed;
     private final boolean debug;

@@ -12,7 +12,7 @@ public interface Gyroscope
     TimestampedData3f getRotationalAcceleration(int i);
     TimestampedData3f getAvgRotationalAcceleration();
     int getGyroscopeReadingCount();
-    void updateGyroscopeData() throws Exception;
-    void calibrateGyroscope() throws InterruptedException;
+    void updateGyroscopeData();
+    void calibrateGyroscope();
     void selfTestGyroscope();
 }

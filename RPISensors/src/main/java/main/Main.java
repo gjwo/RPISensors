@@ -110,7 +110,14 @@ public class Main implements RemoteMain
 
 	public static void main(String[] args) throws RemoteException
     {
-        System.setProperty("java.rmi.server.hostname", getLocalAddress().getHostAddress()) ;
+    	try {
+            //noinspection ConstantConditions
+            System.setProperty("java.rmi.server.hostname", getLocalAddress().getHostAddress());
+		}catch (NullPointerException e)
+		{
+			System.out.println("Failed to get local address");
+			System.exit(-1);
+		}
         Registry reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
 		new Main(reg);
 	}

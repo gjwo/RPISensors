@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 import logging.SystemLog;
 import subsystems.SubSystem;
 import utilities.Conversion;
-import utilities.Register;
 
 public class RegisterOperations
 {

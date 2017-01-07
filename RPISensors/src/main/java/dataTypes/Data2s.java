@@ -4,7 +4,7 @@ package dataTypes;
  * RPISensors.dataTypes
  * Created by G.J.Wood 6/11/2016.
  */
-@SuppressWarnings("MalformedFormatString")
+@SuppressWarnings({"MalformedFormatString", "MethodDoesntCallSuperMethod"})
 public class Data2s extends Data1s
 {
     short y;

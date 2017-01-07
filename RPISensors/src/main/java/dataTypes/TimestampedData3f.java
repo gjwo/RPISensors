@@ -90,6 +90,7 @@ public class TimestampedData3f extends Data3f implements Serializable
     /**
      * clone	- return a new instance with the same timestamp and values
      */
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public TimestampedData3f clone()
     {
         return new TimestampedData3f(x,y,z,nanoTime);

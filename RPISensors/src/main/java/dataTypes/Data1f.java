@@ -6,6 +6,7 @@ import java.io.Serializable;
  * RPITank - devices.sensors.dataTypes
  * Created by MAWood on 18/07/2016.
  */
+@SuppressWarnings("MethodDoesntCallSuperMethod")
 public class Data1f implements Serializable
 {
     /**

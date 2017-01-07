@@ -1,7 +1,5 @@
 package sensors.models;
 
-import java.io.IOException;
-
 import dataTypes.CircularArrayRing;
 import logging.SystemLog;
 import subsystems.SubSystem;
@@ -13,7 +11,7 @@ import subsystems.SubSystem;
 public abstract class Sensor <T>
 {
     private final CircularArrayRing<T> readings;
-    private int sampleSize;
+    private final int sampleSize;
 
     /**
      * Sensor		- Constructor
@@ -41,11 +39,11 @@ public abstract class Sensor <T>
     // Methods must be implemented but which can't be done here because the types are not known
     public abstract T getAvgValue();
     public abstract T scale(T value);
-    public abstract void updateData() throws IOException;
+    public abstract void updateData();
 
     // Optional Methods
-    public void calibrate() throws IOException, InterruptedException{/*if required implement and override in subclass*/}
-    public void configure() throws IOException, InterruptedException{/*if required implement and override in subclass*/}
-    public void selfTest() throws IOException, InterruptedException{/*if required implement and override in subclass*/}
+    public void calibrate() throws InterruptedException{/*if required implement and override in subclass*/}
+    public void configure() throws InterruptedException{/*if required implement and override in subclass*/}
+    public void selfTest() throws InterruptedException{/*if required implement and override in subclass*/}
     public void printRegisters(){/*if required implement and override in subclass*/} 
 }

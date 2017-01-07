@@ -44,10 +44,6 @@ class MPU9250Test implements UpdateListener{
 	private Navigate nav;
 	private Thread navigator;
 	private Thread sensorPackage;
-	private int debugLevelTester;
-	private int	debugLevelSensors;
-	private int debugLevelNavigate;
-	//private int debugLevelNavResponder;
 	private I2CBus bus = null;
 	//private NavResponder navR;
 
@@ -56,11 +52,6 @@ class MPU9250Test implements UpdateListener{
 	 */
 	private MPU9250Test()
 	{
-		debugLevelTester = 0;
-		debugLevelSensors = 1;
-		debugLevelNavigate = 0;
-		//debugLevelNavResponder = 1;
-
 		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Attempt to get Bus 1");
         try {
         	//final GpioController gpio = GpioFactory.getInstance();
@@ -124,13 +115,8 @@ class MPU9250Test implements UpdateListener{
 
 		tester = new MPU9250Test();
 
-    	try {
-			tester.initialiseTester();
-		} catch (InterruptedException e1) {
-			SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.ERROR,"Interupted whilst initialising tests");
-			e1.printStackTrace();
-		}
-    	tester.runMotors();
+		tester.initialiseTester();
+		tester.runMotors();
     	try {
 			tester.runTests(runSecs);
 		} catch (InterruptedException e) {
@@ -157,8 +143,7 @@ class MPU9250Test implements UpdateListener{
 	}
 
 	//Tester phases
-	private void initialiseTester() throws InterruptedException
-	{
+	private void initialiseTester() {
         this.mpu9250.registerInterest(this);
         //TimeUnit.SECONDS.sleep(3); //Give time to stop movement after mag calibration
         sensorPackage = new Thread(mpu9250);
@@ -170,8 +155,8 @@ class MPU9250Test implements UpdateListener{
 	
 	private void runTests(int n) throws InterruptedException
 	{
-        
-        if (debugLevelTester >=2) System.out.println("SensorPackage started");
+
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"SensorPackage starting");
         sensorPackage.start();
         navigator.start();
         //navR.startup();

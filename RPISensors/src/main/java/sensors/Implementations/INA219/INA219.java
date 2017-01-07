@@ -3,14 +3,10 @@ package sensors.Implementations.INA219;
 import dataTypes.TimestampedData1f;
 import deviceHardwareAbstractionLayer.Device;
 import deviceHardwareAbstractionLayer.RegisterOperations;
-import logging.SystemLog;
 import sensors.interfaces.CurrentMeter;
 import sensors.interfaces.PowerMeter;
 import sensors.interfaces.VoltageMeter;
 import sensors.models.SensorPackage;
-import subsystems.SubSystem;
-
-import java.io.IOException;
 
 /**
  * RPISensors - sensors.Implementations
@@ -38,13 +34,7 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter,
                 INA219Configuration.AdcResolution.BASDC4_12BIT,
                 INA219Configuration.AveragingSetting.SADC_128SAMPLES,
                 INA219Configuration.OperatingMode.MODE_SH_BUS_V_CONTINUOUS);
-        try
-        {
-            writeConfig();
-        } catch (IOException e)
-        {
-            SystemLog.log(SubSystem.SubSystemType.DEVICES, SystemLog.LogLevel.ERROR,e.getMessage());
-        }
+        writeConfig();
 
         // modules that will gather each piece of data
         currentMeter = new INA219CurrentMeter(this.ro, sampleSize,config);
@@ -52,8 +42,7 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter,
         powerMeter = new INA219PowerMeter(this.ro,sampleSize,config);
     }
 
-    private void writeConfig() throws IOException
-    {
+    private void writeConfig() {
         ro.writeShort(INA219Registers.CALIBRATION,config.getCalibrationValue());
         ro.writeShort(INA219Registers.CONFIGURATION,config.getValue());
     }
@@ -61,15 +50,9 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter,
     @Override
     public void updateData()
     {
-        try
-        {
-            busVoltageMeter.updateData();
-            currentMeter.updateData();
-            powerMeter.updateData();
-        } catch (IOException e)
-        {
-            SystemLog.log(SubSystem.SubSystemType.DEVICES, SystemLog.LogLevel.ERROR,e.getMessage());
-        }
+        busVoltageMeter.updateData();
+        currentMeter.updateData();
+        powerMeter.updateData();
     }
 
     @Override

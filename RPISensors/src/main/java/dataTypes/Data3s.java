@@ -53,6 +53,7 @@ public class Data3s extends Data2s{
 		final String format = "%+04n";
 		return 	super.toString() + " z: " + String.format(format,z);
 	}
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Data3s clone()
     {
         return new Data3s(x,y,z);

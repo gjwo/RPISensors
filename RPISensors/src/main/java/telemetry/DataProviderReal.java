@@ -2,5 +2,6 @@ package telemetry;
 
 interface DataProviderReal
 {
-	double getRealValue();
+	@SuppressWarnings("UnusedReturnValue")
+    double getRealValue();
 }

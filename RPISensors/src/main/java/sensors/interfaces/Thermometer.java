@@ -10,7 +10,7 @@ public interface Thermometer
     float getAvgTemperature();
     float getTemperature(int i);
     int getThermometerReadingCount();
-    void updateThermometerData() throws Exception;
+    void updateThermometerData();
     void calibrateThermometer();
     void selfTestThermometer();
 }

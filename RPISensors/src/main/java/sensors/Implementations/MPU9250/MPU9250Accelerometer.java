@@ -1,6 +1,5 @@
 package sensors.Implementations.MPU9250;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import dataTypes.Data3f;
@@ -91,7 +90,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
 	}
 
 	@Override
-	public void configure() throws IOException, InterruptedException
+	public void configure() throws InterruptedException
 	{
 		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"acc.configure");
         // Set accelerometer full-scale range configuration
@@ -183,9 +182,9 @@ public class MPU9250Accelerometer extends Sensor3D  {
         
         float[] factoryTrimAccel = new float[3];
         //TODO: investigate this 1<<FS business
-        factoryTrimAccel[0] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestAccel[0] - 1f);
-        factoryTrimAccel[1] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestAccel[1] - 1f);
-        factoryTrimAccel[2] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestAccel[2] - 1f);
+        factoryTrimAccel[0] = (float)(2620/(1<<FS))*(float)Math.pow(1.01,(float)selfTestAccel[0] - 1f);
+        factoryTrimAccel[1] = (float)(2620/(1<<FS))*(float)Math.pow(1.01,(float)selfTestAccel[1] - 1f);
+        factoryTrimAccel[2] = (float)(2620/(1<<FS))*(float)Math.pow(1.01,(float)selfTestAccel[2] - 1f);
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES,"factoryTrimAcc (float): "+Arrays.toString(factoryTrimAccel));
 
         float[] AccuracyAccel = new float[3];

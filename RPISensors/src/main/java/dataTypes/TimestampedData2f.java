@@ -73,6 +73,7 @@ public class TimestampedData2f extends Data2f
     /**
      * clone	- return a new instance with the same timestamp and values
      */
+     @SuppressWarnings("MethodDoesntCallSuperMethod")
      public TimestampedData2f clone()
     {
         return new TimestampedData2f(x,y,nanoTime);

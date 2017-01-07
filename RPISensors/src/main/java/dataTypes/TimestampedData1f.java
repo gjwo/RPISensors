@@ -4,6 +4,7 @@ package dataTypes;
  * TimestampedData1f - 1 dimension time stamped floating point data structure
  * Created by MAWood on 18/07/2016, modified by G.J.Wood 10/11/2016
  */
+@SuppressWarnings("MethodDoesntCallSuperMethod")
 public class TimestampedData1f extends Data1f
 {
  	private static final long serialVersionUID = -1083356277253192515L;

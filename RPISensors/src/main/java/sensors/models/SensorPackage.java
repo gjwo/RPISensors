@@ -12,7 +12,7 @@ public abstract class SensorPackage implements Runnable
 {
     private final int sampleRate;
     private boolean paused;
-    private ArrayList<UpdateListener> listeners;
+    private final ArrayList<UpdateListener> listeners;
 
     /**
      * SensorPackage		-   Constructor

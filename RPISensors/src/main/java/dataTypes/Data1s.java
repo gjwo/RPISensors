@@ -35,6 +35,7 @@ public class Data1s
         return 	"x: " + String.format(format,x);
     }
     
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Data1s clone() {return new Data1s(x);}
     
     public Data1s multiply(Data1s a, Data1s b){

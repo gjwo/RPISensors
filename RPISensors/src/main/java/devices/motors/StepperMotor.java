@@ -57,8 +57,7 @@ public class StepperMotor
 
     }
 
-    public void rotate(float degrees) throws InterruptedException
-    {
+    public void rotate(float degrees) {
         Direction dir = degrees > 0 ? Direction.forward : Direction.backwards;
         int steps = Math.round((Math.abs(degrees)/360) * STEPS_PER_ROTATION);
         System.out.println("Doing " + steps + " steps");

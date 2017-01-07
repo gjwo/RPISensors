@@ -5,8 +5,6 @@ import deviceHardwareAbstractionLayer.Device;
 import sensors.interfaces.Ranger;
 import sensors.models.SensorPackage;
 
-import java.io.IOException;
-
 /**
  * RPISensors - sensors.Implementations.VL53L0X
  * Created by MAWood on 27/12/2016.
@@ -30,13 +28,7 @@ public class VL53L0X extends SensorPackage implements Ranger
     @Override
     public void updateData()
     {
-        try
-        {
-            sensor.updateData();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        sensor.updateData();
     }
 
     @Override

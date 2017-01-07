@@ -1,6 +1,5 @@
 package sensors.Implementations.MPU9250;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import dataTypes.Data3f;
@@ -81,7 +80,7 @@ public class MPU9250Gyroscope extends Sensor3D
 	public GT_DLPF getDFLP(){return cfgDLPF;}
 
 	@Override
-	public void updateData() throws IOException {
+	public void updateData() {
         short registers[];
         //ro.readByteRegister(Registers.GYRO_XOUT_H, 6);  // Read again to trigger
         registers = ro.readShorts(MPU9250Registers.GYRO_XOUT_H,3); //GYRO_XOUT = Gyro_Sensitivity * X_angular_rate
@@ -90,7 +89,7 @@ public class MPU9250Gyroscope extends Sensor3D
 	
 
 	@Override
-	public void configure() throws IOException, InterruptedException
+	public void configure() throws InterruptedException
 	{
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS, "gyro.configure");
         ro.writeByte(MPU9250Registers.GYRO_CONFIG,(byte)(	GyrSelfTest.NONE.bits |			// no self test
@@ -167,9 +166,9 @@ public class MPU9250Gyroscope extends Sensor3D
 
         float[] factoryTrimGyro = new float[3];
         //TODO: investigate this 1<<FS business
-        factoryTrimGyro[0] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestGyro[0] - 1f);
-        factoryTrimGyro[1] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestGyro[1] - 1f);
-        factoryTrimGyro[2] = (float)(2620/1<<FS)*(float)Math.pow(1.01,(float)selfTestGyro[2] - 1f);
+        factoryTrimGyro[0] = (float)(2620/(1<<FS))*(float)Math.pow(1.01,(float)selfTestGyro[0] - 1f);
+        factoryTrimGyro[1] = (float)(2620/(1<<FS))*(float)Math.pow(1.01,(float)selfTestGyro[1] - 1f);
+        factoryTrimGyro[2] = (float)(2620/(1<<FS))*(float)Math.pow(1.01,(float)selfTestGyro[2] - 1f);
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, "factoryTrimGyro (float): "+Arrays.toString(factoryTrimGyro));
 
         float[] AccuracyGyro = new float[3];

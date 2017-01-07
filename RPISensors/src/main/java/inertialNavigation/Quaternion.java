@@ -66,7 +66,8 @@ public class Quaternion implements Serializable
 	 */
 	public Quaternion(){this(0,0,0,0);}
 
-	public Quaternion clone(){
+	@SuppressWarnings("MethodDoesntCallSuperMethod")
+    public Quaternion clone(){
 		return new Quaternion(this.w,this.x,this.y,this.z);
 	}
 

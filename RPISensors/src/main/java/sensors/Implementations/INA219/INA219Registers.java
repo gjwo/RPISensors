@@ -1,7 +1,7 @@
 package sensors.Implementations.INA219;
 
 import deviceHardwareAbstractionLayer.RegisterSetting;
-import utilities.Register;
+import deviceHardwareAbstractionLayer.Register;
 
 public enum INA219Registers implements Register
 {

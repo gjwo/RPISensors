@@ -1,7 +1,5 @@
 package sensors.interfaces;
 
-import java.io.IOException;
-
 import dataTypes.TimestampedData3f;
 
 /**
@@ -14,8 +12,8 @@ public interface Magnetometer
     TimestampedData3f getAvgGauss();
     TimestampedData3f getGaussianData(int i);
     int getMagnetometerReadingCount();
-    void updateMagnetometerData() throws Exception;
-    void calibrateMagnetometer() throws InterruptedException, IOException;
+    void updateMagnetometerData();
+    void calibrateMagnetometer();
     void selfTestMagnetometer();
-    void configMagnetometer() throws InterruptedException, IOException;
+    void configMagnetometer() throws InterruptedException;
 }

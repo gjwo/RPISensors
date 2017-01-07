@@ -1,6 +1,6 @@
 package sensors.Implementations.MPU9250;
 
-import utilities.Register;
+import deviceHardwareAbstractionLayer.Register;
 
 /**
  * RPITank

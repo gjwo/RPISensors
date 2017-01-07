@@ -57,6 +57,7 @@ public class Data3f extends Data2f implements Serializable
 		return 	String.format("%f,%f,%f",this.getX(),this.getY(), this.getZ());
 	}
 	
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Data3f clone(){return new Data3f(x,y,z);}
     public Data3f multiply(Data3f data){return new Data3f(this.getX()*data.getX(),this.getY()*data.getY(),this.getZ()*data.getZ());}
     public Data3f add(Data3f data){return new Data3f(this.getX()+data.getX(),this.getY()+data.getY(),this.getZ()+data.getZ());}

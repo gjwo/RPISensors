@@ -1,5 +1,7 @@
 package utilities;
 
+import deviceHardwareAbstractionLayer.Register;
+
 @SuppressWarnings("WeakerAccess")
 public class Conversion
 {

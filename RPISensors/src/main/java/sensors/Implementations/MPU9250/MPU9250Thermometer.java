@@ -1,7 +1,5 @@
 package sensors.Implementations.MPU9250;
 
-import java.io.IOException;
-
 import dataTypes.TimestampedData1f;
 import deviceHardwareAbstractionLayer.RegisterOperations;
 import sensors.models.Sensor;
@@ -26,8 +24,8 @@ import sensors.models.Sensor;
 
 public class MPU9250Thermometer extends Sensor<TimestampedData1f>
 {
-    private RegisterOperations ro;
-    private MPU9250 parent;
+    private final RegisterOperations ro;
+    private final MPU9250 parent;
 	public MPU9250Thermometer(int sampleSize, RegisterOperations ro, MPU9250 parent)
 	{
 		super(sampleSize);
@@ -58,8 +56,7 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1f>
     }
 
 	@Override
-	public void updateData() throws IOException 
-	{
+	public void updateData() {
 		//TEMP_degC = ((TEMP_OUT – RoomTemp_Offset)/Temp_Sensitivity) + 21degC
     	short[] temperature = ro.readShorts(MPU9250Registers.TEMP_OUT_H,1);
     	float AdjustedTemp = temperature[0] -969f -9.5f +21f;
