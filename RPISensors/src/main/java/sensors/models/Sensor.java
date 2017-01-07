@@ -11,9 +11,7 @@ import dataTypes.CircularArrayRing;
 public abstract class Sensor <T>
 {
     private final CircularArrayRing<T> readings;
-    private int sampleRate;
     private int sampleSize;
-    private int debugLevel;
 
     /**
      * Sensor		- Constructor
@@ -23,7 +21,6 @@ public abstract class Sensor <T>
     {
         readings = new CircularArrayRing<>(sampleSize);
         this.sampleSize = sampleSize;
-        this.debugLevel=0;
     }
 
     // Methods implemented here, shouldn't need overriding
@@ -31,16 +28,12 @@ public abstract class Sensor <T>
     public T getValue(int i){return readings.get(i);}
     public int getReadingCount(){return readings.size();}
     public void addValue(T value){readings.add(value);}
-    public int debugLevel(){return debugLevel;}
-    public void setDebugLevel(int l){debugLevel=l;}
-    
+
     // Methods that may need extending by sub classes
     public void printState()
     {
     	System.out.println("readings: "+ readings.size());
-     	System.out.print("sampleRate: "+ sampleRate);
     	System.out.print(" sampleSize: "+ sampleSize);
-    	System.out.println(" debugLevel: "+ debugLevel);  	  	
     }
     
     // Methods must be implemented but which can't be done here because the types are not known

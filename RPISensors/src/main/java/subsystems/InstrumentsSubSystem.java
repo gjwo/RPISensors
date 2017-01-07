@@ -41,8 +41,8 @@ public class InstrumentsSubSystem extends SubSystem
                     new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 device device
                     new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 device
                     200,                                    // sample rate (SR) per second
-                    250,									// sample size (SS)
-                    SENSOR_DEBUG_LEVEL); 					// debug level
+                    250                                    // sample size (SS)
+            ); 					// debug level
             nav = new Navigate(mpu9250, NAVIGATE_DEBUG_LEVEL);
             mpuThread = new Thread(mpu9250);
             navThread = new Thread(nav);

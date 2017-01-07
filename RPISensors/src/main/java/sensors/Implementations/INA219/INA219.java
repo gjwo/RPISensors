@@ -27,7 +27,7 @@ public class INA219 extends SensorPackage implements CurrentMeter, VoltageMeter,
 
     public INA219(Device i2cImpl, int sampleRate, int sampleSize)
     {
-        super(sampleRate,4);
+        super(sampleRate);
         this.ro = new RegisterOperations(i2cImpl);
         ro.logWrites(true);
 

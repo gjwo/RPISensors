@@ -181,8 +181,8 @@ public class Navigate implements Runnable, UpdateListener{
                     new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 device device
                     new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 device
                     SAMPLE_RATE,                                     // sample rate per second
-                    SAMPLE_SIZE,  									// sample size
-                    debugLevel);
+                    SAMPLE_SIZE                                    // sample size
+			);
 			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"MPU9250 created");
     		nav = new Navigate(mpu9250,debugLevel);
             nav.mpu9250.registerInterest(nav);

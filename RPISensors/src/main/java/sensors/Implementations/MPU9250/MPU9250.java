@@ -13,7 +13,7 @@ import java.io.IOException;
  * Created by MAWood on 17/07/2016 with major rewrite by G.J.Wood
  * Based on MPU9250_MS5637_t3 Basic Example Code by: Kris Winer date: April 1, 2014
  * https://github.com/kriswiner/MPU-9250/blob/master/MPU9250_MS5637_AHRS_t3.ino
- * 
+ *
  * Basic MPU-9250 gyroscope, accelerometer and magnetometer functionality including self test, initialisation, and calibration of the sensor,
  * getting properly scaled accelerometer, gyroscope, and magnetometer data out. This class is independent of the bus implementation, register 
  * addressing etc as this is handled by RegisterOperations 
@@ -44,61 +44,57 @@ public class MPU9250 extends NineDOF
      * @throws IOException	- IC2 bus failures
      * @throws InterruptedException - Wake up call
      */
-	public MPU9250(Device mpu9250, Device ak8963, int sampleRate, int sampleSize, int debugLevel) throws IOException, InterruptedException
+    public MPU9250(Device mpu9250, Device ak8963, int sampleRate, int sampleSize) throws IOException, InterruptedException
     {
-        super(sampleRate,sampleSize,debugLevel);
+        super(sampleRate,sampleSize);
         // get device
         this.roMPU = new RegisterOperations(mpu9250);
         this.roAK = new RegisterOperations(ak8963);
         gyro = new MPU9250Gyroscope(sampleSize, roMPU,this);
-        gyro.setDebugLevel(debugLevel);
         mag = new MPU9250Magnetometer(sampleSize, roAK,this);
-        mag.setDebugLevel(debugLevel);
         accel = new MPU9250Accelerometer(sampleSize, roMPU,this);
-        accel.setDebugLevel(debugLevel);
         therm = new MPU9250Thermometer(sampleSize, roMPU,this);
-        therm.setDebugLevel(debugLevel);
         selfTest();
         calibrateGyroAcc();
         configure();
         mag.configure();
         calibrateMagnetometer();
     }
-	
-	/**
-	 * printRegisters - Prints the contents of registers used by this class
-	 */
-	public void printRegisters()
-	   {
-	   	roMPU.printByteRegister(MPU9250Registers.CONFIG);
-	   	roMPU.printByteRegister(MPU9250Registers.WOM_THR);
-	   	roMPU.printByteRegister(MPU9250Registers.MOT_DUR);
-	   	roMPU.printByteRegister(MPU9250Registers.ZMOT_THR);
-	   	roMPU.printByteRegister(MPU9250Registers.FIFO_EN);
-	   	roMPU.printByteRegister(MPU9250Registers.I2C_MST_CTRL);
-	   	roMPU.printByteRegister(MPU9250Registers.I2C_MST_STATUS);
-	   	roMPU.printByteRegister(MPU9250Registers.INT_PIN_CFG);
-	   	roMPU.printByteRegister(MPU9250Registers.INT_ENABLE);
-	   	roMPU.printByteRegister(MPU9250Registers.INT_STATUS);
-	   	roMPU.printByteRegister(MPU9250Registers.I2C_MST_DELAY_CTRL);
-	   	roMPU.printByteRegister(MPU9250Registers.SIGNAL_PATH_RESET);
-	   	roMPU.printByteRegister(MPU9250Registers.MOT_DETECT_CTRL);
-	   	roMPU.printByteRegister(MPU9250Registers.USER_CTRL);
-	   	roMPU.printByteRegister(MPU9250Registers.PWR_MGMT_1);
-	   	roMPU.printByteRegister(MPU9250Registers.PWR_MGMT_2);
-	   	roMPU.printByteRegister(MPU9250Registers.WHO_AM_I_MPU9250);
-	   	roMPU.printByteRegister(MPU9250Registers.SMPLRT_DIV);
-	}
-	
-	/**
-	 * selfTest - Triggers self test for all the sensors which support it on this device
-	 * @throws IOException          - If there is a problem accessign the device
-	 * @throws InterruptedException - If sleep was interrupted
-	 */
+
+    /**
+     * printRegisters - Prints the contents of registers used by this class
+     */
+    public void printRegisters()
+    {
+        roMPU.printByteRegister(MPU9250Registers.CONFIG);
+        roMPU.printByteRegister(MPU9250Registers.WOM_THR);
+        roMPU.printByteRegister(MPU9250Registers.MOT_DUR);
+        roMPU.printByteRegister(MPU9250Registers.ZMOT_THR);
+        roMPU.printByteRegister(MPU9250Registers.FIFO_EN);
+        roMPU.printByteRegister(MPU9250Registers.I2C_MST_CTRL);
+        roMPU.printByteRegister(MPU9250Registers.I2C_MST_STATUS);
+        roMPU.printByteRegister(MPU9250Registers.INT_PIN_CFG);
+        roMPU.printByteRegister(MPU9250Registers.INT_ENABLE);
+        roMPU.printByteRegister(MPU9250Registers.INT_STATUS);
+        roMPU.printByteRegister(MPU9250Registers.I2C_MST_DELAY_CTRL);
+        roMPU.printByteRegister(MPU9250Registers.SIGNAL_PATH_RESET);
+        roMPU.printByteRegister(MPU9250Registers.MOT_DETECT_CTRL);
+        roMPU.printByteRegister(MPU9250Registers.USER_CTRL);
+        roMPU.printByteRegister(MPU9250Registers.PWR_MGMT_1);
+        roMPU.printByteRegister(MPU9250Registers.PWR_MGMT_2);
+        roMPU.printByteRegister(MPU9250Registers.WHO_AM_I_MPU9250);
+        roMPU.printByteRegister(MPU9250Registers.SMPLRT_DIV);
+    }
+
+    /**
+     * selfTest - Triggers self test for all the sensors which support it on this device
+     * @throws IOException          - If there is a problem accessign the device
+     * @throws InterruptedException - If sleep was interrupted
+     */
     private void selfTest() throws IOException, InterruptedException
     {
-    	SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"MPU-9250.selfTest");
-    	//NB gyro config controlled by general register
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"MPU-9250.selfTest");
+        //NB gyro config controlled by general register
     	/*
     	byte c;
         c = roMPU.readByteRegister(Registers.CONFIG); 
@@ -108,10 +104,10 @@ public class MPU9250 extends NineDOF
         roMPU.writeByte(MPU9250Registers.SMPLRT_DIV,SampleRateDiv.NONE.bits); // Internal_Sample_Rate / (1 + SMPLRT_DIV) for all devices
         gyro.selfTest();
         accel.selfTest();
-        
+
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End MPU-9250.selfTest");
     }
-    
+
     /**
      * setCalibrationMode9250 - puts the device into calibrate mode
      * @throws IOException          - If there is a problem accessign the device
@@ -119,7 +115,7 @@ public class MPU9250 extends NineDOF
      */
     private void setCalibrationMode() throws IOException, InterruptedException
     {
-    	SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"setCalibrationMode");
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"setCalibrationMode");
         // Write a one to bit 7 reset bit; toggle reset device
         roMPU.writeByte(MPU9250Registers.PWR_MGMT_1,H_Reset.RESET.bits);
         Thread.sleep(100);
@@ -138,14 +134,14 @@ public class MPU9250 extends NineDOF
         //roMPU.writeByteRegister(Registers.USER_CTRL,(byte) 0x00);    // Disable FIFO and device master modes
         //Thread.sleep(20);
         roMPU.writeByte(MPU9250Registers.USER_CTRL,(byte) 0x0C);    // Reset FIFO and DMP NB the 0x08 bit is the DMP shown as reserved in docs
-        
+
         Thread.sleep(15);
-        
+
         roMPU.writeByte(MPU9250Registers.CONFIG, GT_DLPF.F01BW0184.bits);       // Set low-pass filter to 188 Hz
         roMPU.writeByte(MPU9250Registers.SMPLRT_DIV,SampleRateDiv.NONE.bits);   // Set sample rate to 1 kHz = Internal_Sample_Rate / (1 + SMPLRT_DIV)
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End setCalibrationMode");
     }
-    
+
     /**
      * calibrateGyroAcc - puts the device into calibrate mode then calibrates the Gyroscope and Accelerometer
      * @throws IOException          - If there is a problem accessign the device
@@ -153,24 +149,24 @@ public class MPU9250 extends NineDOF
      */
     private void calibrateGyroAcc() throws IOException, InterruptedException
     {
-    	SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"calibrateGyroAcc");
-    	
-    	setCalibrationMode();
-    	accel.calibrate();
-    	gyro.calibrate();
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"calibrateGyroAcc");
 
-    	SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End calibrateGyroAcc");
+        setCalibrationMode();
+        accel.calibrate();
+        gyro.calibrate();
+
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End calibrateGyroAcc");
     }
 
     /**
-	 * configure - Configures the MPU9250 device for normal use and also any sensors that support the configure method  
+     * configure - Configures the MPU9250 device for normal use and also any sensors that support the configure method
      * @throws IOException          - If there is a problem accessign the device
      * @throws InterruptedException - If sleep was interrupted
      */
     private void configure() throws IOException, InterruptedException
     {
-    	SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"MPU-9250.configure");
-        
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"MPU-9250.configure");
+
         roMPU.writeByte(MPU9250Registers.PWR_MGMT_1, H_Reset.DEFAULT.bits); // wake up device, Clear sleep bits bit (6), enable all sensors
         Thread.sleep(100); // Wait for all registers to reset
 
@@ -189,7 +185,7 @@ public class MPU9250 extends NineDOF
         // Set sample rate = gyroscope output rate/(1 + SMPLRT_DIV)
         roMPU.writeByte(MPU9250Registers.SMPLRT_DIV, SampleRateDiv.HZ200.bits);  // Use a 200 Hz rate; a rate consistent with the filter update rate
         // determined inset in CONFIG above
-        
+
         gyro.configure();
         accel.configure();
 
@@ -203,23 +199,17 @@ public class MPU9250 extends NineDOF
         //ro.writeByteRegister(Registers.INT_PIN_CFG.getValue(), (byte)0x12);  // INT is 50 microsecond pulse and any read to clear
         roMPU.writeByte(MPU9250Registers.INT_PIN_CFG, (byte)0x22);  // INT is 50 microsecond pulse and any read to clear - as per MPUBASICAHRS_T3
         roMPU.writeByte(MPU9250Registers.INT_ENABLE, (byte)0x01);  // Enable data ready (bit 0) interrupt
-        if (debugLevel() >=6) 
-        {
-        	printRegisters();
-        	System.out.println();
-        	gyro.printRegisters();
-        	System.out.println();
-        	accel.printRegisters();
-        	System.out.println();
-        	mag.printRegisters();
-        	System.out.println();
-        	therm.printRegisters();
-        	System.out.println();
-        }
+
+        printRegisters();
+        gyro.printRegisters();
+        accel.printRegisters();
+        mag.printRegisters();
+        therm.printRegisters();
+
         Thread.sleep(100);
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End MPU-9250.configure");
     }
-    
+
     /**
      * operateFIFO - Sets up the FIFO in the mode requested, captures data for a period, then shuts down the FIFO and returns the data 
      * @param mode		- see the definition of FIFO_Mode
@@ -229,7 +219,7 @@ public class MPU9250 extends NineDOF
      */
     public short[] operateFIFO(FIFO_Mode mode, int msPeriod) throws InterruptedException
     {
-    	SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"MPU-9250.operateFIFO");
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"MPU-9250.operateFIFO");
         roMPU.writeByte(MPU9250Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
         roMPU.writeByte(MPU9250Registers.FIFO_EN, mode.bits);     // Enable accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
         Thread.sleep(msPeriod);
@@ -243,14 +233,14 @@ public class MPU9250 extends NineDOF
         short[]readings = new short[readingCount];
         byte high,low;
         for (int i = 0; i<readingCount; i++)
-        {	
-        	high = roMPU.readByte(MPU9250Registers.FIFO_R_W);
-        	low = roMPU.readByte(MPU9250Registers.FIFO_R_W);
-           	readings[i] = (short) ((high << 8) | (low&0xFF)) ;  // Turn the MSB and LSB into a signed 16-bit value
-        	//System.out.format("%d: [0x%X, 0x%X] 0x%X %d%n", i,high,low, readings[i],readings[i]);
+        {
+            high = roMPU.readByte(MPU9250Registers.FIFO_R_W);
+            low = roMPU.readByte(MPU9250Registers.FIFO_R_W);
+            readings[i] = (short) ((high << 8) | (low&0xFF)) ;  // Turn the MSB and LSB into a signed 16-bit value
+            //System.out.format("%d: [0x%X, 0x%X] 0x%X %d%n", i,high,low, readings[i],readings[i]);
         }
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End MPU-9250.operateFIFO");
-    	return readings;
+        return readings;
     }
 
     /**
@@ -258,8 +248,8 @@ public class MPU9250 extends NineDOF
      * @throws IOException          - If there is a problem accessign the device
      * @throws InterruptedException - If sleep was interrupted
      */
-	@Override
-	public void configMagnetometer() throws InterruptedException, IOException {
-		mag.configure();	
-	}
+    @Override
+    public void configMagnetometer() throws InterruptedException, IOException {
+        mag.configure();
+    }
 }

@@ -23,7 +23,7 @@ public class VL53L0X extends SensorPackage implements Ranger
      */
     public VL53L0X(Device device, int sampleRate, int sampleSize)
     {
-        super(sampleRate, 4);
+        super(sampleRate);
         sensor = new VL53L0XRanger(device, sampleSize);
     }
 

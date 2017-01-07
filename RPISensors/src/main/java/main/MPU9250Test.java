@@ -71,8 +71,8 @@ class MPU9250Test implements UpdateListener{
                     new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 device device
                     new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 device
                     200,                                    // sample rate (SR) per second 
-                    250,									// sample size (SS)
-                    debugLevelSensors); 					// debug level
+                    250                                    // sample size (SS)
+			); 					// debug level
             if (debugLevelTester >=3) System.out.println("MPU9250 created");
             if (debugLevelTester >=3) System.out.println("Starting RMI");
     		try {
