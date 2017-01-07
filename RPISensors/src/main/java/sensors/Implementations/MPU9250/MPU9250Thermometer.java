@@ -26,8 +26,8 @@ import sensors.models.Sensor;
 
 public class MPU9250Thermometer extends Sensor<TimestampedData1f>
 {
-    protected RegisterOperations ro;
-    protected MPU9250 parent;
+    private RegisterOperations ro;
+    private MPU9250 parent;
 	public MPU9250Thermometer(int sampleSize, RegisterOperations ro, MPU9250 parent)
 	{
 		super(sampleSize);

@@ -13,13 +13,14 @@ public class Data3f extends Data2f implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = -469689121407694462L;
-	protected float z;
+	float z;
 
     public Data3f(float x, float y, float z) {
     	super(x,y);
         this.z = z;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public Data3f() {
 		super();
 		z=0;
@@ -50,6 +51,7 @@ public class Data3f extends Data2f implements Serializable
 		return 	super.toString() + " z: " + String.format(format,z);
 	}
 
+	@SuppressWarnings("WeakerAccess")
 	public String toCSV()
 	{
 		return 	String.format("%f,%f,%f",this.getX(),this.getY(), this.getZ());

@@ -7,8 +7,9 @@ package dataTypes;
 @SuppressWarnings("MalformedFormatString")
 public class Data3s extends Data2s{
 
-    protected short z;
+    private short z;
 
+    @SuppressWarnings("WeakerAccess")
     public Data3s(short x, short y, short z) {
     	super(x,y);
         this.z = z;

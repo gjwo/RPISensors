@@ -34,8 +34,8 @@ import subsystems.SubSystem;
  * 0x3F 63 ACCEL_ZOUT			- Accelerometer Z axis reading (16 bits big endian)
 **/
 public class MPU9250Accelerometer extends Sensor3D  {
-    protected RegisterOperations ro;
-    protected MPU9250 parent;
+    private RegisterOperations ro;
+    private MPU9250 parent;
 	private AccScale accelScale ;
 	private final short accelSensitivity = 16384;  // = 16384 LSB/g
 	//private A_DLPF aDLFP;

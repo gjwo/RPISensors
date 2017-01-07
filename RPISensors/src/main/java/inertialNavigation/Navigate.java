@@ -17,7 +17,7 @@ import subsystems.SubSystem;
 
 
 public class Navigate implements Runnable, UpdateListener{
-	static Navigate nav ;
+	private static Navigate nav ;
 	static private final float nanosPerSecf = ((float)TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS));
 	private I2CBus bus;
 	private MPU9250 mpu9250;

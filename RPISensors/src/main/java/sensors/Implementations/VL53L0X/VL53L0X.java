@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class VL53L0X extends SensorPackage implements Ranger
 {
-    VL53L0XRanger sensor;
+    private final VL53L0XRanger sensor;
 
     /**
      * SensorPackage		- Constructor

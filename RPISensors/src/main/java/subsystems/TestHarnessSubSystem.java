@@ -4,6 +4,7 @@ package subsystems;
  * RPISensors - subsystems
  * Created by MAWood on 27/12/2016.
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class TestHarnessSubSystem extends SubSystem
 {
     private Runnable tester;

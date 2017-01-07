@@ -9,9 +9,10 @@ import dataTypes.TimestampedData3f;
  * @author GJWood
  *
  */
+@SuppressWarnings("WeakerAccess")
 public class NavigationUtilities {
     public static final long NANOS_PER_SEC = 1000000000;
-    public static final float NANOS_PER_SECF = 1000000000f;
+    private static final float NANOS_PER_SECF = 1000000000f;
 
 	public NavigationUtilities() {}
 	

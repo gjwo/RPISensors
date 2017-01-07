@@ -52,7 +52,7 @@ class MPU9250Test implements UpdateListener{
 	/**
 	 * MPU9250Test	-	Constructor
 	 */
-	public MPU9250Test()
+	private MPU9250Test()
 	{
 		debugLevelTester = 0;
 		debugLevelSensors = 1;

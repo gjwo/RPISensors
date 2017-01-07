@@ -25,7 +25,7 @@ public class Main implements RemoteMain
 	private static Main main;
 	private final HashMap<SubSystemType, SubSystem> subSystems;
 	private NanoClock clock;
-	public Main(Registry reg) throws RemoteException
+	private Main(Registry reg) throws RemoteException
     {
 		main = this;
 		clock = new NanoClock();

@@ -39,8 +39,8 @@ import subsystems.SubSystem;
  */
 public class MPU9250Magnetometer extends Sensor3D  {
 
-    protected RegisterOperations ro;
-    protected NineDOF parent;
+    private RegisterOperations ro;
+    private NineDOF parent;
     private final MagScale magScale = MagScale.MFS_16BIT;
     private final MagMode magMode = MagMode.MM_100HZ;
     private short lastRawMagX;  //updated by updateData() needed during calibration 

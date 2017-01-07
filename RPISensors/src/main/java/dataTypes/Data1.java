@@ -2,7 +2,7 @@ package dataTypes;
 
 @SuppressWarnings("MalformedFormatString")
 public abstract class Data1<E> {
-    protected E x;
+    private E x;
 
     public Data1(E x) {
         this.x = x;

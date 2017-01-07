@@ -50,10 +50,10 @@ public class MPU9250 extends NineDOF
         // get device
         this.roMPU = new RegisterOperations(mpu9250);
         this.roAK = new RegisterOperations(ak8963);
-        gyro = new MPU9250Gyroscope(sampleSize, roMPU,this);
-        mag = new MPU9250Magnetometer(sampleSize, roAK,this);
-        accel = new MPU9250Accelerometer(sampleSize, roMPU,this);
-        therm = new MPU9250Thermometer(sampleSize, roMPU,this);
+        gyro = new MPU9250Gyroscope(this.sampleSize, roMPU,this);
+        mag = new MPU9250Magnetometer(this.sampleSize, roAK,this);
+        accel = new MPU9250Accelerometer(this.sampleSize, roMPU,this);
+        therm = new MPU9250Thermometer(this.sampleSize, roMPU,this);
         selfTest();
         calibrateGyroAcc();
         configure();
@@ -64,7 +64,7 @@ public class MPU9250 extends NineDOF
     /**
      * printRegisters - Prints the contents of registers used by this class
      */
-    public void printRegisters()
+    private void printRegisters()
     {
         roMPU.printByteRegister(MPU9250Registers.CONFIG);
         roMPU.printByteRegister(MPU9250Registers.WOM_THR);

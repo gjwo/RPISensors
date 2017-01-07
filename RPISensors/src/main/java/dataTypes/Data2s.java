@@ -7,9 +7,9 @@ package dataTypes;
 @SuppressWarnings("MalformedFormatString")
 public class Data2s extends Data1s
 {
-    protected short y;
+    short y;
 
-    public Data2s(short x,short y)
+    Data2s(short x, short y)
     {
         super(x);
         this.y = y;
@@ -25,13 +25,13 @@ public class Data2s extends Data1s
         this.y = y;
     }
 
-    public void scale(short xScale,short yScale)
+    void scale(short xScale, short yScale)
     {
         super.scale(xScale);
         y *= yScale;
     }
 
-    public void offset(short xOffset,short yOffset)
+    void offset(short xOffset, short yOffset)
     {
         super.offset(xOffset);
         y += yOffset;

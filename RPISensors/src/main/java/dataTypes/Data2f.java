@@ -12,14 +12,16 @@ public class Data2f extends Data1f implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = -5639131456905621794L;
-	protected float y;
+	float y;
 
-    public Data2f(float x,float y)
+    @SuppressWarnings("WeakerAccess")
+    public Data2f(float x, float y)
     {
         super(x);
         this.y = y;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public Data2f() {
 		super();
 		y=0;

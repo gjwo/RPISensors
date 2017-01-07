@@ -25,6 +25,7 @@ public class EncoderFeedbackMotor implements Motor
         this(encoder, motor, kp, ki, kd, sampleRate, reversed, false);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public EncoderFeedbackMotor(Encoder encoder, Motor motor, double kp, double ki, double kd, float sampleRate, boolean reversed, boolean debug)
     {
         this.encoder = encoder;

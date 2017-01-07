@@ -12,10 +12,11 @@ public class Data1f implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = -3533150776805377160L;
-	protected float x;
+	float x;
 
     public Data1f(float x) {this.x = x;}
 
+    @SuppressWarnings("WeakerAccess")
     public Data1f() {
 		x=0;
 	}

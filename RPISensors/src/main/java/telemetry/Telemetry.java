@@ -89,7 +89,7 @@ public class Telemetry implements RemoteTelemetry
 	
 	public void shutdown() {unbindRegistry();}
 	
-	void bindRegistry()
+	private void bindRegistry()
 	{
 	    try 
 	    {
@@ -100,7 +100,7 @@ public class Telemetry implements RemoteTelemetry
 	        e.printStackTrace();
 	    }
 	}
-	void unbindRegistry()
+	private void unbindRegistry()
 	{
 		try
 		{

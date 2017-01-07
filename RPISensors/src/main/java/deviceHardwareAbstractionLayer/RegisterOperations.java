@@ -67,6 +67,7 @@ public class RegisterOperations
 	 * @param 		reg The register (address, name etc)
 	 * @return		the short that was read
 	 */
+	@SuppressWarnings("WeakerAccess")
 	public short readShortLSBfirst(Register reg)
 	{
 		short s = Conversion.bytes2LSBToShort(readBytes(reg,2));
@@ -212,7 +213,8 @@ public class RegisterOperations
      * @param 		reg The register (address, name etc)
      * @param 		bytes to be written
      */
-    public void writeBytes(Register reg, byte[] bytes)
+    @SuppressWarnings("WeakerAccess")
+	public void writeBytes(Register reg, byte[] bytes)
     {
     	int startAddr = reg.getAddress();
         try {

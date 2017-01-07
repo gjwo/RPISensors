@@ -1,5 +1,6 @@
 package utilities;
 
+@SuppressWarnings("WeakerAccess")
 public class Conversion
 {
 	/**

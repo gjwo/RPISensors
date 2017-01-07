@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
  * RPISensors - subsystems
  * Created by MAWood on 24/12/2016.
  */
+@SuppressWarnings("WeakerAccess")
 public class LogEntry implements Serializable
 {
 	private static final long serialVersionUID = -24348546989956649L;

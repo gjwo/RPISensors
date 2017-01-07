@@ -7,19 +7,23 @@ package dataTypes;
 @SuppressWarnings("MalformedFormatString")
 public class Data1s
 {
-    protected short x;
+    short x;
 
+    @SuppressWarnings("WeakerAccess")
     public Data1s(short x) {this.x = x;}
 
+    @SuppressWarnings("WeakerAccess")
     public short getX() {return x;}
 
     public void setX(short x) {this.x = x;}
 
+    @SuppressWarnings("WeakerAccess")
     public void scale(short xScale)
     {
         x *= xScale;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public void offset(short xOffset)
     {
         x += xOffset;

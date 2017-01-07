@@ -91,7 +91,7 @@ public class PIDController extends Thread
         SystemLog.log(SubSystem.SubSystemType.DRIVE_ASSEMBLY,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End PIDC run");
     }
 
-    void compute()
+    private void compute()
     {
         if(mode != OperatingMode.AUTOMATIC) return;
         if(inputProvider == null) return;
@@ -171,6 +171,7 @@ public class PIDController extends Thread
         this.mode = mode;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public OperatingMode getOperatingMode()
     {
         return mode;
