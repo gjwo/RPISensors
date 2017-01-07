@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import subsystems.SubSystem.SubSystemType;
 import subsystems.SubSystemState;
 
+@SuppressWarnings("WeakerAccess")
 public interface RemoteMain extends Remote {
 	void start(EnumSet<SubSystemType> systems) throws RemoteException;
 	void shutdown(EnumSet<SubSystemType> systems) throws RemoteException;

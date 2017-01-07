@@ -3,6 +3,7 @@ package devices.driveAssembly;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+@SuppressWarnings("WeakerAccess")
 public interface RemoteDriveAssembly extends Remote
 {
     void setSpeed(float speed) throws RemoteException;

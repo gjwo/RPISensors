@@ -73,7 +73,8 @@ public class SystemLog implements RemoteLog
         getLog().addEntry(type, level, message);
     }
 
-    public void addEntry(SubSystem.SubSystemType type,LogLevel level, String message)
+    @SuppressWarnings("WeakerAccess")
+    public void addEntry(SubSystem.SubSystemType type, LogLevel level, String message)
     {
         entries.add(new LogEntry(type,level,message));
     }

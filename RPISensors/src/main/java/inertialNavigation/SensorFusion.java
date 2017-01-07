@@ -9,7 +9,7 @@ import dataTypes.TimestampedData3f;
  * ported to Java from the C++ implementation of the Madgwick and Mahoney filter algorithms by Kris Winer see
  * https://github.com/kriswiner/MPU-9250/blob/master/quaternionFilters.ino
  */
-public class SensorFusion {
+class SensorFusion {
 
 	private static final float[] eInt = new float[]{0f,0f,0f}; 			// KW L304 vector to hold integral error for Mahony method
 	private static final Quaternion q = new Quaternion(1f,0f,0f,0f);  	// KW L303 vector to hold quaternion now a class

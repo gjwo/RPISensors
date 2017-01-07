@@ -14,21 +14,21 @@ public abstract class Sensor3D extends Sensor<TimestampedData3f>
     private float deviceScalingY;
     private float deviceScalingZ;
 
-    public Sensor3D(int sampleSize) {
+    protected Sensor3D(int sampleSize) {
 		super(sampleSize);
 	    deviceBias = new Data3f(0f,0f,0f); 		//declared generically in super class
 	    deviceScaling = new Data3f(1f,1f,1f); 	//declared generically in super class
 	}
-    public void printState()
+    protected void logState()
     {
-    	super.printState();
+    	super.logState();
     	System.out.println("deviceBias: "+ deviceBias.toString());
     	System.out.println("deviceScaling: "+ deviceScaling.toString());
     }
 
-    public void setDeviceBias(Data3f deviceBias){this.deviceBias = deviceBias.clone();}
-    public Data3f getDeviceBias(){ return deviceBias;}
-    public void setDeviceScaling(Data3f deviceScaling)
+    protected void setDeviceBias(Data3f deviceBias){this.deviceBias = deviceBias.clone();}
+    protected Data3f getDeviceBias(){ return deviceBias;}
+    protected void setDeviceScaling(Data3f deviceScaling)
     {
     	this.deviceScaling = deviceScaling.clone();
     	deviceScalingX = deviceScaling.getX(); //saved separately for time critical elements
@@ -36,7 +36,7 @@ public abstract class Sensor3D extends Sensor<TimestampedData3f>
     	deviceScalingZ = deviceScaling.getZ(); 
 
     	}
-    public Data3f getDeviceScaling(){return deviceScaling;}
+    protected Data3f getDeviceScaling(){return deviceScaling;}
 
 	@Override
 	public TimestampedData3f scale(TimestampedData3f value)

@@ -8,8 +8,8 @@ public class TimestampedData1f extends Data1f
 {
  	private static final long serialVersionUID = -1083356277253192515L;
 	public final long NANOS_PER_SEC = 1000000000;
-    public static final float NANOS_PER_SECF = 1000000000f;
-    protected final long nanoTime;
+    private static final float NANOS_PER_SECF = 1000000000f;
+    private final long nanoTime;
 
     /**
      * TimestampedData1f	- Constructor

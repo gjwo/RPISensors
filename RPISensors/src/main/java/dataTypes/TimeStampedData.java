@@ -12,8 +12,8 @@ import main.Main;
 public class TimeStampedData<E> implements TimeStamped, Serializable
 {
 	private static final long serialVersionUID = -5631520531456943338L;
-	public final E data;
-	public final Instant timestamp;
+	private final E data;
+	private final Instant timestamp;
 	
 	//Constructors
 	TimeStampedData(E data)
@@ -21,7 +21,7 @@ public class TimeStampedData<E> implements TimeStamped, Serializable
 		this(data,Main.getMain().getClock().instant());
 	}
 	
-	TimeStampedData(E data, Instant time)
+	private TimeStampedData(E data, Instant time)
 	{
 		this.data = data;
 		this.timestamp = time;

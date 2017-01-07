@@ -8,6 +8,7 @@ import java.util.ArrayList;
  * RPISensors - subsystems
  * Created by MAWood on 24/12/2016.
  */
+@SuppressWarnings("WeakerAccess")
 public interface RemoteLog extends Remote
 {
     ArrayList<LogEntry> getEntries() throws RemoteException;

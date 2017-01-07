@@ -8,8 +8,8 @@ public class TimestampedData2f extends Data2f
 {
 	private static final long serialVersionUID = 9128847141367511460L;
 	public static final long NANOS_PER_SEC = 1000000000;
-    public static final float NANOS_PER_SECF = 1000000000f;
-    protected final long nanoTime;
+    private static final float NANOS_PER_SECF = 1000000000f;
+    private final long nanoTime;
 
     /**
      * TimestampedData2f	- Constructor from 2 scalars and a time
@@ -28,7 +28,7 @@ public class TimestampedData2f extends Data2f
      * @param x             - value
      * @param y             - value
      */
-    public TimestampedData2f(float x, float y)
+    private TimestampedData2f(float x, float y)
     {
         this(x, y, System.nanoTime());
     }

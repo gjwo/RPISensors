@@ -19,16 +19,16 @@ public abstract class SubSystem extends Thread
 		DEVICES
 	}
 
-	protected final SubSystemType type;
+	private final SubSystemType type;
     private SubSystemState state;
 
-	public void setSubSysState(SubSystemState state)
+	protected void setSubSysState(SubSystemState state)
 	{
 		SystemLog.log(type,SystemLog.LogLevel.TRACE_MAJOR_STATES, type.name() + " | " + this.state.name() +  "->"+state.name());
 		this.state = state;
 	}
 
-	public SubSystem( SubSystemType subSystemType)
+	protected SubSystem(SubSystemType subSystemType)
     {
 		this.type = subSystemType;
         this.state = SubSystemState.IDLE;

@@ -51,9 +51,9 @@ public class MPU9250Accelerometer extends Sensor3D  {
 		this.parent = parent;
 	}
 
-	public void printState()
+	protected void logState()
 	{
-		super.printState();
+		super.logState();
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "accelScale: "+accelScale.toString()+ " minMax: "+accelScale.minMax+" Res: "+accelScale.getRes());
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "accelSensitivity: "+accelSensitivity);
 	}
@@ -110,7 +110,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         c = (byte)(c | A_DLPF.F1BW0044_3.bits);  // Set accelerometer rate to 1 kHz and bandwidth to 44.8 Hz  
         ro.writeByte(MPU9250Registers.ACCEL_CONFIG2, c); // Write new ACCEL_CONFIG2 register value
 
-        printState();
+        logState();
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End acc.configure");
 	}
 	
@@ -200,7 +200,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
 																AccScale.AFS_2G.bits));	// Set scale range for the accelerometer to 2 g 
         ro.writeByte(MPU9250Registers.ACCEL_CONFIG2, A_DLPF.F1BW0099_2.bits);	// Set accelerometer rate to 1 kHz and bandwidth to 99 Hz
         Thread.sleep(25); // Delay a while to let the device stabilise
-        printState();
+        logState();
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End acc.selfTest");
 	}
 	
@@ -250,7 +250,7 @@ public class MPU9250Accelerometer extends Sensor3D  {
         								(float)accelBiasAvg[1]/2.0f/(float)accelSensitivity,
         								(float)accelBiasAvg[2]/2.0f/(float)accelSensitivity));
 							
-         printState();
+         logState();
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End accel.calibrate");
 	}
     void setHardwareBiases(short[] biasAvg)

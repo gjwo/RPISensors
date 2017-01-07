@@ -50,9 +50,9 @@ public class MPU9250Gyroscope extends Sensor3D
 	}
 
     // Methods that may need extending by sub classes
-    public void printState()
+    protected void logState()
     {
-    	super.printState();
+    	super.logState();
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "gyroScale: "+ gyroScale.toString()+ " MinMax: "+gyroScale.minMax+" res: "+gyroScale.getRes() );
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "cfgDLPF: "+ cfgDLPF);
     }
@@ -95,7 +95,7 @@ public class MPU9250Gyroscope extends Sensor3D
         ro.writeByte(MPU9250Registers.GYRO_CONFIG,(byte)(	GyrSelfTest.NONE.bits |			// no self test
         													gyroScale.bits |				// Set full scale range for the gyro to 2000 dps
 															GyrFchoiceB.FC_USE_DLPF.bits)); // use DLPF settings 
-        printState();
+        logState();
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS, "End gyro.configure");
 	}
 	
@@ -188,7 +188,7 @@ public class MPU9250Gyroscope extends Sensor3D
         
         Thread.sleep(25); // Delay a while to let the device stabilise
 
-        printState();
+        logState();
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End gyro.selfTest");
 	}
 
@@ -238,7 +238,7 @@ public class MPU9250Gyroscope extends Sensor3D
         								(float) gyroBiasAvg[1]/(float) gyroSensitivity,
         								(float) gyroBiasAvg[2]/(float) gyroSensitivity));
 
-        printState();
+        logState();
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End gyro.calibrate");
 	}
 	

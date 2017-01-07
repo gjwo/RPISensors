@@ -10,11 +10,11 @@ import subsystems.SubSystem;
  */
 public class TankDriveAssembly implements DriveAssembly
 {
-    protected final Motor left;
-    protected final Motor right;
+    private final Motor left;
+    private final Motor right;
 
-    protected float angle; // this is 0-360* with 0 being forward, 90 right spin, 270 left spin and 180 reverse
-    protected float speed; // this is 0-1
+    private float angle; // this is 0-360* with 0 being forward, 90 right spin, 270 left spin and 180 reverse
+    private float speed; // this is 0-1
 
     public TankDriveAssembly(Motor left, Motor right)
     {
@@ -68,7 +68,7 @@ public class TankDriveAssembly implements DriveAssembly
         right.stop();
     }
 
-    protected void updateCourse()
+    private void updateCourse()
     {
         SystemLog.log(SubSystem.SubSystemType.DRIVE_ASSEMBLY,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"TDA updateCourse");
         float leftCoefficient;

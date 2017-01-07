@@ -12,6 +12,7 @@ import java.time.ZonedDateTime;
  * NavigationDisplay - inertialNavigation
  * Created by MAWood on 19/12/2016.
  */
+@SuppressWarnings("WeakerAccess")
 public interface RemoteInstruments extends Remote
 {
     Data3f getTaitBryanAnglesD() throws RemoteException;

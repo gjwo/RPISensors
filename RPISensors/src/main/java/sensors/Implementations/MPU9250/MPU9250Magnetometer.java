@@ -61,9 +61,9 @@ public class MPU9250Magnetometer extends Sensor3D  {
 		this.parent = parent;
 	}
 	
-    public void printState()
+    protected void logState()
     {
-    	super.printState();
+    	super.logState();
 		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "magScale: "+ magScale.toString()+" res: "+magScale.res );
 		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "magMode: "+ magMode.toString() + " sampleCount: "+ magMode.sampleCount);
 		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "lastRawMagX: "+lastRawMagX+" lastRawMagY: "+lastRawMagY+" lastRawMagZ: "+lastRawMagZ);
@@ -153,7 +153,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
         // set to MagScale.MFS_16BIT.bits and MagMode.MM_100HZ set as final lines 48 & 49. register write should be 0x16
         ro.writeByte(MPU9250Registers.AK8963_CNTL1, (byte)(magScale.bits | magMode.bits)); // #KW 849 Set magnetometer data resolution and sample ODR ####16bit already shifted
         Thread.sleep(10);
-        printState();
+        logState();
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End configure mag initAK8963");
 	}
 
@@ -203,7 +203,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
         								avgRad/((float)scale[1]), // deviceScale was pass by ref dest2 in Kris Winer code
         								avgRad/((float)scale[2])));
 
-        printState();
+        logState();
         printRegisters();
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INSTRUCTION, "Magnetometer Calibration: Finished");
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End calibrate mag initAK8963");

@@ -13,8 +13,8 @@ public class TimestampedData3f extends Data3f implements Serializable
 	 */
 	private static final long serialVersionUID = -6056118215941025501L;
 	public static final long NANOS_PER_SEC = 1000000000;
-    public static final float NANOS_PER_SECF = 1000000000f;
-    protected final long nanoTime;
+    private static final float NANOS_PER_SECF = 1000000000f;
+    private final long nanoTime;
 
     /**
      * TimestampedData3f	- Constructor from 3 scalars and a time

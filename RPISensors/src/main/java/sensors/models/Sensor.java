@@ -3,6 +3,8 @@ package sensors.models;
 import java.io.IOException;
 
 import dataTypes.CircularArrayRing;
+import logging.SystemLog;
+import subsystems.SubSystem;
 
 /**
  * RPISensor - devices.sensors
@@ -17,7 +19,7 @@ public abstract class Sensor <T>
      * Sensor		- Constructor
      * @param sampleSize	- The number of samples that can be held before overwriting
      */
-    public Sensor(int sampleSize)
+    protected Sensor(int sampleSize)
     {
         readings = new CircularArrayRing<>(sampleSize);
         this.sampleSize = sampleSize;
@@ -27,13 +29,13 @@ public abstract class Sensor <T>
     public T getLatestValue(){return readings.get(0);}
     public T getValue(int i){return readings.get(i);}
     public int getReadingCount(){return readings.size();}
-    public void addValue(T value){readings.add(value);}
+    protected void addValue(T value){readings.add(value);}
 
     // Methods that may need extending by sub classes
-    public void printState()
+    void logState()
     {
-    	System.out.println("readings: "+ readings.size());
-    	System.out.print(" sampleSize: "+ sampleSize);
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "readings: "+ readings.size());
+        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, " sampleSize: "+ sampleSize);
     }
     
     // Methods must be implemented but which can't be done here because the types are not known

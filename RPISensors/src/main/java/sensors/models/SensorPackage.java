@@ -71,7 +71,7 @@ public abstract class SensorPackage implements Runnable
     /**
      * updateData		- To be implemented by extending classes, will update data based on implementation
      */
-    public abstract void updateData();
+    protected abstract void updateData();
 
     /**
      * registerInterest		-   add a listener which will be informed when data is updated
