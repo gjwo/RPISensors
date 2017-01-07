@@ -5,6 +5,8 @@ import com.pi4j.io.i2c.I2CDevice;
 import java.io.IOException;
 
 /**
+ * Pi4jI2CDevice   -    provides basic operations for communicating with a device
+ *                      using Pi4j over an IC2 bus
  * Created by MAWood on 17/07/2016.
  */
 public class Pi4jI2CDevice implements Device

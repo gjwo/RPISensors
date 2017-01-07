@@ -43,7 +43,8 @@ public class Navigate implements Runnable, UpdateListener{
 	
 	/**
 	 * Navigate - Constructor to use from another class's main program that sets up the and starts the MPU-9250
-	 * @param mpu9250
+	 * @param mpu9250		-	9Dof Sensor object
+	 * @param debugLevel	-	controls debug printing > 0-10 bigger is more prints
 	 */
 	public Navigate(MPU9250 mpu9250, int debugLevel)
 	{
@@ -154,8 +155,8 @@ public class Navigate implements Runnable, UpdateListener{
 	public void dataUpdated() {dataReady = true;}
 	
 	/**
-	 * main			- For use in stand alone mode, currently not used the class is initiated from MPU9250Test
-	 * @param listener
+	 * main				- For use in stand alone mode, currently not used the class is initiated from MPU9250Test
+	 * @param listener	-	Method to be called when the data changes
 	 */
     public void registerInterest(UpdateListener listener)
     {

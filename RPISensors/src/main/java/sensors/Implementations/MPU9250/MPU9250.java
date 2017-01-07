@@ -92,8 +92,8 @@ public class MPU9250 extends NineDOF
 	
 	/**
 	 * selfTest - Triggers self test for all the sensors which support it on this device
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @throws IOException          - If there is a problem accessign the device
+	 * @throws InterruptedException - If sleep was interrupted
 	 */
     private void selfTest() throws IOException, InterruptedException
     {
@@ -114,8 +114,8 @@ public class MPU9250 extends NineDOF
     
     /**
      * setCalibrationMode9250 - puts the device into calibrate mode
-     * @throws IOException
-     * @throws InterruptedException
+     * @throws IOException          - If there is a problem accessign the device
+     * @throws InterruptedException - If sleep was interrupted
      */
     private void setCalibrationMode() throws IOException, InterruptedException
     {
@@ -148,8 +148,8 @@ public class MPU9250 extends NineDOF
     
     /**
      * calibrateGyroAcc - puts the device into calibrate mode then calibrates the Gyroscope and Accelerometer
-     * @throws IOException
-     * @throws InterruptedException
+     * @throws IOException          - If there is a problem accessign the device
+     * @throws InterruptedException - If sleep was interrupted
      */
     private void calibrateGyroAcc() throws IOException, InterruptedException
     {
@@ -164,8 +164,8 @@ public class MPU9250 extends NineDOF
 
     /**
 	 * configure - Configures the MPU9250 device for normal use and also any sensors that support the configure method  
-     * @throws IOException
-     * @throws InterruptedException
+     * @throws IOException          - If there is a problem accessign the device
+     * @throws InterruptedException - If sleep was interrupted
      */
     private void configure() throws IOException, InterruptedException
     {
@@ -225,7 +225,7 @@ public class MPU9250 extends NineDOF
      * @param mode		- see the definition of FIFO_Mode
      * @param msPeriod	- capture period in milliseconds
      * @return			- the captured information in a array of signed 16bit shorts
-     * @throws InterruptedException
+     * @throws InterruptedException - If sleep was interrupted
      */
     public short[] operateFIFO(FIFO_Mode mode, int msPeriod) throws InterruptedException
     {
@@ -253,6 +253,11 @@ public class MPU9250 extends NineDOF
     	return readings;
     }
 
+    /**
+     * configMagnetometer           - configure the sensor
+     * @throws IOException          - If there is a problem accessign the device
+     * @throws InterruptedException - If sleep was interrupted
+     */
 	@Override
 	public void configMagnetometer() throws InterruptedException, IOException {
 		mag.configure();	

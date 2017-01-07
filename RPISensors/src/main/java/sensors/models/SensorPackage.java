@@ -16,8 +16,9 @@ public abstract class SensorPackage implements Runnable
     private int debugLevel;
 
     /**
-     * SensorPackage		- Constructor
-     * @param sampleRate
+     * SensorPackage		-   Constructor
+     * @param sampleRate    - sample rate in samples per second
+     * @param debugLevel    - controls debug printing 0-10 bigger is more
      */
     protected SensorPackage(int sampleRate, int debugLevel)
     {
@@ -78,8 +79,8 @@ public abstract class SensorPackage implements Runnable
     public abstract void updateData();
 
     /**
-     * registerInterest		- add a listener which will be informed when data is updated
-     * @param listener
+     * registerInterest		-   add a listener which will be informed when data is updated
+     * @param listener      -   the Method to be called when the data changes
      */
     public void registerInterest(UpdateListener listener)
     {

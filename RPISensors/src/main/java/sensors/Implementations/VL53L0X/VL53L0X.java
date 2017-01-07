@@ -17,13 +17,14 @@ public class VL53L0X extends SensorPackage implements Ranger
 
     /**
      * SensorPackage		- Constructor
-     *
-     * @param sampleRate
+     * @param device        - The device to be operated by this object
+     * @param sampleRate    - The polling rate
+     * @param sampleSize    - The number of samples to be stored
      */
-    public VL53L0X(Device i2cImpl, int sampleRate, int sampleSize)
+    public VL53L0X(Device device, int sampleRate, int sampleSize)
     {
         super(sampleRate, 4);
-        sensor = new VL53L0XRanger(i2cImpl, sampleSize);
+        sensor = new VL53L0XRanger(device, sampleSize);
     }
 
     @Override

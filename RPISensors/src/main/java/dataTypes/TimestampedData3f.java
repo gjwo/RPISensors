@@ -18,10 +18,10 @@ public class TimestampedData3f extends Data3f implements Serializable
 
     /**
      * TimestampedData3f	- Constructor from 3 scalars and a time
-     * @param x
-     * @param y
-     * @param z
-     * @param nanoTime
+     * @param x             - value
+     * @param y             - value
+     * @param z             - value
+     * @param nanoTime      - timestamp
      */
     public TimestampedData3f(float x, float y, float z, long nanoTime)
     {
@@ -31,9 +31,9 @@ public class TimestampedData3f extends Data3f implements Serializable
 
     /**
      * TimestampedData3f	- Constructor from 3 scalars with a time added internally
-     * @param x
-     * @param y
-     * @param z
+     * @param x             - value
+     * @param y             - value
+     * @param z             - value
      */
     public TimestampedData3f(float x, float y, float z)
     {
@@ -42,7 +42,7 @@ public class TimestampedData3f extends Data3f implements Serializable
 
     /**
      * TimestampedData3f	- Constructor from Data3f with a time added internally
-     * @param data
+     * @param data          - 3 dimensional value
      */
     public TimestampedData3f(Data3f data)
     {
@@ -55,8 +55,8 @@ public class TimestampedData3f extends Data3f implements Serializable
     	this.nanoTime = System.nanoTime();
     }
     /**
-     * getTime - get the timestamp
-     * @return
+     * getTime  - get the timestamp
+     * @return  - timestamp
      */
     public long getTime()
     {
@@ -65,7 +65,7 @@ public class TimestampedData3f extends Data3f implements Serializable
 
     /**
      * unStamp	- return the data without the timestamp
-     * @return	base data
+     * @return	- base data
      */
     public Data3f unStamp()
     {

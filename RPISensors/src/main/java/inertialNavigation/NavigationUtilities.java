@@ -19,7 +19,7 @@ public class NavigationUtilities {
 	 * Performs a simple Trapezoidal integration over two samples in 1 dimension1
 	 * @param sampleT 	- sample at time t
 	 * @param sampleTm1	- sample at time t+1
-	 * @return
+	 * @return			- the integral of the input
 	 */
     public static TimestampedData1f integrate(TimestampedData1f sampleT, TimestampedData1f sampleTm1 )
     {
@@ -34,7 +34,7 @@ public class NavigationUtilities {
 	 * Performs a simple Trapezoidal integration over two samples in 2 dimensions
 	 * @param sampleT 	- sample at time t
 	 * @param sampleTm1	- sample at time t+1
-	 * @return
+	 * @return			- the integral of the input
 	 */
 
     public static TimestampedData2f integrate(TimestampedData2f sampleT, TimestampedData2f sampleTm1 )
@@ -51,7 +51,7 @@ public class NavigationUtilities {
 	 * Performs a simple Trapezoidal integration over two samples in 3 dimensions
 	 * @param sampleT 	- sample at time t
 	 * @param sampleTm1	- sample at time t+1
-	 * @return
+	 * @return			- the integral of the input
 	 */
     public static TimestampedData3f integrate(TimestampedData3f sampleT, TimestampedData3f sampleTm1 )
     {

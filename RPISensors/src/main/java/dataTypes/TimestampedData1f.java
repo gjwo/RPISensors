@@ -13,8 +13,8 @@ public class TimestampedData1f extends Data1f
 
     /**
      * TimestampedData1f	- Constructor
-     * @param x
-     * @param nanoTime
+     * @param x             - value
+     * @param nanoTime      - Timestamp
      */
     public TimestampedData1f(float x, long nanoTime)
     {
@@ -24,7 +24,7 @@ public class TimestampedData1f extends Data1f
     
     /**
      * TimestampedData1f	- Constructor
-     * @param x
+     * @param x - value
      */
     public TimestampedData1f(float x)
     {
@@ -33,7 +33,7 @@ public class TimestampedData1f extends Data1f
 
     /**
      * TimestampedData1f	- Constructor
-     * @param data
+     * @param data          - 3 dimensional data (only X used)
      */
     public TimestampedData1f(Data3f data)
     {
@@ -41,8 +41,8 @@ public class TimestampedData1f extends Data1f
     }
     
     /**
-     * getTime - get the timestamp
-     * @return
+     * getTime  - get the timestamp
+     * @return  - timestamp
      */
     public	long getTime()
     {
@@ -51,7 +51,7 @@ public class TimestampedData1f extends Data1f
     
     /**
      * unStamp	- return the data without the timestamp
-     * @return	base data
+     * @return	- base data
      */
     public Data1f unStamp()
     {

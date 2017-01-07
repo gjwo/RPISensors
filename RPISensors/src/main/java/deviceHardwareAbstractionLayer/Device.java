@@ -3,6 +3,7 @@ package deviceHardwareAbstractionLayer;
 import java.io.IOException;
 
 /**
+ * Device   -   provides basic operations for communicating with a device
  * Created by MAWood on 17/07/2016.
  */
 public interface Device

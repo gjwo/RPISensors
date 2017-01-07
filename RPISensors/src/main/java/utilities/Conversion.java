@@ -4,8 +4,8 @@ public class Conversion
 {
 	/**
 	 * 4 bytes most significant byte first values to integer
-	 * @param rawData
-	 * @return int
+	 * @param rawData	-	data in individual bytes, held in array
+	 * @return int		-	bytes combined into signed value
 	 */
 	public static int bytes4MSBToInt(byte[] rawData)
 	{
@@ -17,8 +17,8 @@ public class Conversion
 	
 	/**
 	 * 2 bytes most significant byte first values to short
-	 * @param rawData
-	 * @return shot
+	 * @param rawData	-	data in individual bytes, held in array
+	 * @return			-	bytes combined into a short signed value
 	 */
 	public static short bytes2MSBToShort(byte[] rawData)
 	{
@@ -29,8 +29,8 @@ public class Conversion
 	
 	/**
 	 * 4 bytes least significant byte first values to integer
-	 * @param rawData byte array
-	 * @return int
+	 * @param rawData	-	data in individual bytes, held in array
+	 * @return			-	bytes combined into a signed int value
 	 */
 	public static int bytes4LSBToInt(byte[] rawData)
 	{
@@ -43,8 +43,8 @@ public class Conversion
 	
 	/**
 	 * 2 bytes least significant byte first values to integer
-	 * @param rawData byte array
-	 * @return short
+	 * @param rawData	-	data in individual bytes, held in array
+	 * @return			-	bytes combined into a signed short value
 	 */
 	public static short bytes2LSBToShort(byte[] rawData)
 	{
@@ -55,8 +55,8 @@ public class Conversion
 	
 	/**
 	 * integer to byte array most significant byte first
-	 * @param val
-	 * @return
+	 * @param 	val -	integer value MSB
+	 * @return		-	data in individual bytes, held in array
 	 */
 	public static byte[] intTo4BytesMSB(int val)
 	{
@@ -71,8 +71,8 @@ public class Conversion
 	
 	/**
 	 * short to byte array most significant byte first
-	 * @param val
-	 * @return
+	 * @param 	val	-	short value MSB
+	 * @return		-	data in individual bytes, held in array
 	 */
 	public static byte[] shortTo2BytesMSB(short val)
 	{
@@ -84,8 +84,8 @@ public class Conversion
 	
 	/**
 	 * integer to byte array least significant byte first
-	 * @param val
-	 * @return
+	 * @param 	val	-	integer val LSB
+	 * @return		-	data in individual bytes, held in array
 	 */
 	public static byte[] intTo4BytesLSB(int val)
 	{
@@ -100,8 +100,8 @@ public class Conversion
 	
 	/**
 	 * short to byte array least significant byte first
-	 * @param 	val
-	 * @return	byte[]
+	 * @param 	val	-	short value LSB
+	 * @return		-	data in individual bytes, held in array
 	 */
 	public static byte[] shortTo2BytesLSB(short val)
 	{
@@ -177,8 +177,8 @@ public class Conversion
     
     /**
      * Converts a byte array in MSB order to an array of shorts
-     * @param rawData
-     * @return short array
+     * @param rawData	-	data in individual bytes, held in array
+     * @return 			-	short array
      */
     public static short[] bytesMSBToShorts(byte[] rawData)
     {
@@ -193,8 +193,8 @@ public class Conversion
     
     /**
      * Converts a byte array in LSB order to an array of shorts
-     * @param rawData
-     * @return short array
+     * @param rawData	-	data in individual bytes, held in array
+     * @return 			-	short array
      */
     public static short[] bytesLSBToShorts(byte[] rawData)
     {

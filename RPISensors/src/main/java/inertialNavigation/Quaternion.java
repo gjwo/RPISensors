@@ -37,9 +37,9 @@ public class Quaternion implements Serializable
 	
 	/**
 	 * Quaternion	-	Constructor from yaw, pitch and roll (Eulerian angles)
-	 * @param yaw
-	 * @param pitch
-	 * @param roll
+	 * @param yaw	- 	angle from 'North' in horizontal plane in radians
+	 * @param pitch	-	angle from horizontal plane of front face in radians
+	 * @param roll	-	angle from horizontal plane of side face in radians
 	 */
 	public Quaternion( float yaw,float pitch, float roll)
 	{
@@ -57,7 +57,7 @@ public class Quaternion implements Serializable
 
 	/**
 	 * Quaternion	- Constructor from an array of 4 values
-	 * @param data
+	 * @param data	- an array containing 4 values
 	 */
 	public Quaternion(float[] data){this(data[0], data[1], data[2], data[3]);}
 
@@ -133,11 +133,11 @@ public class Quaternion implements Serializable
 	}
 	
 	/**
-	 * setAll	- set all values based on scalar parameters
-	 * @param w
-	 * @param x
-	 * @param y
-	 * @param z
+	 * setAll	- set all values based on 4 scalar parameters
+	 * @param w	-	scalar value
+	 * @param x	-	scalar value
+	 * @param y	-	scalar value
+	 * @param z	-	scalar value
 	 */
 	public void setAll(float w,float x, float y, float z)
 	{

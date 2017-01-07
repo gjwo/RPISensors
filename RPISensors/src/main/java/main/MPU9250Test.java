@@ -23,7 +23,6 @@ import devices.motors.Motor;
 import inertialNavigation.Navigate;
 import sensors.Implementations.MPU9250.MPU9250;
 import sensors.interfaces.UpdateListener;
-import java.net.UnknownHostException;
 
 class MPU9250Test implements UpdateListener{
 	/*
@@ -95,11 +94,10 @@ class MPU9250Test implements UpdateListener{
 	}
 	
 	/**
-	 * Main			-	entry point	
-	 * @param args	-	arg[0] the number of seconds to generate data for
-	 * @throws UnknownHostException 
+	 * Main								-	entry point
+	 * @param args						-	arg[0] the number of seconds to generate data for
 	 */
-	public static void main(String[] args) throws UnknownHostException
+	public static void main(String[] args)
     {
     	MPU9250Test tester;
     	int runSecs = 30;

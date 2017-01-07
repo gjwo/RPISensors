@@ -13,9 +13,9 @@ public class TimestampedData2f extends Data2f
 
     /**
      * TimestampedData2f	- Constructor from 2 scalars and a time
-     * @param x
-     * @param y
-     * @param nanoTime
+     * @param x             - value
+     * @param y             - value
+     * @param nanoTime      - timestamp
      */
     public TimestampedData2f(float x, float y, long nanoTime)
     {
@@ -25,8 +25,8 @@ public class TimestampedData2f extends Data2f
 
     /**
      * TimestampedData2f	- Constructor from 2 floats, system time is added
-     * @param x
-     * @param y
+     * @param x             - value
+     * @param y             - value
      */
     public TimestampedData2f(float x, float y)
     {
@@ -35,7 +35,7 @@ public class TimestampedData2f extends Data2f
 
     /**
       * TimestampedData2f	- Constructor Data2f, system time is added
-     * @param data
+     * @param data          -   2 dimensional value
      */
     public TimestampedData2f(Data2f data)
     {
@@ -44,7 +44,7 @@ public class TimestampedData2f extends Data2f
     
     /**
      * getTime - get the timestamp
-     * @return
+     * @return  - timestamp
      */
     public	long getTime()
     {
@@ -53,7 +53,7 @@ public class TimestampedData2f extends Data2f
   
     /**
      * unStamp	- return the data without the timestamp
-     * @return	base data
+     * @return	- base data
      */
     public Data2f unStamp()
     {
