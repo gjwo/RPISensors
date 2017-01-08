@@ -74,20 +74,20 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	@Override
 	public void printRegisters()
 	{
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.AK8963_WHO_AM_I));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.AK8963_INFO));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.AK8963_CNTL1));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.AK8963_CNTL2));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.AK8963_ASTC));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.AK8963_ASAX));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.AK8963_ASAY));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.AK8963_ASAZ));
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_WHO_AM_I));
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_INFO));
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_CNTL1));
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_CNTL2));
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ASTC));
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ASAX));
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ASAY));
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ASAZ));
 	   	//these registers must be read in this order to clear the read flag
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.AK8963_ST1));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShortLSBfirst(MPU9250Registers.AK8963_XOUT_L));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShortLSBfirst(MPU9250Registers.AK8963_YOUT_L));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShortLSBfirst(MPU9250Registers.AK8963_ZOUT_L));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.AK8963_ST2));
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ST1));
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShortLSBfirst(AK8963Registers.AK8963_XOUT_L));
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShortLSBfirst(AK8963Registers.AK8963_YOUT_L));
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShortLSBfirst(AK8963Registers.AK8963_ZOUT_L));
+		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ST2));
 	}
 	
 	/**
@@ -98,11 +98,11 @@ public class MPU9250Magnetometer extends Sensor3D  {
     @Override
 	public void updateData()
     { //#KW loop() L490 calls - readMagData L812
-        byte dataReady = (byte)(ro.readByte(MPU9250Registers.AK8963_ST1) & 0x01); //DRDY - Data ready bit0 1 = data is ready
+        byte dataReady = (byte)(ro.readByte(AK8963Registers.AK8963_ST1) & 0x01); //DRDY - Data ready bit0 1 = data is ready
         if (dataReady == 0) return; //no data ready
         
         // #KW 494 readMagData - data is ready, read it NB bug fix here read was starting from ST1 not XOUT_L
-        byte[] buffer = ro.readBytes(MPU9250Registers.AK8963_XOUT_L, 7); // #KW L815 6 data bytes x,y,z 16 bits stored as little Endian (L/H)
+        byte[] buffer = ro.readBytes(AK8963Registers.AK8963_XOUT_L, 7); // #KW L815 6 data bytes x,y,z 16 bits stored as little Endian (L/H)
         // Check if magnetic sensor overflow set, if not then report data	
         //roAK.readByteRegister(Registers.AK8963_ST2);// Data overflow bit 3 and data read error status bit 2
         byte status2 = buffer[6]; // Status2 register must be read as part of data read to show device data has been read
@@ -133,22 +133,22 @@ public class MPU9250Magnetometer extends Sensor3D  {
 		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"configure mag AK8963");
         // First extract the factory calibration for each magnetometer axis
 
-        ro.writeByte(MPU9250Registers.AK8963_CNTL1,(byte) 0x00); // #KW 836 Power down magnetometer
+        ro.writeByte(AK8963Registers.AK8963_CNTL1,(byte) 0x00); // #KW 836 Power down magnetometer
         Thread.sleep(10);
-        ro.writeByte(MPU9250Registers.AK8963_CNTL1, (byte)0x0F); // #KW 838 Enter Fuse ROM access bits
+        ro.writeByte(AK8963Registers.AK8963_CNTL1, (byte)0x0F); // #KW 838 Enter Fuse ROM access bits
         Thread.sleep(10);
-        byte rawData[] = ro.readBytes(MPU9250Registers.AK8963_ASAX, 3);  // Read the x-, y-, and z-axis calibration values
+        byte rawData[] = ro.readBytes(AK8963Registers.AK8963_ASAX, 3);  // Read the x-, y-, and z-axis calibration values
         this.magCalibration = new Data3f(	((float)(rawData[0] - 128))/256f + 1f,   // #KW 841-843 Return x-axis sensitivity adjustment values, etc.
         									((float)(rawData[1] - 128))/256f + 1f,
         									((float)(rawData[2] - 128))/256f + 1f);
         
-        ro.writeByte(MPU9250Registers.AK8963_CNTL1, (byte)0x00); // #KW 844 Power down magnetometer
+        ro.writeByte(AK8963Registers.AK8963_CNTL1, (byte)0x00); // #KW 844 Power down magnetometer
         Thread.sleep(10);
         // Configure the magnetometer for continuous read and highest resolution
         // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL1 register,
         // and enable continuous bits data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
         // set to MagScale.MFS_16BIT.bits and MagMode.MM_100HZ set as final lines 48 & 49. register write should be 0x16
-        ro.writeByte(MPU9250Registers.AK8963_CNTL1, (byte)(magScale.bits | magMode.bits)); // #KW 849 Set magnetometer data resolution and sample ODR ####16bit already shifted
+        ro.writeByte(AK8963Registers.AK8963_CNTL1, (byte)(magScale.bits | magMode.bits)); // #KW 849 Set magnetometer data resolution and sample ODR ####16bit already shifted
         Thread.sleep(10);
         logState();
         SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End configure mag initAK8963");
