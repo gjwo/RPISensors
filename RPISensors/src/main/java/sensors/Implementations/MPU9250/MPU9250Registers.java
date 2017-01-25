@@ -357,6 +357,3 @@ enum GyrFchoiceB
 
     GyrFchoiceB(byte bits){this.bits = bits;}
 }
-
-
-

@@ -3,6 +3,8 @@ package devices.motors;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * RPITank
  * Created by MAWood on 02/07/2016.
@@ -52,7 +54,14 @@ public class StepperMotor
             long start = System.nanoTime();
             //TODO: make dynamic
             //noinspection StatementWithEmptyBody
-            while(System.nanoTime() - start < STEP_DELAY_NANOS);
+            //while(System.nanoTime() - start < STEP_DELAY_NANOS);
+            try
+            {
+                TimeUnit.NANOSECONDS.sleep(STEP_DELAY_NANOS);
+            } catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
         }
 
     }
