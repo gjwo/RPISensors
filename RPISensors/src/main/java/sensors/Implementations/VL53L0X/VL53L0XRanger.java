@@ -5,7 +5,7 @@ import deviceHardwareAbstractionLayer.Device;
 import deviceHardwareAbstractionLayer.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.Sensor1D;
-
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import subsystems.SubSystem;
@@ -18,10 +18,28 @@ import subsystems.SubSystem;
 public class VL53L0XRanger extends Sensor1D
 {
     private final RegisterOperations registerOperations;
+    private final HashMap<Integer,String> errorMap;
 
     VL53L0XRanger(Device device, int sampleSize)
     {
         super(sampleSize);
+        errorMap = new HashMap<>(16);
+        errorMap.put(0x00, "Data OK!");// No device error
+        errorMap.put(0x01, "VCSEL CONTINUITY TEST FAILURE!");
+        errorMap.put(0x02, "VCSEL WATCHDOG TEST FAILURE!");
+        errorMap.put(0x03, "NO VHV VALUE FOUND!");
+        errorMap.put(0x04, "MSRC NO TARGET!");
+        errorMap.put(0x05, "SNR CHECK!");
+        errorMap.put(0x06, "RANGE PHASE CHECK!");
+        errorMap.put(0x07, "SIGMA THRESHOLD CHECK!");
+        errorMap.put(0x08, "TCC!");
+        errorMap.put(0x09, "PHASE CONSISTENCY!");
+        errorMap.put(0x0A, "MIN CLIP!");
+        errorMap.put(0x0B, "RANGE COMPLETE!");
+        errorMap.put(0x0C, "ALGO UNDERFLOW!");
+        errorMap.put(0x0D, "ALGO OVERFLOW!");
+        errorMap.put(0x0E, "RANGE IGNORE THRESHOLD!");
+
         registerOperations = new RegisterOperations(device);
         try
         {
@@ -291,25 +309,7 @@ public class VL53L0XRanger extends Sensor1D
             //        "byte " + i + " = " + rangeData[i-1]);
 
             byte devError = (byte) ((rangeData[0] & 0x78) >> 3); // Check for errors
-
-            String error = "";
-            if (devError == 0) error = "Data OK!";// No device error
-            if (devError == 0x01) error = "VCSEL CONTINUITY TEST FAILURE!";
-            if (devError == 0x02) error = "VCSEL WATCHDOG TEST FAILURE!";
-            if (devError == 0x03) error = "NO VHV VALUE FOUND!";
-            if (devError == 0x04) error = "MSRC NO TARGET!";
-            if (devError == 0x05) error = "SNR CHECK!";
-            if (devError == 0x06) error = "RANGE PHASE CHECK!";
-            if (devError == 0x07) error = "SIGMA THRESHOLD CHECK!";
-            if (devError == 0x08) error = "TCC!";
-            if (devError == 0x09) error = "PHASE CONSISTENCY!";
-            if (devError == 0x0A) error = "MIN CLIP!";
-            if (devError == 0x0B) error = "RANGE COMPLETE!";
-            if (devError == 0x0C) error = "ALGO UNDERFLOW!";
-            if (devError == 0x0D) error = "ALGO OVERFLOW!";
-            if (devError == 0x0E) error = "RANGE IGNORE THRESHOLD!";
-
-            SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS, error);
+            SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS, errorMap.get(devError));
 
             /*SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
                     "Effective SPAD Return Count = " + ((float) (rangeData[2]) + (float)rangeData[3]/255.));
