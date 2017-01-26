@@ -1,5 +1,7 @@
 package dataTypes;
 
+import java.time.Instant;
+
 /**
  * TimestampedData1f - 1 dimension time stamped floating point data structure
  * Created by MAWood on 18/07/2016, modified by G.J.Wood 10/11/2016
@@ -10,26 +12,22 @@ public class TimestampedData1f extends Data1f
  	private static final long serialVersionUID = -1083356277253192515L;
 	public final long NANOS_PER_SEC = 1000000000;
     private static final float NANOS_PER_SECF = 1000000000f;
-    private final long nanoTime;
+    private Instant instant;
 
-    /**
-     * TimestampedData1f	- Constructor
-     * @param x             - value
-     * @param nanoTime      - Timestamp
-     */
-    public TimestampedData1f(float x, long nanoTime)
+
+
+    public TimestampedData1f( float x, Instant instant)
     {
-        super(x);
-        this.nanoTime = nanoTime;
+        super (x);
+        this.instant = instant;
     }
-    
     /**
      * TimestampedData1f	- Constructor
      * @param x - value
      */
     public TimestampedData1f(float x)
     {
-        this(x, System.nanoTime());
+        this(x, Instant.now() );
     }
 
     /**
@@ -47,9 +45,14 @@ public class TimestampedData1f extends Data1f
      */
     public	long getTime()
     {
-    	return nanoTime;
+    	return instant.getNano();
     }
-    
+
+    /**
+     * getInstant
+     * @return  the timestamp instant
+     */
+    public Instant getInstant(){return instant;}
     /**
      * unStamp	- return the data without the timestamp
      * @return	- base data
@@ -65,7 +68,7 @@ public class TimestampedData1f extends Data1f
     public String toString()
     {
         String format = "%08.3f";
-        return 	" t: " + String.format(format,((float)nanoTime)/NANOS_PER_SECF) +
+        return 	" t: " + String.format(format,((float)instant.getNano())/NANOS_PER_SECF) +
                 " " + super.toString();
     }
 
@@ -74,6 +77,6 @@ public class TimestampedData1f extends Data1f
      */
     public TimestampedData1f clone()
     {
-        return new TimestampedData1f(x,nanoTime);
+        return new TimestampedData1f(x,instant);
     }
 }

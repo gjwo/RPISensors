@@ -1,6 +1,7 @@
 package dataTypes;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 /**
  * TimestampedData3f - 3 dimensional time stamped floating point data structure
@@ -14,20 +15,8 @@ public class TimestampedData3f extends Data3f implements Serializable
 	private static final long serialVersionUID = -6056118215941025501L;
 	public static final long NANOS_PER_SEC = 1000000000;
     private static final float NANOS_PER_SECF = 1000000000f;
-    private final long nanoTime;
+    private Instant instant;
 
-    /**
-     * TimestampedData3f	- Constructor from 3 scalars and a time
-     * @param x             - value
-     * @param y             - value
-     * @param z             - value
-     * @param nanoTime      - timestamp
-     */
-    public TimestampedData3f(float x, float y, float z, long nanoTime)
-    {
-        super(x, y, z);
-        this.nanoTime = nanoTime;
-    }
 
     /**
      * TimestampedData3f	- Constructor from 3 scalars with a time added internally
@@ -37,7 +26,20 @@ public class TimestampedData3f extends Data3f implements Serializable
      */
     public TimestampedData3f(float x, float y, float z)
     {
-        this(x, y, z, System.nanoTime());
+        this(x, y, z, Instant.now());
+    }
+
+    /**
+     * TimestampedData2f    -   Constructor from 2 scalars and a time
+     * @param x             -   1st dimension value
+     * @param y             -   2nd dimension value
+     * @param z             -   3rd dimension value
+     * @param instant       -   Timestamp
+     */
+    public TimestampedData3f( float x, float y, float z, Instant instant)
+    {
+        super (x,y,z);
+        this.instant = instant;
     }
 
     /**
@@ -48,19 +50,26 @@ public class TimestampedData3f extends Data3f implements Serializable
     {
         this(data.getX(),data.getY(),data.getZ());
     }
-    
+
     public TimestampedData3f()
     {
-    	super();
-    	this.nanoTime = System.nanoTime();
+        super();
+        instant = Instant.now();
     }
+
+    /**
+     * getInstant
+     * @return  The timestamp Instant
+     */
+    public Instant getInstant() { return instant;}
+
     /**
      * getTime  - get the timestamp
      * @return  - timestamp
      */
     public long getTime()
     {
-    	return nanoTime;
+    	return instant.getNano();
     }
 
     /**
@@ -78,7 +87,7 @@ public class TimestampedData3f extends Data3f implements Serializable
     public String toString()
     {
         String format = "%08.3f";
-        return 	"[" + String.format(format,((float)nanoTime)/NANOS_PER_SECF) +
+        return 	"[" + String.format(format,((float)instant.getNano())/NANOS_PER_SECF) +
                 "] " + super.toString();
     }
 
@@ -93,6 +102,6 @@ public class TimestampedData3f extends Data3f implements Serializable
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public TimestampedData3f clone()
     {
-        return new TimestampedData3f(x,y,z,nanoTime);
+        return new TimestampedData3f(x,y,z,instant);
     }
 }

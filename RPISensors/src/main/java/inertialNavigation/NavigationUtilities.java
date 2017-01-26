@@ -28,7 +28,7 @@ public class NavigationUtilities {
 
         return new TimestampedData1f(
                 (sampleT.getX()+sampleTm1.getX())/2f*deltaT,//Trapezoidal area, average height X deltaT
-                sampleT.getTime()); // preserve timestamp in result
+                sampleT.getInstant()); // preserve timestamp in result
     }
     
 	/**
@@ -45,7 +45,7 @@ public class NavigationUtilities {
         return new TimestampedData2f(
                 (sampleT.getX()+sampleTm1.getX())/2f*deltaT,//Trapezoidal area, average height X deltaT
                 (sampleT.getY()+sampleTm1.getY())/2f*deltaT,//Trapezoidal area, average height Y deltaT
-                sampleT.getTime()); // preserve timestamp in result
+                sampleT.getInstant()); // preserve timestamp in result
     }
     
 	/**
@@ -62,6 +62,6 @@ public class NavigationUtilities {
                 (sampleT.getX()+sampleTm1.getX())/2f*deltaT,//Trapezoidal area, average height X deltaT
                 (sampleT.getY()+sampleTm1.getY())/2f*deltaT,//Trapezoidal area, average height Y deltaT
                 (sampleT.getZ()+sampleTm1.getZ())/2f*deltaT,//Trapezoidal area, average height Z deltaT
-                sampleT.getTime()); // preserve timestamp in result
+                sampleT.getInstant()); // preserve timestamp in result
     }
 }

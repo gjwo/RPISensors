@@ -1,5 +1,7 @@
 package dataTypes;
 
+import java.time.Instant;
+
 /**
  * TimestampedData2f - 2 dimensional time stamped floating point data structure
  * Created by MAWood on 18/07/2016, modified by G.J.Wood 10/11/2016
@@ -9,18 +11,19 @@ public class TimestampedData2f extends Data2f
 	private static final long serialVersionUID = 9128847141367511460L;
 	public static final long NANOS_PER_SEC = 1000000000;
     private static final float NANOS_PER_SECF = 1000000000f;
-    private final long nanoTime;
+    private Instant instant;
+
 
     /**
-     * TimestampedData2f	- Constructor from 2 scalars and a time
-     * @param x             - value
-     * @param y             - value
-     * @param nanoTime      - timestamp
+     * TimestampedData2f    -   Constructor from 2 scalars and a time
+     * @param x             -   1st dimension value
+     * @param y             -   2nd dimension value
+     * @param instant       -   Timestamp
      */
-    public TimestampedData2f(float x, float y, long nanoTime)
+    public TimestampedData2f( float x, float y, Instant instant)
     {
-        super(x, y);
-        this.nanoTime = nanoTime;
+        super (x,y);
+        this.instant = instant;
     }
 
     /**
@@ -28,9 +31,9 @@ public class TimestampedData2f extends Data2f
      * @param x             - value
      * @param y             - value
      */
-    private TimestampedData2f(float x, float y)
+    public TimestampedData2f(float x, float y)
     {
-        this(x, y, System.nanoTime());
+        this(x, y, Instant.now());
     }
 
     /**
@@ -48,9 +51,15 @@ public class TimestampedData2f extends Data2f
      */
     public	long getTime()
     {
-    	return nanoTime;
+    	return instant.getNano();
     }
-  
+
+    /**
+     * getInstant
+     * @return  The timestamp Instant
+     */
+    public Instant getInstant() { return instant;}
+
     /**
      * unStamp	- return the data without the timestamp
      * @return	- base data
@@ -66,7 +75,7 @@ public class TimestampedData2f extends Data2f
     public String toString()
     {
         String format = "%08.3f";
-        return 	" t: " + String.format(format,((float)nanoTime)/NANOS_PER_SECF) +
+        return 	" t: " + String.format(format,((float)instant.getNano())/NANOS_PER_SECF) +
                 " " + super.toString();
     }
     
@@ -76,6 +85,6 @@ public class TimestampedData2f extends Data2f
      @SuppressWarnings("MethodDoesntCallSuperMethod")
      public TimestampedData2f clone()
     {
-        return new TimestampedData2f(x,y,nanoTime);
+        return new TimestampedData2f(x,y,instant);
     }
 }
