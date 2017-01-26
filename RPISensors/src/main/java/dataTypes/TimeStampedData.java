@@ -34,6 +34,10 @@ public class TimeStampedData<E> implements TimeStamped, Serializable
     public Instant time() {return timestamp;}
     public long getNano() {return timestamp.getNano();}
 
+    /**
+     * getTimeStr   -   gets a localised pritable string for the time
+     * @return      -   time displayed to the nearest milliscond
+     */
     public String getTimeStr()
     {
         DateTimeFormatter.ofLocalizedDateTime( FormatStyle.SHORT )

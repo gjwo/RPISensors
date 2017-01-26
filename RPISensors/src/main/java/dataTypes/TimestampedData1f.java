@@ -1,6 +1,10 @@
 package dataTypes;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
 
 /**
  * TimestampedData1f - 1 dimension time stamped floating point data structure
@@ -78,5 +82,18 @@ public class TimestampedData1f extends Data1f
     public TimestampedData1f clone()
     {
         return new TimestampedData1f(x,instant);
+    }
+
+    /**
+     * getTimeStr   -   gets a localised pritable string for the time
+     * @return      -   time displayed to the nearest milliscond
+     */
+    public String getTimeStr()
+    {
+        DateTimeFormatter.ofLocalizedDateTime( FormatStyle.SHORT )
+                .withLocale( Locale.UK )
+                .withZone( ZoneId.systemDefault() );
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss.nnnn");
+        return 	"[" +formatter.format( instant ) +"] " ;
     }
 }

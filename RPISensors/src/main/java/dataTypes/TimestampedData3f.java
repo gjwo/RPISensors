@@ -2,6 +2,10 @@ package dataTypes;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
 
 /**
  * TimestampedData3f - 3 dimensional time stamped floating point data structure
@@ -103,5 +107,18 @@ public class TimestampedData3f extends Data3f implements Serializable
     public TimestampedData3f clone()
     {
         return new TimestampedData3f(x,y,z,instant);
+    }
+
+    /**
+     * getTimeStr   -   gets a localised pritable string for the time
+     * @return      -   time displayed to the nearest milliscond
+     */
+    public String getTimeStr()
+    {
+        DateTimeFormatter.ofLocalizedDateTime( FormatStyle.SHORT )
+                .withLocale( Locale.UK )
+                .withZone( ZoneId.systemDefault() );
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss.nnnn");
+        return 	"[" +formatter.format( instant ) +"] " ;
     }
 }
