@@ -2,9 +2,11 @@ package Mapping;
 
 import dataTypes.TimestampedData1f;
 import devices.motors.AngularPositioner;
+import sensors.Implementations.VL53L0X.VL53L0X;
 import sensors.interfaces.Ranger;
 import sensors.interfaces.UpdateListener;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -19,10 +21,10 @@ import java.util.concurrent.TimeUnit;
  *
  * Created by GJWood on 26/01/2017.
  */
-public class RangeScanner implements Runnable, RemoteRangeScanner
+public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
 {
     private final AngularPositioner angularPositioner;
-    private final Ranger ranger;
+    private final VL53L0X ranger;
     private int scanRate;
     private final Thread thread;
     private volatile boolean interrupted;
@@ -42,10 +44,11 @@ public class RangeScanner implements Runnable, RemoteRangeScanner
      * @param r  -   a range scanner
      * @param s  -   Scanning rate in revolutions per minute
      */
-    RangeScanner(AngularPositioner ap, Ranger r, int s)
+    RangeScanner(AngularPositioner ap, VL53L0X r, int s)
     {
         this.angularPositioner = ap;
         this.ranger = r;
+        ranger.registerInterest(this);
         this.scanRate = s;
         this.thread = new Thread(this, "Range Scanner");
         this.interrupted = false;
@@ -118,4 +121,21 @@ public class RangeScanner implements Runnable, RemoteRangeScanner
     public TimestampedData1f[] getRawRanges(){return ranges.clone();}
 
     public HashMap<Float,TimestampedData1f> getRangeMap() {return rangeMap;}
+
+    public void unbind()
+    {
+        try
+        {
+            Registry reg = LocateRegistry.getRegistry();
+            reg.unbind(REMOTE_NAME);
+        } catch (RemoteException | NotBoundException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void dataUpdated()
+    {
+
+    }
 }

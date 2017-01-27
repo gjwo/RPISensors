@@ -1,10 +1,12 @@
-package subsystems;
+package inertialNavigation;
 
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 import deviceHardwareAbstractionLayer.Pi4jI2CDevice;
 import inertialNavigation.Navigate;
 import sensors.Implementations.MPU9250.MPU9250;
+import subsystems.SubSystem;
+import subsystems.SubSystemState;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;

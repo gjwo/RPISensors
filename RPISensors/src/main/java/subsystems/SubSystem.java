@@ -16,7 +16,8 @@ public abstract class SubSystem extends Thread
 		SUBSYSTEM_MANAGER,
 		TELEMETRY,
 		TESTING,
-		DEVICES
+		DEVICES,
+		MAPPING;
 	}
 
 	private final SubSystemType type;
