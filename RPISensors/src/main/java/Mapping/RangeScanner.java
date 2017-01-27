@@ -1,10 +1,14 @@
-package Scanner;
+package Mapping;
 
 import dataTypes.TimestampedData1f;
 import devices.motors.AngularPositioner;
 import sensors.interfaces.Ranger;
 import sensors.interfaces.UpdateListener;
 
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  *
  * Created by GJWood on 26/01/2017.
  */
-public class RangeScanner implements Runnable
+public class RangeScanner implements Runnable, RemoteRangeScanner
 {
     private final AngularPositioner angularPositioner;
     private final Ranger ranger;
@@ -29,6 +33,7 @@ public class RangeScanner implements Runnable
     private long delaytime;
     private final ArrayList<UpdateListener> listeners;
     private final HashMap<Float,TimestampedData1f> rangeMap;
+    private static final String REMOTE_NAME = "RangeScanner";
 
     /**
      * RangeScanner -   Constructor
@@ -51,6 +56,14 @@ public class RangeScanner implements Runnable
         this.delaytime = ((long) (60f / (float) (scanRate * stepsPerRevolution)) * 1000);
         this.listeners = new ArrayList<>();
         rangeMap = new HashMap<>(stepsPerRevolution);
+        try
+        {
+            Registry reg = LocateRegistry.getRegistry();
+            reg.rebind(REMOTE_NAME, UnicastRemoteObject.exportObject(this,0));
+        } catch (RemoteException e)
+        {
+            e.printStackTrace();
+        }
     }
     public void interrupt()
     {

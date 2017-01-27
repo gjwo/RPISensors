@@ -68,6 +68,7 @@ public class DriveAssemblySubSystem extends SubSystem
         if(this.getSubSysState() != SubSystemState.RUNNING) return this.getSubSysState();
         this.setSubSysState(SubSystemState.STOPPING);
         remoteDriveAssembly.unbind();
+        remoteDriveAssembly = null;
         this.setSubSysState(SubSystemState.IDLE);
         return this.getSubSysState();
     }
