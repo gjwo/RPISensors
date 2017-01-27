@@ -1,5 +1,6 @@
 package Mapping;
 
+import com.pi4j.io.gpio.*;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 import deviceHardwareAbstractionLayer.Device;
@@ -16,20 +17,25 @@ import java.io.IOException;
  * MappingSubsystem
  * Created by GJWood on 27/01/2017.
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class MappingSubsystem extends SubSystem
 {
+    private final int   BY48_STEPPER_CYCLES_PER_ROTATION = 512;
     private AngularPositioner angularPositioner;
     private VL53L0X ranger;
     private RangeScanner rangeScanner;
     private I2CBus bus;
     private Device rangerDevice;
+    private GpioPinDigitalOutput[] positionerPins;
+    private final GpioController gpio;
 
     /**
      * MappingSubsystem -   Constructor
      */
-    protected MappingSubsystem()
+    public MappingSubsystem()
     {
         super(SubSystemType.MAPPING);
+        gpio = GpioFactory.getInstance();
     }
 
     // SubSystem interface methods
@@ -38,6 +44,8 @@ public class MappingSubsystem extends SubSystem
     {
         if(this.getSubSysState() != SubSystemState.IDLE) return this.getSubSysState();
         this.setSubSysState(SubSystemState.STARTING);
+
+        // set up the ranger in this case a VL3LOX on the IC2 bus
         try
         {
             bus = I2CFactory.getInstance(I2CBus.BUS_1);
@@ -47,8 +55,18 @@ public class MappingSubsystem extends SubSystem
             e.printStackTrace();
         }
         ranger = new VL53L0X(rangerDevice,10,100);
-        angularPositioner = new StepperMotor();
-        rangeScanner = new RangeScanner(angularPositioner,ranger,60);
+
+        // set up the positioner, in this case a GPIO controlled BY48 stepper motor
+        positionerPins = new GpioPinDigitalOutput[4];
+        positionerPins[0] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02,"Positioner Pin 1");
+        positionerPins[1] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03,"Positioner Pin 2");
+        positionerPins[2] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04,"Positioner Pin 3");
+        positionerPins[3] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05,"Positioner Pin 4");
+        angularPositioner = new StepperMotor(positionerPins,BY48_STEPPER_CYCLES_PER_ROTATION);
+
+        // initialise the range scanner with the two devices
+        rangeScanner = new RangeScanner(angularPositioner,ranger,60); //scan at 1 rotation per second
+
         this.setSubSysState(SubSystemState.RUNNING);
         return this.getSubSysState();
 
