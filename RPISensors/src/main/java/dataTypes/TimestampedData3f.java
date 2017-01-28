@@ -73,6 +73,7 @@ public class TimestampedData3f extends Data3f implements Serializable
      */
     public long getTime()
     {
+        // TODO add epoch ref time to offset, get nano returns nano in current second.
     	return instant.getNano();
     }
 
@@ -115,10 +116,11 @@ public class TimestampedData3f extends Data3f implements Serializable
      */
     public String getTimeStr()
     {
-        DateTimeFormatter.ofLocalizedDateTime( FormatStyle.SHORT )
-                .withLocale( Locale.UK )
-                .withZone( ZoneId.systemDefault() );
+        // TODO: understand what this does.
+        DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+                .withLocale(Locale.UK)
+                .withZone(ZoneId.systemDefault());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss.nnnn");
-        return 	"[" +formatter.format( instant ) +"] " ;
+        return 	"[" +formatter.format(instant) +"] " ;
     }
 }
