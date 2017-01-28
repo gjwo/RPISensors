@@ -20,7 +20,7 @@ import java.io.IOException;
 @SuppressWarnings("FieldCanBeLocal")
 public class MappingSubsystem extends SubSystem
 {
-    private final int   BY48_STEPPER_CYCLES_PER_ROTATION = 512;
+    private final int BY48_STEPPER_CYCLES_PER_ROTATION = 512;
     private AngularPositioner angularPositioner;
     private VL53L0X ranger;
     private RangeScanner rangeScanner;
@@ -58,10 +58,10 @@ public class MappingSubsystem extends SubSystem
 
         // set up the positioner, in this case a GPIO controlled BY48 stepper motor
         positionerPins = new GpioPinDigitalOutput[4];
-        positionerPins[0] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02,"Positioner Pin 1");
-        positionerPins[1] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03,"Positioner Pin 2");
-        positionerPins[2] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04,"Positioner Pin 3");
-        positionerPins[3] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05,"Positioner Pin 4");
+        positionerPins[0] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06,"Positioner Pin 1");
+        positionerPins[1] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07,"Positioner Pin 2");
+        positionerPins[2] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08,"Positioner Pin 3");
+        positionerPins[3] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09,"Positioner Pin 4");
         angularPositioner = new StepperMotor(positionerPins,BY48_STEPPER_CYCLES_PER_ROTATION);
 
         // initialise the range scanner with the two devices
