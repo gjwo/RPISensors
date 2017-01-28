@@ -75,6 +75,10 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
     {
         return finished;
     }
+    public int getStepsPerRevolution()
+    {
+        return stepsPerRevolution;
+    }
     @Override
     public void run()
     {
