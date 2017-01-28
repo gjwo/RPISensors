@@ -1,4 +1,4 @@
-package Mapping;
+package mapping;
 
 import dataTypes.TimestampedData1f;
 import sensors.interfaces.UpdateListener;

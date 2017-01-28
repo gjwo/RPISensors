@@ -1,9 +1,8 @@
-package Mapping;
+package mapping;
 
 import dataTypes.TimestampedData1f;
 import devices.motors.AngularPositioner;
 import sensors.Implementations.VL53L0X.VL53L0X;
-import sensors.interfaces.Ranger;
 import sensors.interfaces.UpdateListener;
 
 import java.rmi.NotBoundException;

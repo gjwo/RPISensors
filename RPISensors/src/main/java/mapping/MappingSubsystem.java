@@ -1,4 +1,4 @@
-package Mapping;
+package mapping;
 
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.i2c.I2CBus;

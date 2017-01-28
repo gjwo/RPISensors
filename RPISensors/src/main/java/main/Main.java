@@ -1,6 +1,6 @@
 package main;
 
-import Mapping.MappingSubsystem;
+import mapping.MappingSubsystem;
 import devices.driveAssembly.DriveAssemblySubSystem;
 import inertialNavigation.InstrumentsSubSystem;
 import subsystems.*;
