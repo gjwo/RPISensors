@@ -1,8 +1,8 @@
 package sensors.Implementations.VL53L0X;
 
 import dataTypes.TimestampedData1f;
-import deviceHardwareAbstractionLayer.Device;
-import deviceHardwareAbstractionLayer.RegisterOperations;
+import hardwareAbstractionLayer.Device;
+import hardwareAbstractionLayer.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.Sensor1D;
 import java.util.HashMap;

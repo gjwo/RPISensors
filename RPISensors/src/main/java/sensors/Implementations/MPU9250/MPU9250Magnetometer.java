@@ -2,7 +2,7 @@ package sensors.Implementations.MPU9250;
 
 import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
-import deviceHardwareAbstractionLayer.RegisterOperations;
+import hardwareAbstractionLayer.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.Sensor3D;
 import subsystems.SubSystem;

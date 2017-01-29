@@ -1,6 +1,6 @@
 package sensors.Implementations.MPU9250;
 
-import deviceHardwareAbstractionLayer.Register;
+import hardwareAbstractionLayer.Register;
 
 /**
  * AK8963Registers  -   Register addesses for the AK8963

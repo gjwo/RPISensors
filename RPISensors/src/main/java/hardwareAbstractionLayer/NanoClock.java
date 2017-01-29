@@ -1,4 +1,4 @@
-package deviceHardwareAbstractionLayer;
+package hardwareAbstractionLayer;
 
 import java.time.Clock;
 import java.time.Instant;

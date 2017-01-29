@@ -1,7 +1,7 @@
 package sensors.Implementations.MPU9250;
 
 import dataTypes.TimestampedData1f;
-import deviceHardwareAbstractionLayer.RegisterOperations;
+import hardwareAbstractionLayer.RegisterOperations;
 import sensors.models.Sensor;
 /**
  * @author GJWood

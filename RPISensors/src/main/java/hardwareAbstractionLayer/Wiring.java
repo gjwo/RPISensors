@@ -1,7 +1,6 @@
-package deviceHardwareAbstractionLayer;
+package hardwareAbstractionLayer;
 
 import com.pi4j.io.gpio.*;
-import devices.motors.Encoder;
 
 /**
  * Wiring           -   a place to keep all the GPIO pin allocations

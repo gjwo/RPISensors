@@ -1,6 +1,6 @@
 package sensors.Implementations.VL53L0X;
 
-import deviceHardwareAbstractionLayer.Register;
+import hardwareAbstractionLayer.Register;
 
 /**
  * RPISensors - sensors.Implementations.VL53L0XRanger

@@ -2,9 +2,9 @@ package mapping;
 
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
-import deviceHardwareAbstractionLayer.Device;
-import deviceHardwareAbstractionLayer.Pi4jI2CDevice;
-import deviceHardwareAbstractionLayer.Wiring;
+import hardwareAbstractionLayer.Device;
+import hardwareAbstractionLayer.Pi4jI2CDevice;
+import hardwareAbstractionLayer.Wiring;
 import devices.motors.AngularPositioner;
 import devices.motors.StepperMotor;
 import logging.SystemLog;

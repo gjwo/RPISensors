@@ -9,7 +9,7 @@ import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 import dataTypes.TimestampedData3f;
 import com.pi4j.io.i2c.I2CBus;
-import deviceHardwareAbstractionLayer.Pi4jI2CDevice;
+import hardwareAbstractionLayer.Pi4jI2CDevice;
 import logging.SystemLog;
 import sensors.Implementations.MPU9250.MPU9250;
 import sensors.interfaces.UpdateListener;

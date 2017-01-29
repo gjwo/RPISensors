@@ -1,8 +1,8 @@
 package sensors.Implementations.INA219;
 
 import dataTypes.TimestampedData1f;
-import deviceHardwareAbstractionLayer.Device;
-import deviceHardwareAbstractionLayer.RegisterOperations;
+import hardwareAbstractionLayer.Device;
+import hardwareAbstractionLayer.RegisterOperations;
 import sensors.interfaces.CurrentMeter;
 import sensors.interfaces.PowerMeter;
 import sensors.interfaces.VoltageMeter;

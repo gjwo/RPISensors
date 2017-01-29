@@ -1,7 +1,7 @@
 package sensors.Implementations.INA219;
 
 import dataTypes.TimestampedData1f;
-import deviceHardwareAbstractionLayer.RegisterOperations;
+import hardwareAbstractionLayer.RegisterOperations;
 import sensors.models.Sensor1D;
 
 public class INA219PowerMeter extends Sensor1D

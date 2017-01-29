@@ -1,7 +1,5 @@
 package main;
 
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
 import mapping.MappingSubsystem;
 import devices.driveAssembly.DriveAssemblySubSystem;
 import inertialNavigation.InstrumentsSubSystem;
@@ -22,7 +20,7 @@ import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashMap;
 
-import deviceHardwareAbstractionLayer.NanoClock;
+import hardwareAbstractionLayer.NanoClock;
 
 
 public class Main implements RemoteMain

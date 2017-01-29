@@ -1,4 +1,4 @@
-package deviceHardwareAbstractionLayer;
+package hardwareAbstractionLayer;
 
 public class  RegisterData
 {

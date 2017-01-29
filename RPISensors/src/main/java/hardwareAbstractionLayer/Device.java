@@ -1,4 +1,4 @@
-package deviceHardwareAbstractionLayer;
+package hardwareAbstractionLayer;
 
 import java.io.IOException;
 

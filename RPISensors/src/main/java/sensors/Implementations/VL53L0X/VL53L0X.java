@@ -1,7 +1,7 @@
 package sensors.Implementations.VL53L0X;
 
 import dataTypes.TimestampedData1f;
-import deviceHardwareAbstractionLayer.Device;
+import hardwareAbstractionLayer.Device;
 import sensors.interfaces.Ranger;
 import sensors.models.SensorPackage;
 

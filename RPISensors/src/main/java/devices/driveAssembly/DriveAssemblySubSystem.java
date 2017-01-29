@@ -1,15 +1,12 @@
 package devices.driveAssembly;
 
-import com.pi4j.io.gpio.*;
-import deviceHardwareAbstractionLayer.Wiring;
+import hardwareAbstractionLayer.Wiring;
 import devices.motors.Encoder;
 import devices.motors.DCMotor;
 import devices.motors.EncoderFeedbackMotor;
 import devices.motors.Motor;
 import subsystems.SubSystem;
 import subsystems.SubSystemState;
-
-import static deviceHardwareAbstractionLayer.Wiring.getLeftMainMotorEncoderPins;
 
 /**
  * RPISensors - subsystems

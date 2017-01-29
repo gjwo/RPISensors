@@ -1,7 +1,7 @@
 package sensors.Implementations.MPU9250;
 
-import deviceHardwareAbstractionLayer.Device;
-import deviceHardwareAbstractionLayer.RegisterOperations;
+import hardwareAbstractionLayer.Device;
+import hardwareAbstractionLayer.RegisterOperations;
 import logging.SystemLog;
 import sensors.models.NineDOF;
 import subsystems.SubSystem;
