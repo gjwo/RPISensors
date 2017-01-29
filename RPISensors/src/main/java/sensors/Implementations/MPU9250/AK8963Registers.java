@@ -3,6 +3,7 @@ package sensors.Implementations.MPU9250;
 import deviceHardwareAbstractionLayer.Register;
 
 /**
+ * AK8963Registers  -   Register addesses for the AK8963
  * Created by GJWood on 08/01/2017.
  */
 public enum AK8963Registers implements Register

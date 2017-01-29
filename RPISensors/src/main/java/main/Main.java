@@ -30,9 +30,9 @@ public class Main implements RemoteMain
 	private final NanoClock clock;
 
 	/**
-	 * Main	-	Constructor
-	 * @param reg
-	 * @throws RemoteException
+	 * Main						-	Constructor
+	 * @param reg				-	RMI registry
+	 * @throws RemoteException	-	exception during RMI operation
 	 */
 	private Main(Registry reg) throws RemoteException
     {
@@ -46,9 +46,9 @@ public class Main implements RemoteMain
 	}
 
 	/**
-	 * main				-	Entry point for entire program
-	 * @param args		-	command line arguments
-	 * @throws RemoteException
+	 * main				        -	Entry point for entire program
+	 * @param args		        -	command line arguments
+	 * @throws RemoteException	-	exception during RMI operation
 	 */
 	public static void main(String[] args) throws RemoteException
 	{
@@ -79,9 +79,9 @@ public class Main implements RemoteMain
     }
 
 	/**
-	 * start	-	starts a set of requested subystems
-	 * @param systems
-	 * @throws RemoteException
+	 * start	                -	starts a set of requested subystems
+	 * @param systems           -   set of subsystems
+	 * @throws RemoteException	-	exception during RMI operation
 	 */
     @Override
 	public void start(EnumSet<SubSystemType> systems) throws RemoteException
@@ -100,9 +100,9 @@ public class Main implements RemoteMain
 	}
 
 	/**
-	 * stop	-	stops a set of requested subystems
-	 * @param systems
-	 * @throws RemoteException
+	 * stop	                    -	stops a set of requested subystems
+	 * @param systems           -   set of subsystems
+	 * @throws RemoteException	-	exception during RMI operation
 	 */
 	@Override
 	public void shutdown(EnumSet<SubSystemType> systems) throws RemoteException
@@ -118,6 +118,11 @@ public class Main implements RemoteMain
         }
 	}
 
+	/**
+	 * restart                  -   restarts specified subsystems
+	 * @param systems           -   set of subsystems
+	 * @throws RemoteException	-	exception during RMI operation
+	 */
 	@Override
 	public void restart(EnumSet<SubSystemType> systems) throws RemoteException
 	{
@@ -125,31 +130,54 @@ public class Main implements RemoteMain
 		start(systems);
 	}
 
+	/**
+	 * shutdownAll              -   shutdown all subsystems
+	 * @throws RemoteException	-	exception during RMI operation
+	 */
 	@Override
 	public void shutdownAll() throws RemoteException
 	{
 		for(SubSystem system:subSystems.values()) system.shutdown();
 	}
 
+	/**
+	 * getSubSystems	        -	returns which subsystems are available to main
+	 * @return                  -
+	 * @throws RemoteException	-	exception during RMI operation
+	 */
 	@Override
 	public EnumSet<SubSystemType> getSubSystems() throws RemoteException
 	{
 		return EnumSet.copyOf(subSystems.keySet());
 	}
 
-    @Override
+	/**
+	 * getSubSystemState	-	returns the state of the specified subsystem
+	 * @param systemType	-	a subsystem
+	 * @return	state of the specified subsystem
+	 * @throws RemoteException	-	exception during RMI operation
+	 */
+	@Override
     public SubSystemState getSubSystemState(SubSystemType systemType) throws RemoteException
     {
         return subSystems.get(systemType).getSubSysState();
     }
 
-    @Override
+	/**
+	 * exit
+	 * @throws RemoteException	-	exception during RMI operation
+	 */
+	@Override
 	public void exit() throws RemoteException
 	{
 	    shutdownAll();
 	    System.exit(0);
 	}
 
+	/**
+	 * InetAddress
+	 * @return		-	The network address of the Raspberry Pi
+	 */
 	private static InetAddress getLocalAddress()
 	{
 		try

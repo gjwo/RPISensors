@@ -17,8 +17,8 @@ public abstract class SubSystem extends Thread
 		TELEMETRY,
 		TESTING,
 		DEVICES,
-		MAPPING;
-	}
+		MAPPING
+    }
 
 	private final SubSystemType type;
     private SubSystemState state;

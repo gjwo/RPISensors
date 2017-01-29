@@ -128,7 +128,7 @@ public class StepperMotor implements AngularPositioner
     /**
      * updateAngle          -   updates the angularPosition the stepper believes it is
      *                          pointing in following a motor action
-     * @param degrees
+     * @param degrees       -   external bearing in degrees 0-359 (but will cope with -ve etc)
      */
     private void updateAngle(float degrees)
     {

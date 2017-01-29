@@ -17,7 +17,7 @@ public interface RemoteRangeScanner extends Remote
     boolean isFinished() throws RemoteException;
     void run() throws RemoteException;
     void registerInterest(UpdateListener listener) throws RemoteException;
-    public int getStepsPerRevolution() throws RemoteException;
+    int getStepsPerRevolution() throws RemoteException;
     TimestampedData1f[] getRawRanges() throws RemoteException;
     HashMap<Float,TimestampedData1f> getRangeMap() throws RemoteException;
 }
