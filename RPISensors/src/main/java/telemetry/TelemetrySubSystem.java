@@ -17,20 +17,18 @@ import java.util.concurrent.TimeUnit;
  */
 public class TelemetrySubSystem extends SubSystem implements UpdateListener
 {
-    private I2CBus bus;
     private Thread telemetryThread;
     private INA219 ina219;
     private Telemetry telemetry;
+    private I2CBus bus;
+    private Device device;
 
     public TelemetrySubSystem()
     {
         super(SubSystem.SubSystemType.TELEMETRY);
         try
         {
-            I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
-            Device device = new Pi4jI2CDevice(bus.getDevice(0x40));
-            ina219 = new INA219(device, 10, 100);
-            ina219.registerInterest(this);
+            bus = I2CFactory.getInstance(I2CBus.BUS_1);
             telemetry = new Telemetry();
         } catch (I2CFactory.UnsupportedBusNumberException | IOException e)
         {
@@ -44,6 +42,15 @@ public class TelemetrySubSystem extends SubSystem implements UpdateListener
     {
         if(this.getSubSysState() != SubSystemState.IDLE) return this.getSubSysState();
         this.setSubSysState(SubSystemState.STARTING);
+        try
+        {
+            device = new Pi4jI2CDevice(bus.getDevice(0x40));
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        ina219 = new INA219(device, 10, 100);
+        ina219.registerInterest(this);
 
         telemetryThread = new Thread(ina219);
 

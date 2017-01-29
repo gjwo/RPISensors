@@ -28,6 +28,12 @@ public class Main implements RemoteMain
 	private static Main main;
 	private final HashMap<SubSystemType, SubSystem> subSystems;
 	private final NanoClock clock;
+
+	/**
+	 * Main	-	Constructor
+	 * @param reg
+	 * @throws RemoteException
+	 */
 	private Main(Registry reg) throws RemoteException
     {
 		main = this;
@@ -38,8 +44,30 @@ public class Main implements RemoteMain
 		prepareSubSystems();
 		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION, "System started");
 	}
+
+	/**
+	 * main				-	Entry point for entire program
+	 * @param args		-	command line arguments
+	 * @throws RemoteException
+	 */
+	public static void main(String[] args) throws RemoteException
+	{
+		try {
+			//noinspection ConstantConditions
+			System.setProperty("java.rmi.server.hostname", getLocalAddress().getHostAddress());
+		}catch (NullPointerException e)
+		{
+			System.out.println("Failed to get local address");
+			System.exit(-1);
+		}
+		Registry reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+		new Main(reg);
+	}
+
 	public NanoClock getClock(){return clock;}
+
 	public static Main getMain() {return main;}
+
     private void prepareSubSystems()
     {
 		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Preparing subSystems");
@@ -47,10 +75,15 @@ public class Main implements RemoteMain
         subSystems.put(SubSystemType.INSTRUMENTS, new InstrumentsSubSystem());
         subSystems.put(SubSystemType.TELEMETRY, new TelemetrySubSystem());
 		subSystems.put(SubSystemType.MAPPING, new MappingSubsystem());
-        subSystems.put(SubSystemType.TESTING, new TestINA219SubSystem());
+        //subSystems.put(SubSystemType.TESTING, new TestINA219SubSystem());
     }
 
-	@Override
+	/**
+	 * start	-	starts a set of requested subystems
+	 * @param systems
+	 * @throws RemoteException
+	 */
+    @Override
 	public void start(EnumSet<SubSystemType> systems) throws RemoteException
 	{
 
@@ -66,6 +99,11 @@ public class Main implements RemoteMain
 		}
 	}
 
+	/**
+	 * stop	-	stops a set of requested subystems
+	 * @param systems
+	 * @throws RemoteException
+	 */
 	@Override
 	public void shutdown(EnumSet<SubSystemType> systems) throws RemoteException
 	{
@@ -110,20 +148,6 @@ public class Main implements RemoteMain
 	{
 	    shutdownAll();
 	    System.exit(0);
-	}
-
-	public static void main(String[] args) throws RemoteException
-    {
-    	try {
-            //noinspection ConstantConditions
-            System.setProperty("java.rmi.server.hostname", getLocalAddress().getHostAddress());
-		}catch (NullPointerException e)
-		{
-			System.out.println("Failed to get local address");
-			System.exit(-1);
-		}
-        Registry reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
-		new Main(reg);
 	}
 
 	private static InetAddress getLocalAddress()
