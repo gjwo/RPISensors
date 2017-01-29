@@ -23,6 +23,9 @@ public class Wiring
         try
         {
             i2CBus1 = I2CFactory.getInstance(I2CBus.BUS_1);
+            //I2CBus1 has the following GPIO pin outs under Pi4J
+            //GPIO 8 = SDA1 physical pin 3
+            //GPIO 9 = SCL1 physical pin 5
         }catch(final Exception e){throw new RuntimeException("Failed to create I2C Bus1 in Wiring.",e); }
     }
 
@@ -43,8 +46,8 @@ public class Wiring
         GpioPinDigitalOutput[] positionerPins = new GpioPinDigitalOutput[4];
         positionerPins[0] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06,"Positioner Pin 1");
         positionerPins[1] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07,"Positioner Pin 2");
-        positionerPins[2] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08,"Positioner Pin 3");
-        positionerPins[3] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09,"Positioner Pin 4");
+        positionerPins[2] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_25,"Positioner Pin 3");
+        positionerPins[3] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_27,"Positioner Pin 4");
         return positionerPins;
     }
     public static GpioPinDigitalOutput[] getLeftMainMotorPins()
