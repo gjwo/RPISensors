@@ -60,7 +60,7 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
         lastTime = Instant.now(clock);
 		lastBState = PinState.LOW;
         
-        final GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = Main.getMain().getGpioController();
 		this.a = gpio.provisionDigitalInputPin(a, name+"1", PinPullResistance.PULL_DOWN);
         this.b = gpio.provisionDigitalInputPin(b, name+"2", PinPullResistance.PULL_DOWN);
         this.a.setShutdownOptions(true);

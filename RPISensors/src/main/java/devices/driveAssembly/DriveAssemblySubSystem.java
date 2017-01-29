@@ -1,13 +1,11 @@
 package devices.driveAssembly;
 
 import com.pi4j.io.gpio.*;
-import devices.driveAssembly.DriveAssembly;
-import devices.driveAssembly.RemoteDriveAssemblyImpl;
-import devices.driveAssembly.TankDriveAssembly;
 import devices.motors.Encoder;
 import devices.motors.DCMotor;
 import devices.motors.EncoderFeedbackMotor;
 import devices.motors.Motor;
+import main.Main;
 import subsystems.SubSystem;
 import subsystems.SubSystemState;
 
@@ -35,7 +33,7 @@ public class DriveAssemblySubSystem extends SubSystem
         Encoder leftEncoder = new Encoder(RaspiPin.GPIO_14,RaspiPin.GPIO_13,"LH",1d/427.5d, false);
         Encoder rightEncoder = new Encoder(RaspiPin.GPIO_01,RaspiPin.GPIO_26,"RH",1d/427.5d, false);
 
-        final GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = Main.getMain().getGpioController();
 
         final GpioPinDigitalOutput RA =
                 gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "Right motor A", PinState.LOW);
