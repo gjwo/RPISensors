@@ -1,10 +1,10 @@
 package mapping;
 
-import com.pi4j.io.gpio.*;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 import deviceHardwareAbstractionLayer.Device;
 import deviceHardwareAbstractionLayer.Pi4jI2CDevice;
+import deviceHardwareAbstractionLayer.Wiring;
 import devices.motors.AngularPositioner;
 import devices.motors.StepperMotor;
 import logging.SystemLog;
@@ -27,8 +27,6 @@ public class MappingSubsystem extends SubSystem
     private RangeScanner rangeScanner;
     private I2CBus bus;
     private Device rangerDevice;
-    private GpioPinDigitalOutput[] positionerPins;
-    private final GpioController gpio;
 
     /**
      * MappingSubsystem -   Constructor
@@ -36,7 +34,6 @@ public class MappingSubsystem extends SubSystem
     public MappingSubsystem()
     {
         super(SubSystemType.MAPPING);
-        gpio = GpioFactory.getInstance();
     }
 
     // SubSystem interface methods
@@ -58,12 +55,8 @@ public class MappingSubsystem extends SubSystem
         ranger = new VL53L0X(rangerDevice,10,100);
         SystemLog.log(SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Ranger initialised");
         // set up the positioner, in this case a GPIO controlled BY48 stepper motor
-        positionerPins = new GpioPinDigitalOutput[4];
-        positionerPins[0] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06,"Positioner Pin 1");
-        positionerPins[1] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07,"Positioner Pin 2");
-        positionerPins[2] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08,"Positioner Pin 3");
-        positionerPins[3] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09,"Positioner Pin 4");
-        angularPositioner = new StepperMotor(positionerPins,BY48_STEPPER_CYCLES_PER_ROTATION);
+
+        angularPositioner = new StepperMotor(Wiring.getPositionerPins(),BY48_STEPPER_CYCLES_PER_ROTATION);
         SystemLog.log(SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Positioner initialised");
 
         // initialise the range scanner with the two devices

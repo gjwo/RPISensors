@@ -30,7 +30,6 @@ public class Main implements RemoteMain
 	private static Main main;
 	private final HashMap<SubSystemType, SubSystem> subSystems;
 	private final NanoClock clock;
-    private final GpioController gpio;
 
 	/**
 	 * Main						-	Constructor
@@ -41,7 +40,6 @@ public class Main implements RemoteMain
     {
 		main = this;
 		clock = new NanoClock();
-        gpio = GpioFactory.getInstance();
         SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting SubSystem manager");
         reg.rebind("Main", UnicastRemoteObject.exportObject(this,0));
 		subSystems = new HashMap<>();
@@ -70,7 +68,6 @@ public class Main implements RemoteMain
 
 	public NanoClock getClock(){return clock;}
 
-	public GpioController getGpioController(){return gpio;}
 
 	public static Main getMain() {return main;}
 

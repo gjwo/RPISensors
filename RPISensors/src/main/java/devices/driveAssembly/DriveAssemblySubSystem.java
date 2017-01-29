@@ -1,13 +1,15 @@
 package devices.driveAssembly;
 
 import com.pi4j.io.gpio.*;
+import deviceHardwareAbstractionLayer.Wiring;
 import devices.motors.Encoder;
 import devices.motors.DCMotor;
 import devices.motors.EncoderFeedbackMotor;
 import devices.motors.Motor;
-import main.Main;
 import subsystems.SubSystem;
 import subsystems.SubSystemState;
+
+import static deviceHardwareAbstractionLayer.Wiring.getLeftMainMotorEncoderPins;
 
 /**
  * RPISensors - subsystems
@@ -29,22 +31,11 @@ public class DriveAssemblySubSystem extends SubSystem
     {
         super(SubSystem.SubSystemType.DRIVE_ASSEMBLY);
 
+        Encoder leftEncoder = new Encoder(Wiring.getLeftMainMotorEncoderPins(),1d/427.5d, false);
+        Encoder rightEncoder = new Encoder(Wiring.getRightMainMotorEncoderPins(),1d/427.5d, false);
 
-        Encoder leftEncoder = new Encoder(RaspiPin.GPIO_14,RaspiPin.GPIO_13,"LH",1d/427.5d, false);
-        Encoder rightEncoder = new Encoder(RaspiPin.GPIO_01,RaspiPin.GPIO_26,"RH",1d/427.5d, false);
-
-        final GpioController gpio = Main.getMain().getGpioController();
-
-        final GpioPinDigitalOutput RA =
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "Right motor A", PinState.LOW);
-        final GpioPinDigitalOutput RB =
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "Right motor B", PinState.LOW);
-        final GpioPinDigitalOutput LA =
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Left motor A", PinState.LOW);
-        final GpioPinDigitalOutput LB =
-                gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "Left motor B", PinState.LOW);
-        Motor left = new DCMotor(LA,LB);
-        Motor right = new DCMotor(RA,RB);
+        Motor left = new DCMotor(Wiring.getLeftMainMotorPins()[0], Wiring.getLeftMainMotorPins()[1]);
+        Motor right = new DCMotor(Wiring.getRightMainMotorPins()[0], Wiring.getRightMainMotorPins()[1]);
 
         Motor leftEncodedMotor = new EncoderFeedbackMotor(leftEncoder,left,KP,KI,KD,SAMPLE_RATE,true);
         Motor rightEncodedMotor = new EncoderFeedbackMotor(rightEncoder,right,KP,KI,KD,SAMPLE_RATE,false);

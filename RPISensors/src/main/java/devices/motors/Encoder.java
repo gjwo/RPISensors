@@ -41,13 +41,11 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
 
 	/**
 	 * Encoder	- 	Constructor
-	 * @param a						GPIO pin for hall detector A
-	 * @param b						GPIO pin for hall detector A
-	 * @param name					Name root for pin names
+	 * @param pins					GPIO pins for encoder
 	 * @param metersPerRotation		How far each rotation of th emoter move the vehicle
 	 * @param reversed				True if forward rotation moves the vehicle backwards
 	 */
-	public Encoder(Pin a, Pin b, String name, double metersPerRotation, boolean reversed)
+	public Encoder(GpioPinDigitalInput[] pins, double metersPerRotation, boolean reversed)
 	{
 		this.clock = Main.getMain().getClock();
 		this.reversed = reversed;
@@ -59,10 +57,9 @@ public class Encoder implements GpioPinListenerDigital, PIDInputProvider
         this.totalDisplacement = 0;
         lastTime = Instant.now(clock);
 		lastBState = PinState.LOW;
-        
-        final GpioController gpio = Main.getMain().getGpioController();
-		this.a = gpio.provisionDigitalInputPin(a, name+"1", PinPullResistance.PULL_DOWN);
-        this.b = gpio.provisionDigitalInputPin(b, name+"2", PinPullResistance.PULL_DOWN);
+
+		this.a = pins[0];
+        this.b = pins[1];
         this.a.setShutdownOptions(true);
         this.b.setShutdownOptions(true);
         

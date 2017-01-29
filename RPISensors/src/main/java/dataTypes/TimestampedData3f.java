@@ -118,6 +118,7 @@ public class TimestampedData3f extends Data3f implements Serializable
     public String getTimeStr()
     {
         // TODO: understand what this does.
+        // http://stackoverflow.com/questions/22463062/how-to-parse-format-dates-with-localdatetime-java-8
         DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
                 .withLocale(Locale.UK)
                 .withZone(ZoneId.systemDefault());
