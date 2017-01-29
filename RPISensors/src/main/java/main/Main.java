@@ -20,7 +20,7 @@ import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashMap;
 
-import dataTypes.NanoClock;
+import deviceHardwareAbstractionLayer.NanoClock;
 
 
 public class Main implements RemoteMain

@@ -1,5 +1,7 @@
 package dataTypes;
 
+import main.Main;
+
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -37,7 +39,7 @@ public class TimestampedData2f extends Data2f
      */
     public TimestampedData2f(float x, float y)
     {
-        this(x, y, Instant.now());
+        this(x, y, Main.getMain().getClock().instant());
     }
 
     /**

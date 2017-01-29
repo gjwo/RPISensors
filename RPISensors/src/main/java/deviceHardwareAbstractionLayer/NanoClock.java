@@ -1,4 +1,4 @@
-package dataTypes;
+package deviceHardwareAbstractionLayer;
 
 import java.time.Clock;
 import java.time.Instant;

@@ -1,5 +1,7 @@
 package dataTypes;
 
+import main.Main;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -30,7 +32,7 @@ public class TimestampedData3f extends Data3f implements Serializable
      */
     public TimestampedData3f(float x, float y, float z)
     {
-        this(x, y, z, Instant.now());
+        this(x, y, z, Main.getMain().getClock().instant());
     }
 
     /**
