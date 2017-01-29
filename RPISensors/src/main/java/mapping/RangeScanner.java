@@ -2,8 +2,10 @@ package mapping;
 
 import dataTypes.TimestampedData1f;
 import devices.motors.AngularPositioner;
+import logging.SystemLog;
 import sensors.Implementations.VL53L0X.VL53L0X;
 import sensors.interfaces.UpdateListener;
+import subsystems.SubSystem;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -66,6 +68,8 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
         {
             e.printStackTrace();
         }
+        SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"RangeScanner initialised");
+
     }
     public void interrupt()
     {
@@ -82,6 +86,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
     @Override
     public void run()
     {
+        SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"RangeScanner running");
         while (!interrupted)
         {
             for (int i = 0; i < stepsPerRevolution; i++)

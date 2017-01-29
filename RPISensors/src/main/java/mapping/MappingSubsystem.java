@@ -7,6 +7,7 @@ import deviceHardwareAbstractionLayer.Device;
 import deviceHardwareAbstractionLayer.Pi4jI2CDevice;
 import devices.motors.AngularPositioner;
 import devices.motors.StepperMotor;
+import logging.SystemLog;
 import sensors.Implementations.VL53L0X.VL53L0X;
 import subsystems.SubSystem;
 import subsystems.SubSystemState;
@@ -55,7 +56,7 @@ public class MappingSubsystem extends SubSystem
             e.printStackTrace();
         }
         ranger = new VL53L0X(rangerDevice,10,100);
-
+        SystemLog.log(SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Ranger initialised");
         // set up the positioner, in this case a GPIO controlled BY48 stepper motor
         positionerPins = new GpioPinDigitalOutput[4];
         positionerPins[0] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06,"Positioner Pin 1");
@@ -63,6 +64,7 @@ public class MappingSubsystem extends SubSystem
         positionerPins[2] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08,"Positioner Pin 3");
         positionerPins[3] = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09,"Positioner Pin 4");
         angularPositioner = new StepperMotor(positionerPins,BY48_STEPPER_CYCLES_PER_ROTATION);
+        SystemLog.log(SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Positioner initialised");
 
         // initialise the range scanner with the two devices
         rangeScanner = new RangeScanner(angularPositioner,ranger,60); //scan at 1 rotation per second
