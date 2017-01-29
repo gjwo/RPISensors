@@ -12,6 +12,7 @@ import main.Main;
 public class TimeStampedData<E> implements TimeStamped, Serializable
 {
 	private static final long serialVersionUID = -5631520531456943338L;
+	public final long NANOS_PER_SEC = 1000000000;
 	private final E data;
 	private final Instant timestamp;
 	
@@ -32,7 +33,7 @@ public class TimeStampedData<E> implements TimeStamped, Serializable
 	
     //TimeStamped implementation
     public Instant time() {return timestamp;}
-    public long getNano() {return timestamp.getNano();}
+    public long getNano() {return timestamp.getNano()+NANOS_PER_SEC*timestamp.getEpochSecond();}
 
     /**
      * getTimeStr   -   gets a localised pritable string for the time

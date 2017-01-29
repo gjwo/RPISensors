@@ -55,7 +55,7 @@ public class TimestampedData2f extends Data2f
      */
     public	long getTime()
     {
-    	return instant.getNano();
+    	return instant.getNano()+NANOS_PER_SEC*instant.getEpochSecond();
     }
 
     /**
@@ -79,7 +79,7 @@ public class TimestampedData2f extends Data2f
     public String toString()
     {
         String format = "%08.3f";
-        return 	" t: " + String.format(format,((float)instant.getNano())/NANOS_PER_SECF) +
+        return 	" t: " + String.format(format,((float)this.getTime())/NANOS_PER_SECF) +
                 " " + super.toString();
     }
     

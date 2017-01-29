@@ -73,8 +73,7 @@ public class TimestampedData3f extends Data3f implements Serializable
      */
     public long getTime()
     {
-        // TODO add epoch ref time to offset, get nano returns nano in current second.
-    	return instant.getNano();
+    	return instant.getNano()+NANOS_PER_SEC*instant.getEpochSecond();
     }
 
     /**
@@ -92,7 +91,7 @@ public class TimestampedData3f extends Data3f implements Serializable
     public String toString()
     {
         String format = "%08.3f";
-        return 	"[" + String.format(format,((float)instant.getNano())/NANOS_PER_SECF) +
+        return 	"[" + String.format(format,((float)this.getTime())/NANOS_PER_SECF) +
                 "] " + super.toString();
     }
 
