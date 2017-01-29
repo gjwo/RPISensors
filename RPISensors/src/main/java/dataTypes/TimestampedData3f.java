@@ -60,7 +60,7 @@ public class TimestampedData3f extends Data3f implements Serializable
     public TimestampedData3f()
     {
         super();
-        instant = Instant.now();
+        instant = Main.getMain().getClock().instant();
     }
 
     /**
