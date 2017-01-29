@@ -1,9 +1,9 @@
 package telemetry;
 
 import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CFactory;
 import hardwareAbstractionLayer.Device;
 import hardwareAbstractionLayer.Pi4jI2CDevice;
+import hardwareAbstractionLayer.Wiring;
 import sensors.Implementations.INA219.INA219;
 import sensors.interfaces.UpdateListener;
 import subsystems.SubSystem;
@@ -20,21 +20,14 @@ public class TelemetrySubSystem extends SubSystem implements UpdateListener
     private Thread telemetryThread;
     private INA219 ina219;
     private Telemetry telemetry;
-    private I2CBus bus;
+    private final I2CBus i2CBus1;
     private Device device;
 
     public TelemetrySubSystem()
     {
         super(SubSystem.SubSystemType.TELEMETRY);
-        try
-        {
-            bus = I2CFactory.getInstance(I2CBus.BUS_1);
-            telemetry = new Telemetry();
-        } catch (I2CFactory.UnsupportedBusNumberException | IOException e)
-        {
-            e.printStackTrace();
-        }
-
+        i2CBus1 = Wiring.getI2CBus1();
+        telemetry = new Telemetry();
     }
 
     @Override
@@ -44,7 +37,7 @@ public class TelemetrySubSystem extends SubSystem implements UpdateListener
         this.setSubSysState(SubSystemState.STARTING);
         try
         {
-            device = new Pi4jI2CDevice(bus.getDevice(0x40));
+            device = new Pi4jI2CDevice(i2CBus1.getDevice(0x40));
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -71,9 +64,9 @@ public class TelemetrySubSystem extends SubSystem implements UpdateListener
             TimeUnit.SECONDS.sleep(1);
             telemetry.shutdown();
             TimeUnit.SECONDS.sleep(2);
-            bus.close();
+            Wiring.closeI2CBus1();
             this.setSubSysState(SubSystemState.IDLE);
-        } catch (InterruptedException | IOException e)
+        } catch (InterruptedException e)
         {
         	this.setSubSysState(SubSystemState.ERROR);
             e.printStackTrace();

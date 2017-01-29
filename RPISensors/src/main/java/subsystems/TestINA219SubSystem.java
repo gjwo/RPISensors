@@ -1,9 +1,9 @@
 package subsystems;
 
 import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CFactory;
 import hardwareAbstractionLayer.Device;
 import hardwareAbstractionLayer.Pi4jI2CDevice;
+import hardwareAbstractionLayer.Wiring;
 import sensors.Implementations.INA219.INA219;
 import sensors.interfaces.UpdateListener;
 
@@ -22,12 +22,12 @@ public class TestINA219SubSystem extends TestHarnessSubSystem implements UpdateL
         super();
         try
         {
-            I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
-            Device device = new Pi4jI2CDevice(bus.getDevice(0x40));
+            I2CBus i2CBus1 = Wiring.getI2CBus1();
+            Device device = new Pi4jI2CDevice(i2CBus1.getDevice(0x40));
             ina219 = new INA219(device, 10, 100);
             ina219.registerInterest(this);
             this.setRunnable(ina219);
-        } catch (I2CFactory.UnsupportedBusNumberException | IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
         }

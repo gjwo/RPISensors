@@ -1,6 +1,12 @@
 package hardwareAbstractionLayer;
 
 import com.pi4j.io.gpio.*;
+import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CFactory;
+import logging.SystemLog;
+import subsystems.SubSystem;
+
+import java.io.IOException;
 
 /**
  * Wiring           -   a place to keep all the GPIO pin allocations
@@ -8,7 +14,29 @@ import com.pi4j.io.gpio.*;
  */
 public class Wiring
 {
-    private final static GpioController gpio = GpioFactory.getInstance();
+    private final static GpioController gpio;
+    private final static I2CBus i2CBus1;
+
+    static  //static initialisation code
+    {
+        gpio = GpioFactory.getInstance();
+        try
+        {
+            i2CBus1 = I2CFactory.getInstance(I2CBus.BUS_1);
+        }catch(final Exception e){throw new RuntimeException("Failed to create I2C Bus1 in Wiring.",e); }
+    }
+
+    public static I2CBus getI2CBus1(){return i2CBus1;}
+
+    public static void closeI2CBus1()
+    {
+        try {
+            i2CBus1.close();
+        } catch (IOException e) {
+            SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.ERROR, "IO exception whilst closing i2CBus1");
+            // ignore has already been closed!
+        }
+    }
 
     public static GpioPinDigitalOutput[] getPositionerPins()
     {

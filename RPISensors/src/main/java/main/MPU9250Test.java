@@ -12,7 +12,6 @@ import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CFactory;
 
 import hardwareAbstractionLayer.Pi4jI2CDevice;
 import devices.driveAssembly.RemoteDriveAssemblyImpl;
@@ -20,6 +19,7 @@ import devices.driveAssembly.TankDriveAssembly;
 import devices.motors.DCMotor;
 import devices.motors.Motor;
 //import inertialNavigation.NavResponder;
+import hardwareAbstractionLayer.Wiring;
 import inertialNavigation.Navigate;
 import logging.SystemLog;
 import sensors.Implementations.MPU9250.MPU9250;
@@ -44,7 +44,7 @@ class MPU9250Test implements UpdateListener{
 	private Navigate nav;
 	private Thread navigator;
 	private Thread sensorPackage;
-	private I2CBus bus = null;
+	private I2CBus i2CBus1 = null;
 	//private NavResponder navR;
 
 	/**
@@ -55,14 +55,14 @@ class MPU9250Test implements UpdateListener{
 		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Attempt to get Bus 1");
         try {
         	//final GpioController gpio = GpioFactory.getInstance();
-            bus = I2CFactory.getInstance(I2CBus.BUS_1);
+            i2CBus1 = Wiring.getI2CBus1();
 			SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Bus acquired");
             // sample rate (SR) per second sensor frequency (SF) is 200
             // sample size (SS) needs to be >= SF/SR or readings will be missed
             // overlap gives smoothing as average is over the sample
             this.mpu9250 = new MPU9250(
-                    new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 device device
-                    new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 device
+                    new Pi4jI2CDevice(i2CBus1.getDevice(0x68)), // MPU9250 device device
+                    new Pi4jI2CDevice(i2CBus1.getDevice(0x0C)), // ak8963 device
                     200,                                    // sample rate (SR) per second 
                     250                                    // sample size (SS)
 			); 					// debug level
@@ -80,7 +80,7 @@ class MPU9250Test implements UpdateListener{
             this.nav = new Navigate(mpu9250);
             //this.navR = new NavResponder(this.nav,"NavResponder rpi3gjw",debugLevelNavResponder);
             
-        } catch (I2CFactory.UnsupportedBusNumberException | InterruptedException | IOException e) {
+        } catch (InterruptedException | IOException e) {
             e.printStackTrace();
             System.exit(1);
         }	
@@ -192,12 +192,7 @@ class MPU9250Test implements UpdateListener{
         sensorPackage.interrupt();
         TimeUnit.SECONDS.sleep(2);
 		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION, "Shutdown Bus");
-        try {
-			bus.close();
-		} catch (IOException e) {
-			SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.ERROR, "IO exception whilst closing bus");
-			// ignore has already been closed! 
-		}		
+		Wiring.closeI2CBus1();
 	}
 	
 	/**

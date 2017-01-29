@@ -1,7 +1,6 @@
 package mapping;
 
 import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CFactory;
 import hardwareAbstractionLayer.Device;
 import hardwareAbstractionLayer.Pi4jI2CDevice;
 import hardwareAbstractionLayer.Wiring;
@@ -25,7 +24,7 @@ public class MappingSubsystem extends SubSystem
     private AngularPositioner angularPositioner;
     private VL53L0X ranger;
     private RangeScanner rangeScanner;
-    private I2CBus bus;
+    private I2CBus i2CBus1;
     private Device rangerDevice;
 
     /**
@@ -43,12 +42,12 @@ public class MappingSubsystem extends SubSystem
         if(this.getSubSysState() != SubSystemState.IDLE) return this.getSubSysState();
         this.setSubSysState(SubSystemState.STARTING);
 
-        // set up the ranger in this case a VL3LOX on the IC2 bus
+        // set up the ranger in this case a VL3LOX on the IC2 i2CBus1
         try
         {
-            bus = I2CFactory.getInstance(I2CBus.BUS_1);
-            rangerDevice = new Pi4jI2CDevice(bus.getDevice(0x29));
-        } catch (I2CFactory.UnsupportedBusNumberException | IOException e)
+            i2CBus1 = Wiring.getI2CBus1();
+            rangerDevice = new Pi4jI2CDevice(i2CBus1.getDevice(0x29));
+        } catch (IOException e)
         {
             e.printStackTrace();
         }

@@ -1,8 +1,8 @@
 package inertialNavigation;
 
 import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CFactory;
 import hardwareAbstractionLayer.Pi4jI2CDevice;
+import hardwareAbstractionLayer.Wiring;
 import sensors.Implementations.MPU9250.MPU9250;
 import subsystems.SubSystem;
 import subsystems.SubSystemState;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class InstrumentsSubSystem extends SubSystem
 {
     private Navigate nav;
-    private I2CBus bus;
+    private I2CBus i2CBus1;
     private MPU9250 mpu9250;
     private Thread navThread;
     private Thread mpuThread;
@@ -36,11 +36,11 @@ public class InstrumentsSubSystem extends SubSystem
         this.setSubSysState(SubSystemState.STARTING);
         try
         {
-            bus = I2CFactory.getInstance(I2CBus.BUS_1);
+            i2CBus1 = Wiring.getI2CBus1();
 
             mpu9250 = new MPU9250(
-                    new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 device device
-                    new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 device
+                    new Pi4jI2CDevice(i2CBus1.getDevice(0x68)), // MPU9250 device device
+                    new Pi4jI2CDevice(i2CBus1.getDevice(0x0C)), // ak8963 device
                     200,                                    // sample rate (SR) per second
                     250                                    // sample size (SS)
             ); 					// debug level
@@ -52,7 +52,7 @@ public class InstrumentsSubSystem extends SubSystem
             navThread.start();
 
             this.setSubSysState(SubSystemState.RUNNING);
-        } catch (I2CFactory.UnsupportedBusNumberException | IOException | InterruptedException e)
+        } catch (IOException | InterruptedException e)
         {
         	this.setSubSysState(SubSystemState.ERROR);
             e.printStackTrace();
@@ -71,10 +71,11 @@ public class InstrumentsSubSystem extends SubSystem
             TimeUnit.SECONDS.sleep(1);
             nav.shutdown();
             mpuThread.interrupt();
-            TimeUnit.SECONDS.sleep(2);
-            bus.close();
+            //TimeUnit.SECONDS.sleep(2);
+            //i2CBus1.close();
             this.setSubSysState(SubSystemState.IDLE);
-        } catch (InterruptedException | IOException e)
+            Wiring.closeI2CBus1();
+        } catch (InterruptedException e)
         {
         	this.setSubSysState(SubSystemState.ERROR);
             e.printStackTrace();

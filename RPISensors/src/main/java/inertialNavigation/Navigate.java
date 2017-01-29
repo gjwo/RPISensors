@@ -3,13 +3,10 @@ package inertialNavigation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
-import com.pi4j.io.i2c.I2CFactory;
-import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
-
 import dataTypes.TimestampedData3f;
 import com.pi4j.io.i2c.I2CBus;
 import hardwareAbstractionLayer.Pi4jI2CDevice;
+import hardwareAbstractionLayer.Wiring;
 import logging.SystemLog;
 import sensors.Implementations.MPU9250.MPU9250;
 import sensors.interfaces.UpdateListener;
@@ -161,17 +158,17 @@ public class Navigate implements Runnable, UpdateListener{
 	public static void main(String[] args)
     {
 		MPU9250 mpu9250;
-        I2CBus bus;
+        I2CBus i2CBus1;
 
     	try
     	{
 			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Start Navigate main()");
         	//final GpioController gpio = GpioFactory.getInstance();
-            bus = I2CFactory.getInstance(I2CBus.BUS_1);
+			i2CBus1 = Wiring.getI2CBus1();
 			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Bus acquired");
             mpu9250 = new MPU9250(
-                    new Pi4jI2CDevice(bus.getDevice(0x68)), // MPU9250 device device
-                    new Pi4jI2CDevice(bus.getDevice(0x0C)), // ak8963 device
+                    new Pi4jI2CDevice(i2CBus1.getDevice(0x68)), // MPU9250 device device
+                    new Pi4jI2CDevice(i2CBus1.getDevice(0x0C)), // ak8963 device
                     SAMPLE_RATE,                                     // sample rate per second
                     SAMPLE_SIZE                                    // sample size
 			);
@@ -188,7 +185,7 @@ public class Navigate implements Runnable, UpdateListener{
 			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Shutdown Bus");
             nav.bus.close();
 			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Stop Navigate main()");
-        } catch (InterruptedException | IOException | UnsupportedBusNumberException e) {
+        } catch (InterruptedException | IOException  e) {
             e.printStackTrace();
             System.exit(1);
         }
