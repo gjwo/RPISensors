@@ -5,6 +5,7 @@ import sensors.interfaces.UpdateListener;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.time.Instant;
 import java.util.HashMap;
 
 /**
@@ -20,4 +21,5 @@ public interface RemoteRangeScanner extends Remote
     int getStepsPerRevolution() throws RemoteException;
     TimestampedData1f[] getRawRanges() throws RemoteException;
     HashMap<Float,TimestampedData1f> getRangeMap() throws RemoteException;
+    public Instant lastUpdated() throws RemoteException;
 }

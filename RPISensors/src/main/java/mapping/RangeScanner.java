@@ -3,6 +3,7 @@ package mapping;
 import dataTypes.TimestampedData1f;
 import devices.motors.AngularPositioner;
 import logging.SystemLog;
+import main.Main;
 import sensors.Implementations.VL53L0X.VL53L0X;
 import sensors.interfaces.UpdateListener;
 import subsystems.SubSystem;
@@ -12,6 +13,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +39,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
     private final ArrayList<UpdateListener> listeners;
     private final HashMap<Float,TimestampedData1f> rangeMap;
     private static final String REMOTE_NAME = "RangeScanner";
+    private Instant lastUpdated;
 
     /**
      * RangeScanner -   Constructor
@@ -59,6 +62,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
         this.ranges = new TimestampedData1f[stepsPerRevolution];
         this.delaytime = ((long) (60f / (float) (scanRate * stepsPerRevolution)) * 1000);
         this.listeners = new ArrayList<>();
+        this.lastUpdated = Main.getMain().getClock().instant();
         rangeMap = new HashMap<>(stepsPerRevolution);
         try
         {
@@ -75,14 +79,9 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
     {
         interrupted = true;
     }
-    public boolean isFinished()
-    {
-        return finished;
-    }
-    public int getStepsPerRevolution()
-    {
-        return stepsPerRevolution;
-    }
+    public boolean isFinished() {return finished;}
+    public int getStepsPerRevolution() {return stepsPerRevolution;}
+    public Instant lastUpdated() {return lastUpdated;}
     @Override
     public void run()
     {
@@ -101,6 +100,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
                     e.printStackTrace();
                 }
             }
+            lastUpdated = Main.getMain().getClock().instant();
             updateData();
         }
         //tidy up
@@ -144,6 +144,6 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
     @Override
     public void dataUpdated()
     {
-
+        SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.ERROR,"Not Implemented");
     }
 }

@@ -68,7 +68,6 @@ public class Main implements RemoteMain
 
 	public NanoClock getClock(){return clock;}
 
-
 	public static Main getMain() {return main;}
 
     private void prepareSubSystems()
