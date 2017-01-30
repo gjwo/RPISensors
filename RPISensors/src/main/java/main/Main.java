@@ -13,6 +13,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -29,16 +30,17 @@ public class Main implements RemoteMain
 	private static Main main;
 	private final HashMap<SubSystemType, SubSystem> subSystems;
 	private final NanoClock clock;
+	private final Registry reg;
 
 	/**
 	 * Main						-	Constructor
-	 * @param reg				-	RMI registry
 	 * @throws RemoteException	-	exception during RMI operation
 	 */
-	private Main(Registry reg) throws RemoteException
+	private Main() throws RemoteException
     {
 		main = this;
 		clock = new NanoClock();
+		reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
         SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting SubSystem manager");
         reg.rebind("Main", UnicastRemoteObject.exportObject(this,0));
 		subSystems = new HashMap<>();
@@ -61,8 +63,7 @@ public class Main implements RemoteMain
 			System.out.println("Failed to get local address");
 			System.exit(-1);
 		}
-		Registry reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
-		new Main(reg);
+		new Main();
 	}
 
 	public NanoClock getClock(){return clock;}
@@ -174,7 +175,14 @@ public class Main implements RemoteMain
 	public void exit() throws RemoteException
 	{
 	    shutdownAll();
-	    System.exit(0);
+		try
+		{
+			reg.unbind("Main");
+		} catch (NotBoundException e)
+		{
+			e.printStackTrace();
+		}
+		System.exit(0);
 	}
 
 	/**
