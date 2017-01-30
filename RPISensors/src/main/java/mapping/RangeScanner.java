@@ -62,7 +62,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
         this.ranges = new TimestampedData1f[stepsPerRevolution];
         this.delaytime = ((long) (60f / (float) (scanRate * stepsPerRevolution)) * 1000);
         this.listeners = new ArrayList<>();
-        this.lastUpdated = Main.getMain().getClock().instant();
+        this.lastUpdated = Main.getMain().getClock().instant().now();
         rangeMap = new HashMap<>(stepsPerRevolution);
         try
         {
