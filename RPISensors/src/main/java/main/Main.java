@@ -43,6 +43,7 @@ public class Main implements RemoteMain
 		reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
         SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting SubSystem manager");
         reg.rebind("Main", UnicastRemoteObject.exportObject(this,0));
+        Wiring.logGpioPinAllocation();
 		subSystems = new HashMap<>();
 		prepareSubSystems();
 		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION, "System started");

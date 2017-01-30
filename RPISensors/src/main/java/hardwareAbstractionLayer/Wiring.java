@@ -96,4 +96,13 @@ public class Wiring
         pins[1] = (GpioPinDigitalInput) pinMap.get(RaspiPin.GPIO_26);
         return pins;
     }
+
+    public static void logGpioPinAllocation()
+    {
+        for (Pin p:pinMap.keySet())
+        {
+            SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,
+                    pinMap.get(p).toString());
+        }
+    }
 }
