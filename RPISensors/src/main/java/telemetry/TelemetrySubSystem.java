@@ -64,7 +64,6 @@ public class TelemetrySubSystem extends SubSystem implements UpdateListener
             TimeUnit.SECONDS.sleep(1);
             telemetry.shutdown();
             TimeUnit.SECONDS.sleep(2);
-            Wiring.closeI2CBus1();
             this.setSubSysState(SubSystemState.IDLE);
         } catch (InterruptedException e)
         {

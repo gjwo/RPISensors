@@ -1,5 +1,6 @@
 package main;
 
+import hardwareAbstractionLayer.Wiring;
 import mapping.MappingSubsystem;
 import devices.driveAssembly.DriveAssemblySubSystem;
 import inertialNavigation.InstrumentsSubSystem;
@@ -139,6 +140,7 @@ public class Main implements RemoteMain
 	public void shutdownAll() throws RemoteException
 	{
 		for(SubSystem system:subSystems.values()) system.shutdown();
+		Wiring.closeI2CBus1();
 	}
 
 	/**
