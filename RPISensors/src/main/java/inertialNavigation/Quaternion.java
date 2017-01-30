@@ -3,6 +3,7 @@ package inertialNavigation;
 import java.io.Serializable;
 
 import dataTypes.Data3f;
+import dataTypes.TimestampedData3f;
 
 /**
  * Quaternion - w simple 4 value data type used for navigation calculations
@@ -76,7 +77,7 @@ public class Quaternion implements Serializable
 	 * 	
 	 * @return	a class containing yaw pitch and roll
 	 */
-	public Data3f toEulerianAngles()
+	public TimestampedData3f toEulerianAngles()
 	{
 		float t0 = -2.0f * (y * y + z * z) + 1.0f;
 		float t1 = +2.0f * (x * y - w * z);
@@ -91,14 +92,14 @@ public class Quaternion implements Serializable
 		float pitch = (float)Math.asin(t2); 	//pitch
 		float roll = (float)Math.atan2(t3, t4); //roll
 
-		return new Data3f(yaw, pitch, roll);
+		return new TimestampedData3f(yaw, pitch, roll);
 	}
 	
 	/**
 	 * toTaitBryanAngle	-	Convert a quaternion back into a set of Tait-Bryan angles
 	 * @return	-	structure of Yaw, Pitch and Roll in degrees
 	 */
-	public Data3f toTaitBryanAngles()
+	public TimestampedData3f toTaitBryanAngles()
 	{
 	    float a12 =   2.0f * (x * y + w * z);					// #KW L625 
 	    float a22 =   w * w + x * x - y * y - z * z;
@@ -113,7 +114,7 @@ public class Quaternion implements Serializable
 	    float roll  = (float) Math.atan2(a31, a33);
 	    float yaw   = (float) Math.atan2(a12, a22);
 	    
-	    return new Data3f(yaw,pitch,roll);
+	    return new TimestampedData3f(yaw,pitch,roll);
 	}
 	
 	/**

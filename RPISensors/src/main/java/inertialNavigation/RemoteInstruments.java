@@ -26,13 +26,13 @@ public interface RemoteInstruments extends Remote
 	float getBank() throws RemoteException;
 	Instant getUpdatedTimestamp() throws RemoteException;
 	Quaternion getQuaternion() throws RemoteException;
-	Data3f getTaitBryanAnglesR() throws RemoteException;
+	TimestampedData3f getTaitBryanAnglesR() throws RemoteException;
 	TimestampedData3f getMagnetometer() throws RemoteException;
 	TimestampedData3f getAccelerometer() throws RemoteException;
 	TimestampedData3f getGyroscope() throws RemoteException;
 	TimestampedData3f getAngles() throws RemoteException;
-	Data3f getLinearAcceleration() throws RemoteException;
-	Data3f getEulerAnglesR() throws RemoteException;
-	Data3f getEulerAnglesD() throws RemoteException;
+	TimestampedData3f getLinearAcceleration() throws RemoteException;
+	TimestampedData3f getEulerAnglesR() throws RemoteException;
+	TimestampedData3f getEulerAnglesD() throws RemoteException;
 
 }
