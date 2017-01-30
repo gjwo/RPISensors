@@ -73,7 +73,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
             e.printStackTrace();
         }
         SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"RangeScanner initialised");
-
+        thread.start();
     }
     public void interrupt()
     {
@@ -101,7 +101,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
                 }
             }
             lastUpdated = Main.getMain().getClock().instant();
-            updateData();
+            //updateData();
         }
         //tidy up
         finished = true;

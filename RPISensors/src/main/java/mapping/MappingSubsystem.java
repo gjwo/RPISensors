@@ -23,6 +23,7 @@ public class MappingSubsystem extends SubSystem
     private final int BY48_STEPPER_CYCLES_PER_ROTATION = 512;
     private AngularPositioner angularPositioner;
     private VL53L0X ranger;
+    private Thread rangerThread;
     private RangeScanner rangeScanner;
     private I2CBus i2CBus1;
     private Device rangerDevice;
@@ -52,6 +53,13 @@ public class MappingSubsystem extends SubSystem
             e.printStackTrace();
         }
         ranger = new VL53L0X(rangerDevice,10,100);
+        rangerThread = new Thread(ranger);
+        rangerThread.start();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         SystemLog.log(SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Ranger initialised");
         // set up the positioner, in this case a GPIO controlled BY48 stepper motor
 
@@ -71,6 +79,7 @@ public class MappingSubsystem extends SubSystem
     {
         if(this.getSubSysState() != SubSystemState.RUNNING) return this.getSubSysState();
         this.setSubSysState(SubSystemState.STOPPING);
+        rangerThread.interrupt();
         rangeScanner.unbind();
         rangeScanner = null;
         this.setSubSysState(SubSystemState.IDLE);
