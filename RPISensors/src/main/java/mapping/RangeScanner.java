@@ -100,7 +100,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
                     e.printStackTrace();
                 }
             }
-            lastUpdated = Main.getMain().getClock().instant().now();
+            lastUpdated = Main.getMain().getClock().instant();
             updateData();
         }
         //tidy up

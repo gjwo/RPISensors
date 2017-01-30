@@ -123,11 +123,11 @@ public class Navigate implements Runnable, UpdateListener{
 					if(((float)nowNanoS-lastDisplayNanoS)/nanosPerSecf >= 1f/displayFrequencyHz)
 					{
 						lastDisplayNanoS = nowNanoS;
-						SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION,"A " + mpu9250.getAvgAcceleration().toString()+
+						/*SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION,"A " + mpu9250.getAvgAcceleration().toString()+
 								" G " + mpu9250.getAvgRotationalAcceleration().unStamp().toString()+
 								" M "  + mpu9250.getAvgGauss().unStamp().toString()+
 								" | Y,P&R: " + instruments.getAngles().toString());
-						SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION, String.format(	" Freq: %5.1fHz %dk calcs%n",calculationFrequency,countDeltas/1000));
+						SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION, String.format(	" Freq: %5.1fHz %dk calcs%n",calculationFrequency,countDeltas/1000));*/
 					}
 					for(UpdateListener listener:listeners) listener.dataUpdated();
                 }
