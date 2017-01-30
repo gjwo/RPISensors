@@ -83,7 +83,7 @@ public class Instruments implements RemoteInstruments
 	public Instant getUpdatedTimestamp() {return updatedTimestamp;}
 	public Quaternion getQuaternion() {return quaternion;}
 	public Data3f getTaitBryanAnglesR() {return taitBryanAnglesR;}
-	public Data3f getTaitBryanAnglesD() {return taitBryanAnglesD;}
+	public TimestampedData3f getTaitBryanAnglesD() {return new TimestampedData3f(taitBryanAnglesD);}
 	public TimestampedData3f getMagnetometer() {return magnetometer;}
 	public TimestampedData3f getAccelerometer() {return accelerometer;}
 	public TimestampedData3f getGyroscope() {return gyroscope;}

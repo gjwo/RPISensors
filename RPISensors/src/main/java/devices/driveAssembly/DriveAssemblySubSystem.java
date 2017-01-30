@@ -1,5 +1,6 @@
 package devices.driveAssembly;
 
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import hardwareAbstractionLayer.Wiring;
 import devices.motors.Encoder;
 import devices.motors.DCMotor;
@@ -31,8 +32,10 @@ public class DriveAssemblySubSystem extends SubSystem
         Encoder leftEncoder = new Encoder(Wiring.getLeftMainMotorEncoderPins(),1d/427.5d, false);
         Encoder rightEncoder = new Encoder(Wiring.getRightMainMotorEncoderPins(),1d/427.5d, false);
 
-        Motor left = new DCMotor(Wiring.getLeftMainMotorPins()[0], Wiring.getLeftMainMotorPins()[1]);
-        Motor right = new DCMotor(Wiring.getRightMainMotorPins()[0], Wiring.getRightMainMotorPins()[1]);
+        GpioPinDigitalOutput[] leftPins = Wiring.getLeftMainMotorPins();
+        Motor left = new DCMotor(leftPins[0], leftPins[1]);
+        GpioPinDigitalOutput[] rightPins = Wiring.getRightMainMotorPins();
+        Motor right = new DCMotor(rightPins[0], rightPins[1]);
 
         Motor leftEncodedMotor = new EncoderFeedbackMotor(leftEncoder,left,KP,KI,KD,SAMPLE_RATE,true);
         Motor rightEncodedMotor = new EncoderFeedbackMotor(rightEncoder,right,KP,KI,KD,SAMPLE_RATE,false);

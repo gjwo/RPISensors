@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 @SuppressWarnings("WeakerAccess")
 public interface RemoteInstruments extends Remote
 {
-    Data3f getTaitBryanAnglesD() throws RemoteException;
+	TimestampedData3f getTaitBryanAnglesD() throws RemoteException;
 	Instant getTimestamp() throws RemoteException;
 	ZonedDateTime getDateTime() throws RemoteException;
 	float getYaw() throws RemoteException;
