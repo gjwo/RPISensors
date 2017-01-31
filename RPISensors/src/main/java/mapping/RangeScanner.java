@@ -96,6 +96,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
         }
         while (!interrupted)
         {
+            SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_LOOPS,"RangeScanner while at "+ lastUpdated.toString());
             for (int i = 0; i < rangesPerRevolution; i++)
             {
                 ranges[i] = new TimestampedData2f(ranger.getLatestRange().getX(),angles[i], ranger.getLatestRange().getInstant());
