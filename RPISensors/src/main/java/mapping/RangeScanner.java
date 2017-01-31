@@ -29,10 +29,8 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
 {
     private final AngularPositioner angularPositioner;
     private final VL53L0X ranger;
-    private final Thread thread;
     private volatile boolean interrupted;
     private volatile boolean finished;
-    private final float resolution;
     private final int stepsPerRevolution;
     private final int rangesPerRevolution;
     private volatile TimestampedData2f[] ranges;
@@ -53,10 +51,10 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
         this.angularPositioner = angularPositioner;
         this.ranger = ranger;
         this.ranger.registerInterest(this);
-        this.thread = new Thread(this, "Range Scanner");
+        Thread thread = new Thread(this, "Range Scanner");
         this.interrupted = false;
         this.finished = false;
-        this.resolution = angularPositioner.angularPositionResolution();
+        float resolution = angularPositioner.angularPositionResolution();
         int rangesPerSec = 1000/ranger.getRangingTimeBudget(); // rounds down
         this.rangesPerRevolution = (60/scanRPM)*rangesPerSec;
         this.stepsPerRevolution = (int) (360f / resolution);
