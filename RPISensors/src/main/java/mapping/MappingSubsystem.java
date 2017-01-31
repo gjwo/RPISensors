@@ -67,7 +67,7 @@ public class MappingSubsystem extends SubSystem
         SystemLog.log(SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Positioner initialised");
 
         // initialise the range scanner with the two devices
-        rangeScanner = new RangeScanner(angularPositioner,ranger,60); //scan at 1 rotation per second
+        rangeScanner = new RangeScanner(angularPositioner,ranger,12); //scan at 1 rotation in 5 seconds
 
         this.setSubSysState(SubSystemState.RUNNING);
         return this.getSubSysState();

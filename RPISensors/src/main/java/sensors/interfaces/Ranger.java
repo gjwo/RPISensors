@@ -12,4 +12,5 @@ public interface Ranger
     TimestampedData1f getAvgRange();
     TimestampedData1f getRangeData(int i);
     int getRangeDataCount();
+    int getRangingTimeBudget();
 }

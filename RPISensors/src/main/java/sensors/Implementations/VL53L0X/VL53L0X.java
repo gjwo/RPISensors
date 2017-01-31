@@ -54,4 +54,6 @@ public class VL53L0X extends SensorPackage implements Ranger
     {
         return sensor.getReadingCount();
     }
+    @Override
+    public int getRangingTimeBudget() {return sensor.getRangingTimeBudget();}
 }

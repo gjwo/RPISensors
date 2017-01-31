@@ -1,6 +1,6 @@
 package mapping;
 
-import dataTypes.TimestampedData1f;
+import dataTypes.TimestampedData2f;
 import sensors.interfaces.UpdateListener;
 
 import java.rmi.Remote;
@@ -19,7 +19,6 @@ public interface RemoteRangeScanner extends Remote
     void run() throws RemoteException;
     void registerInterest(UpdateListener listener) throws RemoteException;
     int getStepsPerRevolution() throws RemoteException;
-    TimestampedData1f[] getRawRanges() throws RemoteException;
-    HashMap<Float,TimestampedData1f> getRangeMap() throws RemoteException;
+    TimestampedData2f[] getRawRanges() throws RemoteException;
     public Instant lastUpdated() throws RemoteException;
 }

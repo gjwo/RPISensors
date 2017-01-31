@@ -50,6 +50,7 @@ public class VL53L0XRanger extends Sensor1D
         }
     }
 
+
     private void init() throws InterruptedException
     {
         byte HVI2C = registerOperations.readByte(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV);
@@ -326,4 +327,6 @@ public class VL53L0XRanger extends Sensor1D
             }
         } else SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_WRITES, "Data not ready");
     }
+
+    public int getRangingTimeBudget(){ return 30;} //milliseconds}
 }
