@@ -39,7 +39,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
     private long delaytime; //in milliseconds;
     private final ArrayList<UpdateListener> listeners;
     private static final String REMOTE_NAME = "RangeScanner";
-    private Instant lastUpdated;
+    private volatile Instant lastUpdated;
 
     /**
      * RangeScanner -   Constructor
@@ -89,7 +89,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
     {
         SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"RangeScanner running");
         float[] angles = new float[rangesPerRevolution];
-        float angle = 360f / rangesPerRevolution;
+        float angle = 360f / (float)rangesPerRevolution;
         for( int i = 0; i<rangesPerRevolution;i++)
         {
             angles[i] =  i* angle;
@@ -106,13 +106,12 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
                 } catch (InterruptedException e)
                 {
                     e.printStackTrace();
+                    interrupted = true;
                 }
                 //move positioner
                 angularPositioner.setAngularPosition(angles[i]);
             }
             lastUpdated = Main.getMain().getClock().instant();
-
-
             //updateData();
         }
         //tidy up
