@@ -107,7 +107,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
                     dataReady = false;
                     try
                     {
-                        TimeUnit.MILLISECONDS.sleep(50);
+                        TimeUnit.MILLISECONDS.sleep(25);
                     } catch (InterruptedException e)
                     {
                         e.printStackTrace();
