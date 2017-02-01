@@ -2,6 +2,9 @@ package sensors.models;
 
 import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
+import logging.SystemLog;
+import subsystems.SubSystem;
+
 /**
  * RPITank - devices.sensors
  * Created by GJWood on 18/07/2016.
@@ -22,8 +25,8 @@ public abstract class Sensor3D extends Sensor<TimestampedData3f>
     protected void logState()
     {
     	super.logState();
-    	System.out.println("deviceBias: "+ deviceBias.toString());
-    	System.out.println("deviceScaling: "+ deviceScaling.toString());
+		SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_VARIABLES,
+				"deviceBias: "+ deviceBias.toString()+ "deviceScaling: "+ deviceScaling.toString());
     }
 
     protected void setDeviceBias(Data3f deviceBias){this.deviceBias = deviceBias.clone();}

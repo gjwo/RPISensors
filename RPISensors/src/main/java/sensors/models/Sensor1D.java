@@ -2,6 +2,8 @@ package sensors.models;
 
 import dataTypes.Data1f;
 import dataTypes.TimestampedData1f;
+import logging.SystemLog;
+import subsystems.SubSystem;
 
 /**
  * RPISensors - sensors.models
@@ -21,8 +23,8 @@ public abstract class Sensor1D extends Sensor<TimestampedData1f>
     public void logState()
     {
         super.logState();
-        System.out.println("deviceBias: "+ deviceBias.toString());
-        System.out.println("deviceScaling: "+ deviceScaling.toString());
+        SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_VARIABLES,
+        "deviceBias: "+ deviceBias.toString()+ "deviceScaling: "+ deviceScaling.toString());
     }
 
     public void setDeviceBias(Data1f deviceBias){this.deviceBias = deviceBias.clone();}
