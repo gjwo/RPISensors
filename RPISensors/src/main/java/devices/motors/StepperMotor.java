@@ -54,7 +54,7 @@ public class StepperMotor implements AngularPositioner
 
         for(int i = 0; i<4; i++)
         {
-            System.out.println(phase);
+            //System.out.println(phase);
             pins[i].setState(states[(stepSequence[phase] >> 3-i) & 1]);
             long start = System.nanoTime();
             //TODO: make dynamic

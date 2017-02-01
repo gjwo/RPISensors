@@ -38,6 +38,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
     private final ArrayList<UpdateListener> listeners;
     private static final String REMOTE_NAME = "RangeScanner";
     private volatile Instant lastUpdated;
+    private volatile boolean dataReady;
 
     /**
      * RangeScanner -   Constructor
@@ -54,6 +55,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
         Thread thread = new Thread(this, "Range Scanner");
         this.interrupted = false;
         this.finished = false;
+        this.dataReady =false;
         float resolution = angularPositioner.angularPositionResolution();
         int rangesPerSec = 1000/ranger.getRangingTimeBudget(); // rounds down
         this.rangesPerRevolution = (60/scanRPM)*rangesPerSec;
@@ -95,22 +97,31 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
         while (!interrupted)
         {
             SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_LOOPS,"RangeScanner while at "+ lastUpdated.toString());
-            for (int i = 0; i < rangesPerRevolution; i++)
+            if(dataReady)
             {
-                ranges[i] = new TimestampedData2f(ranger.getLatestRange().getX(),angles[i], ranger.getLatestRange().getInstant());
-                try
+                dataReady = false;
+                for (int i = 0; i < rangesPerRevolution; i++)
                 {
-                    TimeUnit.MILLISECONDS.sleep(delaytime);
-                } catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                    interrupted = true;
+                    ranges[i] = new TimestampedData2f(ranger.getLatestRange().getX(), angles[i], ranger.getLatestRange().getInstant());
+                    //move positioner
+                    angularPositioner.setAngularPosition(angles[i]);
+                    while (!dataReady)
+                    {
+                        try
+                        {
+                            TimeUnit.MILLISECONDS.sleep(delaytime); //TODO may need to consider moter movement delay here
+                        } catch (InterruptedException e)
+                        {
+                            e.printStackTrace();
+                            interrupted = true;
+                        }
+                    }
+                    dataReady = false;
                 }
-                //move positioner
-                angularPositioner.setAngularPosition(angles[i]);
+                lastUpdated = Main.getMain().getClock().instant();
+
+                //updateData();
             }
-            lastUpdated = Main.getMain().getClock().instant();
-            //updateData();
         }
         //tidy up
         finished = true;
@@ -151,6 +162,6 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
     @Override
     public void dataUpdated()
     {
-        SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.ERROR,"Not Implemented");
+        dataReady = true;
     }
 }
