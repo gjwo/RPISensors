@@ -1,6 +1,5 @@
 package mapping;
 
-import dataTypes.TimestampedData1f;
 import dataTypes.TimestampedData2f;
 import devices.motors.AngularPositioner;
 import logging.SystemLog;
@@ -16,7 +15,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -29,7 +27,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
 {
     private final AngularPositioner angularPositioner;
     private final VL53L0X ranger;
-    private volatile boolean interrupted;
+    private volatile boolean stop;
     private volatile boolean finished;
     private final int stepsPerRevolution;
     private final int rangesPerRevolution;
@@ -53,7 +51,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
         this.ranger = ranger;
         this.ranger.registerInterest(this);
         Thread thread = new Thread(this, "Range Scanner");
-        this.interrupted = false;
+        this.stop = false;
         this.finished = false;
         this.dataReady =false;
         float resolution = angularPositioner.angularPositionResolution();
@@ -79,7 +77,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
     }
     public void interrupt()
     {
-        interrupted = true;
+        stop = true;
     }
     public boolean isFinished() {return finished;}
     public int getStepsPerRevolution() {return stepsPerRevolution;}
@@ -94,7 +92,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
         {
             angles[i] =  i* angle;
         }
-        while (!interrupted)
+        while (!Thread.interrupted()&&!stop)
         {
             SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_LOOPS,"RangeScanner while at "+ lastUpdated.toString());
             if(dataReady)
@@ -113,7 +111,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
                         } catch (InterruptedException e)
                         {
                             e.printStackTrace();
-                            interrupted = true;
+                            stop = true;
                         }
                     }
                     dataReady = false;
