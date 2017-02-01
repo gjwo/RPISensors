@@ -1,5 +1,6 @@
 package mapping;
 
+import dataTypes.TimestampedData1f;
 import dataTypes.TimestampedData2f;
 import devices.motors.AngularPositioner;
 import logging.SystemLog;
@@ -94,29 +95,36 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
         }
         while (!Thread.interrupted()&&!stop)
         {
-            SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_LOOPS,"RangeScanner while at "+ lastUpdated.toString());
             if(dataReady)
             {
-                dataReady = false;
+                SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_LOOPS,"RangeScanner while at "+ lastUpdated.toString());
                 for (int i = 0; i < rangesPerRevolution; i++)
                 {
-                    ranges[i] = new TimestampedData2f(ranger.getLatestRange().getX(), angles[i], ranger.getLatestRange().getInstant());
+                    TimestampedData1f reading = ranger.getLatestRange();
+                    ranges[i] = new TimestampedData2f(reading.getX(), angles[i], reading.getInstant());
                     //move positioner
-                    angularPositioner.setAngularPosition(angles[i]);
-                    while (!dataReady)
+                    //angularPositioner.setAngularPosition(angles[i]); // must be blocking to wait for motor movement
+                    dataReady = false;
+                    try
+                    {
+                        TimeUnit.MILLISECONDS.sleep(50);
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    /*while (!dataReady)
                     {
                         try
                         {
-                            TimeUnit.MILLISECONDS.sleep(delaytime); //TODO may need to consider moter movement delay here
+                            TimeUnit.MILLISECONDS.sleep(5);
                         } catch (InterruptedException e)
                         {
                             e.printStackTrace();
                             stop = true;
                         }
-                    }
-                    dataReady = false;
+                    }*/
+                    lastUpdated = Main.getMain().getClock().instant();
                 }
-                lastUpdated = Main.getMain().getClock().instant();
 
                 //updateData();
             }

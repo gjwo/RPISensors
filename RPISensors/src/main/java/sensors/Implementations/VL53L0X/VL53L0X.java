@@ -34,7 +34,13 @@ public class VL53L0X extends SensorPackage implements Ranger
     @Override
     public TimestampedData1f getLatestRange()
     {
+        try
+    {
         return sensor.getLatestValue();
+    } catch (IndexOutOfBoundsException ignored)
+        {
+            return new TimestampedData1f(0);
+        }
     }
 
     @Override

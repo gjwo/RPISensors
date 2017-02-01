@@ -310,7 +310,7 @@ public class VL53L0XRanger extends Sensor1D
             //        "byte " + i + " = " + rangeData[i-1]);
 
             byte devError = (byte) ((rangeData[0] & 0x78) >> 3); // Check for errors
-            SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS, errorMap.get(devError));
+            //SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS, errorMap.get(devError));
 
             /*SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
                     "Effective SPAD Return Count = " + ((float) (rangeData[2]) + (float)rangeData[3]/255.));
@@ -321,8 +321,8 @@ public class VL53L0XRanger extends Sensor1D
             int distance = (((short) rangeData[10] << 8) | (rangeData[11] & 0xff));
             if (devError == 0 || devError == 0x0B)
             {
-                SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_LOOPS,
-                        "Distance = " + distance + " mm");
+                //SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_LOOPS,
+                //        "Distance = " + distance + " mm");
                 this.addValue(new TimestampedData1f(distance));
             }
         } else SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_WRITES, "Data not ready");
