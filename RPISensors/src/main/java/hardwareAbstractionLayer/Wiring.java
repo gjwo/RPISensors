@@ -29,12 +29,12 @@ public class Wiring
         pinMap.put(RaspiPin.GPIO_27,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_27,"Positioner Pin 4", PinState.LOW));
         pinMap.put(RaspiPin.GPIO_02,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "Right motor A", PinState.LOW));
         pinMap.put(RaspiPin.GPIO_03,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "Right motor B", PinState.LOW));
-        pinMap.put(RaspiPin.GPIO_05,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Right motor A", PinState.LOW));
-        pinMap.put(RaspiPin.GPIO_04,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "Right motor B", PinState.LOW));
-        pinMap.put(RaspiPin.GPIO_14,gpio.provisionDigitalInputPin(RaspiPin.GPIO_14, "LH1", PinPullResistance.PULL_DOWN));
-        pinMap.put(RaspiPin.GPIO_15,gpio.provisionDigitalInputPin(RaspiPin.GPIO_15, "LH2", PinPullResistance.PULL_DOWN));
-        pinMap.put(RaspiPin.GPIO_01,gpio.provisionDigitalInputPin(RaspiPin.GPIO_01, "RH1", PinPullResistance.PULL_DOWN));
-        pinMap.put(RaspiPin.GPIO_26,gpio.provisionDigitalInputPin(RaspiPin.GPIO_26, "RH2", PinPullResistance.PULL_DOWN));
+        pinMap.put(RaspiPin.GPIO_05,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Left motor A", PinState.LOW));
+        pinMap.put(RaspiPin.GPIO_04,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "Left motor B", PinState.LOW));
+        pinMap.put(RaspiPin.GPIO_14,gpio.provisionDigitalInputPin(RaspiPin.GPIO_14, "Left Encoder 1", PinPullResistance.PULL_DOWN));
+        pinMap.put(RaspiPin.GPIO_15,gpio.provisionDigitalInputPin(RaspiPin.GPIO_15, "Left Encoder 2", PinPullResistance.PULL_DOWN));
+        pinMap.put(RaspiPin.GPIO_01,gpio.provisionDigitalInputPin(RaspiPin.GPIO_01, "Right Encoder 1", PinPullResistance.PULL_DOWN));
+        pinMap.put(RaspiPin.GPIO_26,gpio.provisionDigitalInputPin(RaspiPin.GPIO_26, "Right Encoder 2", PinPullResistance.PULL_DOWN));
         try
         {
             i2CBus1 = I2CFactory.getInstance(I2CBus.BUS_1);
