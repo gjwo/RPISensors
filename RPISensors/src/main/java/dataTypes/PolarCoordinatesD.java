@@ -37,5 +37,5 @@ public class PolarCoordinatesD
     public String toString(){
         return String.format("theta: %1.3f r: %1.3f",theta,r);
     }
-
+    public PolarCoordinatesD clone() {return new PolarCoordinatesD(theta,r);}
 }

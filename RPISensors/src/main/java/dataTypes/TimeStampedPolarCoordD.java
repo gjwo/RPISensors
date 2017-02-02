@@ -12,13 +12,7 @@ public class TimeStampedPolarCoordD extends TimeStampedData<PolarCoordinatesD>
     {
         super(data);
     }
-    public TimeStampedPolarCoordD(PolarCoordinatesD data,Instant time)
-    {
-        super(data, time);
-    }
+    public TimeStampedPolarCoordD(PolarCoordinatesD data,Instant time) {super(data, time);}
     @Override
-    public TimeStampedData<PolarCoordinatesD> clone()
-    {
-        return new TimeStampedPolarCoordD(this.getData(),this.time());
-    }
+    public TimeStampedData<PolarCoordinatesD> clone() {return new TimeStampedPolarCoordD(this.getData().clone(),this.time());}
 }
