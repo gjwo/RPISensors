@@ -17,6 +17,7 @@ public class CircularArrayRing<T> extends AbstractCollection<T>
     private int head;
 
     public CircularArrayRing(int i) {
+        if(i<1) throw new  IndexOutOfBoundsException();
         data = new Object[i];
         size = 0;
         head = 0;
@@ -43,6 +44,12 @@ public class CircularArrayRing<T> extends AbstractCollection<T>
         return (T) data[pointer];
     }
 
+    @Override
+    public void clear()
+    {
+        size = 0;
+        head = 0;
+    }
 
     @Override
     public boolean add(T item) {
@@ -78,7 +85,10 @@ public class CircularArrayRing<T> extends AbstractCollection<T>
 
         @Override
         public void remove() {
-            throw new UnsupportedOperationException();
+            if (size <=0)throw new NoSuchElementException();
+            head--;
+            if (head<0) head = data.length;
+            size--;
         }
     }
 }
