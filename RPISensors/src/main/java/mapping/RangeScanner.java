@@ -1,5 +1,7 @@
 package mapping;
 
+import dataTypes.PolarCoordinatesD;
+import dataTypes.TimeStampedPolarCoordD;
 import dataTypes.TimestampedData1f;
 import dataTypes.TimestampedData2f;
 import devices.motors.AngularPositioner;
@@ -31,8 +33,9 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
     private volatile boolean stop;
     private volatile boolean finished;
     private final int stepsPerRevolution;
-    private final int rangesPerRevolution;
+    private final int readingsPerRevolution;
     private volatile TimestampedData2f[] ranges;
+    private volatile TimeStampedPolarCoordD[] polars;
     private long delaytime; //in milliseconds;
     private final ArrayList<UpdateListener> listeners;
     private static final String REMOTE_NAME = "RangeScanner";
@@ -57,11 +60,12 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
         this.dataReady =false;
         float resolution = angularPositioner.angularPositionResolution();
         int rangesPerSec = 1000/ranger.getRangingTimeBudget(); // rounds down
-        this.rangesPerRevolution = (60/scanRPM)*rangesPerSec;
+        this.readingsPerRevolution = (60/scanRPM)*rangesPerSec;
         this.stepsPerRevolution = (int) (360f / resolution);
-        if (stepsPerRevolution<rangesPerRevolution)
+        if (stepsPerRevolution< readingsPerRevolution)
             SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.ERROR,"positioner resolution too low");
-        this.ranges = new TimestampedData2f[rangesPerRevolution];
+        this.ranges = new TimestampedData2f[readingsPerRevolution];
+        this.polars = new TimeStampedPolarCoordD[readingsPerRevolution];
         this.delaytime = ((long) ranger.getRangingTimeBudget()); //Milliseconds
         this.listeners = new ArrayList<>();
         this.lastUpdated = Main.getMain().getClock().instant();
@@ -87,9 +91,9 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
     public void run()
     {
         SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"RangeScanner running");
-        float[] angles = new float[rangesPerRevolution];
-        float angle = 360f / (float)rangesPerRevolution;
-        for( int i = 0; i<rangesPerRevolution;i++)
+        float[] angles = new float[readingsPerRevolution];
+        float angle = 360f / (float) readingsPerRevolution;
+        for(int i = 0; i< readingsPerRevolution; i++)
         {
             angles[i] =  i* angle;
         }
@@ -98,10 +102,11 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
             if(dataReady)
             {
                 SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_LOOPS,"RangeScanner while at "+ lastUpdated.toString());
-                for (int i = 0; i < rangesPerRevolution; i++)
+                for (int i = 0; i < readingsPerRevolution; i++)
                 {
                     TimestampedData1f reading = ranger.getLatestRange();
                     ranges[i] = new TimestampedData2f(reading.getX(), angles[i], reading.getInstant());
+                    polars[i] = new TimeStampedPolarCoordD(new PolarCoordinatesD(reading.getX(),Math.toRadians(angles[i])));
                     //move positioner
                     //angularPositioner.setAngularPosition(angles[i]); // must be blocking to wait for motor movement
                     dataReady = false;
@@ -153,6 +158,8 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
      * @return      -   the latest set of range data (360 sweep after initial scan
      */
     public TimestampedData2f[] getRawRanges(){return ranges.clone();}
+
+    public TimeStampedPolarCoordD[] getPolarData(){return polars.clone();}
 
     public void unbind()
     {
