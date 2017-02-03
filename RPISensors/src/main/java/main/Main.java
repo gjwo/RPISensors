@@ -41,12 +41,12 @@ public class Main implements RemoteMain
 		main = this;
 		clock = new NanoClock();
 		reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
-        SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting SubSystem manager");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting SubSystem manager");
         reg.rebind("Main", UnicastRemoteObject.exportObject(this,0));
         Wiring.logGpioPinAllocation();
 		subSystems = new HashMap<>();
 		prepareSubSystems();
-		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION, "System started");
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INFORMATION, "System started");
 		System.out.println("System ready");
 	}
 
@@ -74,7 +74,7 @@ public class Main implements RemoteMain
 
     private void prepareSubSystems()
     {
-		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Preparing subSystems");
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "Preparing subSystems");
         subSystems.put(SubSystemType.DRIVE_ASSEMBLY, new DriveAssemblySubSystem());
         subSystems.put(SubSystemType.INSTRUMENTS, new InstrumentsSubSystem());
         subSystems.put(SubSystemType.TELEMETRY, new TelemetrySubSystem());
@@ -93,12 +93,12 @@ public class Main implements RemoteMain
 
         for(SubSystemType systemType:systems)
 		{
-                SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting " + systemType.name());
+                SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting " + systemType.name());
                 if(subSystems.get(systemType).getSubSysState() != SubSystemState.RUNNING)
                 {
                     subSystems.get(systemType).startup();
-                    SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Started " + systemType.name());
-                } else SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, systemType.name() + " already running");
+                    SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "Started " + systemType.name());
+                } else SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, systemType.name() + " already running");
 
 		}
 	}
@@ -113,12 +113,12 @@ public class Main implements RemoteMain
 	{
         for(SubSystemType systemType:systems)
         {
-            SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Stopping " + systemType.name());
+            SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "Stopping " + systemType.name());
             if(subSystems.get(systemType).getSubSysState() != SubSystemState.IDLE)
             {
                 subSystems.get(systemType).shutdown();
-                SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, "Stopped " + systemType.name());
-            } else SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES, systemType.name() + " not running");
+                SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "Stopped " + systemType.name());
+            } else SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, systemType.name() + " not running");
         }
 	}
 

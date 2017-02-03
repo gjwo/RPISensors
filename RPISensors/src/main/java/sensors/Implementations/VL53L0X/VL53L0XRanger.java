@@ -57,15 +57,15 @@ public class VL53L0XRanger extends Sensor1D
         registerOperations.writeByte(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV, (byte)(HVI2C | 0x01)); // set device HIGH to 2.8 V
 
 
-        SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
+        SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_EVENTS,
                 "VL53L0XRanger proximity sensor...");
         byte c = registerOperations.readByte(VL53L0XRegisters.WHO_AM_I);  // Read WHO_AM_I register for VL53L0XRanger
-        SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
+        SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_EVENTS,
                 "I AM " + c + " I should be " + (byte) 0xEE);
 
         // Get info about the specific device
         byte revID = registerOperations.readByte(VL53L0XRegisters.IDENTIFICATION_REVISION_ID);  // Read Revision ID register for VL53L0XRanger
-        SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
+        SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_EVENTS,
                 "Revision ID: " + revID);
         TimeUnit.SECONDS.sleep(1);
 
@@ -231,16 +231,16 @@ public class VL53L0XRanger extends Sensor1D
 
         // Get some basic information about the sensor
         byte val1 = registerOperations.readByte(VL53L0XRegisters.PRE_RANGE_CONFIG_VCSEL_PERIOD);
-        SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
+        SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_EVENTS,
                 "PRE_RANGE_CONFIG_VCSEL_PERIOD= " + val1 + " decoded: " + VL53L0X_decode_vcsel_period(val1));
 
         val1 = registerOperations.readByte(VL53L0XRegisters.FINAL_RANGE_CONFIG_VCSEL_PERIOD);
-        SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
+        SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_EVENTS,
                 "PRE_RANGE_CONFIG_VCSEL_PERIOD= " + val1 + " decoded: " + VL53L0X_decode_vcsel_period(val1));
 
         byte[] rawData = registerOperations.readBytes(VL53L0XRegisters.SYSTEM_INTERMEASUREMENT_PERIOD, 4);
         int IMPeriod = (((int) rawData[0]) << 24 | ((int) rawData[1]) << 16 | ((int) rawData[2]) << 8 | rawData[3]);
-        SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
+        SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_EVENTS,
                 "System Inter-measurement period = " + IMPeriod + "ms");
 
         registerOperations.writeByte(VL53L0XRegisters.SYSRANGE_START, (byte) 0x02); // continuous mode and arm next shot
@@ -306,26 +306,26 @@ public class VL53L0XRanger extends Sensor1D
             byte[] rangeData = registerOperations.readBytes(VL53L0XRegisters.RESULT_RANGE_STATUS, 14); // continuous ranging
 
 
-            //for(int i = 1; i<= 14;i++) SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
+            //for(int i = 1; i<= 14;i++) SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_EVENTS,
             //        "byte " + i + " = " + rangeData[i-1]);
 
             byte devError = (byte) ((rangeData[0] & 0x78) >> 3); // Check for errors
-            //SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS, errorMap.get(devError));
+            //SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_EVENTS, errorMap.get(devError));
 
-            /*SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
+            /*SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_EVENTS,
                     "Effective SPAD Return Count = " + ((float) (rangeData[2]) + (float)rangeData[3]/255.));
-            SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
+            SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_EVENTS,
                     "Signal Rate = " + (short) (((short) rangeData[6] << 8) | rangeData[7]) + " mega counts per second");
-            SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_EVENTS,
+            SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_EVENTS,
                     "Ambient Rate = " + (short) (((short) rangeData[8] << 8) | rangeData[9]) + " mega counts per second");*/
             int distance = (((short) rangeData[10] << 8) | (rangeData[11] & 0xff));
             if (devError == 0 || devError == 0x0B)
             {
-                //SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_LOOPS,
+                //SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_LOOPS,
                 //        "Distance = " + distance + " mm");
                 this.addValue(new TimestampedData1f(distance));
             }
-        } else SystemLog.log(SubSystem.SubSystemType.TESTING, SystemLog.LogLevel.TRACE_HW_WRITES, "Data not ready");
+        } else SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_WRITES, "Data not ready");
     }
 
     public int getRangingTimeBudget(){ return 30;} //milliseconds}

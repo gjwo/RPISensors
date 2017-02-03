@@ -63,7 +63,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
         this.readingsPerRevolution = (60/scanRPM)*rangesPerSec;
         this.stepsPerRevolution = (int) (360f / resolution);
         if (stepsPerRevolution< readingsPerRevolution)
-            SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.ERROR,"positioner resolution too low");
+            SystemLog.log(this.getClass(),SystemLog.LogLevel.ERROR,"positioner resolution too low");
         this.ranges = new TimestampedData2f[readingsPerRevolution];
         this.polars = new TimeStampedPolarCoordD[readingsPerRevolution];
         this.delaytime = ((long) ranger.getRangingTimeBudget()); //Milliseconds
@@ -77,7 +77,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
         {
             e.printStackTrace();
         }
-        SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"RangeScanner initialised");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES,"RangeScanner initialised");
         thread.start();
     }
     public void interrupt()
@@ -90,7 +90,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
     @Override
     public void run()
     {
-        SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"RangeScanner running");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES,"RangeScanner running");
         float[] angles = new float[readingsPerRevolution];
         float angle = 360f / (float) readingsPerRevolution;
         for(int i = 0; i< readingsPerRevolution; i++)
@@ -101,7 +101,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
         {
             if(dataReady)
             {
-                SystemLog.log(SubSystem.SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_LOOPS,"RangeScanner while at "+ lastUpdated.toString());
+                SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_LOOPS,"RangeScanner while at "+ lastUpdated.toString());
                 for (int i = 0; i < readingsPerRevolution; i++)
                 {
                     TimestampedData1f reading = ranger.getLatestRange();

@@ -56,7 +56,7 @@ public class RegisterOperations
 	public short readShort(Register reg)
 	{
 		short s = Conversion.bytes2MSBToShort(readBytes(reg,2));
-		if (logReads) SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.shortToLogString(reg,s));
+		if (logReads) SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.shortToLogString(reg,s));
 		return s;
 	}
 	
@@ -70,7 +70,7 @@ public class RegisterOperations
 	public short readShortLSBfirst(Register reg)
 	{
 		short s = Conversion.bytes2LSBToShort(readBytes(reg,2));
-		if (logReads) SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.shortToLogString(reg,s));
+		if (logReads) SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.shortToLogString(reg,s));
 		return s;
 	}
 	
@@ -83,7 +83,7 @@ public class RegisterOperations
     {
         try {
         	byte b = busDevice.read(reg.getAddress());
-        	 if (logReads) SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.byteToLogString(reg,b));
+        	 if (logReads) SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.byteToLogString(reg,b));
             return b;
         } catch (IOException e) {
             e.printStackTrace();
@@ -108,7 +108,7 @@ public class RegisterOperations
             {
 				for (byte aByte : bytes)
 				{
-					SystemLog.log(SubSystem.SubSystemType.DEVICES, SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.byteToLogString(reg, aByte));
+					SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.byteToLogString(reg, aByte));
 				}
             }
             return bytes;
@@ -198,7 +198,7 @@ public class RegisterOperations
         	byte oldRegVal = 0;
         	if (logWrites) oldRegVal = busDevice.read(reg.getAddress());
             busDevice.write(reg.getAddress(),value);
-      	    if (logWrites) SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_HW_WRITES, Conversion.byteToLogString(reg,oldRegVal,value,readByte(reg)));
+      	    if (logWrites) SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_HW_WRITES, Conversion.byteToLogString(reg,oldRegVal,value,readByte(reg)));
        } catch (IOException e) {
             e.printStackTrace();
         }
@@ -224,7 +224,7 @@ public class RegisterOperations
                 byte[]newRegVals = busDevice.read(startAddr,bytes.length);
 				for (int i = 0; i<bytes.length; i++)
 				{
-					SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_HW_WRITES, Conversion.byteToLogString(reg,oldRegVals[i],bytes[i],newRegVals[i]));
+					SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_HW_WRITES, Conversion.byteToLogString(reg,oldRegVals[i],bytes[i],newRegVals[i]));
 				}
 			} else
 			{

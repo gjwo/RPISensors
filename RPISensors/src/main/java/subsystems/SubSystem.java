@@ -25,7 +25,7 @@ public abstract class SubSystem extends Thread
 
 	protected void setSubSysState(SubSystemState state)
 	{
-		SystemLog.log(type,SystemLog.LogLevel.TRACE_MAJOR_STATES, type.name() + " | " + this.state.name() +  "->"+state.name());
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, type.name() + " | " + this.state.name() +  "->"+state.name());
 		this.state = state;
 	}
 

@@ -123,11 +123,11 @@ public class Navigate implements Runnable, UpdateListener{
 					if(((float)nowNanoS-lastDisplayNanoS)/nanosPerSecf >= 1f/displayFrequencyHz)
 					{
 						lastDisplayNanoS = nowNanoS;
-						/*SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION,"A " + mpu9250.getAvgAcceleration().toString()+
+						/*SystemLog.log(Navigate.class,SystemLog.LogLevel.USER_INFORMATION,"A " + mpu9250.getAvgAcceleration().toString()+
 								" G " + mpu9250.getAvgRotationalAcceleration().unStamp().toString()+
 								" M "  + mpu9250.getAvgGauss().unStamp().toString()+
 								" | Y,P&R: " + instruments.getAngles().toString());
-						SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION, String.format(	" Freq: %5.1fHz %dk calcs%n",calculationFrequency,countDeltas/1000));*/
+						SystemLog.log(Navigate.class,SystemLog.LogLevel.USER_INFORMATION, String.format(	" Freq: %5.1fHz %dk calcs%n",calculationFrequency,countDeltas/1000));*/
 					}
 					for(UpdateListener listener:listeners) listener.dataUpdated();
                 }
@@ -162,29 +162,29 @@ public class Navigate implements Runnable, UpdateListener{
 
     	try
     	{
-			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Start Navigate main()");
+			SystemLog.log(Navigate.class,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Start Navigate main()");
         	//final GpioController gpio = GpioFactory.getInstance();
 			i2CBus1 = Wiring.getI2CBus1();
-			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Bus acquired");
+			SystemLog.log(Navigate.class,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Bus acquired");
             mpu9250 = new MPU9250(
                     new Pi4jI2CDevice(i2CBus1.getDevice(0x68)), // MPU9250 device device
                     new Pi4jI2CDevice(i2CBus1.getDevice(0x0C)), // ak8963 device
                     SAMPLE_RATE,                                     // sample rate per second
                     SAMPLE_SIZE                                    // sample size
 			);
-			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"MPU9250 created");
+			SystemLog.log(Navigate.class,SystemLog.LogLevel.TRACE_MAJOR_STATES,"MPU9250 created");
     		nav = new Navigate(mpu9250);
             nav.mpu9250.registerInterest(nav);
             Thread sensor = new Thread(nav.mpu9250);
             sensor.start();
             final int n = 15;
             Thread.sleep(1000*n); //Collect data for n seconds
-			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Shutdown Sensor");
+			SystemLog.log(Navigate.class,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Shutdown Sensor");
             sensor.interrupt();
             Thread.sleep(1000);
-			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Shutdown Bus");
+			SystemLog.log(Navigate.class,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Shutdown Bus");
             nav.bus.close();
-			SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Stop Navigate main()");
+			SystemLog.log(Navigate.class,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Stop Navigate main()");
         } catch (InterruptedException | IOException  e) {
             e.printStackTrace();
             System.exit(1);

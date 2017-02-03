@@ -26,7 +26,7 @@ public class InstrumentsSubSystem extends SubSystem
 
     public InstrumentsSubSystem()
     {
-        super(SubSystem.SubSystemType.INSTRUMENTS);
+        super(SubSystemType.INSTRUMENTS);
     }
 
     @Override

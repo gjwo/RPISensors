@@ -32,8 +32,8 @@ public abstract class Sensor <T>
     // Methods that may need extending by sub classes
     void logState()
     {
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "readings: "+ readings.size());
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, " sampleSize: "+ sampleSize);
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "readings: "+ readings.size());
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, " sampleSize: "+ sampleSize);
     }
     
     // Methods must be implemented but which can't be done here because the types are not known

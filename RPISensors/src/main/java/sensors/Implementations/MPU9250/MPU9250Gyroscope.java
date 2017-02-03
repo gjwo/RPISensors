@@ -53,8 +53,8 @@ public class MPU9250Gyroscope extends Sensor3D
     protected void logState()
     {
     	super.logState();
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "gyroScale: "+ gyroScale.toString()+ " MinMax: "+gyroScale.minMax+" res: "+gyroScale.getRes() );
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "cfgDLPF: "+ cfgDLPF);
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "gyroScale: "+ gyroScale.toString()+ " MinMax: "+gyroScale.minMax+" res: "+gyroScale.getRes() );
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "cfgDLPF: "+ cfgDLPF);
     }
 	
 	
@@ -64,17 +64,17 @@ public class MPU9250Gyroscope extends Sensor3D
 	@Override
 	public void printRegisters()
 	{
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.CONFIG)); //belongs to MPU9250 but holds control data for Gyroscope
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.GYRO_CONFIG));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.SELF_TEST_X_GYRO));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.SELF_TEST_Y_GYRO));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.SELF_TEST_Z_GYRO));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShort(MPU9250Registers.XG_OFFSET_H));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShort(MPU9250Registers.YG_OFFSET_H));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShort(MPU9250Registers.ZG_OFFSET_H));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShort(MPU9250Registers.GYRO_XOUT_H));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShort(MPU9250Registers.GYRO_YOUT_H));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShort(MPU9250Registers.GYRO_ZOUT_H));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.CONFIG)); //belongs to MPU9250 but holds control data for Gyroscope
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.GYRO_CONFIG));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.SELF_TEST_X_GYRO));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.SELF_TEST_Y_GYRO));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.SELF_TEST_Z_GYRO));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShort(MPU9250Registers.XG_OFFSET_H));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShort(MPU9250Registers.YG_OFFSET_H));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShort(MPU9250Registers.ZG_OFFSET_H));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShort(MPU9250Registers.GYRO_XOUT_H));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShort(MPU9250Registers.GYRO_YOUT_H));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShort(MPU9250Registers.GYRO_ZOUT_H));
 	}
 	
 	public GT_DLPF getDFLP(){return cfgDLPF;}
@@ -91,12 +91,12 @@ public class MPU9250Gyroscope extends Sensor3D
 	@Override
 	public void configure() throws InterruptedException
 	{
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS, "gyro.configure");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERFACE_METHODS, "gyro.configure");
         ro.writeByte(MPU9250Registers.GYRO_CONFIG,(byte)(	GyrSelfTest.NONE.bits |			// no self test
         													gyroScale.bits |				// Set full scale range for the gyro to 2000 dps
 															GyrFchoiceB.FC_USE_DLPF.bits)); // use DLPF settings 
         logState();
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS, "End gyro.configure");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERFACE_METHODS, "End gyro.configure");
 	}
 	
 	@Override
@@ -104,7 +104,7 @@ public class MPU9250Gyroscope extends Sensor3D
         byte FS = 0; 
 
         final int TEST_LENGTH = 200;
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"gyro.selfTest");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"gyro.selfTest");
 
          int[] gSum = new int[] {0,0,0}; //32 bit integer to accumulate and avoid overflow
         short[] registers; 
@@ -127,8 +127,8 @@ public class MPU9250Gyroscope extends Sensor3D
         {
             gAvg[i] = (short) ((short)(gSum[i]/TEST_LENGTH) & 0xFFFF); //average and mask off top bits
         }
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, "gAvg average: "+Arrays.toString(gAvg));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, String.format(" [0x%X, 0x%X, 0x%X]%n", gAvg[0], gAvg[1], gAvg[2]));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, "gAvg average: "+Arrays.toString(gAvg));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, String.format(" [0x%X, 0x%X, 0x%X]%n", gAvg[0], gAvg[1], gAvg[2]));
         
         // Configure the Gyroscope for self-test
        ro.writeByte(MPU9250Registers.GYRO_CONFIG, (byte)(	GyrSelfTest.XYZ.bits |			// Enable self test on all three axes
@@ -153,33 +153,33 @@ public class MPU9250Gyroscope extends Sensor3D
         {
             gSTAvg[i] = (short) ((short)(gSelfTestSum[i]/TEST_LENGTH) & 0xFFFF); //average and mask off top bits
         }
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, "gSTAvg average: "+Arrays.toString(gSTAvg));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, String.format(" [0x%X, 0x%X, 0x%X]%n", gSTAvg[0], gSTAvg[1], gSTAvg[2]));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, "gSTAvg average: "+Arrays.toString(gSTAvg));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, String.format(" [0x%X, 0x%X, 0x%X]%n", gSTAvg[0], gSTAvg[1], gSTAvg[2]));
     	
         // Calculate Gyro accuracy       
         short[] selfTestGyro = new short[3]; //Longer than byte to allow for removal of sign bit as this is unsigned
         selfTestGyro[0] = (short)((short)ro.readByte(MPU9250Registers.SELF_TEST_X_GYRO) & 0xFF);
         selfTestGyro[1] = (short)((short)ro.readByte(MPU9250Registers.SELF_TEST_Y_GYRO) & 0xFF);
         selfTestGyro[2] = (short)((short)ro.readByte(MPU9250Registers.SELF_TEST_Z_GYRO) & 0xFF);
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, "Self test Gyro bytes: "+Arrays.toString(selfTestGyro));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, String.format(" [0x%X, 0x%X, 0x%X]%n", selfTestGyro[0], selfTestGyro[1], selfTestGyro[2]));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, "Self test Gyro bytes: "+Arrays.toString(selfTestGyro));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, String.format(" [0x%X, 0x%X, 0x%X]%n", selfTestGyro[0], selfTestGyro[1], selfTestGyro[2]));
 
         float[] factoryTrimGyro = new float[3];
         //TODO: investigate this 1<<FS business
         factoryTrimGyro[0] = (float)(2620/(1<<FS))*(float)Math.pow(1.01,(float)selfTestGyro[0] - 1f);
         factoryTrimGyro[1] = (float)(2620/(1<<FS))*(float)Math.pow(1.01,(float)selfTestGyro[1] - 1f);
         factoryTrimGyro[2] = (float)(2620/(1<<FS))*(float)Math.pow(1.01,(float)selfTestGyro[2] - 1f);
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, "factoryTrimGyro (float): "+Arrays.toString(factoryTrimGyro));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, "factoryTrimGyro (float): "+Arrays.toString(factoryTrimGyro));
 
         float[] AccuracyGyro = new float[3];
         AccuracyGyro[0] = 100f*(((float)(gSTAvg[0] - gAvg[0]))/factoryTrimGyro[0]-1f);
         AccuracyGyro[1] = 100f*(((float)(gSTAvg[1] - gAvg[1]))/factoryTrimGyro[1]-1f);
         AccuracyGyro[2] = 100f*(((float)(gSTAvg[2] - gAvg[2]))/factoryTrimGyro[2]-1f);
         
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION, "Gyroscope accuracy:(% away from factory values)");
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION, "x: " + AccuracyGyro[0] + "%");
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION, "y: " + AccuracyGyro[1] + "%");
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION, "z: " + AccuracyGyro[2] + "%");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INFORMATION, "Gyroscope accuracy:(% away from factory values)");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INFORMATION, "x: " + AccuracyGyro[0] + "%");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INFORMATION, "y: " + AccuracyGyro[1] + "%");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INFORMATION, "z: " + AccuracyGyro[2] + "%");
 
 
         ro.writeByte(MPU9250Registers.GYRO_CONFIG,(byte)(	GyrSelfTest.NONE.bits |			// no self test
@@ -189,14 +189,14 @@ public class MPU9250Gyroscope extends Sensor3D
         Thread.sleep(25); // Delay a while to let the device stabilise
 
         logState();
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End gyro.selfTest");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End gyro.selfTest");
 	}
 
 	@Override
 	public void calibrate() throws InterruptedException
 	{
 		// part of accelgyrocalMPU9250 in Kris Winer code - this code is only the Gyroscope elements
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"gyro.calibrate");
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"gyro.calibrate");
     	
     	// Assumes we are in calibration bits via setCalibrationMode9250();
 
@@ -205,12 +205,12 @@ public class MPU9250Gyroscope extends Sensor3D
 
         short[] readings = parent.operateFIFO(FIFO_Mode.GYRO,40); //get a set of readings via the FIFO (MCU9250 function)
         int readingCount = readings.length;
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, "Readings length: " + readingCount);
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, "Readings length: " + readingCount);
 
         int sampleCount =  readingCount / 3; // 6 bytes per sample 3 x 16 bit values
         
         int[] gyroBiasSum = new int[]{0,0,0}; //32 bit to allow for accumulation without overflow
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, "sampleCount: "+sampleCount);
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, "sampleCount: "+sampleCount);
         
         //Read FIFO
         for(int s = 0; s < sampleCount; s++)
@@ -219,8 +219,8 @@ public class MPU9250Gyroscope extends Sensor3D
             gyroBiasSum[1] += readings[s+1];
             gyroBiasSum[2] += readings[s+2];
         }
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, "Gyro Bias sum: "+Arrays.toString(gyroBiasSum));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, String.format(" [0x%X, 0x%X, 0x%X]%n",gyroBiasSum[0],gyroBiasSum[1],gyroBiasSum[2]));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, "Gyro Bias sum: "+Arrays.toString(gyroBiasSum));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, String.format(" [0x%X, 0x%X, 0x%X]%n",gyroBiasSum[0],gyroBiasSum[1],gyroBiasSum[2]));
        
         //calculate averages
         short[] gyroBiasAvg = new short[]{0,0,0}; //16 bit average
@@ -228,8 +228,8 @@ public class MPU9250Gyroscope extends Sensor3D
         gyroBiasAvg[1] = (short)((gyroBiasSum[1] / sampleCount) & 0xffff);
         gyroBiasAvg[2] = (short)((gyroBiasSum[2] / sampleCount) & 0xffff);
 
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, "Gyro Bias average: "+Arrays.toString(gyroBiasAvg));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, String.format(" [0x%X, 0x%X, 0x%X]%n",gyroBiasAvg[0],gyroBiasAvg[1],gyroBiasAvg[2]));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, "Gyro Bias average: "+Arrays.toString(gyroBiasAvg));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, String.format(" [0x%X, 0x%X, 0x%X]%n",gyroBiasAvg[0],gyroBiasAvg[1],gyroBiasAvg[2]));
     	
         setHardwareBiases(gyroBiasAvg);
         
@@ -239,12 +239,12 @@ public class MPU9250Gyroscope extends Sensor3D
         								(float) gyroBiasAvg[2]/(float) gyroSensitivity));
 
         logState();
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End gyro.calibrate");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End gyro.calibrate");
 	}
 	
     private void setHardwareBiases(short[] gyroBiasAvg)
     {
-    	SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"setGyroBiases");
+    	SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"setGyroBiases");
     	//OffsetLSB = X_OFFS_USR * 4 / 2^FS_SEL
     	//OffsetDPS = X_OFFS_USR * 4 / 2^FS_SEL / Gyro_Sensitivity
     	
@@ -257,14 +257,14 @@ public class MPU9250Gyroscope extends Sensor3D
         gyroBiasAvgLSB[0] = (short)(-gyroBiasAvg[0]/4);
         gyroBiasAvgLSB[1] = (short)(-gyroBiasAvg[1]/4);
         gyroBiasAvgLSB[2] = (short)(-gyroBiasAvg[2]/4);
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, "gyroBiasAvgLSB: "+Arrays.toString(gyroBiasAvgLSB));
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, String.format(" [0x%X, 0x%X, 0x%X]%n",gyroBiasAvgLSB[0],gyroBiasAvgLSB[1],gyroBiasAvgLSB[2]));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, "gyroBiasAvgLSB: "+Arrays.toString(gyroBiasAvgLSB));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, String.format(" [0x%X, 0x%X, 0x%X]%n",gyroBiasAvgLSB[0],gyroBiasAvgLSB[1],gyroBiasAvgLSB[2]));
     	
         // Push gyro biases to hardware registers
     	ro.writeShort(MPU9250Registers.XG_OFFSET_H,gyroBiasAvgLSB[0]);
     	ro.writeShort(MPU9250Registers.YG_OFFSET_H,gyroBiasAvgLSB[1]);
     	ro.writeShort(MPU9250Registers.ZG_OFFSET_H,gyroBiasAvgLSB[2]);
          
-    	SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End setGyroBiases");
+    	SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End setGyroBiases");
     }
 }

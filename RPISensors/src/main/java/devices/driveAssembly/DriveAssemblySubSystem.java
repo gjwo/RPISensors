@@ -27,7 +27,7 @@ public class DriveAssemblySubSystem extends SubSystem
 
     public DriveAssemblySubSystem()
     {
-        super(SubSystem.SubSystemType.DRIVE_ASSEMBLY);
+        super(SubSystemType.DRIVE_ASSEMBLY);
 
         Encoder leftEncoder = new Encoder(Wiring.getLeftMainMotorEncoderPins(),1d/427.5d, false);
         Encoder rightEncoder = new Encoder(Wiring.getRightMainMotorEncoderPins(),1d/427.5d, false);

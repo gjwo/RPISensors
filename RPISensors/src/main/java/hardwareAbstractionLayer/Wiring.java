@@ -51,7 +51,7 @@ public class Wiring
         try {
             i2CBus1.close();
         } catch (IOException e) {
-            SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.ERROR, "IO exception whilst closing i2CBus1");
+            SystemLog.log(Wiring.class,SystemLog.LogLevel.ERROR, "IO exception whilst closing i2CBus1");
             // ignore has already been closed!
         }
     }
@@ -101,7 +101,7 @@ public class Wiring
     {
         for (Pin p:pinMap.keySet())
         {
-            SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,
+            SystemLog.log(Wiring.class,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,
                     pinMap.get(p).toString());
         }
     }

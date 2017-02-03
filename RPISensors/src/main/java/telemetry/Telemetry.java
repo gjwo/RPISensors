@@ -47,7 +47,7 @@ public class Telemetry implements RemoteTelemetry
 		// remove all specific class variables apart form lasUpdateTime
 		
 		// TODO generalise to deal with multiple subsystems see method below
-		// Add a subsystem type to the hashtable.
+		// Add a subsystem aClass to the hashtable.
 		
 		// TODO (stretch!) allow subystems to dynamically bind and unbind new data providers
 		

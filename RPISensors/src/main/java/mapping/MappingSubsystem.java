@@ -60,11 +60,11 @@ public class MappingSubsystem extends SubSystem
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        SystemLog.log(SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Ranger initialised");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES,"Ranger initialised");
         // set up the positioner, in this case a GPIO controlled BY48 stepper motor
 
         angularPositioner = new StepperMotor(Wiring.getPositionerPins(),BY48_STEPPER_CYCLES_PER_ROTATION);
-        SystemLog.log(SubSystemType.MAPPING,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Positioner initialised");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES,"Positioner initialised");
 
         // initialise the range scanner with the two devices
         rangeScanner = new RangeScanner(angularPositioner,ranger,12); //scan at 1 rotation in 5 seconds

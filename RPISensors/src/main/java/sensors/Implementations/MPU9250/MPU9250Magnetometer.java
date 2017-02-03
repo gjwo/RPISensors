@@ -61,11 +61,11 @@ public class MPU9250Magnetometer extends Sensor3D  {
     protected void logState()
     {
     	super.logState();
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "magScale: "+ magScale.toString()+" res: "+magScale.res );
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "magMode: "+ magMode.toString() + " sampleCount: "+ magMode.sampleCount);
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "lastRawMagX: "+lastRawMagX+" lastRawMagY: "+lastRawMagY+" lastRawMagZ: "+lastRawMagZ);
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "lastCalibratedReading: "+lastCalibratedReading.toString());
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_MAJOR_STATES, "magCalibration: "+magCalibration.toString());
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "magScale: "+ magScale.toString()+" res: "+magScale.res );
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "magMode: "+ magMode.toString() + " sampleCount: "+ magMode.sampleCount);
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "lastRawMagX: "+lastRawMagX+" lastRawMagY: "+lastRawMagY+" lastRawMagZ: "+lastRawMagZ);
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "lastCalibratedReading: "+lastCalibratedReading.toString());
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "magCalibration: "+magCalibration.toString());
     }
 
 	  /**
@@ -74,20 +74,20 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	@Override
 	public void printRegisters()
 	{
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_WHO_AM_I));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_INFO));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_CNTL1));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_CNTL2));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ASTC));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ASAX));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ASAY));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ASAZ));
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_WHO_AM_I));
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_INFO));
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_CNTL1));
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_CNTL2));
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ASTC));
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ASAX));
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ASAY));
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ASAZ));
 	   	//these registers must be read in this order to clear the read flag
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ST1));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShortLSBfirst(AK8963Registers.AK8963_XOUT_L));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShortLSBfirst(AK8963Registers.AK8963_YOUT_L));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShortLSBfirst(AK8963Registers.AK8963_ZOUT_L));
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ST2));
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ST1));
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShortLSBfirst(AK8963Registers.AK8963_XOUT_L));
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShortLSBfirst(AK8963Registers.AK8963_YOUT_L));
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringShortLSBfirst(AK8963Registers.AK8963_ZOUT_L));
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(AK8963Registers.AK8963_ST2));
 	}
 	
 	/**
@@ -130,7 +130,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	 */
 	@Override
 	public void configure() throws InterruptedException {
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"configure mag AK8963");
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"configure mag AK8963");
         // First extract the factory calibration for each magnetometer axis
 
         ro.writeByte(AK8963Registers.AK8963_CNTL1,(byte) 0x00); // #KW 836 Power down magnetometer
@@ -151,20 +151,20 @@ public class MPU9250Magnetometer extends Sensor3D  {
         ro.writeByte(AK8963Registers.AK8963_CNTL1, (byte)(magScale.bits | magMode.bits)); // #KW 849 Set magnetometer data resolution and sample ODR ####16bit already shifted
         Thread.sleep(10);
         logState();
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End configure mag initAK8963");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End configure mag initAK8963");
 	}
 
 	@Override
 	public void calibrate() throws  InterruptedException{
 		// #KW L1064 magcalMPU9250
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"calibrate mag initAK8963");
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"calibrate mag initAK8963");
 
         int  bias[] = {0, 0, 0}, scale[] = {0, 0, 0};
         short max[] = {(short)-32767, (short)-32767, (short)-32767},
         		min[] = {(short)32767, (short)32767, (short)32767},
         		temp[] = {0, 0, 0};
 
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INSTRUCTION, "Magnetometer Calibration: Wave device in a figure eight until done!");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INSTRUCTION, "Magnetometer Calibration: Wave device in a figure eight until done!");
 
         // #KW L1073 shoot for ~fifteen seconds of mag data
         for(int i = 0; i < magMode.sampleCount; i++) {
@@ -202,7 +202,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 
         logState();
         printRegisters();
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INSTRUCTION, "Magnetometer Calibration: Finished");
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End calibrate mag initAK8963");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INSTRUCTION, "Magnetometer Calibration: Finished");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End calibrate mag initAK8963");
 	}
 }

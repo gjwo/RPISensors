@@ -52,11 +52,11 @@ class MPU9250Test implements UpdateListener{
 	 */
 	private MPU9250Test()
 	{
-		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Attempt to get Bus 1");
+		SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Attempt to get Bus 1");
         try {
         	//final GpioController gpio = GpioFactory.getInstance();
             i2CBus1 = Wiring.getI2CBus1();
-			SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Bus acquired");
+			SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Bus acquired");
             // sample rate (SR) per second sensor frequency (SF) is 200
             // sample size (SS) needs to be >= SF/SR or readings will be missed
             // overlap gives smoothing as average is over the sample
@@ -66,15 +66,15 @@ class MPU9250Test implements UpdateListener{
                     200,                                    // sample rate (SR) per second 
                     250                                    // sample size (SS)
 			); 					// debug level
-			SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES,"MPU9250 created");
-			SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Starting RMI");
+			SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.TRACE_MAJOR_STATES,"MPU9250 created");
+			SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.TRACE_MAJOR_STATES,"Starting RMI");
     		try {
     			startRMI();
     		} catch (RemoteException e) {
-				SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.ERROR, "Interupted whilst starting RMI");
+				SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.ERROR, "Interupted whilst starting RMI");
     			e.printStackTrace();
     		}
-			SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.TRACE_MAJOR_STATES,"RMI started");
+			SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.TRACE_MAJOR_STATES,"RMI started");
 
 
             this.nav = new Navigate(mpu9250);
@@ -102,11 +102,11 @@ class MPU9250Test implements UpdateListener{
                 if (arg1 >0){runSecs = arg1;}
                 else {
                     System.err.println("Argument" + args[0] + " must be > 0, using default of "+ runSecs + " seconds ");
-					SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.ERROR,"Argument" + args[0] + " must be > 0, using default of "+ runSecs + " seconds ");
+					SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.ERROR,"Argument" + args[0] + " must be > 0, using default of "+ runSecs + " seconds ");
 				}
             } catch (NumberFormatException e) {
                 System.err.println("Argument" + args[0] + " must be an integer, using default of "+ runSecs + " seconds ");
-				SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.ERROR,"Argument" + args[0] + " must be an integer, using default of "+ runSecs + " seconds ");
+				SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.ERROR,"Argument" + args[0] + " must be an integer, using default of "+ runSecs + " seconds ");
 			}
         } else
         {
@@ -120,13 +120,13 @@ class MPU9250Test implements UpdateListener{
     	try {
 			tester.runTests(runSecs);
 		} catch (InterruptedException e) {
-			SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.ERROR,"Interupted whilst running tests");
+			SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.ERROR,"Interupted whilst running tests");
 			e.printStackTrace();
 		}
 		try {
 			tester.shutdownTester();
 		} catch (InterruptedException e) {
-			SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.ERROR,"Interupted whilst shutting down");
+			SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.ERROR,"Interupted whilst shutting down");
 			e.printStackTrace();
 		}
 
@@ -156,7 +156,7 @@ class MPU9250Test implements UpdateListener{
 	private void runTests(int n) throws InterruptedException
 	{
 
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"SensorPackage starting");
+		SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.USER_INFORMATION,"SensorPackage starting");
         sensorPackage.start();
         navigator.start();
         //navR.startup();
@@ -183,15 +183,15 @@ class MPU9250Test implements UpdateListener{
 	
 	private void shutdownTester() throws InterruptedException
 	{
-		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION, "Shutdown NavResponder");
+		SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.USER_INFORMATION, "Shutdown NavResponder");
         //navR.interrupt();
-		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION, "Shutdown Navigator");
+		SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.USER_INFORMATION, "Shutdown Navigator");
         navigator.interrupt();
         TimeUnit.SECONDS.sleep(1);
-		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION, "Shutdown Sensor");
+		SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.USER_INFORMATION, "Shutdown Sensor");
         sensorPackage.interrupt();
         TimeUnit.SECONDS.sleep(2);
-		SystemLog.log(SubSystem.SubSystemType.SUBSYSTEM_MANAGER,SystemLog.LogLevel.USER_INFORMATION, "Shutdown Bus");
+		SystemLog.log(MPU9250Test.class,SystemLog.LogLevel.USER_INFORMATION, "Shutdown Bus");
 		Wiring.closeI2CBus1();
 	}
 	

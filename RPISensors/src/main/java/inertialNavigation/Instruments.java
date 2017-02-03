@@ -108,14 +108,14 @@ public class Instruments implements RemoteInstruments
 	
 	public void logInstruments()
 	{
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Last Updated: " + this.updatedTimestamp.toString());
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Tait Bryan Angles (Degrees): " + this.taitBryanAnglesD.toString());
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Euler Angles (Degrees): " + this.eulerAnglesD.toString());
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Linear Acceleration: " + this.linearAcceleration.toString());
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Quaternion: " + this.quaternion.toString());
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Magnetometer: " + this.magnetometer.toString());
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Accelerometer: " + this.accelerometer.toString());
-		SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.USER_INFORMATION,"Gyroscope: " + this.gyroscope.toString());
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INFORMATION,"Last Updated: " + this.updatedTimestamp.toString());
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INFORMATION,"Tait Bryan Angles (Degrees): " + this.taitBryanAnglesD.toString());
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INFORMATION,"Euler Angles (Degrees): " + this.eulerAnglesD.toString());
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INFORMATION,"Linear Acceleration: " + this.linearAcceleration.toString());
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INFORMATION,"Quaternion: " + this.quaternion.toString());
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INFORMATION,"Magnetometer: " + this.magnetometer.toString());
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INFORMATION,"Accelerometer: " + this.accelerometer.toString());
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INFORMATION,"Gyroscope: " + this.gyroscope.toString());
 	}
 	
 	/**

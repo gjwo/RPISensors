@@ -90,7 +90,7 @@ public class MPU9250 extends NineDOF
      */
     private void selfTest() throws InterruptedException
     {
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"MPU-9250.selfTest");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"MPU-9250.selfTest");
         //NB gyro config controlled by general register
     	/*
     	byte c;
@@ -102,7 +102,7 @@ public class MPU9250 extends NineDOF
         gyro.selfTest();
         accel.selfTest();
 
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End MPU-9250.selfTest");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End MPU-9250.selfTest");
     }
 
     /**
@@ -111,7 +111,7 @@ public class MPU9250 extends NineDOF
      */
     private void setCalibrationMode() throws InterruptedException
     {
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"setCalibrationMode");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"setCalibrationMode");
         // Write a one to bit 7 reset bit; toggle reset device
         roMPU.writeByte(MPU9250Registers.PWR_MGMT_1,H_Reset.RESET.bits);
         Thread.sleep(100);
@@ -135,7 +135,7 @@ public class MPU9250 extends NineDOF
 
         roMPU.writeByte(MPU9250Registers.CONFIG, GT_DLPF.F01BW0184.bits);       // Set low-pass filter to 188 Hz
         roMPU.writeByte(MPU9250Registers.SMPLRT_DIV,SampleRateDiv.NONE.bits);   // Set sample rate to 1 kHz = Internal_Sample_Rate / (1 + SMPLRT_DIV)
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End setCalibrationMode");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End setCalibrationMode");
     }
 
     /**
@@ -144,13 +144,13 @@ public class MPU9250 extends NineDOF
      */
     private void calibrateGyroAcc() throws InterruptedException
     {
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"calibrateGyroAcc");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"calibrateGyroAcc");
 
         setCalibrationMode();
         accel.calibrate();
         gyro.calibrate();
 
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End calibrateGyroAcc");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End calibrateGyroAcc");
     }
 
     /**
@@ -159,7 +159,7 @@ public class MPU9250 extends NineDOF
      */
     private void configure() throws InterruptedException
     {
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"MPU-9250.configure");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"MPU-9250.configure");
 
         roMPU.writeByte(MPU9250Registers.PWR_MGMT_1, H_Reset.DEFAULT.bits); // wake up device, Clear sleep bits bit (6), enable all sensors
         Thread.sleep(100); // Wait for all registers to reset
@@ -201,7 +201,7 @@ public class MPU9250 extends NineDOF
         therm.printRegisters();
 
         Thread.sleep(100);
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End MPU-9250.configure");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"End MPU-9250.configure");
     }
 
     /**
@@ -213,7 +213,7 @@ public class MPU9250 extends NineDOF
      */
     public short[] operateFIFO(FIFO_Mode mode, int msPeriod) throws InterruptedException
     {
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"MPU-9250.operateFIFO");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"MPU-9250.operateFIFO");
         roMPU.writeByte(MPU9250Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
         roMPU.writeByte(MPU9250Registers.FIFO_EN, mode.bits);     // Enable accelerometer sensors for FIFO  (max size 512 bytes in MPU-9150)
         Thread.sleep(msPeriod);
@@ -222,7 +222,7 @@ public class MPU9250 extends NineDOF
         roMPU.writeByte(MPU9250Registers.FIFO_EN,FIFO_Mode.NONE.bits);  // Disable all sensors for FIFO
 
         int byteCount = roMPU.readShorts( MPU9250Registers.FIFO_COUNTH, 1)[0];
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_VARIABLES, "Read Fifo byte count: " + byteCount);
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, "Read Fifo byte count: " + byteCount);
         int readingCount = byteCount/2;
         short[]readings = new short[readingCount];
         byte high,low;
@@ -233,7 +233,7 @@ public class MPU9250 extends NineDOF
             readings[i] = (short) ((high << 8) | (low&0xFF)) ;  // Turn the MSB and LSB into a signed 16-bit value
             //System.out.format("%d: [0x%X, 0x%X] 0x%X %d%n", i,high,low, readings[i],readings[i]);
         }
-        SystemLog.log(SubSystem.SubSystemType.INSTRUMENTS,SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End MPU-9250.operateFIFO");
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"End MPU-9250.operateFIFO");
         return readings;
     }
 

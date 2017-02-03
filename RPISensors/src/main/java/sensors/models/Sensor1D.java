@@ -23,7 +23,7 @@ public abstract class Sensor1D extends Sensor<TimestampedData1f>
     public void logState()
     {
         super.logState();
-        SystemLog.log(SubSystem.SubSystemType.DEVICES,SystemLog.LogLevel.TRACE_VARIABLES,
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES,
         "deviceBias: "+ deviceBias.toString()+ "deviceScaling: "+ deviceScaling.toString());
     }
 

@@ -6,7 +6,7 @@ import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
 
 /**
- * Quaternion - w simple 4 value data type used for navigation calculations
+ * Quaternion - w simple 4 value data aClass used for navigation calculations
  * @author GJWood
  * @version 1.0
  * 
