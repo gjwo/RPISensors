@@ -1,10 +1,12 @@
 package dataTypes;
 
+import java.io.Serializable;
+
 /**
  * PolarCoordinatesD    -   Polar Coordinates theta, r with double values
  * Created by GJWood on 02/02/2017.
  */
-public class PolarCoordinatesD
+public class PolarCoordinatesD implements Serializable
 {
     private double theta;
     private double r;

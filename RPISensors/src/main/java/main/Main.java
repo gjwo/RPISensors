@@ -25,12 +25,13 @@ import java.util.HashMap;
 import hardwareAbstractionLayer.NanoClock;
 
 
-public class Main implements RemoteMain
+public class Main extends Thread implements RemoteMain
 {
 	private static Main main;
 	private final HashMap<SubSystemType, SubSystem> subSystems;
 	private final NanoClock clock;
 	private final Registry reg;
+	private boolean running;
 
 	/**
 	 * Main						-	Constructor
@@ -47,6 +48,8 @@ public class Main implements RemoteMain
 		subSystems = new HashMap<>();
 		prepareSubSystems();
 		SystemLog.log(this.getClass(),SystemLog.LogLevel.USER_INFORMATION, "System started");
+        running = true;
+		this.start();
 		System.out.println("System ready");
 	}
 
@@ -175,15 +178,9 @@ public class Main implements RemoteMain
 	@Override
 	public void exit() throws RemoteException
 	{
-	    shutdownAll();
-		try
-		{
-			reg.unbind("Main");
-		} catch (NotBoundException e)
-		{
-			e.printStackTrace();
-		}
-		System.exit(0);
+        System.out.println("exiting");
+        this.interrupt();
+        running = false;
 	}
 
 	/**
@@ -209,5 +206,29 @@ public class Main implements RemoteMain
 			}
 		} catch (SocketException ignored) {}
 		return null;
+	}
+
+	@Override
+	public void run()
+	{
+		while(!Thread.interrupted() && running)
+		{
+            try
+			{
+				Thread.sleep(1000);
+			} catch (InterruptedException ignored) {}
+		}
+		try
+		{
+			shutdownAll();
+			reg.unbind("Main");
+            System.out.println("System shutdown gracefully");
+            System.exit(0);
+		} catch (RemoteException | NotBoundException e)
+		{
+			e.printStackTrace();
+            System.out.println("System shutdown disgracefully");
+            System.exit(-1);
+		}
 	}
 }

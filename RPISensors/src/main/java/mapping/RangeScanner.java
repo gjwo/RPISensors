@@ -106,7 +106,8 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
                 {
                     TimestampedData1f reading = ranger.getLatestRange();
                     ranges[i] = new TimestampedData2f(reading.getX(), angles[i], reading.getInstant());
-                    polars[i] = new TimeStampedPolarCoordD(new PolarCoordinatesD(reading.getX(),Math.toRadians(angles[i])));
+                    polars[i] = new TimeStampedPolarCoordD(
+                            new PolarCoordinatesD(Math.toRadians(angles[i]),reading.getX()),reading.getInstant());
                     //move positioner
                     //angularPositioner.setAngularPosition(angles[i]); // must be blocking to wait for motor movement
                     dataReady = false;
@@ -159,7 +160,7 @@ public class RangeScanner implements Runnable, RemoteRangeScanner,UpdateListener
      */
     public TimestampedData2f[] getRawRanges(){return ranges.clone();}
 
-    public TimeStampedPolarCoordD[] getPolarData(){return polars.clone();}
+    public TimeStampedPolarCoordD[] getPolarData(){return polars;}
 
     public void unbind()
     {
