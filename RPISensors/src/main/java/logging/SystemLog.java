@@ -21,9 +21,9 @@ public class SystemLog implements RemoteLog
 	 * 2	-	Normal user output, progress etc
 	 * 3	-	Main class methods entry & exit
 	 * 4	-	Internal methods entry and exit
-	 * 5	-	variable changes
+	 * 5	-	Variable changes
 	 * 6	-	Device/Sensor register summaries
-	 * 7	-
+	 * 7	-   Register summaries
 	 * 8	-	Loop internal variables
 	 * 9	-	Hardware writes
 	 */
@@ -68,15 +68,15 @@ public class SystemLog implements RemoteLog
         }
     }
 
-    public static void log(Class type,LogLevel level, String message)
+    public static void log(Class aClass,LogLevel level, String message)
     {
-        getLog().addEntry(type, level, message);
+        getLog().addEntry(aClass, level, message);
     }
 
     @SuppressWarnings("WeakerAccess")
-    public void addEntry(Class type, LogLevel level, String message)
+    public void addEntry(Class aClass, LogLevel level, String message)
     {
-        entries.add(new LogEntry(type,level,message));
+        entries.add(new LogEntry(aClass,level,message));
     }
 
     public void addEntry(LogEntry entry)
