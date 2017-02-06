@@ -7,7 +7,7 @@ import logging.SystemLog;
 import subsystems.SubSystem;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Wiring           -   a place to keep all the GPIO pin allocations
@@ -17,12 +17,12 @@ public class Wiring
 {
     private final static GpioController gpio;
     private final static I2CBus i2CBus1;
-    private final static HashMap<Pin,GpioPinDigital> pinMap;
+    private final static TreeMap<Pin,GpioPinDigital> pinMap;
 
     static  //static initialisation code
     {
         gpio = GpioFactory.getInstance();
-        pinMap = new HashMap<>(30);
+        pinMap = new TreeMap<>();
         pinMap.put(RaspiPin.GPIO_06,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06,"Positioner Pin 1", PinState.LOW));
         pinMap.put(RaspiPin.GPIO_07,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07,"Positioner Pin 2", PinState.LOW));
         pinMap.put(RaspiPin.GPIO_25,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_25,"Positioner Pin 3", PinState.LOW));
