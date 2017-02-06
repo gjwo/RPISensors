@@ -99,6 +99,8 @@ public class Wiring
 
     public static void logGpioPinAllocation()
     {
+        SystemLog.log(Wiring.class,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,
+                "I2C1 bus on SDA on GPIO03 and SCL on GPIO05 ");
         for (Pin p:pinMap.keySet())
         {
             SystemLog.log(Wiring.class,SystemLog.LogLevel.TRACE_INTERFACE_METHODS,
