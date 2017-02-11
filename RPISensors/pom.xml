@@ -11,7 +11,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<!-- DEFAULT RASPBERRY PI PROPERTIES -->
-		<pi.host>192.168.1.123</pi.host>
+		<pi.host>192.168.1.127</pi.host>
 		<pi.port>22</pi.port>
 		<pi.user>pi</pi.user>	
 		<pi.password>raspberry</pi.password>
@@ -106,7 +106,7 @@
 								<sshexec host="${pi.host}" port="${pi.port}" username="${pi.user}"
 									password="${pi.password}" trust="true" failonerror="false"
 									verbose="false"
-									command="sudo java -jar ${pi.deployDirectory}/${project.build.finalName}.jar ${pi.host}" />
+									command="sudo java -jar ${pi.deployDirectory}/${project.build.finalName}.jar ${pi.host} noHW" />
 							</target>
 
 						</configuration>

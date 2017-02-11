@@ -42,27 +42,21 @@ public class Wiring
 
     public static I2CBus getI2CBus1(){return i2CBus1;}
 
-    public static boolean initialialseI2CBus1()
+    public static void initialialseI2CBus1()
     {
-        if (i2cDevices)
+        try
         {
-            try
-            {
-                i2CBus1 = I2CFactory.getInstance(I2CBus.BUS_1);
-                //I2CBus1 has the following GPIO pin outs under Pi4J
-                //GPIO 8 = SDA1 physical pin 3
-                //GPIO 9 = SCL1 physical pin 5
-            } catch (final Exception e)
-            {
-                //throw new RuntimeException("Failed to create I2C Bus1 in Wiring.",e);
-                SystemLog.log(Wiring.class, SystemLog.LogLevel.ERROR, "Failed to create I2C Bus1");
-                i2cDevices = false;
-                return false;
-            }
-            SystemLog.log(Wiring.class, SystemLog.LogLevel.TRACE_INTERNAL_METHODS, "I2C Bus1 initialised");
-            i2cDevices = true;
+            i2CBus1 = I2CFactory.getInstance(I2CBus.BUS_1);
+            //I2CBus1 has the following GPIO pin outs under Pi4J
+            //GPIO 8 = SDA1 physical pin 3
+            //GPIO 9 = SCL1 physical pin 5
+        } catch (final Exception e)
+        {
+            //throw new RuntimeException("Failed to create I2C Bus1 in Wiring.",e);
+            SystemLog.log(Wiring.class, SystemLog.LogLevel.ERROR, "Failed to create I2C Bus1");
+            i2cDevices = false;
         }
-        return i2cDevices;
+        SystemLog.log(Wiring.class, SystemLog.LogLevel.TRACE_INTERNAL_METHODS, "I2C Bus1 initialised");
     }
 
     public static boolean thereAreI2cDevices() {return i2cDevices;}

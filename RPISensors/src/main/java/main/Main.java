@@ -45,7 +45,7 @@ public class Main extends Thread implements RemoteMain
         SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting SubSystem manager");
         reg.rebind("Main", UnicastRemoteObject.exportObject(this,0));
         Wiring.setI2Cdevices(!noHW);
-        final boolean b = Wiring.initialialseI2CBus1();
+        Wiring.initialialseI2CBus1();
         Wiring.logGpioPinAllocation();
 		subSystems = new HashMap<>();
 		prepareSubSystems();
