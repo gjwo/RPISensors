@@ -37,13 +37,15 @@ public class Main extends Thread implements RemoteMain
 	 * Main						-	Constructor
 	 * @throws RemoteException	-	exception during RMI operation
 	 */
-	private Main() throws RemoteException
+	private Main(boolean noHW) throws RemoteException
     {
 		main = this;
 		clock = new NanoClock();
 		reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
         SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_MAJOR_STATES, "Starting SubSystem manager");
         reg.rebind("Main", UnicastRemoteObject.exportObject(this,0));
+        Wiring.setI2Cdevices(!noHW);
+        final boolean b = Wiring.initialialseI2CBus1();
         Wiring.logGpioPinAllocation();
 		subSystems = new HashMap<>();
 		prepareSubSystems();
@@ -60,6 +62,7 @@ public class Main extends Thread implements RemoteMain
 	 */
 	public static void main(String[] args) throws RemoteException
 	{
+		boolean noHW = false;
 		try {
 			//noinspection ConstantConditions
 			System.setProperty("java.rmi.server.hostname", getLocalAddress().getHostAddress());
@@ -68,7 +71,12 @@ public class Main extends Thread implements RemoteMain
 			System.out.println("Failed to get local address");
 			System.exit(-1);
 		}
-		new Main();
+		for (String s: args)
+		{
+			if (0 == s.compareToIgnoreCase("noHW"))noHW = true;
+		}
+
+		new Main(noHW);
 	}
 
 	public NanoClock getClock(){return clock;}

@@ -81,6 +81,7 @@ public class RegisterOperations
 	 */
     public byte readByte(Register reg)
     {
+    	if (!Wiring.thereAreI2cDevices()) return 0;
         try {
         	byte b = busDevice.read(reg.getAddress());
         	 if (logReads) SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_HW_EVENTS, Conversion.byteToLogString(reg,b));
@@ -100,6 +101,7 @@ public class RegisterOperations
     public byte[] readBytes(Register reg, int count)
     {
     	if (count <= 0) return null;
+		if (!Wiring.thereAreI2cDevices()) return null;
     	byte[] bytes;
     	int startAddr = reg.getAddress();
         try {
@@ -193,7 +195,7 @@ public class RegisterOperations
      */
     public void writeByte(Register reg, byte value)
     {
-
+		if (!Wiring.thereAreI2cDevices()) return;
         try {
         	byte oldRegVal = 0;
         	if (logWrites) oldRegVal = busDevice.read(reg.getAddress());
@@ -215,6 +217,7 @@ public class RegisterOperations
     @SuppressWarnings("WeakerAccess")
 	public void writeBytes(Register reg, byte[] bytes)
     {
+		if (!Wiring.thereAreI2cDevices()) return;
     	int startAddr = reg.getAddress();
         try {
         	if(logWrites)

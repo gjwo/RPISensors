@@ -16,11 +16,14 @@ import java.util.*;
 public class Wiring
 {
     private final static GpioController gpio;
-    private final static I2CBus i2CBus1;
+    private static I2CBus i2CBus1;
     private final static TreeMap<Pin,GpioPinDigital> pinMap;
+    private static boolean i2cDevices;
 
     static  //static initialisation code
     {
+        i2cDevices  = false;
+        i2CBus1 = null;
         gpio = GpioFactory.getInstance();
         pinMap = new TreeMap<>();
         pinMap.put(RaspiPin.GPIO_06,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06,"Positioner Pin 1", PinState.LOW));
@@ -35,16 +38,35 @@ public class Wiring
         pinMap.put(RaspiPin.GPIO_15,gpio.provisionDigitalInputPin(RaspiPin.GPIO_15, "Left Encoder 2", PinPullResistance.PULL_DOWN));
         pinMap.put(RaspiPin.GPIO_01,gpio.provisionDigitalInputPin(RaspiPin.GPIO_01, "Right Encoder 1", PinPullResistance.PULL_DOWN));
         pinMap.put(RaspiPin.GPIO_26,gpio.provisionDigitalInputPin(RaspiPin.GPIO_26, "Right Encoder 2", PinPullResistance.PULL_DOWN));
-        try
-        {
-            i2CBus1 = I2CFactory.getInstance(I2CBus.BUS_1);
-            //I2CBus1 has the following GPIO pin outs under Pi4J
-            //GPIO 8 = SDA1 physical pin 3
-            //GPIO 9 = SCL1 physical pin 5
-        }catch(final Exception e){throw new RuntimeException("Failed to create I2C Bus1 in Wiring.",e); }
     }
 
     public static I2CBus getI2CBus1(){return i2CBus1;}
+
+    public static boolean initialialseI2CBus1()
+    {
+        if (i2cDevices)
+        {
+            try
+            {
+                i2CBus1 = I2CFactory.getInstance(I2CBus.BUS_1);
+                //I2CBus1 has the following GPIO pin outs under Pi4J
+                //GPIO 8 = SDA1 physical pin 3
+                //GPIO 9 = SCL1 physical pin 5
+            } catch (final Exception e)
+            {
+                //throw new RuntimeException("Failed to create I2C Bus1 in Wiring.",e);
+                SystemLog.log(Wiring.class, SystemLog.LogLevel.ERROR, "Failed to create I2C Bus1");
+                i2cDevices = false;
+                return false;
+            }
+            SystemLog.log(Wiring.class, SystemLog.LogLevel.TRACE_INTERNAL_METHODS, "I2C Bus1 initialised");
+            i2cDevices = true;
+        }
+        return i2cDevices;
+    }
+
+    public static boolean thereAreI2cDevices() {return i2cDevices;}
+    public static void setI2Cdevices(boolean b) {i2cDevices = b;}
 
     public static void closeI2CBus1()
     {
@@ -55,6 +77,7 @@ public class Wiring
             // ignore has already been closed!
         }
     }
+
 
     public static GpioPinDigitalOutput[] getPositionerPins()
     {
