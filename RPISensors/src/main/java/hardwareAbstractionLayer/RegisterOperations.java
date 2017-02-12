@@ -101,8 +101,8 @@ public class RegisterOperations
     public byte[] readBytes(Register reg, int count)
     {
     	if (count <= 0) return null;
-		if (!Wiring.thereAreI2cDevices()) return null;
     	byte[] bytes;
+        if (!Wiring.thereAreI2cDevices()) return new byte[count];
     	int startAddr = reg.getAddress();
         try {
         	bytes = busDevice.read(startAddr,count);
