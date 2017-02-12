@@ -3,6 +3,7 @@ package sensors.Implementations.VL53L0X;
 import dataTypes.TimestampedData1f;
 import hardwareAbstractionLayer.Device;
 import hardwareAbstractionLayer.RegisterOperations;
+import hardwareAbstractionLayer.Wiring;
 import logging.SystemLog;
 import sensors.models.Sensor1D;
 import java.util.HashMap;
@@ -53,12 +54,10 @@ public class VL53L0XRanger extends Sensor1D
 
     private void init() throws InterruptedException
     {
+        SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"init start");
         byte HVI2C = registerOperations.readByte(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV);
         registerOperations.writeByte(VL53L0XRegisters.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV, (byte)(HVI2C | 0x01)); // set device HIGH to 2.8 V
 
-
-        SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_EVENTS,
-                "VL53L0XRanger proximity sensor...");
         byte c = registerOperations.readByte(VL53L0XRegisters.WHO_AM_I);  // Read WHO_AM_I register for VL53L0XRanger
         SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_HW_EVENTS,
                 "I AM " + c + " I should be " + (byte) 0xEE);
@@ -244,6 +243,7 @@ public class VL53L0XRanger extends Sensor1D
                 "System Inter-measurement period = " + IMPeriod + "ms");
 
         registerOperations.writeByte(VL53L0XRegisters.SYSRANGE_START, (byte) 0x02); // continuous mode and arm next shot
+        SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"init End");
     }
 
     private short VL53L0X_decode_vcsel_period(short vcsel_period_reg)
@@ -270,7 +270,7 @@ public class VL53L0XRanger extends Sensor1D
 
         registerOperations.writeByte(VL53L0XRegisters.UNKNOWN_ADDR_0x94, (byte) 0x6b);
         registerOperations.writeByte(VL53L0XRegisters.UNKNOWN_ADDR_0x83, (byte) 0x00);
-        while (registerOperations.readByte(VL53L0XRegisters.UNKNOWN_ADDR_0x83) == 0x00)
+        while (Wiring.thereAreI2cDevices() && (registerOperations.readByte(VL53L0XRegisters.UNKNOWN_ADDR_0x83) == 0x00))
         {
             TimeUnit.MILLISECONDS.sleep(10);
             //if (checkTimeoutExpired()) { return false; }
@@ -299,7 +299,8 @@ public class VL53L0XRanger extends Sensor1D
 //  if(intStatus & 0x01) // poll for data ready
 //  {
 
-        if (!((registerOperations.readByte(VL53L0XRegisters.RESULT_INTERRUPT_STATUS) & 0x07) == 0)) // wait for data ready interrupt
+        if (!((registerOperations.readByte(VL53L0XRegisters.RESULT_INTERRUPT_STATUS) & 0x07) == 0)// data is ready
+                || !Wiring.thereAreI2cDevices()) //or no hardware so carry on anyway
         {
             registerOperations.writeByte(VL53L0XRegisters.SYSTEM_INTERRUPT_CLEAR, (byte) 0x01); // clear interrupt
 

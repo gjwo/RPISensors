@@ -2,6 +2,7 @@ package sensors.Implementations.VL53L0X;
 
 import dataTypes.TimestampedData1f;
 import hardwareAbstractionLayer.Device;
+import logging.SystemLog;
 import sensors.interfaces.Ranger;
 import sensors.models.SensorPackage;
 
@@ -21,8 +22,11 @@ public class VL53L0X extends SensorPackage implements Ranger
      */
     public VL53L0X(Device device, int sampleRate, int sampleSize)
     {
+
         super(sampleRate);
+        SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"Constructor");
         sensor = new VL53L0XRanger(device, sampleSize);
+        SystemLog.log(this.getClass(), SystemLog.LogLevel.TRACE_INTERFACE_METHODS,"Constructor End");
     }
 
     @Override

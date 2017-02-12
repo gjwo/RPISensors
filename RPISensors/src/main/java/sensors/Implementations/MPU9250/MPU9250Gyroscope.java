@@ -224,10 +224,12 @@ public class MPU9250Gyroscope extends Sensor3D
        
         //calculate averages
         short[] gyroBiasAvg = new short[]{0,0,0}; //16 bit average
-        gyroBiasAvg[0] = (short)((gyroBiasSum[0] / sampleCount) & 0xffff); //mask out any sign extension
-        gyroBiasAvg[1] = (short)((gyroBiasSum[1] / sampleCount) & 0xffff);
-        gyroBiasAvg[2] = (short)((gyroBiasSum[2] / sampleCount) & 0xffff);
-
+        if (sampleCount >0)
+        {
+            gyroBiasAvg[0] = (short) ((gyroBiasSum[0] / sampleCount) & 0xffff); //mask out any sign extension
+            gyroBiasAvg[1] = (short) ((gyroBiasSum[1] / sampleCount) & 0xffff);
+            gyroBiasAvg[2] = (short) ((gyroBiasSum[2] / sampleCount) & 0xffff);
+        }
         SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, "Gyro Bias average: "+Arrays.toString(gyroBiasAvg));
         SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_VARIABLES, String.format(" [0x%X, 0x%X, 0x%X]%n",gyroBiasAvg[0],gyroBiasAvg[1],gyroBiasAvg[2]));
     	
