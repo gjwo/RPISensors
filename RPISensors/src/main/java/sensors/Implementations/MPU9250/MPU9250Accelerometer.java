@@ -233,10 +233,12 @@ public class MPU9250Accelerometer extends Sensor3D  {
         
         //calculate averages
         short[] accelBiasAvg = new short[]{0,0,0}; //16 bit average
-        accelBiasAvg[0] = (short)((accelBiasSum[0] / sampleCount) & 0xffff); // #KW L980
-        accelBiasAvg[1] = (short)((accelBiasSum[1] / sampleCount) & 0xffff); // Normalise sums to get average count biases
-        accelBiasAvg[2] = (short)((accelBiasSum[2] / sampleCount) & 0xffff); 
-        
+        if (sampleCount>0)
+        {
+            accelBiasAvg[0] = (short) ((accelBiasSum[0] / sampleCount) & 0xffff); // #KW L980
+            accelBiasAvg[1] = (short) ((accelBiasSum[1] / sampleCount) & 0xffff); // Normalise sums to get average count biases
+            accelBiasAvg[2] = (short) ((accelBiasSum[2] / sampleCount) & 0xffff);
+        }
         if (accelBiasAvg[2] > 0) accelBiasAvg[2] -= accelSensitivity; // #KW 987 Remove gravity from the z-axis accelerometer bias calculation
         else accelBiasAvg[2] += accelSensitivity;
 
