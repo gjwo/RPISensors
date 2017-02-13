@@ -3,6 +3,7 @@ package sensors.Implementations.MPU9250;
 import dataTypes.Data3f;
 import dataTypes.TimestampedData3f;
 import hardwareAbstractionLayer.RegisterOperations;
+import hardwareAbstractionLayer.Wiring;
 import logging.SystemLog;
 import sensors.models.Sensor3D;
 import subsystems.SubSystem;
@@ -52,7 +53,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	 * @param ro			-	Register Operations abstraction for this device
 	 * @param parent		- 	encapsulating object usually a sensor package
 	 */
-	public MPU9250Magnetometer(int sampleSize, RegisterOperations ro, MPU9250 parent ) {
+	MPU9250Magnetometer(int sampleSize, RegisterOperations ro, MPU9250 parent) {
 		super(sampleSize);
 		this.ro = ro;
 		this.parent = parent;
@@ -99,7 +100,7 @@ public class MPU9250Magnetometer extends Sensor3D  {
 	public void updateData()
     { //#KW loop() L490 calls - readMagData L812
         byte dataReady = (byte)(ro.readByte(AK8963Registers.AK8963_ST1) & 0x01); //DRDY - Data ready bit0 1 = data is ready
-        if (dataReady == 0) return; //no data ready
+        if ((dataReady == 0)&& Wiring.thereAreI2cDevices()) return; //no data ready
         
         // #KW 494 readMagData - data is ready, read it NB bug fix here read was starting from ST1 not XOUT_L
         byte[] buffer = ro.readBytes(AK8963Registers.AK8963_XOUT_L, 7); // #KW L815 6 data bytes x,y,z 16 bits stored as little Endian (L/H)

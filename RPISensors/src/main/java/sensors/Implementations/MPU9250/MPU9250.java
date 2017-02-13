@@ -60,28 +60,28 @@ public class MPU9250 extends NineDOF
     }
 
     /**
-     * printRegisters - Prints the contents of registers used by this class
+     * printRegisters - Prints the contents of registers used by this class to the log
      */
     private void printRegisters()
     {
-        roMPU.printByteRegister(MPU9250Registers.CONFIG);
-        roMPU.printByteRegister(MPU9250Registers.WOM_THR);
-        roMPU.printByteRegister(MPU9250Registers.MOT_DUR);
-        roMPU.printByteRegister(MPU9250Registers.ZMOT_THR);
-        roMPU.printByteRegister(MPU9250Registers.FIFO_EN);
-        roMPU.printByteRegister(MPU9250Registers.I2C_MST_CTRL);
-        roMPU.printByteRegister(MPU9250Registers.I2C_MST_STATUS);
-        roMPU.printByteRegister(MPU9250Registers.INT_PIN_CFG);
-        roMPU.printByteRegister(MPU9250Registers.INT_ENABLE);
-        roMPU.printByteRegister(MPU9250Registers.INT_STATUS);
-        roMPU.printByteRegister(MPU9250Registers.I2C_MST_DELAY_CTRL);
-        roMPU.printByteRegister(MPU9250Registers.SIGNAL_PATH_RESET);
-        roMPU.printByteRegister(MPU9250Registers.MOT_DETECT_CTRL);
-        roMPU.printByteRegister(MPU9250Registers.USER_CTRL);
-        roMPU.printByteRegister(MPU9250Registers.PWR_MGMT_1);
-        roMPU.printByteRegister(MPU9250Registers.PWR_MGMT_2);
-        roMPU.printByteRegister(MPU9250Registers.WHO_AM_I_MPU9250);
-        roMPU.printByteRegister(MPU9250Registers.SMPLRT_DIV);
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.CONFIG));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.WOM_THR));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.MOT_DUR));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.ZMOT_THR));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.FIFO_EN));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.I2C_MST_CTRL));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.I2C_MST_STATUS));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.INT_PIN_CFG));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.INT_ENABLE));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES,  roMPU.logStringByteRegister(MPU9250Registers.INT_STATUS));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.I2C_MST_DELAY_CTRL));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES,  roMPU.logStringByteRegister(MPU9250Registers.SIGNAL_PATH_RESET));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.MOT_DETECT_CTRL));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.USER_CTRL));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.PWR_MGMT_1));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.PWR_MGMT_2));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.WHO_AM_I_MPU9250));
+        SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, roMPU.logStringByteRegister(MPU9250Registers.SMPLRT_DIV));
     }
 
     /**
@@ -211,7 +211,7 @@ public class MPU9250 extends NineDOF
      * @return			- the captured information in a array of signed 16bit shorts
      * @throws InterruptedException - If sleep was interrupted
      */
-    public short[] operateFIFO(FIFO_Mode mode, int msPeriod) throws InterruptedException
+    short[] operateFIFO(FIFO_Mode mode, int msPeriod) throws InterruptedException
     {
         SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_INTERNAL_METHODS,"MPU-9250.operateFIFO");
         roMPU.writeByte(MPU9250Registers.USER_CTRL,(byte) 0x40);   // Enable FIFO
