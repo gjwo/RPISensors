@@ -2,6 +2,7 @@ package sensors.Implementations.MPU9250;
 
 import dataTypes.TimestampedData1f;
 import hardwareAbstractionLayer.RegisterOperations;
+import logging.SystemLog;
 import sensors.models.Sensor;
 /**
  * @author GJWood
@@ -39,7 +40,7 @@ public class MPU9250Thermometer extends Sensor<TimestampedData1f>
 	@Override
 	public void printRegisters()
 	{
-	   	ro.printShort(MPU9250Registers.TEMP_OUT_H);
+		SystemLog.log(this.getClass(),SystemLog.LogLevel.TRACE_REGISTER_SUMMARIES, ro.logStringByteRegister(MPU9250Registers.TEMP_OUT_H));
 	}
 	@Override
 	public  TimestampedData1f getAvgValue()
