@@ -4,10 +4,11 @@ import com.pi4j.io.gpio.*;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 import logging.SystemLog;
-import subsystems.SubSystem;
 
 import java.io.IOException;
 import java.util.*;
+
+import static hardwareAbstractionLayer.PinAssignments.*;
 
 /**
  * Wiring           -   a place to keep all the GPIO pin allocations
@@ -30,14 +31,14 @@ public class Wiring
         pinMap.put(RaspiPin.GPIO_07,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07,"Positioner Pin 2", PinState.LOW));
         pinMap.put(RaspiPin.GPIO_25,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_25,"Positioner Pin 3", PinState.LOW));
         pinMap.put(RaspiPin.GPIO_27,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_27,"Positioner Pin 4", PinState.LOW));
-        pinMap.put(RaspiPin.GPIO_02,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "Right motor A", PinState.LOW));
-        pinMap.put(RaspiPin.GPIO_03,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "Right motor B", PinState.LOW));
-        pinMap.put(RaspiPin.GPIO_05,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Left motor A", PinState.LOW));
-        pinMap.put(RaspiPin.GPIO_04,gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "Left motor B", PinState.LOW));
-        pinMap.put(RaspiPin.GPIO_14,gpio.provisionDigitalInputPin(RaspiPin.GPIO_14, "Left Encoder 1", PinPullResistance.PULL_DOWN));
-        pinMap.put(RaspiPin.GPIO_15,gpio.provisionDigitalInputPin(RaspiPin.GPIO_15, "Left Encoder 2", PinPullResistance.PULL_DOWN));
-        pinMap.put(RaspiPin.GPIO_01,gpio.provisionDigitalInputPin(RaspiPin.GPIO_01, "Right Encoder 1", PinPullResistance.PULL_DOWN));
-        pinMap.put(RaspiPin.GPIO_26,gpio.provisionDigitalInputPin(RaspiPin.GPIO_26, "Right Encoder 2", PinPullResistance.PULL_DOWN));
+        pinMap.put(MOTOR_LEFT_A,gpio.provisionDigitalOutputPin(MOTOR_LEFT_A, "Left motor A", PinState.LOW));
+        pinMap.put(MOTOR_LEFT_B,gpio.provisionDigitalOutputPin(MOTOR_LEFT_B, "Left motor B", PinState.LOW));
+        pinMap.put(MOTOR_RIGHT_A,gpio.provisionDigitalOutputPin(MOTOR_RIGHT_A, "Right motor A", PinState.LOW));
+        pinMap.put(MOTOR_RIGHT_B,gpio.provisionDigitalOutputPin(MOTOR_RIGHT_B, "Right motor B", PinState.LOW));
+        pinMap.put(ENCODER_LEFT_A,gpio.provisionDigitalInputPin(ENCODER_LEFT_A, "Left Encoder 1", PinPullResistance.PULL_DOWN));
+        pinMap.put(ENCODER_LEFT_B,gpio.provisionDigitalInputPin(ENCODER_LEFT_B, "Left Encoder 2", PinPullResistance.PULL_DOWN));
+        pinMap.put(ENCODER_RIGHT_A,gpio.provisionDigitalInputPin(ENCODER_RIGHT_A, "Right Encoder 1", PinPullResistance.PULL_DOWN));
+        pinMap.put(ENCODER_RIGHT_B,gpio.provisionDigitalInputPin(ENCODER_RIGHT_B, "Right Encoder 2", PinPullResistance.PULL_DOWN));
     }
 
     public static I2CBus getI2CBus1(){return i2CBus1;}
@@ -85,32 +86,32 @@ public class Wiring
     public static GpioPinDigitalOutput[] getLeftMainMotorPins()
     {
         GpioPinDigitalOutput[] pins = new GpioPinDigitalOutput[2];
-        pins[0] = (GpioPinDigitalOutput) pinMap.get(RaspiPin.GPIO_02);
-        pins[1] = (GpioPinDigitalOutput) pinMap.get(RaspiPin.GPIO_03);
+        pins[0] = (GpioPinDigitalOutput) pinMap.get(MOTOR_LEFT_A);
+        pins[1] = (GpioPinDigitalOutput) pinMap.get(MOTOR_LEFT_B);
         return pins;
     }
 
     public static GpioPinDigitalOutput[] getRightMainMotorPins()
     {
         GpioPinDigitalOutput[] pins = new GpioPinDigitalOutput[2];
-        pins[0] = (GpioPinDigitalOutput) pinMap.get(RaspiPin.GPIO_05);
-        pins[1] = (GpioPinDigitalOutput) pinMap.get(RaspiPin.GPIO_04);
+        pins[0] = (GpioPinDigitalOutput) pinMap.get(MOTOR_RIGHT_A);
+        pins[1] = (GpioPinDigitalOutput) pinMap.get(MOTOR_RIGHT_B);
         return pins;
     }
 
     public static GpioPinDigitalInput[] getLeftMainMotorEncoderPins()
     {
         GpioPinDigitalInput[] pins = new GpioPinDigitalInput[2];
-        pins[0] = (GpioPinDigitalInput) pinMap.get(RaspiPin.GPIO_14);
-        pins[1] = (GpioPinDigitalInput) pinMap.get(RaspiPin.GPIO_15);
+        pins[0] = (GpioPinDigitalInput) pinMap.get(ENCODER_LEFT_A);
+        pins[1] = (GpioPinDigitalInput) pinMap.get(ENCODER_LEFT_B);
         return pins;
     }
 
     public static GpioPinDigitalInput[] getRightMainMotorEncoderPins()
     {
         GpioPinDigitalInput[] pins = new GpioPinDigitalInput[2];
-        pins[0] = (GpioPinDigitalInput) pinMap.get(RaspiPin.GPIO_01);
-        pins[1] = (GpioPinDigitalInput) pinMap.get(RaspiPin.GPIO_26);
+        pins[0] = (GpioPinDigitalInput) pinMap.get(ENCODER_RIGHT_A);
+        pins[1] = (GpioPinDigitalInput) pinMap.get(ENCODER_RIGHT_B);
         return pins;
     }
 
